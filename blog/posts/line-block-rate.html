@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LINE公式アカウントは「作ってから」が本番 — ブロック率を下げる配信設計の基本｜株式会社LAYR</title>
+<meta name="description" content="LINE公式アカウントのブロック率を下げる配信設計を解説。ブロックの主因は「全員に同じ配信」。セグメント配信の考え方と、最初にやるべき属性の取り方をまとめました。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F1613'/%3E%3Cpath d='M8 21l8 4 8-4' fill='none' stroke='%2306C755' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' opacity='.55'/%3E%3Cpath d='M8 16l8 4 8-4' fill='none' stroke='%2306C755' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' opacity='.8'/%3E%3Cpath d='M16 7l8 4-8 4-8-4z' fill='%2306C755'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css?v=3">
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="../../index.html" class="brand" aria-label="株式会社LAYR トップへ">
+      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M6 21.5l10 5 10-5" stroke="#06C755" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".45"/>
+        <path d="M6 15.5l10 5 10-5" stroke="#06C755" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>
+        <path d="M16 5l10 5-10 5-10-5 10-5z" fill="#06C755"/>
+      </svg>
+      <span>
+        <span class="brand-name">LAYR</span>
+        <span class="brand-sub">LINEマーケティング支援</span>
+      </span>
+    </a>
+    <nav class="gnav" id="gnav" aria-label="グローバルナビゲーション">
+      <ul>
+        <li><a href="../../index.html#service">サービス</a></li>
+        <li><a href="../../index.html#reason">選ばれる理由</a></li>
+        <li><a href="../../index.html#case">支援実績</a></li>
+        <li><a href="../index.html">コラム</a></li>
+        <li><a href="../../index.html#company">会社概要</a></li>
+      </ul>
+    </nav>
+    <div class="header-btns">
+      <a class="btn btn-green" href="mailto:biz.oneservice@gmail.com?subject=%E3%80%90%E7%84%A1%E6%96%99%E7%9B%B8%E8%AB%87%E3%80%91LINE%E6%B4%BB%E7%94%A8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">LINE活用 無料相談</a>
+    </div>
+    <button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="gnav" aria-label="メニューを開く">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+  <article class="article" style="padding-top:170px">
+    <div class="article-meta">
+      <time datetime="2026-07-06" style="font-family:var(--font-en);font-weight:700;font-size:13px;color:var(--muted)">2026.07.06</time>
+      <span class="column-cat">LINE運用</span>
+    </div>
+    <h1>LINE公式アカウントは「作ってから」が本番 — ブロック率を下げる配信設計の基本</h1>
+
+    <p>結論から言うと、ブロックの主因は配信の「頻度」ではなく「関係のなさ」です。自分に関係のないメッセージが届き続けるから、ブロックされます。逆に言えば、受け手ごとに関係のある配信へ変えれば、頻度を落とさなくてもブロック率は下がります。</p>
+
+    <h2>ブロックが増えるアカウントの共通点</h2>
+    <p>LAYRが診断してきたアカウントには、共通するパターンがあります。</p>
+    <ul>
+      <li>全員に同じ内容を一斉配信している</li>
+      <li>配信内容が「お知らせ」と「売り込み」しかない</li>
+      <li>友だち追加の直後に何も送っていない（あいさつ設定が初期のまま）</li>
+      <li>誰が何に興味を持っているか、データを取っていない</li>
+    </ul>
+    <p>この状態で配信を続けると、内容に関係のない受け手から順にブロックされていきます。配信を止めればブロックは止まりますが、それでは売上も止まります。必要なのは「止める」ことではなく「分ける」ことです。</p>
+
+    <h2>最初にやるべきは、属性を取ること</h2>
+    <p>セグメント配信を始めるには、友だちの属性データが必要です。もっとも簡単で効果的なのは、友だち追加直後のあいさつメッセージで簡単なアンケートを取ることです。</p>
+    <ol>
+      <li>あいさつメッセージに選択式の質問を1〜3個入れる（例：興味のあるメニュー、来店経験の有無）</li>
+      <li>回答に応じてタグを付与する</li>
+      <li>以降の配信は、タグごとに内容を出し分ける</li>
+    </ol>
+    <div class="point">
+      <p style="margin:0"><strong>ポイント：</strong>質問は3個までにしてください。それ以上は回答率が下がります。「何を聞けば配信を分けられるか」から逆算して、質問を設計します。</p>
+    </div>
+
+    <h2>配信を「分ける」と何が変わるか</h2>
+    <p>たとえば美容サロンなら、「来店済みのお客様」と「まだ来店していない友だち」では送るべき内容がまったく違います。前者にはメンテナンス時期のリマインドや上位メニューの案内、後者には初回オファーや店舗の雰囲気が伝わるコンテンツが機能します。</p>
+    <p>この出し分けを始めるだけで、配信への反応率は上がり、ブロック率は下がります。数値で見ると、開封率・クリック率が改善し、同じ友だち数でも売上への貢献がはっきり変わります。</p>
+
+    <h2>まとめ：順番を間違えないでください</h2>
+    <ol>
+      <li>あいさつメッセージで属性を取る仕組みを作る</li>
+      <li>タグでセグメントを分ける</li>
+      <li>セグメントごとに配信内容を設計する</li>
+      <li>開封率・クリック率・ブロック率を毎月見て改善する</li>
+    </ol>
+    <p>「配信のネタがない」と悩む前に、まず受け手を分けてください。誰に送るかが決まれば、何を送るべきかは自然に決まります。</p>
+
+    <div class="article-cta">
+      <p>自社のLINEアカウント、今の状態を診断してほしい方へ</p>
+      <a class="btn btn-green" href="mailto:biz.oneservice@gmail.com?subject=%E3%80%90%E7%84%A1%E6%96%99%E7%9B%B8%E8%AB%87%E3%80%91LINE%E6%B4%BB%E7%94%A8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6">無料相談に申し込む</a>
+    </div>
+
+    <div class="article-back">
+      <a href="../index.html">‹ コラム一覧へ戻る</a>
+    </div>
+  </article>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div>
+      <div class="brand">
+        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M6 21.5l10 5 10-5" stroke="#06C755" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".45"/>
+          <path d="M6 15.5l10 5 10-5" stroke="#06C755" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>
+          <path d="M16 5l10 5-10 5-10-5 10-5z" fill="#06C755"/>
+        </svg>
+        <span class="brand-name">LAYR</span>
+      </div>
+      <p class="footer-tagline">LINE構築・運用を軸にしたマーケティング支援会社。<br>一度きりの集客を、積み上がる売上に変える。</p>
+    </div>
+    <div>
+      <h4>SERVICE</h4>
+      <ul class="footer-nav">
+        <li><a href="../../index.html#service">LINE構築・運用マーケティング</a></li>
+        <li><a href="../../index.html#service">広告運用代行</a></li>
+        <li><a href="../../index.html#service">LINEコンサルティング</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>SITEMAP</h4>
+      <ul class="footer-nav">
+        <li><a href="../../index.html#reason">選ばれる理由</a></li>
+        <li><a href="../../index.html#case">支援実績</a></li>
+        <li><a href="../index.html">コラム</a></li>
+        <li><a href="../../index.html#company">会社概要</a></li>
+        <li><a href="../../index.html#contact">お問い合わせ</a></li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-copy">© 2026 LAYR Inc. All Rights Reserved.</p>
+</footer>
+
+<script>
+(function(){
+  var btn = document.getElementById('menuBtn');
+  var nav = document.getElementById('gnav');
+  btn.addEventListener('click', function(){
+    var open = nav.classList.toggle('is-open');
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+})();
+</script>
+</body>
+</html>
