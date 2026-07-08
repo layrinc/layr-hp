@@ -104,14 +104,12 @@ npm run build      # 本番ビルド（dist/ に出力）
 
 ## デプロイ
 
-```bash
-cd 株式会社LAYR/layr-hp
-npx vercel deploy --prod --yes
-```
+**自動デプロイ有効（保存＝公開）。** `main` への push が `株式会社LAYR/layr-hp/` 配下を変更すると、GitHub Actions（`.github/workflows/deploy-layr-hp.yml`）が Vercel 本番へ自動デプロイする（約1〜2分）。CMSの保存・AI経由の記事追加・手動編集、いずれも push すれば自動で公開される。
 
-Vercelプロジェクト `ikkan-kawades-projects/layr-hp` にリンク済み。
-
-> **管理画面の「保存」で自動公開したい場合**は、VercelをGitHubリポジトリに接続する必要がある（Root Directory = `株式会社LAYR/layr-hp`、Ignored Build Step でこのフォルダ変更時のみビルド）。未接続の現状は、保存後に上記デプロイコマンド（またはskill）で反映する。
+- モノレポなので layr-hp 以外の変更ではデプロイは走らない（`paths` フィルタ）。
+- 認証は GitHub secret `VERCEL_TOKEN`（登録済み）。
+- 手動で即時デプロイしたい時のみ: `cd 株式会社LAYR/layr-hp && npx vercel deploy --prod --yes`。
+- Vercelプロジェクト: `ikkan-kawades-projects/layr-hp`。
 
 ---
 
