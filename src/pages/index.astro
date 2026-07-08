@@ -19,15 +19,23 @@ const jsonLd = {
   '@type': 'Organization',
   name: '株式会社LAYR',
   url: 'https://layr.co.jp',
-  email: 'biz.oneservice@gmail.com',
+  email: 'info@layr.co.jp',
   description: 'LINE公式アカウントの構築・運用マーケティングと広告運用代行を軸にした、中小企業向けマーケティング支援会社。',
   founder: { '@type': 'Person', name: '河出 壱貫' },
+  foundingDate: '2026-08',
   areaServed: 'JP',
   knowsAbout: ['LINE公式アカウント', 'LINEマーケティング', 'Web広告運用', 'デジタルマーケティング'],
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '道玄坂1丁目10番8号 渋谷道玄坂東急ビル2F-C',
+    addressLocality: '渋谷区',
+    addressRegion: '東京都',
+    addressCountry: 'JP',
+  },
 };
 
-const consult = 'mailto:biz.oneservice@gmail.com?subject=%E3%80%90%E7%84%A1%E6%96%99%E7%9B%B8%E8%AB%87%E3%80%91LINE%E6%B4%BB%E7%94%A8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6';
-const contact = 'mailto:biz.oneservice@gmail.com?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B';
+const consult = 'mailto:info@layr.co.jp?subject=%E3%80%90%E7%84%A1%E6%96%99%E7%9B%B8%E8%AB%87%E3%80%91LINE%E6%B4%BB%E7%94%A8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6';
+const contact = 'mailto:info@layr.co.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B';
 ---
 <Base title={title} description={description} jsonLd={jsonLd}>
 
@@ -448,8 +456,8 @@ const contact = 'mailto:biz.oneservice@gmail.com?subject=%E3%81%8A%E5%95%8F%E3%8
         <tbody>
           <tr><th>会社名</th><td>株式会社LAYR</td></tr>
           <tr><th>代表者</th><td>代表取締役　河出 壱貫</td></tr>
-          <tr><th>所在地</th><td><span class="todo">【要編集】登記住所を記載</span></td></tr>
-          <tr><th>設立</th><td><span class="todo">【要編集】設立年月を記載</span></td></tr>
+          <tr><th>所在地</th><td>東京都渋谷区道玄坂1丁目10番8号 渋谷道玄坂東急ビル2F-C</td></tr>
+          <tr><th>設立</th><td>2026年8月</td></tr>
           <tr>
             <th>事業内容</th>
             <td>
@@ -461,7 +469,7 @@ const contact = 'mailto:biz.oneservice@gmail.com?subject=%E3%81%8A%E5%95%8F%E3%8
               </ul>
             </td>
           </tr>
-          <tr><th>お問い合わせ</th><td><a href="mailto:biz.oneservice@gmail.com">biz.oneservice@gmail.com</a></td></tr>
+          <tr><th>お問い合わせ</th><td><a href="mailto:info@layr.co.jp">info@layr.co.jp</a></td></tr>
         </tbody>
       </table>
     </div>
@@ -474,7 +482,7 @@ const contact = 'mailto:biz.oneservice@gmail.com?subject=%E3%81%8A%E5%95%8F%E3%8
       <h2 id="cta-title">LINE活用の「現状」を、<br>まず<span>無料</span>でお聞かせください。</h2>
       <p>オンラインで30分から。この段階での売り込みは行いません。<br>「何から手をつけるべきか」の整理だけでも、持ち帰っていただけます。</p>
       <a class="btn btn-green btn-lg" href={consult}>無料相談に申し込む</a>
-      <p class="mail">メールでのご連絡：<a href="mailto:biz.oneservice@gmail.com">biz.oneservice@gmail.com</a></p>
+      <p class="mail">メールでのご連絡：<a href="mailto:info@layr.co.jp">info@layr.co.jp</a></p>
     </div>
   </section>
 

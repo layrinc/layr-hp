@@ -20,8 +20,8 @@ const { title, description, ogType = 'website', jsonLd = null } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 
 // CTAリンク（全ページ共通。将来LINE友だち追加URLへ差し替え可）
-const consult = 'mailto:biz.oneservice@gmail.com?subject=%E3%80%90%E7%84%A1%E6%96%99%E7%9B%B8%E8%AB%87%E3%80%91LINE%E6%B4%BB%E7%94%A8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6';
-const contact = 'mailto:biz.oneservice@gmail.com?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B';
+const consult = 'mailto:info@layr.co.jp?subject=%E3%80%90%E7%84%A1%E6%96%99%E7%9B%B8%E8%AB%87%E3%80%91LINE%E6%B4%BB%E7%94%A8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6';
+const contact = 'mailto:info@layr.co.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B';
 const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230F1613'/%3E%3Cpath d='M8 21l8 4 8-4' fill='none' stroke='%2306C755' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' opacity='.55'/%3E%3Cpath d='M8 16l8 4 8-4' fill='none' stroke='%2306C755' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' opacity='.8'/%3E%3Cpath d='M16 7l8 4-8 4-8-4z' fill='%2306C755'/%3E%3C/svg%3E";
 ---
 <!doctype html>
