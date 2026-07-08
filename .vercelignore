@@ -1,0 +1,4 @@
+_archive_static_v1
+node_modules
+dist
+.astro

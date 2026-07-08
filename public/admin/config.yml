@@ -1,0 +1,46 @@
+# =====================================================================
+# Sveltia CMS 設定（WordPressの管理画面に相当）
+# ここで「管理画面のフォーム項目」と「保存先」を定義する。
+# パスはすべて Git リポジトリのルート（Company-Brain）からの相対。
+# =====================================================================
+
+backend:
+  name: github
+  repo: layrinc/company-brain      # GitHubリポジトリ
+  branch: main
+  # 本番の管理画面ログインには GitHub OAuth の中継URLが必要。
+  # セットアップ後に下行のコメントを外し、中継URLを設定する。
+  # base_url: https://<your-auth-relay>
+
+# ローカルで試し書きする用（`npx @sveltia/cms-proxy-server` 起動時に有効）
+local_backend: true
+
+# 画像などのアップロード先
+media_folder: "株式会社LAYR/layr-hp/public/uploads"
+public_folder: "/uploads"
+
+# 管理画面の言語
+locale: ja
+
+collections:
+  - name: blog
+    label: コラム記事
+    label_singular: コラム記事
+    description: LINEマーケティング・広告運用のコラム。保存すると自動でサイトに反映されます。
+    folder: "株式会社LAYR/layr-hp/src/content/blog"
+    create: true
+    # 記事URL = このスラッグ。英数字で入力する。
+    slug: "{{fields.slug}}"
+    sortable_fields: [date, title]
+    fields:
+      - { label: "タイトル", name: "title", widget: "string" }
+      - { label: "説明文（SEO・一覧に表示）", name: "description", widget: "text" }
+      - { label: "URLスラッグ（英数字）", name: "slug", widget: "string", hint: "記事URLになる英語の短い名前。例: line-step-message" }
+      - { label: "公開日", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - label: "カテゴリ"
+        name: "category"
+        widget: "select"
+        options: ["LINE運用", "LINEマーケティング", "広告運用"]
+        default: "LINE運用"
+      - { label: "下書き（チェック中は公開されない）", name: "draft", widget: "boolean", default: false }
+      - { label: "本文", name: "body", widget: "markdown" }

@@ -1,0 +1,53 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+// 全記事のURLを生成（下書きは除外）
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+const title = `${post.data.title}｜株式会社LAYR`;
+const consult = 'mailto:biz.oneservice@gmail.com?subject=%E3%80%90%E7%84%A1%E6%96%99%E7%9B%B8%E8%AB%87%E3%80%91LINE%E6%B4%BB%E7%94%A8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6';
+
+// 記事の構造化データ(JSON-LD)。検索結果でリッチに表示されやすくする。
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: post.data.title,
+  description: post.data.description,
+  datePublished: iso(post.data.date),
+  inLanguage: 'ja',
+  author: { '@type': 'Organization', name: '株式会社LAYR' },
+  publisher: { '@type': 'Organization', name: '株式会社LAYR' },
+  mainEntityOfPage: new URL(`/blog/${post.id}/`, Astro.site).href,
+};
+---
+<Base title={title} description={post.data.description} ogType="article" jsonLd={jsonLd}>
+  <article class="article" style="padding-top:170px">
+    <div class="article-meta">
+      <time datetime={iso(post.data.date)} style="font-family:var(--font-en);font-weight:700;font-size:13px;color:var(--muted)">{fmt(post.data.date)}</time>
+      <span class="column-cat">{post.data.category}</span>
+    </div>
+    <h1>{post.data.title}</h1>
+
+    <Content />
+
+    <div class="article-cta">
+      <p>自社のLINE・広告の現状、無料でご相談いただけます</p>
+      <a class="btn btn-green" href={consult}>無料相談に申し込む</a>
+    </div>
+
+    <div class="article-back">
+      <a href="/blog/">‹ コラム一覧へ戻る</a>
+    </div>
+  </article>
+</Base>

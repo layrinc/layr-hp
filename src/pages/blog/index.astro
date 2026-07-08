@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+const title = 'コラム一覧｜株式会社LAYR';
+const description = '株式会社LAYRのLINEマーケティング・広告運用コラム一覧。現場で得たLINE活用の知見を発信しています。';
+---
+<Base title={title} description={description}>
+  <div class="page-hero">
+    <h1 class="sec-en">COLUMN</h1>
+    <p class="sec-jp">LINEマーケティングコラム</p>
+  </div>
+
+  <div class="post-list">
+    {posts.map((post) => (
+      <a class="post-item" href={`/blog/${post.id}/`}>
+        <div class="column-meta"><time datetime={iso(post.data.date)}>{fmt(post.data.date)}</time><span class="column-cat">{post.data.category}</span></div>
+        <h2>{post.data.title}</h2>
+        <p>{post.data.description}</p>
+      </a>
+    ))}
+  </div>
+</Base>
