@@ -1,0 +1,28 @@
+{
+  "show_edit_note": true,
+  "title_before": "数字で見る、LAYRの",
+  "title_marker": "LINE×広告 支援成果",
+  "items": [
+    {
+      "tag": "オンラインスクール",
+      "arrow": true,
+      "number": "2.4",
+      "unit": "倍",
+      "desc": "LINE経由の講座申込数\n（配信設計の見直し後 3ヶ月）"
+    },
+    {
+      "tag": "店舗ビジネス",
+      "arrow": true,
+      "number": "38",
+      "unit": "%",
+      "desc": "LINE登録者の再来店率\n（セグメント配信の導入後）"
+    },
+    {
+      "tag": "広告×LINE 連携",
+      "arrow": false,
+      "number": "1/2",
+      "unit": "",
+      "desc": "顧客獲得単価（CPA）を半減\n（広告→LINE導線の再設計）"
+    }
+  ]
+}

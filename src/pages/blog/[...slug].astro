@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
+import settings from '../../data/settings.json';
 
 // 全記事のURLを生成（下書きは除外）
 export async function getStaticPaths() {
@@ -16,7 +17,9 @@ const fmt = (d: Date) =>
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 
 const title = `${post.data.title}｜株式会社LAYR`;
-const consult = 'mailto:info@layr.co.jp?subject=%E3%80%90%E7%84%A1%E6%96%99%E7%9B%B8%E8%AB%87%E3%80%91LINE%E6%B4%BB%E7%94%A8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6';
+const consult = settings.line_url?.trim()
+  ? settings.line_url
+  : `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
 
 // 記事の構造化データ(JSON-LD)。検索結果でリッチに表示されやすくする。
 const jsonLd = {

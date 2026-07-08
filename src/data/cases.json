@@ -1,0 +1,41 @@
+{
+  "show_edit_note": true,
+  "items": [
+    {
+      "tag": "オンラインスクール",
+      "title": "放置されていたLINEを再設計し、講座申込が2.4倍に",
+      "problem": "友だち3,000人に一斉配信のみ。反応が取れずブロックが増加。",
+      "action": "属性アンケートでセグメントを分け、興味別のシナリオ配信を構築。",
+      "metric_label": "LINE経由の講座申込数（月間）",
+      "before": "5件",
+      "after_number": "12",
+      "after_unit": "件",
+      "graph_before": 38,
+      "graph_after": 92
+    },
+    {
+      "tag": "美容サロン",
+      "title": "セグメント配信の導入で、再来店率38%改善",
+      "problem": "新規は広告で獲得できるが、2回目の来店につながらない。",
+      "action": "来店履歴に合わせたステップ配信と、失客前リマインドを設計。",
+      "metric_label": "LINE登録者の90日以内再来店率",
+      "before": "21%",
+      "after_number": "29",
+      "after_unit": "%",
+      "graph_before": 60,
+      "graph_after": 86
+    },
+    {
+      "tag": "整体院",
+      "title": "広告→LINE導線の再設計で、CPAを半減",
+      "problem": "広告から直接予約を取ろうとしてCVRが低く、CPAが高止まり。",
+      "action": "広告の着地をLINE友だち追加に変更し、LINE内で予約まで育成。",
+      "metric_label": "新規顧客の獲得単価（CPA）",
+      "before": "12,000円",
+      "after_number": "6,400",
+      "after_unit": "円",
+      "graph_before": 92,
+      "graph_after": 48
+    }
+  ]
+}

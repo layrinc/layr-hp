@@ -12,21 +12,16 @@ backend:
   # セットアップ後に下行のコメントを外し、中継URLを設定する。
   # base_url: https://<your-auth-relay>
 
-# ローカルで試し書きする用（`npx @sveltia/cms-proxy-server` 起動時に有効）
-local_backend: true
-
 # 画像などのアップロード先
 media_folder: "株式会社LAYR/layr-hp/public/uploads"
 public_folder: "/uploads"
 
-# 管理画面の言語
-locale: ja
-
 collections:
+  # ===================== 投稿（WordPressの「投稿」相当） =====================
   - name: blog
     label: コラム記事
     label_singular: コラム記事
-    description: LINEマーケティング・広告運用のコラム。保存すると自動でサイトに反映されます。
+    description: LINEマーケティング・広告運用のコラム。保存すると自動でサイトに反映されます（約1〜2分）。
     folder: "株式会社LAYR/layr-hp/src/content/blog"
     create: true
     # 記事URL = このスラッグ。英数字で入力する。
@@ -44,3 +39,138 @@ collections:
         default: "LINE運用"
       - { label: "下書き（チェック中は公開されない）", name: "draft", widget: "boolean", default: false }
       - { label: "本文", name: "body", widget: "markdown" }
+
+  # ===================== サイト設定（WordPressの「カスタマイザー」相当） =====================
+  - name: site
+    label: サイト設定
+    description: トップページの文言・数値・会社情報。保存すると自動で本番に反映されます（約1〜2分）。
+    editor:
+      preview: false
+    files:
+
+      # --- ① 基本設定 ---
+      - name: settings
+        label: ① 基本設定（連絡先・CTA）
+        file: "株式会社LAYR/layr-hp/src/data/settings.json"
+        fields:
+          - { label: "問い合わせメールアドレス", name: "email", widget: "string" }
+          - { label: "LINE友だち追加URL（空欄ならメールCTAになる）", name: "line_url", widget: "string", required: false, hint: "自社LINE公式アカウントのURL（https://lin.ee/xxxx）を入れると、サイト全体の緑ボタンの飛び先がLINEになる" }
+          - { label: "フッターのひとこと（改行可）", name: "tagline", widget: "text" }
+
+      # --- ② ヒーロー ---
+      - name: hero
+        label: ② ヒーロー（最上部）
+        file: "株式会社LAYR/layr-hp/src/data/hero.json"
+        fields:
+          - { label: "上部の帯コピー", name: "eyebrow", widget: "string" }
+          - { label: "キャッチコピー1行目", name: "catch_line1", widget: "string" }
+          - { label: "キャッチコピー2行目（緑マーカー付き）", name: "catch_line2", widget: "string" }
+          - { label: "キャッチコピー3行目", name: "catch_line3", widget: "string" }
+          - { label: "サブコピー", name: "sub", widget: "text" }
+          - { label: "緑ボタンの文言", name: "cta_primary", widget: "string" }
+          - { label: "黒ボタンの文言", name: "cta_secondary", widget: "string" }
+          - { label: "下部チップ（強みの短文）", name: "chips", widget: "list", field: { label: "文言", name: "chip", widget: "string" } }
+          - { label: "丸バッジ 上段", name: "badge_line1", widget: "string" }
+          - { label: "丸バッジ 下段（強調）", name: "badge_line2", widget: "string" }
+          - label: "スマホ横の数値チップ（3個）"
+            name: "float_chips"
+            widget: "list"
+            min: 3
+            max: 3
+            fields:
+              - { label: "ラベル", name: "label", widget: "string" }
+              - { label: "数値（例 +128%）", name: "value", widget: "string" }
+
+      # --- ③ 実績数値 ---
+      - name: stats
+        label: ③ 実績数値（数字で見る）
+        file: "株式会社LAYR/layr-hp/src/data/stats.json"
+        fields:
+          - { label: "【要編集】注意書きを表示する（実数値に直したらオフ）", name: "show_edit_note", widget: "boolean", default: true }
+          - { label: "見出し（前半）", name: "title_before", widget: "string" }
+          - { label: "見出し（緑マーカー部分）", name: "title_marker", widget: "string" }
+          - label: "数値カード（3枚）"
+            name: "items"
+            widget: "list"
+            min: 3
+            max: 3
+            fields:
+              - { label: "業種タグ", name: "tag", widget: "string" }
+              - { label: "▲マークを付ける（改善を表す）", name: "arrow", widget: "boolean", default: true }
+              - { label: "数値（例 2.4）", name: "number", widget: "string" }
+              - { label: "単位（例 倍・%。無ければ空欄）", name: "unit", widget: "string", required: false, default: "" }
+              - { label: "説明（改行可）", name: "desc", widget: "text" }
+
+      # --- ④ 支援実績 ---
+      - name: cases
+        label: ④ 支援実績（CASE）
+        file: "株式会社LAYR/layr-hp/src/data/cases.json"
+        fields:
+          - { label: "【要編集】注意書きを表示する（実案件に直したらオフ）", name: "show_edit_note", widget: "boolean", default: true }
+          - label: "事例カード（3枚）"
+            name: "items"
+            widget: "list"
+            min: 3
+            max: 3
+            fields:
+              - { label: "業種タグ", name: "tag", widget: "string" }
+              - { label: "見出し（成果を一文で）", name: "title", widget: "string" }
+              - { label: "課題", name: "problem", widget: "text" }
+              - { label: "施策", name: "action", widget: "text" }
+              - { label: "指標名（例 LINE経由の申込数）", name: "metric_label", widget: "string" }
+              - { label: "Before値（例 5件）", name: "before", widget: "string" }
+              - { label: "After数値（例 12）", name: "after_number", widget: "string" }
+              - { label: "After単位（例 件・%・円）", name: "after_unit", widget: "string", required: false, default: "" }
+              - { label: "グラフ Before の高さ（10〜100）", name: "graph_before", widget: "number", value_type: "int", min: 10, max: 100 }
+              - { label: "グラフ After の高さ（10〜100）", name: "graph_after", widget: "number", value_type: "int", min: 10, max: 100 }
+
+      # --- ⑤ お約束 ---
+      - name: promise
+        label: ⑤ お約束（できる・できない）
+        file: "株式会社LAYR/layr-hp/src/data/promise.json"
+        fields:
+          - label: "○ お約束できること"
+            name: "yes_items"
+            widget: "list"
+            fields:
+              - { label: "見出し", name: "title", widget: "string" }
+              - { label: "説明", name: "desc", widget: "text" }
+          - label: "× お約束できないこと"
+            name: "no_items"
+            widget: "list"
+            fields:
+              - { label: "見出し", name: "title", widget: "string" }
+              - { label: "説明", name: "desc", widget: "text" }
+
+      # --- ⑥ 代表挨拶 ---
+      - name: message
+        label: ⑥ 代表挨拶
+        file: "株式会社LAYR/layr-hp/src/data/message.json"
+        fields:
+          - { label: "代表写真", name: "photo", widget: "image", required: false, hint: "縦長（3:4）の写真がきれいに収まる" }
+          - { label: "本文（段落ごと）", name: "paragraphs", widget: "list", field: { label: "段落", name: "paragraph", widget: "text" } }
+          - { label: "肩書き", name: "sign_title", widget: "string" }
+          - { label: "氏名", name: "sign_name", widget: "string" }
+
+      # --- ⑦ FAQ ---
+      - name: faq
+        label: ⑦ よくあるご質問
+        file: "株式会社LAYR/layr-hp/src/data/faq.json"
+        fields:
+          - label: "Q&A"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "質問", name: "q", widget: "string" }
+              - { label: "回答", name: "a", widget: "text" }
+
+      # --- ⑧ 会社概要 ---
+      - name: company
+        label: ⑧ 会社概要
+        file: "株式会社LAYR/layr-hp/src/data/company.json"
+        fields:
+          - { label: "会社名", name: "name", widget: "string" }
+          - { label: "代表者", name: "representative", widget: "string" }
+          - { label: "所在地", name: "address", widget: "string" }
+          - { label: "設立", name: "founded", widget: "string" }
+          - { label: "事業内容", name: "business", widget: "list", field: { label: "事業", name: "item", widget: "string" } }

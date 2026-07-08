@@ -2,6 +2,16 @@
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 
+// ===== 管理画面（/admin →「サイト設定」）から編集できるデータ =====
+import settings from '../data/settings.json';
+import hero from '../data/hero.json';
+import stats from '../data/stats.json';
+import cases from '../data/cases.json';
+import faq from '../data/faq.json';
+import promiseData from '../data/promise.json';
+import message from '../data/message.json';
+import company from '../data/company.json';
+
 // コラム最新3本を取得（下書きは除外・日付降順）
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -17,9 +27,9 @@ const description = '株式会社LAYRは、LINE公式アカウントの構築・
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  name: '株式会社LAYR',
+  name: company.name,
   url: 'https://layr.co.jp',
-  email: 'info@layr.co.jp',
+  email: settings.email,
   description: 'LINE公式アカウントの構築・運用マーケティングと広告運用代行を軸にした、中小企業向けマーケティング支援会社。',
   founder: { '@type': 'Person', name: '河出 壱貫' },
   foundingDate: '2026-08',
@@ -34,8 +44,11 @@ const jsonLd = {
   },
 };
 
-const consult = 'mailto:info@layr.co.jp?subject=%E3%80%90%E7%84%A1%E6%96%99%E7%9B%B8%E8%AB%87%E3%80%91LINE%E6%B4%BB%E7%94%A8%E3%81%AB%E3%81%A4%E3%81%84%E3%81%A6';
-const contact = 'mailto:info@layr.co.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%90%88%E3%82%8F%E3%81%9B';
+// CTAリンク: LINE友だち追加URLが設定されていればそちら、無ければメール
+const consult = settings.line_url?.trim()
+  ? settings.line_url
+  : `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
+const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問い合わせ')}`;
 ---
 <Base title={title} description={description} jsonLd={jsonLd}>
 
@@ -48,24 +61,22 @@ const contact = 'mailto:info@layr.co.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%9
     </div>
     <div class="hero-inner">
       <div class="hero-copy">
-        <p class="hero-eyebrow">LINE構築・運用 × 広告運用のマーケティング支援</p>
-        <h1>LINEを軸に、<br><span class="marker">中小企業の売上</span>を<br>伸ばす。</h1>
-        <p class="hero-sub">株式会社LAYRは、LINE公式アカウントの構築・運用マーケティングと広告運用を一気通貫で設計し、「一度きりの集客」を「積み上がる売上」に変える支援会社です。</p>
+        <p class="hero-eyebrow">{hero.eyebrow}</p>
+        <h1>{hero.catch_line1}<br><span class="marker">{hero.catch_line2}</span><br>{hero.catch_line3}</h1>
+        <p class="hero-sub">{hero.sub}</p>
         <div class="hero-actions">
-          <a class="btn btn-green btn-lg" href={consult}>無料相談に申し込む</a>
-          <a class="btn btn-black btn-lg" href="#service">サービスを見る</a>
+          <a class="btn btn-green btn-lg" href={consult}>{hero.cta_primary}</a>
+          <a class="btn btn-black btn-lg" href="#service">{hero.cta_secondary}</a>
         </div>
         <ul class="hero-chips">
-          <li>全国対応・オンライン完結</li>
-          <li>代表が直接担当</li>
-          <li>構築から運用・改善まで一括</li>
+          {hero.chips.map((chip) => <li>{chip}</li>)}
         </ul>
       </div>
       <div class="hero-visual" aria-hidden="true">
         <div class="hero-swoosh"></div>
         <div class="hero-badge">
-          <span class="s1">初回相談</span>
-          <span class="s2">無料</span>
+          <span class="s1">{hero.badge_line1}</span>
+          <span class="s2">{hero.badge_line2}</span>
         </div>
         <div class="phone">
           <div class="phone-screen">
@@ -85,34 +96,26 @@ const contact = 'mailto:info@layr.co.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%9
             </div>
           </div>
         </div>
-        <div class="float-chip chip1">友だち追加数<strong>+128%</strong></div>
-        <div class="float-chip chip2">配信開封率<strong>58%</strong></div>
-        <div class="float-chip chip3">顧客獲得単価<strong>1/2</strong></div>
+        {hero.float_chips[0] && <div class="float-chip chip1">{hero.float_chips[0].label}<strong>{hero.float_chips[0].value}</strong></div>}
+        {hero.float_chips[1] && <div class="float-chip chip2">{hero.float_chips[1].label}<strong>{hero.float_chips[1].value}</strong></div>}
+        {hero.float_chips[2] && <div class="float-chip chip3">{hero.float_chips[2].label}<strong>{hero.float_chips[2].value}</strong></div>}
       </div>
     </div>
   </section>
 
   <!-- ============ STATS ============ -->
   <section class="stats" aria-labelledby="stats-title">
-    <div class="draft-note"><p>【要編集】以下の実績数値はレイアウト確認用のサンプルです。公開前に実際の数値・業種へ差し替えてください。</p></div>
+    {stats.show_edit_note && <div class="draft-note"><p>【要編集】実績数値はサンプルです。管理画面の「サイト設定 → 実績数値」で実数値に差し替え、この注意書きをオフにしてください。</p></div>}
     <div class="container">
-      <h2 class="stats-title" id="stats-title">数字で見る、LAYRの<span class="marker">LINE×広告 支援成果</span></h2>
+      <h2 class="stats-title" id="stats-title">{stats.title_before}<span class="marker">{stats.title_marker}</span></h2>
       <div class="stats-grid">
-        <div class="stat-card reveal">
-          <span class="stat-tag">オンラインスクール</span>
-          <p class="stat-num"><span class="up">▲</span>2.4<small>倍</small></p>
-          <p class="stat-desc">LINE経由の講座申込数<br>（配信設計の見直し後 3ヶ月）</p>
-        </div>
-        <div class="stat-card reveal">
-          <span class="stat-tag">店舗ビジネス</span>
-          <p class="stat-num"><span class="up">▲</span>38<small>%</small></p>
-          <p class="stat-desc">LINE登録者の再来店率<br>（セグメント配信の導入後）</p>
-        </div>
-        <div class="stat-card reveal">
-          <span class="stat-tag">広告×LINE 連携</span>
-          <p class="stat-num">1/2<small></small></p>
-          <p class="stat-desc">顧客獲得単価（CPA）を半減<br>（広告→LINE導線の再設計）</p>
-        </div>
+        {stats.items.map((item) => (
+          <div class="stat-card reveal">
+            <span class="stat-tag">{item.tag}</span>
+            <p class="stat-num">{item.arrow && <span class="up">▲</span>}{item.number}<small>{item.unit}</small></p>
+            <p class="stat-desc">{item.desc.split('\n').map((line, i) => <Fragment>{i > 0 && <br />}{line}</Fragment>)}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -253,76 +256,32 @@ const contact = 'mailto:info@layr.co.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%9
         <p class="sec-jp">支援実績</p>
       </div>
     </div>
-    <div class="draft-note"><p>【要編集】以下の実績はレイアウト確認用のサンプルです。公開前に実案件の内容・数値へ差し替えてください（クライアント名の掲載は先方の許可を取ってから）。</p></div>
+    {cases.show_edit_note && <div class="draft-note"><p>【要編集】以下の実績はサンプルです。管理画面の「サイト設定 → 支援実績」で実案件に差し替え、この注意書きをオフにしてください（クライアント名の掲載は先方の許可を取ってから）。</p></div>}
     <div class="container">
       <div class="case-grid">
-
-        <div class="case-card reveal">
-          <div class="case-head">
-            <span class="case-tag">オンラインスクール</span>
-            <h3>放置されていたLINEを再設計し、講座申込が2.4倍に</h3>
-          </div>
-          <div class="case-body">
-            <dl>
-              <div class="case-row"><dt>課題</dt><dd>友だち3,000人に一斉配信のみ。反応が取れずブロックが増加。</dd></div>
-              <div class="case-row"><dt>施策</dt><dd>属性アンケートでセグメントを分け、興味別のシナリオ配信を構築。</dd></div>
-            </dl>
-          </div>
-          <div class="case-result">
-            <p class="label">LINE経由の講座申込数（月間）</p>
-            <div class="case-graph" aria-hidden="true"><span class="bar b1" style="--h:38%" data-label="Before"></span><span class="bar b2" style="--h:92%" data-label="After"></span></div>
-            <div class="case-metric">
-              <span class="before">5件</span>
-              <span class="arrow">→</span>
-              <span class="after">12<small>件</small></span>
+        {cases.items.map((c) => (
+          <div class="case-card reveal">
+            <div class="case-head">
+              <span class="case-tag">{c.tag}</span>
+              <h3>{c.title}</h3>
+            </div>
+            <div class="case-body">
+              <dl>
+                <div class="case-row"><dt>課題</dt><dd>{c.problem}</dd></div>
+                <div class="case-row"><dt>施策</dt><dd>{c.action}</dd></div>
+              </dl>
+            </div>
+            <div class="case-result">
+              <p class="label">{c.metric_label}</p>
+              <div class="case-graph" aria-hidden="true"><span class="bar b1" style={`--h:${c.graph_before}%`} data-label="Before"></span><span class="bar b2" style={`--h:${c.graph_after}%`} data-label="After"></span></div>
+              <div class="case-metric">
+                <span class="before">{c.before}</span>
+                <span class="arrow">→</span>
+                <span class="after">{c.after_number}<small>{c.after_unit}</small></span>
+              </div>
             </div>
           </div>
-        </div>
-
-        <div class="case-card reveal">
-          <div class="case-head">
-            <span class="case-tag">美容サロン</span>
-            <h3>セグメント配信の導入で、再来店率38%改善</h3>
-          </div>
-          <div class="case-body">
-            <dl>
-              <div class="case-row"><dt>課題</dt><dd>新規は広告で獲得できるが、2回目の来店につながらない。</dd></div>
-              <div class="case-row"><dt>施策</dt><dd>来店履歴に合わせたステップ配信と、失客前リマインドを設計。</dd></div>
-            </dl>
-          </div>
-          <div class="case-result">
-            <p class="label">LINE登録者の90日以内再来店率</p>
-            <div class="case-graph" aria-hidden="true"><span class="bar b1" style="--h:60%" data-label="Before"></span><span class="bar b2" style="--h:86%" data-label="After"></span></div>
-            <div class="case-metric">
-              <span class="before">21%</span>
-              <span class="arrow">→</span>
-              <span class="after">29<small>%</small></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="case-card reveal">
-          <div class="case-head">
-            <span class="case-tag">整体院</span>
-            <h3>広告→LINE導線の再設計で、CPAを半減</h3>
-          </div>
-          <div class="case-body">
-            <dl>
-              <div class="case-row"><dt>課題</dt><dd>広告から直接予約を取ろうとしてCVRが低く、CPAが高止まり。</dd></div>
-              <div class="case-row"><dt>施策</dt><dd>広告の着地をLINE友だち追加に変更し、LINE内で予約まで育成。</dd></div>
-            </dl>
-          </div>
-          <div class="case-result">
-            <p class="label">新規顧客の獲得単価（CPA）</p>
-            <div class="case-graph" aria-hidden="true"><span class="bar b1" style="--h:92%" data-label="Before"></span><span class="bar b2" style="--h:48%" data-label="After"></span></div>
-            <div class="case-metric">
-              <span class="before">12,000円</span>
-              <span class="arrow">→</span>
-              <span class="after">6,400<small>円</small></span>
-            </div>
-          </div>
-        </div>
-
+        ))}
       </div>
     </div>
   </section>
@@ -370,18 +329,17 @@ const contact = 'mailto:info@layr.co.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%9
         <div class="promise-box yes reveal">
           <h3><span class="ico">○</span>お約束できること</h3>
           <ul>
-            <li><span class="mark">○</span><div><strong>適正価格で提案します</strong><span>相場から外れた金額は提示しません。見積りの内訳もすべて開示します。</span></div></li>
-            <li><span class="mark">○</span><div><strong>売上につながる提案しかしません</strong><span>「やった感」のための施策は提案しません。数値が動く見込みのある打ち手だけです。</span></div></li>
-            <li><span class="mark">○</span><div><strong>LINEが合わない場合は、正直にお伝えします</strong><span>事業モデルによってはLINEより先にやるべきことがあります。その場合ははっきり言います。</span></div></li>
-            <li><span class="mark">○</span><div><strong>数値はすべて開示します</strong><span>開封率・クリック率・ブロック率。良い数字も悪い数字も、毎月そのまま共有します。</span></div></li>
+            {promiseData.yes_items.map((item) => (
+              <li><span class="mark">○</span><div><strong>{item.title}</strong><span>{item.desc}</span></div></li>
+            ))}
           </ul>
         </div>
         <div class="promise-box no reveal">
           <h3><span class="ico">×</span>お約束できないこと</h3>
           <ul>
-            <li><span class="mark">×</span><div><strong>「登録すれば売れる」魔法の施策</strong><span>LINEは魔法ではありません。設計と改善の積み重ねで成果を出します。</span></div></li>
-            <li><span class="mark">×</span><div><strong>豪華なオフィスでの打ち合わせ</strong><span>打ち合わせはオンライン中心です。固定費を抑え、その分を価格に還元します。</span></div></li>
-            <li><span class="mark">×</span><div><strong>誰にでも同じテンプレート提案</strong><span>業種・商材・顧客層で正解は変わります。安易な使い回しはしません。</span></div></li>
+            {promiseData.no_items.map((item) => (
+              <li><span class="mark">×</span><div><strong>{item.title}</strong><span>{item.desc}</span></div></li>
+            ))}
           </ul>
         </div>
       </div>
@@ -398,15 +356,15 @@ const contact = 'mailto:info@layr.co.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%9
       </div>
       <div class="message-wrap">
         <div class="message-photo reveal">
-          <span class="todo">【要編集】<br>代表写真を配置<br>（public/uploads/ に画像を置く）</span>
+          {message.photo
+            ? <img src={message.photo} alt={`${company.name} ${message.sign_name}`} />
+            : <span class="todo">【要編集】<br>代表写真を管理画面の<br>「サイト設定 → 代表挨拶」で設定</span>}
         </div>
         <div class="message-body reveal">
-          <p>LINE公式アカウントは、多くの会社で「作ったまま止まっている」のが実情です。もったいないのは、そこに集まった友だちが、本来はいちばん売上に近いお客様だということです。</p>
-          <p>広告で新しいお客様を集め続けるだけの集客は、費用が積み上がる一方で、資産が残りません。一方、LINEでつながったお客様との関係は、配信を重ねるほど資産として積み上がります。LAYRの仕事は、この「積み上がる仕組み」を作り、回し続けることです。</p>
-          <p>私自身がヒアリングから設計・運用まで直接担当します。小さな会社だからこその速度と密度で、貴社の集客に向き合います。まずは現状をお聞かせください。</p>
+          {message.paragraphs.map((p) => <p>{p}</p>)}
           <div class="sign">
-            <span class="title">株式会社LAYR 代表取締役</span>
-            <span class="name">河出 壱貫</span>
+            <span class="title">{message.sign_title}</span>
+            <span class="name">{message.sign_name}</span>
           </div>
         </div>
       </div>
@@ -421,26 +379,12 @@ const contact = 'mailto:info@layr.co.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%9
         <p class="sec-jp">よくあるご質問</p>
       </div>
       <div class="faq-list reveal">
-        <details class="faq-item">
-          <summary><span class="q">Q.</span>LINE公式アカウントをまだ持っていなくても相談できますか？</summary>
-          <div class="a"><span class="mark">A.</span><p>相談できます。むしろ開設前の設計がいちばん重要です。事業内容を伺ったうえで、アカウント設計から一緒に作ります。</p></div>
-        </details>
-        <details class="faq-item">
-          <summary><span class="q">Q.</span>すでに運用中のアカウントの改善だけでも依頼できますか？</summary>
-          <div class="a"><span class="mark">A.</span><p>可能です。現状の配信・導線・数値を診断し、改善の優先順位を提示します。診断のみのご依頼にも対応します。</p></div>
-        </details>
-        <details class="faq-item">
-          <summary><span class="q">Q.</span>広告運用だけ、LINE運用だけの依頼もできますか？</summary>
-          <div class="a"><span class="mark">A.</span><p>できます。ただし成果を最大化するには入口（広告）と受け皿（LINE）をセットで設計するのが効果的です。無料相談で最適な形をご提案します。</p></div>
-        </details>
-        <details class="faq-item">
-          <summary><span class="q">Q.</span>対応エリアを教えてください。</summary>
-          <div class="a"><span class="mark">A.</span><p>全国対応です。打ち合わせはオンラインで実施するため、地域を問わずご依頼いただけます。</p></div>
-        </details>
-        <details class="faq-item">
-          <summary><span class="q">Q.</span>費用はどのくらいかかりますか？</summary>
-          <div class="a"><span class="mark">A.</span><p>LINE構築は初期30万円〜、運用は月額5万円〜が目安です。内容・カスタマイズ範囲で変動するため、無料相談で現状を伺ったうえで正式なお見積りを提示します。</p></div>
-        </details>
+        {faq.items.map((item) => (
+          <details class="faq-item">
+            <summary><span class="q">Q.</span>{item.q}</summary>
+            <div class="a"><span class="mark">A.</span><p>{item.a}</p></div>
+          </details>
+        ))}
       </div>
     </div>
   </section>
@@ -454,22 +398,19 @@ const contact = 'mailto:info@layr.co.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%9
       </div>
       <table class="company-table reveal">
         <tbody>
-          <tr><th>会社名</th><td>株式会社LAYR</td></tr>
-          <tr><th>代表者</th><td>代表取締役　河出 壱貫</td></tr>
-          <tr><th>所在地</th><td>東京都渋谷区道玄坂1丁目10番8号 渋谷道玄坂東急ビル2F-C</td></tr>
-          <tr><th>設立</th><td>2026年8月</td></tr>
+          <tr><th>会社名</th><td>{company.name}</td></tr>
+          <tr><th>代表者</th><td>{company.representative}</td></tr>
+          <tr><th>所在地</th><td>{company.address}</td></tr>
+          <tr><th>設立</th><td>{company.founded}</td></tr>
           <tr>
             <th>事業内容</th>
             <td>
               <ul>
-                <li>LINE公式アカウントの構築・運用マーケティング支援</li>
-                <li>LINEマーケティングのコンサルティング</li>
-                <li>Web広告の運用代行（Meta・Google・LINE広告）</li>
-                <li>LP・クリエイティブ制作（上記に付随するもの）</li>
+                {company.business.map((b) => <li>{b}</li>)}
               </ul>
             </td>
           </tr>
-          <tr><th>お問い合わせ</th><td><a href="mailto:info@layr.co.jp">info@layr.co.jp</a></td></tr>
+          <tr><th>お問い合わせ</th><td><a href={`mailto:${settings.email}`}>{settings.email}</a></td></tr>
         </tbody>
       </table>
     </div>
@@ -482,7 +423,7 @@ const contact = 'mailto:info@layr.co.jp?subject=%E3%81%8A%E5%95%8F%E3%81%84%E5%9
       <h2 id="cta-title">LINE活用の「現状」を、<br>まず<span>無料</span>でお聞かせください。</h2>
       <p>オンラインで30分から。この段階での売り込みは行いません。<br>「何から手をつけるべきか」の整理だけでも、持ち帰っていただけます。</p>
       <a class="btn btn-green btn-lg" href={consult}>無料相談に申し込む</a>
-      <p class="mail">メールでのご連絡：<a href="mailto:info@layr.co.jp">info@layr.co.jp</a></p>
+      <p class="mail">メールでのご連絡：<a href={`mailto:${settings.email}`}>{settings.email}</a></p>
     </div>
   </section>
 
