@@ -11,6 +11,7 @@ import faq from '../data/faq.json';
 import promiseData from '../data/promise.json';
 import message from '../data/message.json';
 import company from '../data/company.json';
+import theme from '../data/theme.json';
 
 // コラム最新3本を取得（下書きは除外・日付降順）
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -23,8 +24,19 @@ const iso = (d: Date) => d.toISOString().slice(0, 10);
 const title = '株式会社LAYR｜LINE構築・運用を軸にしたマーケティング支援会社';
 const description = '株式会社LAYRは、LINE公式アカウントの構築・運用マーケティングと広告運用代行を軸に、中小企業の売上を伸ばすマーケティング支援会社です。広告からLINEまで一気通貫で設計し、リピート・紹介が生まれる仕組みを作ります。';
 
+// FAQの構造化データ(JSON-LD)。検索結果にQ&Aが展開表示される可能性が上がる。
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.items.map((item) => ({
+    '@type': 'Question',
+    name: item.q,
+    acceptedAnswer: { '@type': 'Answer', text: item.a },
+  })),
+};
+
 // 会社の構造化データ(JSON-LD)。検索エンジンに会社情報を正しく伝える。
-const jsonLd = {
+const orgJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: company.name,
@@ -50,7 +62,7 @@ const consult = settings.line_url?.trim()
   : `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
 const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問い合わせ')}`;
 ---
-<Base title={title} description={description} jsonLd={jsonLd}>
+<Base title={title} description={description} jsonLd={[orgJsonLd, faqJsonLd]}>
 
   <!-- ============ HERO ============ -->
   <section class="hero" aria-label="メインビジュアル">
@@ -286,11 +298,10 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
     </div>
   </section>
 
-  <!-- ============ MARQUEE ============ -->
+  <!-- ============ MARQUEE（文言はデザイン設定から） ============ -->
   <div class="marquee angle-both" aria-hidden="true">
     <div class="marquee-track">
-      <span>LINE MARKETING</span><span class="fill">×</span><span>AD OPERATION</span><span class="fill">— BUILD RELATIONSHIPS, BUILD REVENUE —</span>
-      <span>LINE MARKETING</span><span class="fill">×</span><span>AD OPERATION</span><span class="fill">— BUILD RELATIONSHIPS, BUILD REVENUE —</span>
+      {[0, 1].map(() => theme.marquee_items.map((m) => <span class={m.highlight ? 'fill' : ''}>{m.text}</span>))}
     </div>
   </div>
 

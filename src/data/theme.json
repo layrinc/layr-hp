@@ -1,0 +1,15 @@
+{
+  "accent": "#06C755",
+  "accent_dark": "#04A245",
+  "base_black": "#0F1613",
+  "bg_tint": "#F5F8F6",
+  "radius": 14,
+  "font_en": "Montserrat",
+  "show_watermark": true,
+  "marquee_items": [
+    { "text": "LINE MARKETING", "highlight": false },
+    { "text": "×", "highlight": true },
+    { "text": "AD OPERATION", "highlight": false },
+    { "text": "— BUILD RELATIONSHIPS, BUILD REVENUE —", "highlight": true }
+  ]
+}

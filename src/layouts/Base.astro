@@ -5,18 +5,35 @@
  * デザイン調整のうち「全ページ共通の骨格」はこのファイルを編集する。
  */
 import '../styles/style.css';
-// 管理画面（/admin →「サイト設定 → 基本設定」）から編集できる共通データ
+// 管理画面（/admin →「サイト設定」）から編集できる共通データ
 import settings from '../data/settings.json';
+import theme from '../data/theme.json';
 
 interface Props {
   title: string;
   description: string;
   ogType?: string;
+  /** SNSシェア用画像（省略時は基本設定のOGP画像） */
+  ogImage?: string;
   /** 構造化データ(JSON-LD)。ページ側から渡す。 */
   jsonLd?: object | object[] | null;
 }
 
-const { title, description, ogType = 'website', jsonLd = null } = Astro.props;
+const { title, description, ogType = 'website', ogImage, jsonLd = null } = Astro.props;
+
+// ===== デザイン設定（/admin →「サイト設定 → デザイン設定」） =====
+// 英字見出しフォントの選択肢。追加したい場合はここにマッピングを足す。
+const fontMap: Record<string, { family: string; gf: string }> = {
+  Montserrat: { family: 'Montserrat', gf: 'Montserrat:wght@700;800' },
+  Archivo: { family: 'Archivo', gf: 'Archivo:wght@700;800' },
+  Poppins: { family: 'Poppins', gf: 'Poppins:wght@700;800' },
+};
+const font = fontMap[theme.font_en] ?? fontMap.Montserrat;
+const fontHref = `https://fonts.googleapis.com/css2?family=${font.gf}&family=Noto+Sans+JP:wght@400;500;700;900&display=swap`;
+// theme.json の値でCSS変数を上書きする。
+// :root:root と二重にすることで詳細度を上げ、style.css の既定値より必ず優先させる。
+const themeCss = `:root:root{--green:${theme.accent};--green-dark:${theme.accent_dark};--black:${theme.base_black};--bg:${theme.bg_tint};--radius:${theme.radius}px;--font-en:'${font.family}','Noto Sans JP',sans-serif}`;
+const ogImageUrl = (ogImage || (settings as any).og_image || '') as string;
 
 // canonical / OG URL は astro.config.mjs の site を基準に自動生成
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
@@ -43,15 +60,17 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
   <meta property="og:url" content={canonical} />
   <meta property="og:locale" content="ja_JP" />
   <meta property="og:site_name" content="株式会社LAYR" />
+  {ogImageUrl && <meta property="og:image" content={new URL(ogImageUrl, Astro.site).href} />}
   <meta name="twitter:card" content="summary_large_image" />
   <link rel="icon" href={favicon} />
   <link rel="sitemap" href="/sitemap-index.xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet" />
+  <link href={fontHref} rel="stylesheet" />
+  <style is:inline set:html={themeCss}></style>
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 </head>
-<body>
+<body class={theme.show_watermark ? '' : 'no-wm'}>
 
 <header class="header">
   <div class="header-inner">

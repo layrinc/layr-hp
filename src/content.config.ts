@@ -12,6 +12,8 @@ const blog = defineCollection({
     date: z.coerce.date(),
     category: z.string(),
     draft: z.boolean().default(false),
+    /** SNSシェア用画像（任意）。管理画面からアップロードできる */
+    image: z.string().optional(),
   }),
 });
 
