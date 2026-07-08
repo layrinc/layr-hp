@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /admin
 
-Sitemap: https://layr-hp.vercel.app/sitemap-index.xml
+Sitemap: https://layr.co.jp/sitemap-index.xml
