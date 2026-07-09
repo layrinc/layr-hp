@@ -199,3 +199,65 @@ collections:
             fields:
               - { label: "テキスト", name: "text", widget: "string" }
               - { label: "緑色で表示", name: "highlight", widget: "boolean", default: false }
+
+      # --- ⑩ お悩み（PROBLEM） ---
+      - name: problem
+        label: ⑩ お悩み（PROBLEM）
+        file: "株式会社LAYR/layr-hp/src/data/problem.json"
+        fields:
+          - { label: "小見出し（日本語）", name: "title_jp", widget: "string" }
+          - { label: "お悩みリスト", name: "items", widget: "list", field: { label: "お悩み", name: "item", widget: "string" } }
+          - { label: "回答リード（緑マーカーの前）", name: "answer_lead", widget: "string" }
+          - { label: "回答（緑マーカー部分）", name: "answer_marker", widget: "string" }
+          - { label: "回答（マーカーの後）", name: "answer_tail", widget: "string" }
+          - { label: "回答の本文", name: "answer_body", widget: "text" }
+
+      # --- ⑪ 事業内容（SERVICE） ---
+      - name: service
+        label: ⑪ 事業内容（SERVICE）
+        file: "株式会社LAYR/layr-hp/src/data/service.json"
+        fields:
+          - { label: "小見出し（日本語）", name: "title_jp", widget: "string" }
+          - { label: "リード文", name: "lead", widget: "text" }
+          - { label: "注釈（※の行・空欄で非表示）", name: "note", widget: "string", required: false }
+          - label: "サービス（カード）"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "主力サービス（横長・大きく表示）", name: "featured", widget: "boolean", default: false }
+              - { label: "バッジ（主力サービス等・空欄可）", name: "badge", widget: "string", required: false }
+              - { label: "番号ラベル（例: SERVICE 01）", name: "number", widget: "string" }
+              - { label: "サービス名", name: "title", widget: "string" }
+              - { label: "説明", name: "desc", widget: "text" }
+              - { label: "タグ", name: "tags", widget: "list", field: { label: "タグ", name: "tag", widget: "string" } }
+
+      # --- ⑫ 選ばれる理由（REASON） ---
+      - name: reason
+        label: ⑫ 選ばれる理由（REASON）
+        file: "株式会社LAYR/layr-hp/src/data/reason.json"
+        fields:
+          - { label: "小見出し（日本語）", name: "title_jp", widget: "string" }
+          - label: "理由（番号は自動）"
+            name: "items"
+            widget: "list"
+            fields:
+              - { label: "見出し", name: "title", widget: "string" }
+              - { label: "説明", name: "desc", widget: "text" }
+
+      # --- ⑬ CTA（中間バナー・最終） ---
+      - name: cta
+        label: ⑬ CTA（中間バナー・最終）
+        file: "株式会社LAYR/layr-hp/src/data/cta.json"
+        fields:
+          - { label: "【中間バナー】見出し・前半", name: "band_title_before", widget: "string" }
+          - { label: "【中間バナー】見出し・強調（緑）", name: "band_title_em", widget: "string" }
+          - { label: "【中間バナー】見出し・後半", name: "band_title_after", widget: "string" }
+          - { label: "【中間バナー】説明", name: "band_desc", widget: "text" }
+          - { label: "【中間バナー】緑ボタン", name: "band_btn_primary", widget: "string" }
+          - { label: "【中間バナー】白ボタン", name: "band_btn_secondary", widget: "string" }
+          - { label: "【最終】見出し1行目", name: "final_title_line1", widget: "string" }
+          - { label: "【最終】見出し2行目・前半", name: "final_title_before", widget: "string" }
+          - { label: "【最終】見出し2行目・強調（緑）", name: "final_title_em", widget: "string" }
+          - { label: "【最終】見出し2行目・後半", name: "final_title_after", widget: "string" }
+          - { label: "【最終】説明（改行可）", name: "final_desc", widget: "text" }
+          - { label: "【最終】緑ボタン", name: "final_btn", widget: "string" }

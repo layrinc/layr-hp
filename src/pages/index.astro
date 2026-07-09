@@ -12,6 +12,16 @@ import promiseData from '../data/promise.json';
 import message from '../data/message.json';
 import company from '../data/company.json';
 import theme from '../data/theme.json';
+import problem from '../data/problem.json';
+import service from '../data/service.json';
+import reason from '../data/reason.json';
+import cta from '../data/cta.json';
+
+// 事業内容カード（主力以外）のアイコン。順番に割り当て、足りなければ循環する。
+const serviceIcons = [
+  '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
+  '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="13" x2="13" y2="13"/></svg>',
+];
 
 // コラム最新3本を取得（下書きは除外・日付降順）
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -137,19 +147,17 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
     <div class="container">
       <div class="sec-head reveal" data-wm="PROBLEM">
         <h2 class="sec-en" id="problem-title">PROBLEM</h2>
-        <p class="sec-jp">こんなお悩みはありませんか？</p>
+        <p class="sec-jp">{problem.title_jp}</p>
       </div>
       <ul class="problem-list">
-        <li class="reveal"><span class="check"></span>LINE公式アカウントを作ったが、配信が止まり放置されている</li>
-        <li class="reveal"><span class="check"></span>友だちは増えたのに、売上につながっている実感がない</li>
-        <li class="reveal"><span class="check"></span>広告で集客はできるが、リピートせず広告費がかさみ続けている</li>
-        <li class="reveal"><span class="check"></span>配信のネタ・書き方が分からず、ブロックばかり増えていく</li>
-        <li class="reveal"><span class="check"></span>広告代理店とLINE運用会社が別で、全体を見ている人がいない</li>
+        {problem.items.map((item) => (
+          <li class="reveal"><span class="check"></span>{item}</li>
+        ))}
       </ul>
       <div class="problem-arrow" aria-hidden="true"></div>
       <div class="problem-answer reveal">
-        <strong>その課題、<span class="marker">「入口」と「受け皿」を分けて発注している</span>ことが原因です。</strong>
-        <p>LAYRは、広告（入口）とLINE（受け皿）を同じ担当者が一気通貫で設計します。集客した見込み客をLINEで確実に受け止め、配信でリピート・紹介まで育てる。この全体設計が、広告費を「消費」から「投資」に変えます。</p>
+        <strong>{problem.answer_lead}<span class="marker">{problem.answer_marker}</span>{problem.answer_tail}</strong>
+        <p>{problem.answer_body}</p>
       </div>
     </div>
   </section>
@@ -158,12 +166,12 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
   <div class="cta-band angle-top">
     <div class="container cta-band-inner">
       <div>
-        <h2>LINE活用の現状診断、<span>無料</span>で承ります。</h2>
-        <p>アカウントの有無・運用状況を伺い、改善の優先順位を整理してお返しします。</p>
+        <h2>{cta.band_title_before}<span>{cta.band_title_em}</span>{cta.band_title_after}</h2>
+        <p>{cta.band_desc}</p>
       </div>
       <div class="cta-band-btns">
-        <a class="btn btn-green" href={consult}>無料相談に申し込む</a>
-        <a class="btn btn-white" href={contact}>メールで問い合わせる</a>
+        <a class="btn btn-green" href={consult}>{cta.band_btn_primary}</a>
+        <a class="btn btn-white" href={contact}>{cta.band_btn_secondary}</a>
       </div>
     </div>
   </div>
@@ -173,58 +181,29 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
     <div class="container">
       <div class="sec-head reveal" data-wm="SERVICE">
         <h2 class="sec-en" id="service-title">SERVICE</h2>
-        <p class="sec-jp">事業内容</p>
-        <p class="sec-lead">LINEを軸に、集客の入口から売上までを設計します。単体でのご依頼も、一気通貫でのご依頼も可能です。</p>
+        <p class="sec-jp">{service.title_jp}</p>
+        <p class="sec-lead">{service.lead}</p>
       </div>
       <div class="service-grid">
-
-        <div class="service-card wide reveal">
-          <span class="service-badge">主力サービス</span>
-          <p class="service-num">SERVICE 01</p>
-          <h3>LINE公式アカウント構築・運用マーケティング</h3>
-          <p>一度つながったお客様を逃さず、リピート・紹介につなげる仕組みを構築します。アカウント設計・リッチメニュー・あいさつメッセージ・シナリオ配信の構築から、セグメント配信の設計、毎月の配信ライティング・効果測定・改善まで、LINEマーケティングの全工程を代行します。</p>
-          <ul class="service-tags">
-            <li>アカウント設計・構築</li>
-            <li>リッチメニュー</li>
-            <li>シナリオ配信</li>
-            <li>セグメント配信</li>
-            <li>配信ライティング</li>
-            <li>月次レポート・改善</li>
-          </ul>
-        </div>
-
-        <div class="service-card reveal">
-          <div class="service-visual" aria-hidden="true">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg>
+        {service.items.map((s, i) => s.featured ? (
+          <div class="service-card wide reveal">
+            {s.badge && <span class="service-badge">{s.badge}</span>}
+            <p class="service-num">{s.number}</p>
+            <h3>{s.title}</h3>
+            <p>{s.desc}</p>
+            <ul class="service-tags">{s.tags.map((t) => <li>{t}</li>)}</ul>
           </div>
-          <p class="service-num">SERVICE 02</p>
-          <h3>広告運用代行</h3>
-          <p>投資対効果を最大化するため、データを見ながら継続的にPDCAを回します。Meta広告・Google広告・LINE広告を、LINEへの導線とセットで設計。CPA（獲得単価）だけでなく、LTV（顧客生涯価値）まで見て広告費の使い方を判断します。</p>
-          <ul class="service-tags">
-            <li>Meta広告</li>
-            <li>Google広告</li>
-            <li>LINE広告</li>
-            <li>友だち追加広告</li>
-            <li>数値レポート</li>
-          </ul>
-        </div>
-
-        <div class="service-card reveal">
-          <div class="service-visual" aria-hidden="true">
-            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="13" x2="13" y2="13"/></svg>
+        ) : (
+          <div class="service-card reveal">
+            <div class="service-visual" aria-hidden="true" set:html={serviceIcons[i % serviceIcons.length]} />
+            <p class="service-num">{s.number}</p>
+            <h3>{s.title}</h3>
+            <p>{s.desc}</p>
+            <ul class="service-tags">{s.tags.map((t) => <li>{t}</li>)}</ul>
           </div>
-          <p class="service-num">SERVICE 03</p>
-          <h3>LINEマーケティング コンサルティング</h3>
-          <p>「運用は自社でやりたい」という企業向けに、戦略設計と改善のアドバイスを提供します。配信設計・セグメントの切り方・キャンペーン企画・数値の見方まで、社内で回せる状態を作ります。</p>
-          <ul class="service-tags">
-            <li>戦略設計</li>
-            <li>配信改善</li>
-            <li>社内運用の内製化支援</li>
-          </ul>
-        </div>
-
+        ))}
       </div>
-      <p class="service-note">※ LINE・広告と連動するLP・クリエイティブの制作も、セットで対応可能です。</p>
+      {service.note && <p class="service-note">{service.note}</p>}
     </div>
   </section>
 
@@ -233,29 +212,16 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
     <div class="container">
       <div class="sec-head reveal" data-wm="REASON">
         <h2 class="sec-en" id="reason-title">REASON</h2>
-        <p class="sec-jp">LAYRが選ばれる理由</p>
+        <p class="sec-jp">{reason.title_jp}</p>
       </div>
       <div class="reason-grid">
-        <div class="reason-card reveal">
-          <span class="reason-num" aria-hidden="true">01</span>
-          <h3>「構築して終わり」に<br>しません</h3>
-          <p>LINEの成果はアカウント開設ではなく、配信が回り始めてから生まれます。LAYRは構築後の配信運用・効果測定・改善まで伴走し、成果が出る状態まで責任を持ちます。</p>
-        </div>
-        <div class="reason-card reveal">
-          <span class="reason-num" aria-hidden="true">02</span>
-          <h3>広告からLINEまで、<br>一気通貫で設計します</h3>
-          <p>入口（広告）と受け皿（LINE）を同じ担当者が設計するため、導線の分断が起きません。CPAとLTVを同時に見ながら、広告費が最も回収される形に全体を最適化します。</p>
-        </div>
-        <div class="reason-card reveal">
-          <span class="reason-num" aria-hidden="true">03</span>
-          <h3>数値で報告し、<br>数値で改善します</h3>
-          <p>開封率・クリック率・CVR・ブロック率。感覚ではなくデータで判断します。月次レポートは前月比・目標比で共有し、翌月に何をするかまで具体的に提示します。</p>
-        </div>
-        <div class="reason-card reveal">
-          <span class="reason-num" aria-hidden="true">04</span>
-          <h3>代表が直接、<br>最後まで担当します</h3>
-          <p>営業だけして現場は別の担当者、という体制ではありません。ヒアリングから設計・運用・品質管理まで代表が一貫して担当するため、話が早く、認識のズレが起きません。</p>
-        </div>
+        {reason.items.map((r, i) => (
+          <div class="reason-card reveal">
+            <span class="reason-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{r.title}</h3>
+            <p>{r.desc}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
@@ -431,9 +397,9 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
   <section class="cta-final" id="contact" aria-labelledby="cta-title">
     <div class="cta-final-inner">
       <h2 class="sec-en">CONTACT</h2>
-      <h2 id="cta-title">LINE活用の「現状」を、<br>まず<span>無料</span>でお聞かせください。</h2>
-      <p>オンラインで30分から。この段階での売り込みは行いません。<br>「何から手をつけるべきか」の整理だけでも、持ち帰っていただけます。</p>
-      <a class="btn btn-green btn-lg" href={consult}>無料相談に申し込む</a>
+      <h2 id="cta-title">{cta.final_title_line1}<br>{cta.final_title_before}<span>{cta.final_title_em}</span>{cta.final_title_after}</h2>
+      <p set:html={cta.final_desc.replace(/\n/g, '<br>')}></p>
+      <a class="btn btn-green btn-lg" href={consult}>{cta.final_btn}</a>
       <p class="mail">メールでのご連絡：<a href={`mailto:${settings.email}`}>{settings.email}</a></p>
     </div>
   </section>
