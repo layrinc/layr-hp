@@ -9,5 +9,15 @@
 <body>
   <!-- Sveltia CMS: WordPressの管理画面に相当。/admin でログインして記事を投稿・編集する -->
   <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
+  <script>
+    // 編集中のプレビューに、本番記事ページと同じ装飾（preview.css）を適用する
+    (function registerPreview(tries) {
+      if (window.CMS && typeof window.CMS.registerPreviewStyle === 'function') {
+        window.CMS.registerPreviewStyle('/admin/preview.css');
+      } else if (tries > 0) {
+        setTimeout(function () { registerPreview(tries - 1); }, 200);
+      }
+    })(50);
+  </script>
 </body>
 </html>

@@ -45,8 +45,6 @@ collections:
   - name: site
     label: サイト設定
     description: トップページの文言・数値・会社情報。保存すると自動で本番に反映されます（約1〜2分）。
-    editor:
-      preview: false
     files:
 
       # --- ① 基本設定 ---

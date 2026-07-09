@@ -1,0 +1,121 @@
+/* =====================================================================
+   管理画面のプレビュー用スタイル。
+   記事編集の右側プレビューを、本番の記事ページ（layr.co.jp/blog/…）と
+   同じ見た目に近づける。正本のデザインは src/styles/style.css。
+   ===================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Noto+Sans+JP:wght@400;500;700;900&display=swap');
+
+:root {
+  --green: #06C755;
+  --green-dark: #04A245;
+  --green-pale: #E9FAF0;
+  --text: #1B2622;
+  --muted: #66756D;
+  --line: #E2E9E4;
+}
+
+body {
+  font-family: "Noto Sans JP", -apple-system, BlinkMacSystemFont, "Hiragino Kaku Gothic ProN", sans-serif;
+  color: var(--text);
+  line-height: 1.9;
+  font-size: 15.5px;
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #fff;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.6;
+  margin: 0 0 28px;
+  padding-bottom: 22px;
+  border-bottom: 2px solid var(--line);
+}
+
+h2 {
+  font-size: 21px;
+  font-weight: 900;
+  line-height: 1.6;
+  margin: 44px 0 18px;
+  padding-left: 16px;
+  border-left: 5px solid var(--green);
+}
+
+h3 {
+  font-size: 17px;
+  font-weight: 900;
+  margin: 32px 0 12px;
+}
+
+p { margin: 0 0 20px; }
+
+ul, ol {
+  margin: 0 0 20px;
+  padding-left: 4px;
+  list-style: none;
+}
+
+ul li {
+  padding-left: 22px;
+  position: relative;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  width: 10px;
+  height: 3px;
+  background: var(--green);
+}
+
+ol { counter-reset: num; }
+ol li {
+  counter-increment: num;
+  padding-left: 34px;
+  position: relative;
+  font-size: 15px;
+  margin-bottom: 8px;
+}
+ol li::before {
+  content: counter(num);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  display: grid;
+  place-items: center;
+}
+
+/* 記事内の「ポイント」ボックス（<div class="point">） */
+.point {
+  background: var(--green-pale);
+  border: 1.5px solid rgba(6, 199, 85, .3);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin: 26px 0;
+  font-size: 14.5px;
+}
+.point strong { color: var(--green-dark); }
+
+strong { font-weight: 900; }
+a { color: var(--green-dark); font-weight: 700; }
+blockquote {
+  margin: 0 0 20px;
+  padding: 4px 0 4px 16px;
+  border-left: 3px solid var(--line);
+  color: var(--muted);
+}
+img { max-width: 100%; border-radius: 12px; }
+hr { border: none; border-top: 1px solid var(--line); margin: 32px 0; }
