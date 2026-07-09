@@ -6,5 +6,10 @@ import sitemap from '@astrojs/sitemap';
 // sitemap / canonical / OGP はこの値を基準に自動生成される。
 export default defineConfig({
   site: 'https://layr.co.jp',
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      // 管理系ページは検索エンジンに載せない
+      filter: (page) => !page.includes('/dashboard'),
+    }),
+  ],
 });
