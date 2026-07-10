@@ -8,8 +8,8 @@ export default defineConfig({
   site: 'https://layr.co.jp',
   integrations: [
     sitemap({
-      // 管理系ページは検索エンジンに載せない
-      filter: (page) => !page.includes('/dashboard'),
+      // 管理系・完了ページは検索エンジンに載せない
+      filter: (page) => !page.includes('/dashboard') && !page.includes('/document/thanks'),
     }),
   ],
 });

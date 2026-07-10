@@ -420,5 +420,48 @@ section{padding:104px 0}
   .marquee span{font-size:22px}
 }
 
+/* ============================================================
+   ヒーローのプロダクトUIコラージュ（管理画面風ウィンドウ）
+   ============================================================ */
+.browser-mock{position:absolute;left:-24px;top:14px;width:330px;background:#fff;border-radius:16px;box-shadow:0 24px 60px rgba(13,43,31,.14);z-index:1;transform:rotate(-2deg)}
+.bm-bar{display:flex;gap:6px;padding:12px 14px;border-bottom:1px solid #F0F3F1}
+.bm-bar span{width:9px;height:9px;border-radius:50%;background:#E3E9E5}
+.bm-bar span:first-child{background:var(--green)}
+.bm-body{display:grid;grid-template-columns:56px 1fr;gap:14px;padding:14px}
+.bm-side{display:flex;flex-direction:column;gap:8px}
+.bm-side i{height:10px;border-radius:5px;background:#EDF1EE}
+.bm-side i:first-child{background:var(--green-pale)}
+.bm-main{display:flex;flex-direction:column;gap:10px}
+.bm-title{width:56%;height:12px;border-radius:6px;background:#E8EDEA}
+.bm-chart{display:flex;align-items:flex-end;gap:8px;height:86px;padding:8px 4px 0}
+.bm-chart b{flex:1;height:var(--h);border-radius:5px 5px 0 0;background:color-mix(in srgb, var(--green) 32%, #E8F3EC)}
+.bm-chart b:nth-child(4),.bm-chart b:nth-child(6){background:var(--green)}
+.bm-row{height:10px;border-radius:5px;background:#EFF3F0}
+.bm-row.short{width:64%}
+
+/* ============================================================
+   右下ポップアップ: サービス紹介資料（PCのみ）
+   ============================================================ */
+.doc-pop{position:fixed;right:22px;bottom:22px;z-index:90;width:272px;filter:drop-shadow(0 18px 40px rgba(13,43,31,.22))}
+.doc-pop-toggle{position:absolute;top:-12px;right:-10px;z-index:2;width:34px;height:34px;border-radius:50%;border:none;background:#fff;color:var(--text);font-size:15px;font-weight:900;cursor:pointer;box-shadow:0 6px 16px rgba(13,43,31,.18);line-height:1}
+.doc-pop-body{display:block;background:var(--green);border-radius:18px;overflow:hidden;color:#fff}
+.doc-pop-head{font-size:15.5px;font-weight:900;line-height:1.5;padding:18px 20px 12px;text-align:center}
+.doc-pop-thumbs{display:flex;gap:6px;justify-content:center;padding:0 18px 14px}
+.doc-pop-thumbs .t{width:70px;height:46px;border-radius:6px;background:#fff;position:relative;overflow:hidden}
+.doc-pop-thumbs .t::before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,color-mix(in srgb, var(--green) 22%, #fff),#fff 60%)}
+.doc-pop-thumbs .t::after{content:"";position:absolute;left:8px;right:8px;top:12px;height:6px;border-radius:3px;background:color-mix(in srgb, var(--green) 45%, #fff)}
+.doc-pop-thumbs .t2::after{top:18px;background:color-mix(in srgb, var(--deep) 45%, #fff)}
+.doc-pop-btn{display:block;background:var(--deep);color:#fff;text-align:center;font-size:13.5px;font-weight:800;padding:13px 10px;letter-spacing:.02em}
+.doc-pop-body:hover .doc-pop-btn{background:var(--black)}
+.doc-pop.is-collapsed .doc-pop-body{display:none}
+.doc-pop.is-collapsed{width:auto}
+.doc-pop.is-collapsed .doc-pop-toggle{position:static;width:auto;height:auto;border-radius:999px;background:var(--green);color:#fff;font-size:12.5px;font-weight:800;padding:11px 18px;box-shadow:0 10px 26px rgba(13,43,31,.24)}
+@media (max-width:768px){.doc-pop{display:none}}
+@media print{.doc-pop{display:none}}
+
+@media (max-width:640px){
+  .browser-mock{display:none}
+}
+
 /* デザイン設定: ウォーターマーク非表示（theme.json show_watermark=false） */
 body.no-wm .sec-head[data-wm]::before{content:none}

@@ -131,3 +131,11 @@ npm run build      # 本番ビルド（dist/ に出力）
 - サービス方針: [[layr-service-lineup]]（LINE軸＋広告。MEOは載せない）
 - デザイン基準: [[design-preference-corporate-site]]
 - 開発の進め方: [[web-dev-workflow-preference]]
+
+## 資料請求フォーム（/document/）
+
+- 右下ポップアップ（PC表示のみ）→ `/document/` の請求フォーム → 送信 → `/document/thanks/`
+- 送信内容は **FormSubmit** 経由で `info@layr.co.jp` にメール着信（バックエンド不要・無料）
+- **初回のみ**: 最初の送信後、FormSubmitから info@layr.co.jp に有効化メールが届くので、リンクを1回クリックして有効化する（それまでは着信しない）
+- 資料PDF自体はまだ無い。当面は「送信→河出さんがメールで資料送付」の運用。PDFができたらサンクスページに直接DLリンクを付けられる
+- 送信先を変えたい場合は管理画面「① 基本設定 → 問い合わせメールアドレス」を変更（フォームも連動）

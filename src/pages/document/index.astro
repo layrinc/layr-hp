@@ -1,0 +1,124 @@
+---
+/**
+ * サービス紹介資料の請求ページ（リード獲得用）。
+ * フォームは FormSubmit（バックエンド不要の転送サービス）経由で
+ * info@layr.co.jp にメール着信する。初回のみ有効化メールの承認が必要。
+ */
+import Base from '../../layouts/Base.astro';
+import settings from '../../data/settings.json';
+
+const title = 'サービス紹介資料ダウンロード｜株式会社LAYR';
+const description = '株式会社LAYRのサービス紹介資料（LINE公式アカウント構築・運用、広告運用代行の支援内容と料金目安）を無料でお送りします。フォーム入力後、メールで資料をお届けします。';
+
+// 送信先: FormSubmit経由で会社メールへ。送信後はサンクスページへ戻す。
+const formAction = `https://formsubmit.co/${settings.email}`;
+const thanksUrl = new URL('/document/thanks/', Astro.site).href;
+---
+<Base title={title} description={description}>
+  <section class="doc-sec">
+    <div class="container doc-wrap">
+
+      <!-- 左: 資料の紹介 -->
+      <div class="doc-intro">
+        <p class="sec-en">DOCUMENT</p>
+        <h1 class="doc-title">LAYR サービス紹介資料</h1>
+        <p class="doc-lead">LINE構築・運用と広告運用の支援内容、料金の目安、進め方をまとめた資料です。フォーム送信後、メールでお届けします。</p>
+
+        <div class="doc-slides" aria-hidden="true">
+          <div class="ds ds1"><span class="ds-tag">LAYR</span><b>サービス紹介資料</b></div>
+          <div class="ds ds2"><i></i><i class="short"></i><em style="--h:46%"></em><em style="--h:78%"></em><em style="--h:60%"></em></div>
+          <div class="ds ds3"><i></i><i></i><i class="short"></i></div>
+          <div class="ds ds4"><span class="ds-pill"></span><i></i><i class="short"></i></div>
+        </div>
+
+        <h2 class="doc-sub">資料に含まれる内容</h2>
+        <ul class="doc-list">
+          <li>LAYRのサービス全体像（LINE構築・運用 × 広告運用）</li>
+          <li>支援範囲と進め方（無料相談〜構築〜運用改善）</li>
+          <li>料金の目安（初期構築・月額運用）</li>
+          <li>支援イメージ・活用事例</li>
+          <li>よくあるご質問</li>
+        </ul>
+      </div>
+
+      <!-- 右: 請求フォーム -->
+      <div class="doc-form-card">
+        <p class="doc-form-note">下記をご入力のうえ「資料を請求する」を押してください。<br>1営業日以内に、メールで資料をお送りします。</p>
+        <form action={formAction} method="POST" class="doc-form">
+          <input type="hidden" name="_subject" value="【資料請求】LAYRサービス紹介資料" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="_next" value={thanksUrl} />
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+
+          <label><span class="lbl">会社名・屋号 <span class="req">必須</span></span>
+            <input type="text" name="会社名" required placeholder="株式会社〇〇" />
+          </label>
+          <label><span class="lbl">お名前 <span class="req">必須</span></span>
+            <input type="text" name="お名前" required placeholder="山田 太郎" />
+          </label>
+          <label><span class="lbl">メールアドレス <span class="req">必須</span></span>
+            <input type="email" name="メールアドレス" required placeholder="taro@example.com" />
+          </label>
+          <label><span class="lbl">電話番号 <span class="opt">任意</span></span>
+            <input type="tel" name="電話番号" placeholder="090-1234-5678" />
+          </label>
+          <label><span class="lbl">興味のある内容 <span class="req">必須</span></span>
+            <select name="興味のある内容" required>
+              <option value="">選択してください</option>
+              <option>LINE公式アカウントの構築</option>
+              <option>LINEの運用・配信代行</option>
+              <option>広告運用（広告×LINE）</option>
+              <option>全般的に相談したい</option>
+            </select>
+          </label>
+          <label class="doc-consent">
+            <input type="checkbox" required />
+            <span>入力いただいた情報を、資料送付およびご連絡の目的で利用することに同意します。</span>
+          </label>
+          <button type="submit" class="btn btn-green btn-lg doc-submit">資料を請求する</button>
+        </form>
+      </div>
+
+    </div>
+  </section>
+</Base>
+
+<style>
+  .doc-sec{padding:150px 0 100px;background:var(--bg)}
+  .doc-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:start}
+  .doc-title{font-size:clamp(26px,3.6vw,38px);font-weight:900;line-height:1.5;margin-top:10px}
+  .doc-lead{color:var(--muted);font-size:15px;margin-top:14px;max-width:520px}
+  .doc-slides{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:28px 0 34px;max-width:480px}
+  .ds{aspect-ratio:16/10;border-radius:12px;background:#fff;box-shadow:var(--shadow);padding:14px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:7px;justify-content:center}
+  .ds1{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;align-items:flex-start;justify-content:flex-end}
+  .ds1 .ds-tag{font-family:var(--font-en);font-weight:800;font-size:10px;letter-spacing:.14em;background:rgba(255,255,255,.25);border-radius:999px;padding:2px 10px}
+  .ds1 b{font-size:13.5px;font-weight:900;line-height:1.5}
+  .ds i{display:block;height:8px;border-radius:4px;background:#EDF1EE}
+  .ds i.short{width:60%}
+  .ds2{flex-direction:row;align-items:flex-end;gap:8px;padding:16px 18px}
+  .ds2 i{display:none}
+  .ds2 em{flex:1;height:var(--h);border-radius:4px 4px 0 0;background:color-mix(in srgb, var(--green) 35%, #E8F3EC)}
+  .ds2 em:last-child{background:var(--green)}
+  .ds4 .ds-pill{width:42%;height:12px;border-radius:999px;background:var(--green-pale)}
+  .doc-sub{font-size:17px;font-weight:900;margin-bottom:14px}
+  .doc-list{display:flex;flex-direction:column;gap:9px}
+  .doc-list li{padding-left:30px;position:relative;font-size:14.5px;font-weight:700}
+  .doc-list li::before{content:"";position:absolute;left:0;top:4px;width:20px;height:20px;border-radius:50%;background:var(--green)}
+  .doc-list li::after{content:"";position:absolute;left:5px;top:10px;width:9px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}
+  .doc-form-card{background:#fff;border-radius:calc(var(--radius) + 6px);padding:36px 34px;box-shadow:var(--shadow)}
+  .doc-form-note{font-size:13.5px;color:var(--muted);font-weight:700;margin-bottom:22px;line-height:1.8}
+  .doc-form{display:flex;flex-direction:column;gap:16px}
+  .doc-form label{font-size:13.5px;font-weight:800;display:flex;flex-direction:column;gap:7px}
+  .req{color:#fff;background:var(--green);border-radius:6px;font-size:10.5px;font-weight:800;padding:1px 8px;margin-left:6px;display:inline-block}
+  .opt{color:var(--muted);background:var(--bg);border-radius:6px;font-size:10.5px;font-weight:800;padding:1px 8px;margin-left:6px;display:inline-block}
+  .doc-form input[type="text"],.doc-form input[type="email"],.doc-form input[type="tel"],.doc-form select{font-family:var(--font-jp);font-size:14.5px;padding:13px 15px;border:1.5px solid var(--line);border-radius:12px;background:#FAFCFB;color:var(--text);outline:none;transition:border-color .2s}
+  .doc-form input:focus,.doc-form select:focus{border-color:var(--green)}
+  .doc-consent{flex-direction:row!important;align-items:flex-start;gap:10px!important;font-weight:500!important;font-size:12.5px!important;color:var(--muted);line-height:1.7}
+  .doc-consent input{margin-top:4px;accent-color:var(--green);width:16px;height:16px}
+  .doc-submit{width:100%;border:none;font-family:var(--font-jp)}
+  @media (max-width:900px){
+    .doc-wrap{grid-template-columns:1fr;gap:40px}
+    .doc-sec{padding:130px 0 80px}
+  }
+</style>

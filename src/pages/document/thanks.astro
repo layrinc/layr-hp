@@ -1,0 +1,31 @@
+---
+/** 資料請求フォームの送信完了ページ（検索エンジンには載せない） */
+import Base from '../../layouts/Base.astro';
+
+const title = '送信完了｜株式会社LAYR';
+const description = '資料請求ありがとうございました。1営業日以内にメールで資料をお送りします。';
+---
+<Base title={title} description={description} robots="noindex, nofollow">
+  <section class="thanks-sec">
+    <div class="thanks-card">
+      <div class="thanks-ico" aria-hidden="true"></div>
+      <h1>送信ありがとうございました</h1>
+      <p>ご入力いただいたメールアドレス宛に、<strong>1営業日以内</strong>にサービス紹介資料をお送りします。<br>届かない場合は迷惑メールフォルダをご確認のうえ、<a href="mailto:info@layr.co.jp">info@layr.co.jp</a> までご連絡ください。</p>
+      <div class="thanks-actions">
+        <a class="btn btn-green" href="/">トップページへ戻る</a>
+        <a class="btn btn-black" href="/blog/">コラムを読む</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .thanks-sec{padding:170px 0 110px;background:var(--bg);min-height:70vh}
+  .thanks-card{max-width:620px;margin:0 auto;background:#fff;border-radius:calc(var(--radius) + 6px);box-shadow:var(--shadow);padding:56px 40px;text-align:center}
+  .thanks-ico{width:64px;height:64px;border-radius:50%;background:var(--green);margin:0 auto 22px;position:relative}
+  .thanks-ico::after{content:"";position:absolute;left:20px;top:26px;width:24px;height:13px;border-left:4px solid #fff;border-bottom:4px solid #fff;transform:rotate(-45deg)}
+  .thanks-card h1{font-size:clamp(20px,3vw,26px);font-weight:900;margin-bottom:16px}
+  .thanks-card p{font-size:14.5px;color:var(--muted);margin-bottom:30px}
+  .thanks-card p a{color:var(--green-dark);font-weight:700}
+  .thanks-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+</style>
