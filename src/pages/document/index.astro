@@ -76,13 +76,72 @@ const thanksUrl = new URL('/document/thanks/', Astro.site).href;
             <input type="checkbox" required />
             <span>入力いただいた情報を、資料送付およびご連絡の目的で利用することに同意します。</span>
           </label>
-          <button type="submit" class="btn btn-green btn-lg doc-submit">資料を請求する</button>
+          <button type="submit" class="btn btn-green btn-lg doc-submit" id="docSubmit">資料を請求する</button>
+
+          <!-- 送信システム障害時の自動フォールバック（通常は非表示） -->
+          <div class="doc-fallback" id="docFallback" hidden>
+            <p><strong>送信システムが混み合っているようです。</strong><br>お手数ですが、下のボタンからメールでご請求ください（入力内容は引き継がれます）。</p>
+            <a class="btn btn-black" id="docMailto" href={`mailto:${settings.email}`}>メールで資料を請求する</a>
+          </div>
         </form>
       </div>
 
     </div>
   </section>
 </Base>
+
+<script>
+  // フォーム送信: 通常はFormSubmit(AJAX)へ。障害・タイムアウト時は
+  // 入力内容を引き継いだメール下書きへ自動フォールバックし、リードを取りこぼさない。
+  const form = document.querySelector('.doc-form') as HTMLFormElement | null;
+  const submitBtn = document.getElementById('docSubmit') as HTMLButtonElement | null;
+  const fallback = document.getElementById('docFallback');
+  const mailtoLink = document.getElementById('docMailto') as HTMLAnchorElement | null;
+
+  if (form && submitBtn && fallback && mailtoLink) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.textContent = '送信中…';
+
+      const fd = new FormData(form);
+      const ajaxUrl = form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/');
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+
+      try {
+        const res = await fetch(ajaxUrl, {
+          method: 'POST',
+          body: fd,
+          headers: { Accept: 'application/json' },
+          signal: controller.signal,
+        });
+        clearTimeout(timer);
+        if (!res.ok) throw new Error('bad status');
+        location.href = '/document/thanks/';
+      } catch {
+        clearTimeout(timer);
+        // メール下書きを組み立てて表示
+        const v = (k: string) => (fd.get(k) || '').toString();
+        const body = [
+          'サービス紹介資料を希望します。',
+          '',
+          `会社名・屋号: ${v('会社名')}`,
+          `お名前: ${v('お名前')}`,
+          `メールアドレス: ${v('メールアドレス')}`,
+          `電話番号: ${v('電話番号')}`,
+          `興味のある内容: ${v('興味のある内容')}`,
+        ].join('\n');
+        const base = mailtoLink.href.split('?')[0];
+        mailtoLink.href = `${base}?subject=${encodeURIComponent('【資料請求】LAYRサービス紹介資料')}&body=${encodeURIComponent(body)}`;
+        fallback.hidden = false;
+        fallback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        submitBtn.disabled = false;
+        submitBtn.textContent = '資料を請求する';
+      }
+    });
+  }
+</script>
 
 <style>
   .doc-sec{padding:150px 0 100px;background:var(--bg)}
@@ -117,6 +176,10 @@ const thanksUrl = new URL('/document/thanks/', Astro.site).href;
   .doc-consent{flex-direction:row!important;align-items:flex-start;gap:10px!important;font-weight:500!important;font-size:12.5px!important;color:var(--muted);line-height:1.7}
   .doc-consent input{margin-top:4px;accent-color:var(--green);width:16px;height:16px}
   .doc-submit{width:100%;border:none;font-family:var(--font-jp)}
+  .doc-submit:disabled{opacity:.6;cursor:wait;transform:none}
+  .doc-fallback{background:#FDF6E7;border:1.5px dashed #D6A210;border-radius:14px;padding:20px 22px;text-align:center}
+  .doc-fallback p{font-size:13px;color:#7A5B09;line-height:1.8;margin-bottom:14px}
+  .doc-fallback .btn{width:100%}
   @media (max-width:900px){
     .doc-wrap{grid-template-columns:1fr;gap:40px}
     .doc-sec{padding:130px 0 80px}
