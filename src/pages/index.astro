@@ -264,12 +264,14 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
     </div>
   </section>
 
-  <!-- ============ MARQUEE（文言はデザイン設定から） ============ -->
-  <div class="marquee angle-both" aria-hidden="true">
-    <div class="marquee-track">
-      {[0, 1].map(() => theme.marquee_items.map((m) => <span class={m.highlight ? 'fill' : ''}>{m.text}</span>))}
+  <!-- ============ MARQUEE（文言はデザイン設定から。空なら非表示） ============ -->
+  {theme.marquee_items.length > 0 && (
+    <div class="marquee angle-both" aria-hidden="true">
+      <div class="marquee-track">
+        {[0, 1].map(() => theme.marquee_items.map((m) => <span class={m.highlight ? 'fill' : ''}>{m.text}</span>))}
+      </div>
     </div>
-  </div>
+  )}
 
   <!-- ============ COLUMN（管理画面から追加された記事が自動で並ぶ） ============ -->
   <section id="column" aria-labelledby="column-title">
