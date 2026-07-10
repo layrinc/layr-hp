@@ -1,0 +1,67 @@
+---
+/** プライバシーポリシー。資料請求フォーム等で個人情報を取得するため必置。 */
+import Base from '../layouts/Base.astro';
+import company from '../data/company.json';
+import settings from '../data/settings.json';
+
+const title = 'プライバシーポリシー｜株式会社LAYR';
+const description = '株式会社LAYRの個人情報保護方針。取得する情報、利用目的、外部サービスの利用、開示請求の窓口について定めています。';
+---
+<Base title={title} description={description}>
+  <section class="pp-sec">
+    <div class="pp-wrap">
+      <p class="sec-en">PRIVACY POLICY</p>
+      <h1 class="pp-title">プライバシーポリシー</h1>
+      <p class="pp-lead">{company.name}（以下「当社」）は、当社ウェブサイトで取得する個人情報を、以下の方針にもとづき取り扱います。</p>
+
+      <h2>1. 事業者情報</h2>
+      <p>{company.name}<br>{company.representative}<br>{company.address}</p>
+
+      <h2>2. 取得する個人情報</h2>
+      <ul>
+        <li>資料請求・お問い合わせフォームにご入力いただく情報（会社名、氏名、メールアドレス、電話番号、ご相談内容）</li>
+        <li>メール等でのやり取りに含まれる情報</li>
+      </ul>
+
+      <h2>3. 利用目的</h2>
+      <ul>
+        <li>資料の送付、お問い合わせへの対応</li>
+        <li>当社サービスに関するご案内・ご連絡</li>
+        <li>サービス品質の改善</li>
+      </ul>
+
+      <h2>4. 第三者提供</h2>
+      <p>法令にもとづく場合を除き、ご本人の同意なく個人情報を第三者に提供しません。</p>
+
+      <h2>5. 外部サービスの利用</h2>
+      <p>フォームの送信には外部の転送サービス（FormSubmit）を利用しており、ご入力内容は当社メールアドレスへの転送のためにのみ処理されます。また、当社サイトはホスティングにVercelを利用しています。</p>
+
+      <h2>6. 安全管理</h2>
+      <p>取得した個人情報は、漏えい・滅失・毀損の防止のため適切に管理し、利用目的の達成に必要な範囲を超えて保有しません。</p>
+
+      <h2>7. 開示・訂正・削除のご請求</h2>
+      <p>ご本人からの個人情報の開示・訂正・利用停止・削除のご請求には、本人確認のうえ速やかに対応します。下記窓口までご連絡ください。</p>
+      <p>お問い合わせ窓口：<a href={`mailto:${settings.email}`}>{settings.email}</a></p>
+
+      <h2>8. 本ポリシーの改定</h2>
+      <p>本ポリシーの内容は、法令の改正や運用の変更に応じて改定することがあります。改定後の内容は本ページで公表します。</p>
+
+      <p class="pp-date">制定日：2026年7月10日</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .pp-sec{padding:150px 0 100px;background:var(--bg)}
+  .pp-wrap{max-width:760px;margin:0 auto;padding:48px 40px;background:#fff;border-radius:calc(var(--radius) + 6px);box-shadow:var(--shadow)}
+  .pp-title{font-size:clamp(24px,3.4vw,32px);font-weight:900;margin:8px 0 16px}
+  .pp-lead{color:var(--muted);font-size:14.5px;margin-bottom:12px}
+  .pp-wrap h2{font-size:16.5px;font-weight:900;margin:34px 0 10px;padding-left:14px;border-left:4px solid var(--green)}
+  .pp-wrap p{font-size:14.5px;margin-bottom:10px}
+  .pp-wrap a{color:var(--green-dark);font-weight:700}
+  .pp-wrap ul{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+  .pp-wrap ul li{padding-left:20px;position:relative;font-size:14.5px}
+  .pp-wrap ul li::before{content:"";position:absolute;left:0;top:12px;width:9px;height:3px;background:var(--green)}
+  .pp-date{color:var(--muted);font-size:13px;margin-top:30px;text-align:right}
+  @media (max-width:640px){.pp-wrap{padding:36px 22px}}
+</style>
