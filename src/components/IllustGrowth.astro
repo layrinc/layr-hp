@@ -1,0 +1,33 @@
+---
+/** イラスト: 成果グラフを指す人（CASE用）。色はテーマ変数に追従するフラット線画。 */
+const { class: className = '' } = Astro.props;
+---
+<svg class={className} viewBox="0 0 480 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="伸びる成果グラフを指し示す人のイラスト">
+  <!-- グラフカード -->
+  <g>
+    <rect x="236" y="36" width="212" height="216" rx="18" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+    <rect x="262" y="168" width="28" height="56" rx="6" fill="var(--green-pale)"/>
+    <rect x="302" y="144" width="28" height="80" rx="6" fill="var(--green-pale)"/>
+    <rect x="342" y="116" width="28" height="108" rx="6" fill="var(--green-pale)"/>
+    <rect x="382" y="84" width="28" height="140" rx="6" fill="var(--green)"/>
+    <path d="M262 132c34-8 62-24 98-58" stroke="var(--green)" stroke-width="6" stroke-linecap="round" fill="none"/>
+    <path d="M362 66l-4 16-14-9z" fill="var(--green)"/>
+  </g>
+  <!-- キラキラ -->
+  <path d="M446 22l4 10 10 4-10 4-4 10-4-10-10-4 10-4zM222 20v10M217 25h10" stroke="var(--black)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="#fff"/>
+  <!-- 頭・髪 -->
+  <circle cx="118" cy="152" r="44" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+  <path d="M74 152c-2-34 20-58 44-58s46 24 44 58c-4-24-14-32-26-34-8 7-36 9-46 4-8 7-14 18-16 30z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- 笑顔 -->
+  <circle cx="104" cy="152" r="3.2" fill="var(--black)"/>
+  <circle cx="134" cy="152" r="3.2" fill="var(--black)"/>
+  <path d="M110 172q9 8 18 0" stroke="var(--black)" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <!-- 体 -->
+  <path d="M34 340c0-60 28-92 56-98l30-2c32 4 62 38 62 100z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M118 244l-18 28 18 20 18-20z" fill="#fff" stroke="var(--black)" stroke-width="3" stroke-linejoin="round"/>
+  <!-- 指差し腕 -->
+  <path d="M158 300c14-34 34-58 60-72" stroke="var(--black)" stroke-width="3.5" fill="none"/>
+  <path d="M158 300c12-32 32-56 56-70l14 20c-20 14-38 34-48 62z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <circle cx="222" cy="222" r="14" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+  <rect x="228" y="200" width="10" height="24" rx="5" fill="#fff" stroke="var(--black)" stroke-width="3" transform="rotate(24 233 212)"/>
+</svg>

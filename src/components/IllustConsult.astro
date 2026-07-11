@@ -1,0 +1,63 @@
+---
+/** イラスト: 相談する二人（無料相談CTA用）。色はテーマ変数に追従するフラット線画。 */
+const { class: className = '' } = Astro.props;
+---
+<svg class={className} viewBox="0 0 560 380" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="相談し合う二人のイラスト">
+  <!-- 左上: 円グラフカード -->
+  <g>
+    <rect x="66" y="44" width="118" height="96" rx="16" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+    <circle cx="112" cy="84" r="24" fill="var(--green-pale)"/>
+    <path d="M112 84L112 60A24 24 0 0 1 133 96z" fill="var(--green)"/>
+    <circle cx="150" cy="108" r="9" fill="var(--green)"/>
+    <path d="M84 126h56" stroke="var(--line)" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <!-- 中央上: パイ -->
+  <path d="M292 58a26 26 0 1 1-20 42l20-16z" fill="var(--green)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- 右上: 上昇グラフカード -->
+  <g>
+    <rect x="362" y="36" width="150" height="110" rx="16" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+    <rect x="382" y="102" width="18" height="28" rx="4" fill="var(--green-pale)"/>
+    <rect x="408" y="88" width="18" height="42" rx="4" fill="var(--green-pale)"/>
+    <rect x="434" y="72" width="18" height="58" rx="4" fill="var(--green-pale)"/>
+    <path d="M382 88c26-8 44-20 66-38" stroke="var(--green)" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M450 48l-3 13-11-7z" fill="var(--green)"/>
+    <path d="M382 56h44" stroke="var(--line)" stroke-width="5" stroke-linecap="round"/>
+  </g>
+  <!-- 中央: 会話の吹き出し -->
+  <g>
+    <rect x="240" y="150" width="86" height="48" rx="22" fill="var(--green)" stroke="var(--black)" stroke-width="3.5"/>
+    <path d="M268 198l-6 16 20-12z" fill="var(--green)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+    <circle cx="264" cy="174" r="4" fill="var(--black)"/>
+    <circle cx="283" cy="174" r="4" fill="var(--black)"/>
+    <circle cx="302" cy="174" r="4" fill="var(--black)"/>
+    <circle cx="336" cy="152" r="10" fill="var(--green-pale)" stroke="var(--black)" stroke-width="3"/>
+  </g>
+  <!-- ひらめき線（右の人の頭上） -->
+  <path d="M448 168l8-12M470 176l12-8M462 160l4-14" stroke="var(--black)" stroke-width="3.5" stroke-linecap="round"/>
+
+  <!-- 左の人物（提案する） -->
+  <circle cx="140" cy="228" r="42" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+  <path d="M98 228c-2-32 18-56 42-56s44 24 42 56c-4-22-12-30-24-32-8 6-34 8-44 4-8 6-14 16-16 28z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M98 226c-6 10-6 26 2 36" stroke="var(--black)" stroke-width="3.5" fill="var(--deep)"/>
+  <circle cx="127" cy="228" r="3" fill="var(--black)"/>
+  <circle cx="155" cy="228" r="3" fill="var(--black)"/>
+  <path d="M132 246q8 7 16 0" stroke="var(--black)" stroke-width="3" stroke-linecap="round" fill="none"/>
+  <path d="M58 380c0-56 26-86 52-92l28-2c30 4 58 36 58 94z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M140 316l-17 26 17 19 17-19z" fill="#fff" stroke="var(--black)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M178 372c8-32 24-52 44-64" stroke="var(--black)" stroke-width="3.5" fill="none"/>
+  <path d="M178 372c7-30 22-50 40-62l14 18c-16 12-30 28-38 52z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M232 328c8-10 20-12 28-6-2 10-12 18-24 16z" fill="#fff" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+
+  <!-- 右の人物（気づく） -->
+  <circle cx="420" cy="222" r="42" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+  <path d="M378 218c-4-30 16-52 42-52 24 0 44 22 42 52-2-8-8-12-12-12 2-10-4-18-10-18-2 8-12 12-18 8-8 6-20 8-28 4-6 4-12 10-16 18z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <circle cx="407" cy="224" r="3" fill="var(--black)"/>
+  <circle cx="435" cy="224" r="3" fill="var(--black)"/>
+  <ellipse cx="421" cy="246" rx="6" ry="8" fill="var(--black)"/>
+  <path d="M338 380c0-56 26-86 52-92l28-2c30 4 58 36 58 94z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M420 310l-17 26 17 19 17-19z" fill="#fff" stroke="var(--black)" stroke-width="3" stroke-linejoin="round"/>
+  <path d="M382 372c-4-28-16-48-32-60" stroke="var(--black)" stroke-width="3.5" fill="none"/>
+  <path d="M382 372c-3-26-14-46-28-58l-16 16c12 12 24 26 30 48z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <circle cx="336" cy="326" r="13" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+  <rect x="326" y="298" width="10" height="26" rx="5" fill="#fff" stroke="var(--black)" stroke-width="3" transform="rotate(-14 331 311)"/>
+</svg>

@@ -16,6 +16,9 @@ import problem from '../data/problem.json';
 import service from '../data/service.json';
 import reason from '../data/reason.json';
 import cta from '../data/cta.json';
+import IllustWorry from '../components/IllustWorry.astro';
+import IllustGrowth from '../components/IllustGrowth.astro';
+import IllustConsult from '../components/IllustConsult.astro';
 
 // 事業内容カード（主力以外）のアイコン。順番に割り当て、足りなければ循環する。
 const serviceIcons = [
@@ -162,11 +165,16 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
         <h2 class="sec-en" id="problem-title">PROBLEM</h2>
         <p class="sec-jp">{problem.title_jp}</p>
       </div>
-      <ul class="problem-list">
-        {problem.items.map((item) => (
-          <li class="reveal"><span class="check"></span>{item}</li>
-        ))}
-      </ul>
+      <div class="problem-cols">
+        <ul class="problem-list">
+          {problem.items.map((item) => (
+            <li class="reveal"><span class="check"></span>{item}</li>
+          ))}
+        </ul>
+        <div class="problem-illust reveal" aria-hidden="true">
+          <IllustWorry class="illust" />
+        </div>
+      </div>
       <div class="problem-arrow" aria-hidden="true"></div>
       <div class="problem-answer reveal">
         <strong>{problem.answer_lead}<span class="marker">{problem.answer_marker}</span>{problem.answer_tail}</strong>
@@ -245,6 +253,9 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
       <div class="sec-head reveal" data-wm="CASE">
         <h2 class="sec-en" id="case-title">CASE</h2>
         <p class="sec-jp">支援実績</p>
+      </div>
+      <div class="sec-illust reveal" aria-hidden="true">
+        <IllustGrowth class="illust illust-sm" />
       </div>
     </div>
     {cases.show_edit_note && <div class="draft-note"><p>【要編集】以下の実績はサンプルです。管理画面の「サイト設定 → 支援実績」で実案件に差し替え、この注意書きをオフにしてください（クライアント名の掲載は先方の許可を取ってから）。</p></div>}
@@ -334,6 +345,9 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
             ))}
           </ul>
         </div>
+      </div>
+      <div class="sec-illust reveal" aria-hidden="true">
+        <IllustConsult class="illust illust-md" />
       </div>
       <p class="promise-close reveal">この方針にご共感いただける方は、<br>ぜひ<span class="marker">無料相談</span>にお申し込みください。</p>
     </div>

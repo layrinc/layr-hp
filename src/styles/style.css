@@ -463,5 +463,22 @@ section{padding:104px 0}
   .browser-mock{display:none}
 }
 
+/* ============================================================
+   フラットイラスト（テーマカラー追従のSVG）
+   ============================================================ */
+.illust{width:100%;height:auto;display:block}
+.problem-cols{display:grid;grid-template-columns:1fr 300px;gap:44px;align-items:center;max-width:1020px;margin:0 auto}
+.problem-cols .problem-list{margin:0;max-width:none}
+.problem-illust{padding:0 6px}
+.sec-illust{display:flex;justify-content:center;margin:-8px 0 30px}
+.illust-sm{max-width:300px}
+.illust-md{max-width:430px}
+@media (max-width:820px){
+  .problem-cols{grid-template-columns:1fr;gap:20px}
+  .problem-illust{order:-1;max-width:230px;margin:0 auto}
+  .illust-sm{max-width:240px}
+  .illust-md{max-width:330px}
+}
+
 /* デザイン設定: ウォーターマーク非表示（theme.json show_watermark=false） */
 body.no-wm .sec-head[data-wm]::before{content:none}

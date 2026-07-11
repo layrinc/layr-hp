@@ -1,0 +1,36 @@
+---
+/** イラスト: 悩む経営者（PROBLEM用）。色はテーマ変数に追従するフラット線画。 */
+const { class: className = '' } = Astro.props;
+---
+<svg class={className} viewBox="0 0 420 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="集客に悩む経営者のイラスト">
+  <!-- 渦巻き（もやもや） -->
+  <path d="M78 92c-14-2-22 10-16 20s22 8 26-2-4-20-16-18" stroke="var(--black)" stroke-width="3.5" stroke-linecap="round"/>
+  <!-- ？吹き出し -->
+  <g>
+    <rect x="58" y="128" width="64" height="56" rx="14" fill="var(--green-pale)" stroke="var(--black)" stroke-width="3.5"/>
+    <path d="M74 196l10-14 14 8z" fill="var(--green-pale)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+    <text x="90" y="168" text-anchor="middle" font-family="var(--font-en)" font-weight="800" font-size="30" fill="var(--black)">?</text>
+  </g>
+  <!-- 下がるグラフのカード -->
+  <g>
+    <rect x="284" y="66" width="112" height="88" rx="14" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+    <polyline points="300,92 322,108 340,100 372,132" stroke="var(--red)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M372 132l-12-2M372 132l1-12" stroke="var(--red)" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <!-- ！マーク -->
+  <path d="M330 34v14M330 58v2" stroke="var(--black)" stroke-width="5" stroke-linecap="round"/>
+  <!-- 頭・髪 -->
+  <circle cx="210" cy="150" r="48" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+  <path d="M162 150c-2-38 22-62 48-62s50 24 48 62c-4-26-18-34-30-36-8 8-40 10-52 4-8 8-12 20-14 32z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <!-- 困り顔 -->
+  <path d="M188 142q6-5 12-1M220 141q6-4 12 0" stroke="var(--black)" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="195" cy="153" r="3.2" fill="var(--black)"/>
+  <circle cx="227" cy="153" r="3.2" fill="var(--black)"/>
+  <path d="M201 178q9-6 18 0" stroke="var(--black)" stroke-width="3" stroke-linecap="round"/>
+  <!-- 体 -->
+  <path d="M118 360c0-64 30-98 60-104l32-2c34 4 66 40 66 106z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M210 256l-20 30 20 22 20-22z" fill="#fff" stroke="var(--black)" stroke-width="3" stroke-linejoin="round"/>
+  <!-- 頬に手（袖＋手のひら） -->
+  <path d="M138 332c-6-40 8-84 34-108l18 14c-20 22-30 56-28 92z" fill="var(--deep)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+  <circle cx="181" cy="230" r="15" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+</svg>
