@@ -190,8 +190,8 @@ collections:
             widget: "select"
             options: ["Montserrat", "Archivo", "Poppins"]
             default: "Montserrat"
-          - { label: "セクション背景の大型英字（ウォーターマーク）を表示", name: "show_watermark", widget: "boolean", default: true }
-          - label: "黒帯の流れる英字（マーキー）"
+          - { label: "【旧デザイン装飾】背景の大型英字を表示（現デザインでは未使用・OFF推奨）", name: "show_watermark", widget: "boolean", default: false }
+          - label: "【旧デザイン装飾】流れる英字の帯（空のまま＝非表示を推奨）"
             name: "marquee_items"
             widget: "list"
             fields:
