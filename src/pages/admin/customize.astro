@@ -218,6 +218,14 @@ const initial = { theme, hero, cta };
     return new Promise((resolve) => {
       const saved = localStorage.getItem(TOKEN_KEY);
       if (saved) return resolve(saved);
+      // CMS（Sveltia）にログイン済みなら、そのトークンを自動で使い回す
+      try {
+        const cms = JSON.parse(localStorage.getItem('sveltia-cms.user') || '{}');
+        if (cms && cms.token) {
+          localStorage.setItem(TOKEN_KEY, cms.token);
+          return resolve(cms.token);
+        }
+      } catch (_) { /* 無視してモーダルへ */ }
       modal.hidden = false;
       $('czTokenOk').onclick = () => {
         const v = $('czToken').value.trim();
