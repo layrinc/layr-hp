@@ -9,7 +9,8 @@ export default defineConfig({
   integrations: [
     sitemap({
       // 管理系・完了ページは検索エンジンに載せない
-      filter: (page) => !page.includes('/dashboard') && !page.includes('/document/thanks'),
+      filter: (page) =>
+        !page.includes('/dashboard') && !page.includes('/admin') && !page.includes('/document/thanks'),
     }),
   ],
 });
