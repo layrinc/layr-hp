@@ -6,5 +6,6 @@
   "radius": 20,
   "font_en": "Montserrat",
   "show_watermark": false,
-  "marquee_items": []
+  "marquee_items": [],
+  "custom_css": ""
 }

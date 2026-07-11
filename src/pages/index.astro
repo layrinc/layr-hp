@@ -86,9 +86,9 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
     </div>
     <div class="hero-inner">
       <div class="hero-copy">
-        <p class="hero-eyebrow">{hero.eyebrow}</p>
-        <h1>{hero.catch_line1}<br><span class="marker">{hero.catch_line2}</span><br>{hero.catch_line3}</h1>
-        <p class="hero-sub">{hero.sub}</p>
+        <p class="hero-eyebrow" data-edit="hero.eyebrow">{hero.eyebrow}</p>
+        <h1><span data-edit="hero.catch_line1">{hero.catch_line1}</span><br><span class="marker" data-edit="hero.catch_line2">{hero.catch_line2}</span><br><span data-edit="hero.catch_line3">{hero.catch_line3}</span></h1>
+        <p class="hero-sub" data-edit="hero.sub">{hero.sub}</p>
         <div class="hero-actions">
           <a class="btn btn-green btn-lg" href={consult}>{hero.cta_primary}</a>
           <a class="btn btn-black btn-lg" href="#service">{hero.cta_secondary}</a>
@@ -187,12 +187,12 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
   <div class="cta-band angle-top">
     <div class="container cta-band-inner">
       <div>
-        <h2>{cta.band_title_before}<span>{cta.band_title_em}</span>{cta.band_title_after}</h2>
-        <p>{cta.band_desc}</p>
+        <h2><span data-edit="cta.band_title_before">{cta.band_title_before}</span><span data-edit="cta.band_title_em">{cta.band_title_em}</span><span data-edit="cta.band_title_after">{cta.band_title_after}</span></h2>
+        <p data-edit="cta.band_desc">{cta.band_desc}</p>
       </div>
       <div class="cta-band-btns">
-        <a class="btn btn-green" href={consult}>{cta.band_btn_primary}</a>
-        <a class="btn btn-white" href={contact}>{cta.band_btn_secondary}</a>
+        <a class="btn btn-green" href={consult} data-edit="cta.band_btn_primary">{cta.band_btn_primary}</a>
+        <a class="btn btn-white" href={contact} data-edit="cta.band_btn_secondary">{cta.band_btn_secondary}</a>
       </div>
     </div>
   </div>
@@ -426,9 +426,9 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
   <section class="cta-final" id="contact" aria-labelledby="cta-title">
     <div class="cta-final-inner">
       <h2 class="sec-en">CONTACT</h2>
-      <h2 id="cta-title">{cta.final_title_line1}<br>{cta.final_title_before}<span>{cta.final_title_em}</span>{cta.final_title_after}</h2>
-      <p set:html={cta.final_desc.replace(/\n/g, '<br>')}></p>
-      <a class="btn btn-green btn-lg" href={consult}>{cta.final_btn}</a>
+      <h2 id="cta-title"><span data-edit="cta.final_title_line1">{cta.final_title_line1}</span><br><span data-edit="cta.final_title_before">{cta.final_title_before}</span><span data-edit="cta.final_title_em">{cta.final_title_em}</span><span data-edit="cta.final_title_after">{cta.final_title_after}</span></h2>
+      <p data-edit-ml="cta.final_desc" set:html={cta.final_desc.replace(/\n/g, '<br>')}></p>
+      <a class="btn btn-green btn-lg" href={consult} data-edit="cta.final_btn">{cta.final_btn}</a>
       <p class="mail">メールでのご連絡：<a href={`mailto:${settings.email}`}>{settings.email}</a></p>
     </div>
   </section>

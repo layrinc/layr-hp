@@ -74,6 +74,9 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href={fontHref} rel="stylesheet" />
   <style is:inline set:html={themeCss}></style>
+  {typeof (theme as any).custom_css === 'string' && (theme as any).custom_css.trim() !== '' && (
+    <style is:inline id="layr-custom-css" set:html={(theme as any).custom_css}></style>
+  )}
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 </head>
 <body class={theme.show_watermark ? '' : 'no-wm'}>
@@ -164,6 +167,45 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
     </a>
   </aside>
 )}
+
+<script is:inline>
+  // カスタマイザー（/admin/customize/）のライブプレビュー受信ブリッジ。
+  // カスタマイザーのiframe内で表示されている時だけ動く。
+  if (window.self !== window.top) {
+    window.addEventListener('message', function (e) {
+      if (e.origin !== location.origin) return;
+      var d = e.data;
+      if (!d || d.type !== 'layr-preview') return;
+      if (d.vars) {
+        for (var k in d.vars) document.documentElement.style.setProperty(k, d.vars[k]);
+      }
+      if (d.fontHref) {
+        var id = 'layr-preview-font';
+        var l = document.getElementById(id);
+        if (!l) { l = document.createElement('link'); l.id = id; l.rel = 'stylesheet'; document.head.appendChild(l); }
+        if (l.href !== d.fontHref) l.href = d.fontHref;
+      }
+      if (d.texts) {
+        for (var key in d.texts) {
+          document.querySelectorAll('[data-edit="' + key + '"]').forEach(function (el) { el.textContent = d.texts[key]; });
+        }
+      }
+      if (d.mlTexts) {
+        for (var mk in d.mlTexts) {
+          document.querySelectorAll('[data-edit-ml="' + mk + '"]').forEach(function (el) {
+            var esc = d.mlTexts[mk].replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+            el.innerHTML = esc.replace(/\n/g, '<br>');
+          });
+        }
+      }
+      if (typeof d.css === 'string') {
+        var s = document.getElementById('layr-custom-css');
+        if (!s) { s = document.createElement('style'); s.id = 'layr-custom-css'; document.head.appendChild(s); }
+        s.textContent = d.css;
+      }
+    });
+  }
+</script>
 
 <script>
   // モバイルメニュー開閉

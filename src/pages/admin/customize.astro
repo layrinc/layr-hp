@@ -1,0 +1,330 @@
+---
+/**
+ * ライブカスタマイザー（WordPressのカスタマイザー相当）。
+ * 左のパネルを操作すると、右の実サイト（iframe）に即時反映される。
+ * 「保存して公開」でGitHubにコミット → 既存の自動デプロイで本番反映（約1分）。
+ * ログインはCMSと同じGitHubアクセストークンを使う。
+ */
+import theme from '../../data/theme.json';
+import hero from '../../data/hero.json';
+import cta from '../../data/cta.json';
+
+const initial = { theme, hero, cta };
+---
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>カスタマイザー｜LAYR CMS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet" />
+</head>
+<body class="cz-body">
+
+  <header class="cz-bar">
+    <a class="cz-back" href="/admin/">‹ 管理ホーム</a>
+    <p class="cz-title">🎨 カスタマイザー <span>変更はプレビューに即時反映。「保存して公開」で本番へ</span></p>
+    <div class="cz-bar-actions">
+      <span class="cz-status" id="czStatus"></span>
+      <button class="cz-btn ghost" id="czReset">リセット</button>
+      <button class="cz-btn primary" id="czSave">保存して公開</button>
+    </div>
+  </header>
+
+  <div class="cz-main">
+    <aside class="cz-panel">
+
+      <details class="cz-group" open>
+        <summary>🎨 デザイン</summary>
+        <div class="cz-fields">
+          <label class="cz-color">メインカラー<input type="color" id="f-accent" /></label>
+          <label class="cz-color">メインカラー（濃）<input type="color" id="f-accent_dark" /></label>
+          <label class="cz-color">締めの深色<input type="color" id="f-base_black" /></label>
+          <label class="cz-color">薄い背景色<input type="color" id="f-bg_tint" /></label>
+          <label>角丸の大きさ <output id="radiusOut"></output>
+            <input type="range" id="f-radius" min="0" max="28" step="1" />
+          </label>
+          <label>英字フォント
+            <select id="f-font_en">
+              <option>Montserrat</option>
+              <option>Archivo</option>
+              <option>Poppins</option>
+            </select>
+          </label>
+        </div>
+      </details>
+
+      <details class="cz-group" open>
+        <summary>✏️ 文言｜ヒーロー（最上部）</summary>
+        <div class="cz-fields" id="grpHero"></div>
+      </details>
+
+      <details class="cz-group">
+        <summary>✏️ 文言｜CTA（緑バナー・最下部）</summary>
+        <div class="cz-fields" id="grpCta"></div>
+      </details>
+
+      <details class="cz-group">
+        <summary>🧩 追加CSS（上級者向け）</summary>
+        <div class="cz-fields">
+          <p class="cz-hint">WordPressの「追加CSS」相当。ここに書いたCSSはサイト全体に適用される。例：<code>.hero h1 &#123;letter-spacing:.05em&#125;</code></p>
+          <textarea id="f-custom_css" class="cz-css" rows="12" spellcheck="false" placeholder="/* ここにCSSを書くと即時プレビューされます */"></textarea>
+        </div>
+      </details>
+
+      <p class="cz-note">※ 記事・実績数値・会社概要などの編集は <a href="/admin/cms/">編集画面（CMS）</a> から。</p>
+    </aside>
+
+    <section class="cz-stage">
+      <div class="cz-devices">
+        <button class="cz-dev is-active" data-w="">🖥 PC</button>
+        <button class="cz-dev" data-w="768px">📱 タブレット</button>
+        <button class="cz-dev" data-w="390px">📱 スマホ</button>
+      </div>
+      <div class="cz-frame-wrap">
+        <iframe id="czFrame" src="/" title="サイトプレビュー"></iframe>
+      </div>
+    </section>
+  </div>
+
+  <!-- トークン入力モーダル -->
+  <div class="cz-modal" id="czModal" hidden>
+    <div class="cz-modal-card">
+      <h2>GitHubアクセストークン</h2>
+      <p>保存にはCMSログインと同じGitHubトークン（github_pat_…）が必要です。この端末に記憶されます。</p>
+      <input type="password" id="czToken" placeholder="github_pat_..." autocomplete="off" />
+      <div class="cz-modal-actions">
+        <button class="cz-btn ghost" id="czTokenCancel">キャンセル</button>
+        <button class="cz-btn primary" id="czTokenOk">保存を続行</button>
+      </div>
+    </div>
+  </div>
+
+<script define:vars={{ initial }} is:inline>
+  // ===== 状態 =====
+  const state = JSON.parse(JSON.stringify(initial));
+  const frame = document.getElementById('czFrame');
+  const statusEl = document.getElementById('czStatus');
+  const fontMap = {
+    Montserrat: 'Montserrat:wght@700;800',
+    Archivo: 'Archivo:wght@700;800',
+    Poppins: 'Poppins:wght@700;800',
+  };
+
+  // ===== 文言フィールド定義 =====
+  const heroFields = [
+    ['eyebrow', 'キャッチ上の帯', 'text'],
+    ['catch_line1', 'キャッチコピー 1行目', 'text'],
+    ['catch_line2', 'キャッチコピー 2行目（マーカー）', 'text'],
+    ['catch_line3', 'キャッチコピー 3行目', 'text'],
+    ['sub', 'サブコピー', 'textarea'],
+    ['cta_primary', '緑ボタン', 'text'],
+    ['cta_secondary', '白ボタン', 'text'],
+  ];
+  const ctaFields = [
+    ['band_title_before', '【バナー】見出し・前', 'text'],
+    ['band_title_em', '【バナー】見出し・強調', 'text'],
+    ['band_title_after', '【バナー】見出し・後', 'text'],
+    ['band_desc', '【バナー】説明', 'textarea'],
+    ['band_btn_primary', '【バナー】緑ボタン', 'text'],
+    ['band_btn_secondary', '【バナー】白ボタン', 'text'],
+    ['final_title_line1', '【最下部】見出し1行目', 'text'],
+    ['final_title_before', '【最下部】2行目・前', 'text'],
+    ['final_title_em', '【最下部】2行目・強調', 'text'],
+    ['final_title_after', '【最下部】2行目・後', 'text'],
+    ['final_desc', '【最下部】説明（改行可）', 'textarea'],
+    ['final_btn', '【最下部】ボタン', 'text'],
+  ];
+
+  function buildFields(containerId, objKey, fields) {
+    const wrap = document.getElementById(containerId);
+    fields.forEach(([key, label, kind]) => {
+      const lab = document.createElement('label');
+      lab.textContent = label;
+      const input = kind === 'textarea' ? document.createElement('textarea') : document.createElement('input');
+      if (kind === 'textarea') input.rows = 3; else input.type = 'text';
+      input.value = state[objKey][key] ?? '';
+      input.addEventListener('input', () => { state[objKey][key] = input.value; push(); });
+      lab.appendChild(input);
+      wrap.appendChild(lab);
+    });
+  }
+  buildFields('grpHero', 'hero', heroFields);
+  buildFields('grpCta', 'cta', ctaFields);
+
+  // ===== デザイン入力の初期化 =====
+  const $ = (id) => document.getElementById(id);
+  const designKeys = ['accent', 'accent_dark', 'base_black', 'bg_tint'];
+  designKeys.forEach((k) => { $('f-' + k).value = state.theme[k]; $('f-' + k).addEventListener('input', (e) => { state.theme[k] = e.target.value; push(); }); });
+  $('f-radius').value = state.theme.radius;
+  $('radiusOut').textContent = state.theme.radius + 'px';
+  $('f-radius').addEventListener('input', (e) => { state.theme.radius = Number(e.target.value); $('radiusOut').textContent = e.target.value + 'px'; push(); });
+  $('f-font_en').value = state.theme.font_en;
+  $('f-font_en').addEventListener('input', (e) => { state.theme.font_en = e.target.value; push(); });
+  $('f-custom_css').value = state.theme.custom_css || '';
+  $('f-custom_css').addEventListener('input', (e) => { state.theme.custom_css = e.target.value; push(); });
+
+  // ===== ライブ反映（postMessage） =====
+  let timer = null;
+  function push() {
+    clearTimeout(timer);
+    timer = setTimeout(sendNow, 60);
+  }
+  function sendNow() {
+    const t = state.theme;
+    const gf = fontMap[t.font_en] || fontMap.Montserrat;
+    const texts = {};
+    heroFields.forEach(([k]) => { texts['hero.' + k] = state.hero[k]; });
+    ctaFields.forEach(([k]) => { if (k !== 'final_desc') texts['cta.' + k] = state.cta[k]; });
+    frame.contentWindow?.postMessage({
+      type: 'layr-preview',
+      vars: {
+        '--green': t.accent,
+        '--green-dark': t.accent_dark,
+        '--black': t.base_black,
+        '--bg': t.bg_tint,
+        '--radius': t.radius + 'px',
+        '--font-en': `'${t.font_en}','Noto Sans JP',sans-serif`,
+      },
+      fontHref: `https://fonts.googleapis.com/css2?family=${gf}&display=swap`,
+      texts,
+      mlTexts: { 'cta.final_desc': state.cta.final_desc },
+      css: t.custom_css || '',
+    }, location.origin);
+  }
+  frame.addEventListener('load', () => setTimeout(sendNow, 150));
+
+  // ===== 表示デバイス切替 =====
+  document.querySelectorAll('.cz-dev').forEach((b) => {
+    b.addEventListener('click', () => {
+      document.querySelectorAll('.cz-dev').forEach((x) => x.classList.remove('is-active'));
+      b.classList.add('is-active');
+      frame.style.width = b.dataset.w || '100%';
+    });
+  });
+
+  // ===== リセット =====
+  document.getElementById('czReset').addEventListener('click', () => { if (confirm('未保存の変更を破棄して読み込み直しますか？')) location.reload(); });
+
+  // ===== 保存（GitHubへコミット → 自動デプロイ） =====
+  const REPO = 'layrinc/company-brain';
+  const BASE = '株式会社LAYR/layr-hp/src/data/';
+  const TOKEN_KEY = 'layrGhToken';
+  const modal = $('czModal');
+
+  function getToken() {
+    return new Promise((resolve) => {
+      const saved = localStorage.getItem(TOKEN_KEY);
+      if (saved) return resolve(saved);
+      modal.hidden = false;
+      $('czTokenOk').onclick = () => {
+        const v = $('czToken').value.trim();
+        if (!v) return;
+        localStorage.setItem(TOKEN_KEY, v);
+        modal.hidden = true;
+        resolve(v);
+      };
+      $('czTokenCancel').onclick = () => { modal.hidden = true; resolve(null); };
+    });
+  }
+
+  async function gh(path, opt = {}, token) {
+    const res = await fetch('https://api.github.com' + path, {
+      ...opt,
+      headers: {
+        Authorization: 'Bearer ' + token,
+        Accept: 'application/vnd.github+json',
+        ...(opt.body ? { 'Content-Type': 'application/json' } : {}),
+      },
+    });
+    if (res.status === 401 || res.status === 403) { localStorage.removeItem(TOKEN_KEY); throw new Error('認証エラー。トークンを確認してください（再度保存するとトークン入力が出ます）'); }
+    if (!res.ok) throw new Error('GitHub APIエラー: ' + res.status);
+    return res.json();
+  }
+
+  document.getElementById('czSave').addEventListener('click', async () => {
+    const token = await getToken();
+    if (!token) return;
+    const btn = document.getElementById('czSave');
+    btn.disabled = true;
+    statusEl.textContent = '保存中…';
+    try {
+      const files = [
+        { path: BASE + 'theme.json', content: JSON.stringify(state.theme, null, 2) + '\n' },
+        { path: BASE + 'hero.json', content: JSON.stringify(state.hero, null, 2) + '\n' },
+        { path: BASE + 'cta.json', content: JSON.stringify(state.cta, null, 2) + '\n' },
+      ];
+      const ref = await gh(`/repos/${REPO}/git/ref/heads/main`, {}, token);
+      const parentSha = ref.object.sha;
+      const parent = await gh(`/repos/${REPO}/git/commits/${parentSha}`, {}, token);
+      const tree = await gh(`/repos/${REPO}/git/trees`, {
+        method: 'POST',
+        body: JSON.stringify({ base_tree: parent.tree.sha, tree: files.map((f) => ({ path: f.path, mode: '100644', type: 'blob', content: f.content })) }),
+      }, token);
+      const commit = await gh(`/repos/${REPO}/git/commits`, {
+        method: 'POST',
+        body: JSON.stringify({ message: 'layr-hp: カスタマイザーから設定を更新', tree: tree.sha, parents: [parentSha] }),
+      }, token);
+      await gh(`/repos/${REPO}/git/refs/heads/main`, { method: 'PATCH', body: JSON.stringify({ sha: commit.sha }) }, token);
+      statusEl.textContent = '✅ 保存しました。約1分で本番に反映されます';
+    } catch (err) {
+      statusEl.textContent = '❌ ' + (err.message || '保存に失敗しました');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+</script>
+
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  .cz-body{font-family:"Noto Sans JP",-apple-system,sans-serif;background:#EEF1EF;height:100vh;display:flex;flex-direction:column;font-size:13.5px;color:#17211B}
+  .cz-bar{height:54px;background:#0F1613;color:#fff;display:flex;align-items:center;gap:18px;padding:0 16px;flex-shrink:0}
+  .cz-back{color:rgba(255,255,255,.75);text-decoration:none;font-weight:700;font-size:13px}
+  .cz-title{font-weight:900;font-size:14px}
+  .cz-title span{font-weight:500;font-size:11.5px;color:rgba(255,255,255,.6);margin-left:10px}
+  .cz-bar-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
+  .cz-status{font-size:12px;color:#8FE6B2;max-width:340px}
+  .cz-btn{border:none;border-radius:999px;font-weight:800;font-size:12.5px;padding:9px 18px;cursor:pointer;font-family:inherit}
+  .cz-btn.primary{background:#06C755;color:#fff}
+  .cz-btn.primary:hover{background:#04A245}
+  .cz-btn.primary:disabled{opacity:.6}
+  .cz-btn.ghost{background:rgba(255,255,255,.14);color:#fff}
+  .cz-main{flex:1;display:flex;min-height:0}
+  .cz-panel{width:320px;flex-shrink:0;background:#fff;overflow-y:auto;border-right:1px solid #E2E8E4;padding:10px 0 30px}
+  .cz-group{border-bottom:1px solid #EEF1EF}
+  .cz-group summary{cursor:pointer;font-weight:900;font-size:13.5px;padding:14px 18px;list-style:none;user-select:none}
+  .cz-group summary::-webkit-details-marker{display:none}
+  .cz-group[open] summary{color:#04A245}
+  .cz-fields{padding:2px 18px 18px;display:flex;flex-direction:column;gap:12px}
+  .cz-fields label{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:12px;color:#5F6E66}
+  .cz-fields input[type="text"],.cz-fields textarea,.cz-fields select{font-family:inherit;font-size:13px;padding:9px 11px;border:1.5px solid #E2E8E4;border-radius:9px;background:#FAFCFB;color:#17211B;outline:none}
+  .cz-fields input:focus,.cz-fields textarea:focus{border-color:#06C755}
+  .cz-color{flex-direction:row!important;align-items:center;justify-content:space-between}
+  .cz-color input{width:52px;height:30px;border:1.5px solid #E2E8E4;border-radius:7px;background:#fff;padding:2px;cursor:pointer}
+  .cz-css{font-family:ui-monospace,Menlo,monospace;font-size:12px;line-height:1.6}
+  .cz-hint{font-weight:500;font-size:11.5px;color:#5F6E66;line-height:1.7}
+  .cz-hint code{background:#EEF1EF;border-radius:4px;padding:1px 5px}
+  .cz-note{padding:14px 18px;font-size:11.5px;color:#5F6E66;line-height:1.7}
+  .cz-note a{color:#04A245;font-weight:700}
+  .cz-stage{flex:1;display:flex;flex-direction:column;min-width:0}
+  .cz-devices{display:flex;gap:8px;justify-content:center;padding:10px}
+  .cz-dev{border:1px solid #D8DFDA;background:#fff;border-radius:999px;font-size:12px;font-weight:700;padding:7px 16px;cursor:pointer;color:#5F6E66;font-family:inherit}
+  .cz-dev.is-active{background:#0F1613;color:#fff;border-color:#0F1613}
+  .cz-frame-wrap{flex:1;display:flex;justify-content:center;overflow:hidden;padding:0 12px 12px}
+  #czFrame{width:100%;height:100%;border:none;border-radius:12px;background:#fff;box-shadow:0 10px 30px rgba(13,43,31,.12);transition:width .3s ease;max-width:100%}
+  .cz-modal{position:fixed;inset:0;background:rgba(15,22,19,.55);display:grid;place-items:center;z-index:50}
+  .cz-modal[hidden]{display:none}
+  .cz-modal-card{background:#fff;border-radius:16px;padding:28px;width:min(420px,90vw);display:flex;flex-direction:column;gap:12px}
+  .cz-modal-card h2{font-size:16px;font-weight:900}
+  .cz-modal-card p{font-size:12.5px;color:#5F6E66;line-height:1.7}
+  .cz-modal-card input{font-family:inherit;font-size:13px;padding:11px 12px;border:1.5px solid #E2E8E4;border-radius:9px;outline:none}
+  .cz-modal-actions{display:flex;justify-content:flex-end;gap:10px}
+  @media (max-width:900px){
+    .cz-panel{width:270px}
+    .cz-title span{display:none}
+  }
+</style>
+</body>
+</html>

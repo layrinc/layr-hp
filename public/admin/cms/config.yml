@@ -197,6 +197,7 @@ collections:
             fields:
               - { label: "テキスト", name: "text", widget: "string" }
               - { label: "緑色で表示", name: "highlight", widget: "boolean", default: false }
+          - { label: "追加CSS（サイト全体に適用。カスタマイザーからも編集可）", name: "custom_css", widget: "text", required: false, default: "" }
 
       # --- ⑩ お悩み（PROBLEM） ---
       - name: problem
