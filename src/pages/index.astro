@@ -143,15 +143,15 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
 
   <!-- ============ STATS ============ -->
   <section class="stats" aria-labelledby="stats-title">
-    {stats.show_edit_note && <div class="draft-note"><p>【要編集】実績数値はサンプルです。管理画面の「サイト設定 → 実績数値」で実数値に差し替え、この注意書きをオフにしてください。</p></div>}
+    <div class="draft-note" data-edit-show="stats.show_edit_note" style={stats.show_edit_note ? '' : 'display:none'}><p>【要編集】実績数値はサンプルです。管理画面の「サイト設定 → 実績数値」で実数値に差し替え、この注意書きをオフにしてください。</p></div>
     <div class="container">
-      <h2 class="stats-title" id="stats-title">{stats.title_before}<span class="marker">{stats.title_marker}</span></h2>
+      <h2 class="stats-title" id="stats-title"><span data-edit="stats.title_before">{stats.title_before}</span><span class="marker" data-edit="stats.title_marker">{stats.title_marker}</span></h2>
       <div class="stats-grid">
-        {stats.items.map((item) => (
+        {stats.items.map((item, si) => (
           <div class="stat-card reveal">
-            <span class="stat-tag">{item.tag}</span>
-            <p class="stat-num">{item.arrow && <span class="up">▲</span>}{item.number}<small>{item.unit}</small></p>
-            <p class="stat-desc">{item.desc.split('\n').map((line, i) => <Fragment>{i > 0 && <br />}{line}</Fragment>)}</p>
+            <span class="stat-tag" data-edit={`stats.items.${si}.tag`}>{item.tag}</span>
+            <p class="stat-num">{item.arrow && <span class="up">▲</span>}<span data-edit={`stats.items.${si}.number`}>{item.number}</span><small data-edit={`stats.items.${si}.unit`}>{item.unit}</small></p>
+            <p class="stat-desc" data-edit-ml={`stats.items.${si}.desc`}>{item.desc.split('\n').map((line, i) => <Fragment>{i > 0 && <br />}{line}</Fragment>)}</p>
           </div>
         ))}
       </div>
@@ -163,12 +163,12 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
     <div class="container">
       <div class="sec-head reveal" data-wm="PROBLEM">
         <h2 class="sec-en" id="problem-title">PROBLEM</h2>
-        <p class="sec-jp">{problem.title_jp}</p>
+        <p class="sec-jp" data-edit="problem.title_jp">{problem.title_jp}</p>
       </div>
       <div class="problem-cols">
         <ul class="problem-list">
-          {problem.items.map((item) => (
-            <li class="reveal"><span class="check"></span>{item}</li>
+          {problem.items.map((item, i) => (
+            <li class="reveal"><span class="check"></span><span data-edit={`problem.items.${i}`}>{item}</span></li>
           ))}
         </ul>
         <div class="problem-illust reveal" aria-hidden="true">
@@ -177,8 +177,8 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
       </div>
       <div class="problem-arrow" aria-hidden="true"></div>
       <div class="problem-answer reveal">
-        <strong>{problem.answer_lead}<span class="marker">{problem.answer_marker}</span>{problem.answer_tail}</strong>
-        <p>{problem.answer_body}</p>
+        <strong><span data-edit="problem.answer_lead">{problem.answer_lead}</span><span class="marker" data-edit="problem.answer_marker">{problem.answer_marker}</span><span data-edit="problem.answer_tail">{problem.answer_tail}</span></strong>
+        <p data-edit="problem.answer_body">{problem.answer_body}</p>
       </div>
     </div>
   </section>
@@ -202,29 +202,29 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
     <div class="container">
       <div class="sec-head reveal" data-wm="SERVICE">
         <h2 class="sec-en" id="service-title">SERVICE</h2>
-        <p class="sec-jp">{service.title_jp}</p>
-        <p class="sec-lead">{service.lead}</p>
+        <p class="sec-jp" data-edit="service.title_jp">{service.title_jp}</p>
+        <p class="sec-lead" data-edit="service.lead">{service.lead}</p>
       </div>
       <div class="service-grid">
         {service.items.map((s, i) => s.featured ? (
           <div class="service-card wide reveal">
-            {s.badge && <span class="service-badge">{s.badge}</span>}
-            <p class="service-num">{s.number}</p>
-            <h3>{s.title}</h3>
-            <p>{s.desc}</p>
-            <ul class="service-tags">{s.tags.map((t) => <li>{t}</li>)}</ul>
+            {s.badge && <span class="service-badge" data-edit={`service.items.${i}.badge`}>{s.badge}</span>}
+            <p class="service-num" data-edit={`service.items.${i}.number`}>{s.number}</p>
+            <h3 data-edit={`service.items.${i}.title`}>{s.title}</h3>
+            <p data-edit={`service.items.${i}.desc`}>{s.desc}</p>
+            <ul class="service-tags">{s.tags.map((t, j) => <li data-edit={`service.items.${i}.tags.${j}`}>{t}</li>)}</ul>
           </div>
         ) : (
           <div class="service-card reveal">
             <div class="service-visual" aria-hidden="true" set:html={serviceIcons[i % serviceIcons.length]} />
-            <p class="service-num">{s.number}</p>
-            <h3>{s.title}</h3>
-            <p>{s.desc}</p>
-            <ul class="service-tags">{s.tags.map((t) => <li>{t}</li>)}</ul>
+            <p class="service-num" data-edit={`service.items.${i}.number`}>{s.number}</p>
+            <h3 data-edit={`service.items.${i}.title`}>{s.title}</h3>
+            <p data-edit={`service.items.${i}.desc`}>{s.desc}</p>
+            <ul class="service-tags">{s.tags.map((t, j) => <li data-edit={`service.items.${i}.tags.${j}`}>{t}</li>)}</ul>
           </div>
         ))}
       </div>
-      {service.note && <p class="service-note">{service.note}</p>}
+      <p class="service-note" data-edit="service.note" style={service.note ? '' : 'display:none'}>{service.note}</p>
     </div>
   </section>
 
@@ -233,14 +233,14 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
     <div class="container">
       <div class="sec-head reveal" data-wm="REASON">
         <h2 class="sec-en" id="reason-title">REASON</h2>
-        <p class="sec-jp">{reason.title_jp}</p>
+        <p class="sec-jp" data-edit="reason.title_jp">{reason.title_jp}</p>
       </div>
       <div class="reason-grid">
         {reason.items.map((r, i) => (
           <div class="reason-card reveal">
             <span class="reason-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-            <h3>{r.title}</h3>
-            <p>{r.desc}</p>
+            <h3 data-edit={`reason.items.${i}.title`}>{r.title}</h3>
+            <p data-edit={`reason.items.${i}.desc`}>{r.desc}</p>
           </div>
         ))}
       </div>
@@ -258,28 +258,28 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
         <IllustGrowth class="illust illust-sm" />
       </div>
     </div>
-    {cases.show_edit_note && <div class="draft-note"><p>【要編集】以下の実績はサンプルです。管理画面の「サイト設定 → 支援実績」で実案件に差し替え、この注意書きをオフにしてください（クライアント名の掲載は先方の許可を取ってから）。</p></div>}
+    <div class="draft-note" data-edit-show="cases.show_edit_note" style={cases.show_edit_note ? '' : 'display:none'}><p>【要編集】以下の実績はサンプルです。管理画面の「サイト設定 → 支援実績」で実案件に差し替え、この注意書きをオフにしてください（クライアント名の掲載は先方の許可を取ってから）。</p></div>
     <div class="container">
       <div class="case-grid">
-        {cases.items.map((c) => (
+        {cases.items.map((c, i) => (
           <div class="case-card reveal">
             <div class="case-head">
-              <span class="case-tag">{c.tag}</span>
-              <h3>{c.title}</h3>
+              <span class="case-tag" data-edit={`cases.items.${i}.tag`}>{c.tag}</span>
+              <h3 data-edit={`cases.items.${i}.title`}>{c.title}</h3>
             </div>
             <div class="case-body">
               <dl>
-                <div class="case-row"><dt>課題</dt><dd>{c.problem}</dd></div>
-                <div class="case-row"><dt>施策</dt><dd>{c.action}</dd></div>
+                <div class="case-row"><dt>課題</dt><dd data-edit={`cases.items.${i}.problem`}>{c.problem}</dd></div>
+                <div class="case-row"><dt>施策</dt><dd data-edit={`cases.items.${i}.action`}>{c.action}</dd></div>
               </dl>
             </div>
             <div class="case-result">
-              <p class="label">{c.metric_label}</p>
-              <div class="case-graph" aria-hidden="true"><span class="bar b1" style={`--h:${c.graph_before}%`} data-label="Before"></span><span class="bar b2" style={`--h:${c.graph_after}%`} data-label="After"></span></div>
+              <p class="label" data-edit={`cases.items.${i}.metric_label`}>{c.metric_label}</p>
+              <div class="case-graph" aria-hidden="true"><span class="bar b1" style={`--h:${c.graph_before}%`} data-edit-h={`cases.items.${i}.graph_before`} data-label="Before"></span><span class="bar b2" style={`--h:${c.graph_after}%`} data-edit-h={`cases.items.${i}.graph_after`} data-label="After"></span></div>
               <div class="case-metric">
-                <span class="before">{c.before}</span>
+                <span class="before" data-edit={`cases.items.${i}.before`}>{c.before}</span>
                 <span class="arrow">→</span>
-                <span class="after">{c.after_number}<small>{c.after_unit}</small></span>
+                <span class="after"><span data-edit={`cases.items.${i}.after_number`}>{c.after_number}</span><small data-edit={`cases.items.${i}.after_unit`}>{c.after_unit}</small></span>
               </div>
             </div>
           </div>
@@ -332,16 +332,16 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
         <div class="promise-box yes reveal">
           <h3><span class="ico">○</span>お約束できること</h3>
           <ul>
-            {promiseData.yes_items.map((item) => (
-              <li><span class="mark">○</span><div><strong>{item.title}</strong><span>{item.desc}</span></div></li>
+            {promiseData.yes_items.map((item, i) => (
+              <li><span class="mark">○</span><div><strong data-edit={`promise.yes_items.${i}.title`}>{item.title}</strong><span data-edit={`promise.yes_items.${i}.desc`}>{item.desc}</span></div></li>
             ))}
           </ul>
         </div>
         <div class="promise-box no reveal">
           <h3><span class="ico">×</span>お約束できないこと</h3>
           <ul>
-            {promiseData.no_items.map((item) => (
-              <li><span class="mark">×</span><div><strong>{item.title}</strong><span>{item.desc}</span></div></li>
+            {promiseData.no_items.map((item, i) => (
+              <li><span class="mark">×</span><div><strong data-edit={`promise.no_items.${i}.title`}>{item.title}</strong><span data-edit={`promise.no_items.${i}.desc`}>{item.desc}</span></div></li>
             ))}
           </ul>
         </div>
@@ -367,10 +367,10 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
             : <span class="todo">【要編集】<br>代表写真を管理画面の<br>「サイト設定 → 代表挨拶」で設定</span>}
         </div>
         <div class="message-body reveal">
-          {message.paragraphs.map((p) => <p>{p}</p>)}
+          {message.paragraphs.map((p, i) => <p data-edit={`message.paragraphs.${i}`}>{p}</p>)}
           <div class="sign">
-            <span class="title">{message.sign_title}</span>
-            <span class="name">{message.sign_name}</span>
+            <span class="title" data-edit="message.sign_title">{message.sign_title}</span>
+            <span class="name" data-edit="message.sign_name">{message.sign_name}</span>
           </div>
         </div>
       </div>
@@ -385,10 +385,10 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
         <p class="sec-jp">よくあるご質問</p>
       </div>
       <div class="faq-list reveal">
-        {faq.items.map((item) => (
+        {faq.items.map((item, i) => (
           <details class="faq-item">
-            <summary><span class="q">Q.</span>{item.q}</summary>
-            <div class="a"><span class="mark">A.</span><p>{item.a}</p></div>
+            <summary><span class="q">Q.</span><span data-edit={`faq.items.${i}.q`}>{item.q}</span></summary>
+            <div class="a"><span class="mark">A.</span><p data-edit={`faq.items.${i}.a`}>{item.a}</p></div>
           </details>
         ))}
       </div>
@@ -404,19 +404,19 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
       </div>
       <table class="company-table reveal">
         <tbody>
-          <tr><th>会社名</th><td>{company.name}</td></tr>
-          <tr><th>代表者</th><td>{company.representative}</td></tr>
-          <tr><th>所在地</th><td>{company.address}</td></tr>
-          <tr><th>設立</th><td>{company.founded}</td></tr>
+          <tr><th>会社名</th><td data-edit="company.name">{company.name}</td></tr>
+          <tr><th>代表者</th><td data-edit="company.representative">{company.representative}</td></tr>
+          <tr><th>所在地</th><td data-edit="company.address">{company.address}</td></tr>
+          <tr><th>設立</th><td data-edit="company.founded">{company.founded}</td></tr>
           <tr>
             <th>事業内容</th>
             <td>
               <ul>
-                {company.business.map((b) => <li>{b}</li>)}
+                {company.business.map((b, i) => <li data-edit={`company.business.${i}`}>{b}</li>)}
               </ul>
             </td>
           </tr>
-          <tr><th>お問い合わせ</th><td><a href={`mailto:${settings.email}`}>{settings.email}</a></td></tr>
+          <tr><th>お問い合わせ</th><td><a href={`mailto:${settings.email}`} data-edit="settings.email">{settings.email}</a></td></tr>
         </tbody>
       </table>
     </div>
@@ -429,7 +429,7 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
       <h2 id="cta-title"><span data-edit="cta.final_title_line1">{cta.final_title_line1}</span><br><span data-edit="cta.final_title_before">{cta.final_title_before}</span><span data-edit="cta.final_title_em">{cta.final_title_em}</span><span data-edit="cta.final_title_after">{cta.final_title_after}</span></h2>
       <p data-edit-ml="cta.final_desc" set:html={cta.final_desc.replace(/\n/g, '<br>')}></p>
       <a class="btn btn-green btn-lg" href={consult} data-edit="cta.final_btn">{cta.final_btn}</a>
-      <p class="mail">メールでのご連絡：<a href={`mailto:${settings.email}`}>{settings.email}</a></p>
+      <p class="mail">メールでのご連絡：<a href={`mailto:${settings.email}`} data-edit="settings.email">{settings.email}</a></p>
     </div>
   </section>
 

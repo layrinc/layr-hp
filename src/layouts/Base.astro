@@ -129,7 +129,7 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
         </svg>
         <span class="brand-name">LAYR</span>
       </div>
-      <p class="footer-tagline">{taglineLines.map((line, i) => <Fragment>{i > 0 && <br />}{line}</Fragment>)}</p>
+      <p class="footer-tagline" data-edit-ml="settings.tagline">{taglineLines.map((line, i) => <Fragment>{i > 0 && <br />}{line}</Fragment>)}</p>
     </div>
     <div>
       <h4>SERVICE</h4>
@@ -196,6 +196,16 @@ const favicon = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
             var esc = d.mlTexts[mk].replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
             el.innerHTML = esc.replace(/\n/g, '<br>');
           });
+        }
+      }
+      if (d.show) {
+        for (var sk in d.show) {
+          document.querySelectorAll('[data-edit-show="' + sk + '"]').forEach(function (el) { el.style.display = d.show[sk] ? '' : 'none'; });
+        }
+      }
+      if (d.heights) {
+        for (var hk in d.heights) {
+          document.querySelectorAll('[data-edit-h="' + hk + '"]').forEach(function (el) { el.style.setProperty('--h', d.heights[hk] + '%'); });
         }
       }
       if (typeof d.css === 'string') {

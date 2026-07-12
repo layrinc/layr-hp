@@ -1,15 +1,25 @@
 ---
 /**
  * ライブカスタマイザー（WordPressのカスタマイザー相当）。
- * 左のパネルを操作すると、右の実サイト（iframe）に即時反映される。
+ * サイト設定の全セクションを、右の実サイトプレビューを見ながら編集できる。
  * 「保存して公開」でGitHubにコミット → 既存の自動デプロイで本番反映（約1分）。
- * ログインはCMSと同じGitHubアクセストークンを使う。
+ * ログインはCMSと同じGitHubアクセストークン（CMSログイン済みなら自動流用）。
  */
 import theme from '../../data/theme.json';
 import hero from '../../data/hero.json';
 import cta from '../../data/cta.json';
+import stats from '../../data/stats.json';
+import cases from '../../data/cases.json';
+import problem from '../../data/problem.json';
+import service from '../../data/service.json';
+import reason from '../../data/reason.json';
+import promise from '../../data/promise.json';
+import faq from '../../data/faq.json';
+import message from '../../data/message.json';
+import company from '../../data/company.json';
+import settings from '../../data/settings.json';
 
-const initial = { theme, hero, cta };
+const initial = { theme, hero, cta, stats, cases, problem, service, reason, promise, faq, message, company, settings };
 ---
 <!doctype html>
 <html lang="ja">
@@ -35,9 +45,8 @@ const initial = { theme, hero, cta };
 
   <div class="cz-main">
     <aside class="cz-panel">
-
       <details class="cz-group" open>
-        <summary>🎨 デザイン</summary>
+        <summary>🎨 デザイン（色・角丸・フォント）</summary>
         <div class="cz-fields">
           <label class="cz-color">メインカラー<input type="color" id="f-accent" /></label>
           <label class="cz-color">メインカラー（濃）<input type="color" id="f-accent_dark" /></label>
@@ -56,15 +65,8 @@ const initial = { theme, hero, cta };
         </div>
       </details>
 
-      <details class="cz-group" open>
-        <summary>✏️ 文言｜ヒーロー（最上部）</summary>
-        <div class="cz-fields" id="grpHero"></div>
-      </details>
-
-      <details class="cz-group">
-        <summary>✏️ 文言｜CTA（緑バナー・最下部）</summary>
-        <div class="cz-fields" id="grpCta"></div>
-      </details>
+      <!-- 文言グループはJSがスキーマから自動生成する -->
+      <div id="czGroups"></div>
 
       <details class="cz-group">
         <summary>🧩 追加CSS（上級者向け）</summary>
@@ -74,7 +76,7 @@ const initial = { theme, hero, cta };
         </div>
       </details>
 
-      <p class="cz-note">※ 記事・実績数値・会社概要などの編集は <a href="/admin/cms/">編集画面（CMS）</a> から。</p>
+      <p class="cz-note">※ 項目の<strong>追加・削除</strong>（サービスを増やす、FAQを足す等）と<strong>画像</strong>は <a href="/admin/cms/">編集画面（CMS）</a> から。ここでは今ある項目の内容とデザインを編集できます。記事の執筆もCMSから。</p>
     </aside>
 
     <section class="cz-stage">
@@ -107,57 +109,195 @@ const initial = { theme, hero, cta };
   const state = JSON.parse(JSON.stringify(initial));
   const frame = document.getElementById('czFrame');
   const statusEl = document.getElementById('czStatus');
-  const fontMap = {
-    Montserrat: 'Montserrat:wght@700;800',
-    Archivo: 'Archivo:wght@700;800',
-    Poppins: 'Poppins:wght@700;800',
-  };
+  const fontMap = { Montserrat: 'Montserrat:wght@700;800', Archivo: 'Archivo:wght@700;800', Poppins: 'Poppins:wght@700;800' };
 
-  // ===== 文言フィールド定義 =====
-  const heroFields = [
-    ['eyebrow', 'キャッチ上の帯', 'text'],
-    ['catch_line1', 'キャッチコピー 1行目', 'text'],
-    ['catch_line2', 'キャッチコピー 2行目（マーカー）', 'text'],
-    ['catch_line3', 'キャッチコピー 3行目', 'text'],
-    ['sub', 'サブコピー', 'textarea'],
-    ['cta_primary', '緑ボタン', 'text'],
-    ['cta_secondary', '白ボタン', 'text'],
-  ];
-  const ctaFields = [
-    ['band_title_before', '【バナー】見出し・前', 'text'],
-    ['band_title_em', '【バナー】見出し・強調', 'text'],
-    ['band_title_after', '【バナー】見出し・後', 'text'],
-    ['band_desc', '【バナー】説明', 'textarea'],
-    ['band_btn_primary', '【バナー】緑ボタン', 'text'],
-    ['band_btn_secondary', '【バナー】白ボタン', 'text'],
-    ['final_title_line1', '【最下部】見出し1行目', 'text'],
-    ['final_title_before', '【最下部】2行目・前', 'text'],
-    ['final_title_em', '【最下部】2行目・強調', 'text'],
-    ['final_title_after', '【最下部】2行目・後', 'text'],
-    ['final_desc', '【最下部】説明（改行可）', 'textarea'],
-    ['final_btn', '【最下部】ボタン', 'text'],
-  ];
+  // パスで状態を読み書き（例: "stats.items.0.tag"）
+  const getP = (path) => path.split('.').reduce((o, k) => o?.[k], state);
+  const setP = (path, v) => { const ks = path.split('.'); const last = ks.pop(); const o = ks.reduce((o, k) => o[k], state); o[last] = v; };
 
-  function buildFields(containerId, objKey, fields) {
-    const wrap = document.getElementById(containerId);
-    fields.forEach(([key, label, kind]) => {
+  // ===== スキーマ（グループ→フィールド）。kind: t=1行 / ta=複数行 / ml=複数行(改行が<br>になる) / flag=ON,OFF / pct=0〜100 =====
+  const S = state;
+  const groups = [];
+  const g = (title, fields, open = false) => groups.push({ title, fields, open });
+
+  g('✏️ ① 基本設定（フッター・メール）', [
+    ['settings.email', '問い合わせメールアドレス', 't'],
+    ['settings.tagline', 'フッターのひとこと（改行可）', 'ml'],
+    ['settings.line_url', 'LINE友だち追加URL（保存後に反映）', 't'],
+  ]);
+  g('✏️ ② ヒーロー（最上部）', [
+    ['hero.eyebrow', 'キャッチ上の帯', 't'],
+    ['hero.catch_line1', 'キャッチコピー 1行目', 't'],
+    ['hero.catch_line2', 'キャッチコピー 2行目（マーカー）', 't'],
+    ['hero.catch_line3', 'キャッチコピー 3行目', 't'],
+    ['hero.sub', 'サブコピー', 'ta'],
+    ['hero.cta_primary', '緑ボタン', 't'],
+    ['hero.cta_secondary', '白ボタン', 't'],
+  ], true);
+  g('✏️ ③ 実績数値（数字で見る）', [
+    ['stats.show_edit_note', '【要編集】注意帯を表示', 'flag'],
+    ['stats.title_before', '見出し・前半', 't'],
+    ['stats.title_marker', '見出し・マーカー部分', 't'],
+    ...S.stats.items.flatMap((_, i) => [
+      [`stats.items.${i}.tag`, `カード${i + 1}｜業種タグ`, 't'],
+      [`stats.items.${i}.number`, `カード${i + 1}｜数値`, 't'],
+      [`stats.items.${i}.unit`, `カード${i + 1}｜単位`, 't'],
+      [`stats.items.${i}.desc`, `カード${i + 1}｜説明（改行可）`, 'ml'],
+    ]),
+  ]);
+  g('✏️ ④ 支援実績（CASE）', [
+    ['cases.show_edit_note', '【要編集】注意帯を表示', 'flag'],
+    ...S.cases.items.flatMap((_, i) => [
+      [`cases.items.${i}.tag`, `事例${i + 1}｜業種タグ`, 't'],
+      [`cases.items.${i}.title`, `事例${i + 1}｜タイトル`, 'ta'],
+      [`cases.items.${i}.problem`, `事例${i + 1}｜課題`, 'ta'],
+      [`cases.items.${i}.action`, `事例${i + 1}｜施策`, 'ta'],
+      [`cases.items.${i}.metric_label`, `事例${i + 1}｜指標名`, 't'],
+      [`cases.items.${i}.before`, `事例${i + 1}｜Before値`, 't'],
+      [`cases.items.${i}.after_number`, `事例${i + 1}｜After数値`, 't'],
+      [`cases.items.${i}.after_unit`, `事例${i + 1}｜After単位`, 't'],
+      [`cases.items.${i}.graph_before`, `事例${i + 1}｜棒グラフ左の高さ%`, 'pct'],
+      [`cases.items.${i}.graph_after`, `事例${i + 1}｜棒グラフ右の高さ%`, 'pct'],
+    ]),
+  ]);
+  g('✏️ ⑤ お約束', [
+    ...S.promise.yes_items.flatMap((_, i) => [
+      [`promise.yes_items.${i}.title`, `○できること${i + 1}｜見出し`, 't'],
+      [`promise.yes_items.${i}.desc`, `○できること${i + 1}｜説明`, 'ta'],
+    ]),
+    ...S.promise.no_items.flatMap((_, i) => [
+      [`promise.no_items.${i}.title`, `×できないこと${i + 1}｜見出し`, 't'],
+      [`promise.no_items.${i}.desc`, `×できないこと${i + 1}｜説明`, 'ta'],
+    ]),
+  ]);
+  g('✏️ ⑥ 代表挨拶', [
+    ...S.message.paragraphs.map((_, i) => [`message.paragraphs.${i}`, `本文 段落${i + 1}`, 'ta']),
+    ['message.sign_title', '署名・肩書き', 't'],
+    ['message.sign_name', '署名・名前', 't'],
+  ]);
+  g('✏️ ⑦ よくあるご質問', S.faq.items.flatMap((_, i) => [
+    [`faq.items.${i}.q`, `Q${i + 1}｜質問`, 'ta'],
+    [`faq.items.${i}.a`, `Q${i + 1}｜回答`, 'ta'],
+  ]));
+  g('✏️ ⑧ 会社概要', [
+    ['company.name', '会社名', 't'],
+    ['company.representative', '代表者', 't'],
+    ['company.address', '所在地', 't'],
+    ['company.founded', '設立', 't'],
+    ...S.company.business.map((_, i) => [`company.business.${i}`, `事業内容${i + 1}`, 't']),
+  ]);
+  g('✏️ ⑩ お悩み（PROBLEM）', [
+    ['problem.title_jp', '小見出し', 't'],
+    ...S.problem.items.map((_, i) => [`problem.items.${i}`, `お悩み${i + 1}`, 'ta']),
+    ['problem.answer_lead', '回答・マーカー前', 't'],
+    ['problem.answer_marker', '回答・マーカー部分', 't'],
+    ['problem.answer_tail', '回答・マーカー後', 't'],
+    ['problem.answer_body', '回答・本文', 'ta'],
+  ]);
+  g('✏️ ⑪ 事業内容（SERVICE）', [
+    ['service.title_jp', '小見出し', 't'],
+    ['service.lead', 'リード文', 'ta'],
+    ['service.note', '注釈（※の行）', 't'],
+    ...S.service.items.flatMap((s, i) => [
+      [`service.items.${i}.badge`, `サービス${i + 1}｜バッジ`, 't'],
+      [`service.items.${i}.number`, `サービス${i + 1}｜番号ラベル`, 't'],
+      [`service.items.${i}.title`, `サービス${i + 1}｜名称`, 't'],
+      [`service.items.${i}.desc`, `サービス${i + 1}｜説明`, 'ta'],
+      ...s.tags.map((_, j) => [`service.items.${i}.tags.${j}`, `サービス${i + 1}｜タグ${j + 1}`, 't']),
+    ]),
+  ]);
+  g('✏️ ⑫ 選ばれる理由（REASON）', [
+    ['reason.title_jp', '小見出し', 't'],
+    ...S.reason.items.flatMap((_, i) => [
+      [`reason.items.${i}.title`, `理由${i + 1}｜見出し`, 't'],
+      [`reason.items.${i}.desc`, `理由${i + 1}｜説明`, 'ta'],
+    ]),
+  ]);
+  g('✏️ ⑬ CTA（緑バナー・最下部）', [
+    ['cta.band_title_before', '【バナー】見出し・前', 't'],
+    ['cta.band_title_em', '【バナー】見出し・強調', 't'],
+    ['cta.band_title_after', '【バナー】見出し・後', 't'],
+    ['cta.band_desc', '【バナー】説明', 'ta'],
+    ['cta.band_btn_primary', '【バナー】緑ボタン', 't'],
+    ['cta.band_btn_secondary', '【バナー】白ボタン', 't'],
+    ['cta.final_title_line1', '【最下部】見出し1行目', 't'],
+    ['cta.final_title_before', '【最下部】2行目・前', 't'],
+    ['cta.final_title_em', '【最下部】2行目・強調', 't'],
+    ['cta.final_title_after', '【最下部】2行目・後', 't'],
+    ['cta.final_desc', '【最下部】説明（改行可）', 'ml'],
+    ['cta.final_btn', '【最下部】ボタン', 't'],
+  ]);
+
+  // ===== フォーム生成＋ライブ反映チャンネル登録 =====
+  const reg = { texts: [], ml: [], show: [], heights: [] };
+  const wrapAll = document.getElementById('czGroups');
+  groups.forEach(({ title, fields, open }) => {
+    const det = document.createElement('details');
+    det.className = 'cz-group';
+    if (open) det.open = true;
+    const sum = document.createElement('summary');
+    sum.textContent = title;
+    det.appendChild(sum);
+    const box = document.createElement('div');
+    box.className = 'cz-fields';
+    fields.forEach(([path, label, kind]) => {
       const lab = document.createElement('label');
-      lab.textContent = label;
-      const input = kind === 'textarea' ? document.createElement('textarea') : document.createElement('input');
-      if (kind === 'textarea') input.rows = 3; else input.type = 'text';
-      input.value = state[objKey][key] ?? '';
-      input.addEventListener('input', () => { state[objKey][key] = input.value; push(); });
-      lab.appendChild(input);
-      wrap.appendChild(lab);
+      let input;
+      if (kind === 'flag') {
+        lab.className = 'cz-flag';
+        input = document.createElement('input');
+        input.type = 'checkbox';
+        input.checked = !!getP(path);
+        lab.appendChild(input);
+        lab.appendChild(document.createTextNode(label));
+        reg.show.push(path);
+      } else if (kind === 'pct') {
+        lab.textContent = label;
+        input = document.createElement('input');
+        input.type = 'number'; input.min = 0; input.max = 100;
+        input.value = getP(path);
+        lab.appendChild(input);
+        reg.heights.push(path);
+      } else {
+        lab.textContent = label;
+        input = kind === 't' ? document.createElement('input') : document.createElement('textarea');
+        if (kind === 't') input.type = 'text'; else input.rows = 3;
+        input.value = getP(path) ?? '';
+        lab.appendChild(input);
+        (kind === 'ml' ? reg.ml : reg.texts).push(path);
+      }
+      input.dataset.czPath = path;
+      input.dataset.czKind = kind;
+      box.appendChild(lab);
     });
-  }
-  buildFields('grpHero', 'hero', heroFields);
-  buildFields('grpCta', 'cta', ctaFields);
+    det.appendChild(box);
+    wrapAll.appendChild(det);
+  });
 
-  // ===== デザイン入力の初期化 =====
+  // ===== 委譲リスナー（全フィールド共通・input/changeの両方を拾う） =====
+  function onEdit(e) {
+    const t = e.target;
+    const path = t && t.dataset ? t.dataset.czPath : null;
+    if (!path) return;
+    const kind = t.dataset.czKind;
+    if (kind === 'flag') setP(path, t.checked);
+    else if (kind === 'pct') setP(path, Number(t.value) || 0);
+    else setP(path, t.value);
+    push();
+  }
+  document.addEventListener('input', onEdit, true);
+  document.addEventListener('change', onEdit, true);
+
+  // 検証・拡張用フック（管理者ページ限定。レイのE2Eテストでも使用）
+  window.czState = state;
+  window.czSet = (path, v) => { setP(path, v); push(); };
+
+  // ===== デザイン入力 =====
   const $ = (id) => document.getElementById(id);
-  const designKeys = ['accent', 'accent_dark', 'base_black', 'bg_tint'];
-  designKeys.forEach((k) => { $('f-' + k).value = state.theme[k]; $('f-' + k).addEventListener('input', (e) => { state.theme[k] = e.target.value; push(); }); });
+  ['accent', 'accent_dark', 'base_black', 'bg_tint'].forEach((k) => {
+    $('f-' + k).value = state.theme[k];
+    $('f-' + k).addEventListener('input', (e) => { state.theme[k] = e.target.value; push(); });
+  });
   $('f-radius').value = state.theme.radius;
   $('radiusOut').textContent = state.theme.radius + 'px';
   $('f-radius').addEventListener('input', (e) => { state.theme.radius = Number(e.target.value); $('radiusOut').textContent = e.target.value + 'px'; push(); });
@@ -166,33 +306,28 @@ const initial = { theme, hero, cta };
   $('f-custom_css').value = state.theme.custom_css || '';
   $('f-custom_css').addEventListener('input', (e) => { state.theme.custom_css = e.target.value; push(); });
 
-  // ===== ライブ反映（postMessage） =====
-  let timer = null;
-  function push() {
-    clearTimeout(timer);
-    timer = setTimeout(sendNow, 60);
-  }
+  // ===== ライブ反映（postMessage・即時送信） =====
+  function push() { sendNow(); }
+  window.czSend = () => sendNow();
   function sendNow() {
     const t = state.theme;
     const gf = fontMap[t.font_en] || fontMap.Montserrat;
-    const texts = {};
-    heroFields.forEach(([k]) => { texts['hero.' + k] = state.hero[k]; });
-    ctaFields.forEach(([k]) => { if (k !== 'final_desc') texts['cta.' + k] = state.cta[k]; });
-    frame.contentWindow?.postMessage({
+    const msg = {
       type: 'layr-preview',
       vars: {
-        '--green': t.accent,
-        '--green-dark': t.accent_dark,
-        '--black': t.base_black,
-        '--bg': t.bg_tint,
-        '--radius': t.radius + 'px',
+        '--green': t.accent, '--green-dark': t.accent_dark, '--black': t.base_black,
+        '--bg': t.bg_tint, '--radius': t.radius + 'px',
         '--font-en': `'${t.font_en}','Noto Sans JP',sans-serif`,
       },
       fontHref: `https://fonts.googleapis.com/css2?family=${gf}&display=swap`,
-      texts,
-      mlTexts: { 'cta.final_desc': state.cta.final_desc },
+      texts: {}, mlTexts: {}, show: {}, heights: {},
       css: t.custom_css || '',
-    }, location.origin);
+    };
+    reg.texts.forEach((p) => { msg.texts[p] = String(getP(p) ?? ''); });
+    reg.ml.forEach((p) => { msg.mlTexts[p] = String(getP(p) ?? ''); });
+    reg.show.forEach((p) => { msg.show[p] = !!getP(p); });
+    reg.heights.forEach((p) => { msg.heights[p] = Number(getP(p)) || 0; });
+    frame.contentWindow?.postMessage(msg, location.origin);
   }
   frame.addEventListener('load', () => setTimeout(sendNow, 150));
 
@@ -208,7 +343,7 @@ const initial = { theme, hero, cta };
   // ===== リセット =====
   document.getElementById('czReset').addEventListener('click', () => { if (confirm('未保存の変更を破棄して読み込み直しますか？')) location.reload(); });
 
-  // ===== 保存（GitHubへコミット → 自動デプロイ） =====
+  // ===== 保存（GitHubへ1コミット → 自動デプロイ） =====
   const REPO = 'layrinc/company-brain';
   const BASE = '株式会社LAYR/layr-hp/src/data/';
   const TOKEN_KEY = 'layrGhToken';
@@ -221,10 +356,7 @@ const initial = { theme, hero, cta };
       // CMS（Sveltia）にログイン済みなら、そのトークンを自動で使い回す
       try {
         const cms = JSON.parse(localStorage.getItem('sveltia-cms.user') || '{}');
-        if (cms && cms.token) {
-          localStorage.setItem(TOKEN_KEY, cms.token);
-          return resolve(cms.token);
-        }
+        if (cms && cms.token) { localStorage.setItem(TOKEN_KEY, cms.token); return resolve(cms.token); }
       } catch (_) { /* 無視してモーダルへ */ }
       modal.hidden = false;
       $('czTokenOk').onclick = () => {
@@ -241,11 +373,7 @@ const initial = { theme, hero, cta };
   async function gh(path, opt = {}, token) {
     const res = await fetch('https://api.github.com' + path, {
       ...opt,
-      headers: {
-        Authorization: 'Bearer ' + token,
-        Accept: 'application/vnd.github+json',
-        ...(opt.body ? { 'Content-Type': 'application/json' } : {}),
-      },
+      headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json', ...(opt.body ? { 'Content-Type': 'application/json' } : {}) },
     });
     if (res.status === 401 || res.status === 403) { localStorage.removeItem(TOKEN_KEY); throw new Error('認証エラー。トークンを確認してください（再度保存するとトークン入力が出ます）'); }
     if (!res.ok) throw new Error('GitHub APIエラー: ' + res.status);
@@ -259,11 +387,8 @@ const initial = { theme, hero, cta };
     btn.disabled = true;
     statusEl.textContent = '保存中…';
     try {
-      const files = [
-        { path: BASE + 'theme.json', content: JSON.stringify(state.theme, null, 2) + '\n' },
-        { path: BASE + 'hero.json', content: JSON.stringify(state.hero, null, 2) + '\n' },
-        { path: BASE + 'cta.json', content: JSON.stringify(state.cta, null, 2) + '\n' },
-      ];
+      const fileKeys = ['theme', 'hero', 'cta', 'stats', 'cases', 'problem', 'service', 'reason', 'promise', 'faq', 'message', 'company', 'settings'];
+      const files = fileKeys.map((k) => ({ path: BASE + k + '.json', content: JSON.stringify(state[k], null, 2) + '\n' }));
       const ref = await gh(`/repos/${REPO}/git/ref/heads/main`, {}, token);
       const parentSha = ref.object.sha;
       const parent = await gh(`/repos/${REPO}/git/commits/${parentSha}`, {}, token);
@@ -300,17 +425,19 @@ const initial = { theme, hero, cta };
   .cz-btn.primary:disabled{opacity:.6}
   .cz-btn.ghost{background:rgba(255,255,255,.14);color:#fff}
   .cz-main{flex:1;display:flex;min-height:0}
-  .cz-panel{width:320px;flex-shrink:0;background:#fff;overflow-y:auto;border-right:1px solid #E2E8E4;padding:10px 0 30px}
+  .cz-panel{width:330px;flex-shrink:0;background:#fff;overflow-y:auto;border-right:1px solid #E2E8E4;padding:10px 0 30px}
   .cz-group{border-bottom:1px solid #EEF1EF}
-  .cz-group summary{cursor:pointer;font-weight:900;font-size:13.5px;padding:14px 18px;list-style:none;user-select:none}
+  .cz-group summary{cursor:pointer;font-weight:900;font-size:13px;padding:13px 18px;list-style:none;user-select:none}
   .cz-group summary::-webkit-details-marker{display:none}
   .cz-group[open] summary{color:#04A245}
   .cz-fields{padding:2px 18px 18px;display:flex;flex-direction:column;gap:12px}
-  .cz-fields label{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:12px;color:#5F6E66}
-  .cz-fields input[type="text"],.cz-fields textarea,.cz-fields select{font-family:inherit;font-size:13px;padding:9px 11px;border:1.5px solid #E2E8E4;border-radius:9px;background:#FAFCFB;color:#17211B;outline:none}
+  .cz-fields label{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:11.5px;color:#5F6E66}
+  .cz-fields input[type="text"],.cz-fields input[type="number"],.cz-fields textarea,.cz-fields select{font-family:inherit;font-size:13px;padding:9px 11px;border:1.5px solid #E2E8E4;border-radius:9px;background:#FAFCFB;color:#17211B;outline:none}
   .cz-fields input:focus,.cz-fields textarea:focus{border-color:#06C755}
   .cz-color{flex-direction:row!important;align-items:center;justify-content:space-between}
   .cz-color input{width:52px;height:30px;border:1.5px solid #E2E8E4;border-radius:7px;background:#fff;padding:2px;cursor:pointer}
+  .cz-flag{flex-direction:row!important;align-items:center;gap:9px!important;font-size:12.5px!important;color:#17211B!important}
+  .cz-flag input{width:16px;height:16px;accent-color:#06C755}
   .cz-css{font-family:ui-monospace,Menlo,monospace;font-size:12px;line-height:1.6}
   .cz-hint{font-weight:500;font-size:11.5px;color:#5F6E66;line-height:1.7}
   .cz-hint code{background:#EEF1EF;border-radius:4px;padding:1px 5px}
@@ -330,7 +457,7 @@ const initial = { theme, hero, cta };
   .cz-modal-card input{font-family:inherit;font-size:13px;padding:11px 12px;border:1.5px solid #E2E8E4;border-radius:9px;outline:none}
   .cz-modal-actions{display:flex;justify-content:flex-end;gap:10px}
   @media (max-width:900px){
-    .cz-panel{width:270px}
+    .cz-panel{width:280px}
     .cz-title span{display:none}
   }
 </style>
