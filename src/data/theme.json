@@ -1,9 +1,9 @@
 {
-  "accent": "#06C755",
-  "accent_dark": "#04A245",
+  "accent": "#0b9846",
+  "accent_dark": "#2a322d",
   "base_black": "#0F1613",
   "bg_tint": "#F5F8F6",
-  "radius": 20,
+  "radius": 27,
   "font_en": "Montserrat",
   "show_watermark": false,
   "marquee_items": [],
