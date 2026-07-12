@@ -1,10 +1,10 @@
 {
-  "accent": "#0b9846",
-  "accent_dark": "#2a322d",
+  "accent": "#06C755",
+  "accent_dark": "#04A245",
   "base_black": "#0F1613",
   "bg_tint": "#F5F8F6",
-  "radius": 27,
-  "font_en": "Montserrat",
+  "radius": 28,
+  "font_en": "Archivo",
   "show_watermark": false,
   "marquee_items": [],
   "custom_css": ""
