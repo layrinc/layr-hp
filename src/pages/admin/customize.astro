@@ -376,7 +376,10 @@ const initial = { theme, hero, cta, stats, cases, problem, service, reason, prom
       headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json', ...(opt.body ? { 'Content-Type': 'application/json' } : {}) },
     });
     if (res.status === 401 || res.status === 403) { localStorage.removeItem(TOKEN_KEY); throw new Error('認証エラー。トークンを確認してください（再度保存するとトークン入力が出ます）'); }
-    if (!res.ok) throw new Error('GitHub APIエラー: ' + res.status);
+    if (!res.ok) {
+      const j = await res.json().catch(() => ({}));
+      throw new Error('GitHub APIエラー: ' + res.status + (j.message ? '（' + j.message + '）' : ''));
+    }
     return res.json();
   }
 
@@ -389,21 +392,38 @@ const initial = { theme, hero, cta, stats, cases, problem, service, reason, prom
     try {
       const fileKeys = ['theme', 'hero', 'cta', 'stats', 'cases', 'problem', 'service', 'reason', 'promise', 'faq', 'message', 'company', 'settings'];
       const files = fileKeys.map((k) => ({ path: BASE + k + '.json', content: JSON.stringify(state[k], null, 2) + '\n' }));
-      const ref = await gh(`/repos/${REPO}/git/ref/heads/main`, {}, token);
-      const parentSha = ref.object.sha;
-      const parent = await gh(`/repos/${REPO}/git/commits/${parentSha}`, {}, token);
-      const tree = await gh(`/repos/${REPO}/git/trees`, {
-        method: 'POST',
-        body: JSON.stringify({ base_tree: parent.tree.sha, tree: files.map((f) => ({ path: f.path, mode: '100644', type: 'blob', content: f.content })) }),
-      }, token);
-      const commit = await gh(`/repos/${REPO}/git/commits`, {
-        method: 'POST',
-        body: JSON.stringify({ message: 'layr-hp: カスタマイザーから設定を更新', tree: tree.sha, parents: [parentSha] }),
-      }, token);
-      await gh(`/repos/${REPO}/git/refs/heads/main`, { method: 'PATCH', body: JSON.stringify({ sha: commit.sha }) }, token);
+      // 保存の瞬間に別の保存/デプロイとぶつかった場合（422）は、最新に追従して自動リトライする
+      let lastErr = null;
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        try {
+          const ref = await gh(`/repos/${REPO}/git/ref/heads/main`, {}, token);
+          const parentSha = ref.object.sha;
+          const parent = await gh(`/repos/${REPO}/git/commits/${parentSha}`, {}, token);
+          const tree = await gh(`/repos/${REPO}/git/trees`, {
+            method: 'POST',
+            body: JSON.stringify({ base_tree: parent.tree.sha, tree: files.map((f) => ({ path: f.path, mode: '100644', type: 'blob', content: f.content })) }),
+          }, token);
+          const commit = await gh(`/repos/${REPO}/git/commits`, {
+            method: 'POST',
+            body: JSON.stringify({ message: 'layr-hp: カスタマイザーから設定を更新', tree: tree.sha, parents: [parentSha] }),
+          }, token);
+          await gh(`/repos/${REPO}/git/refs/heads/main`, { method: 'PATCH', body: JSON.stringify({ sha: commit.sha }) }, token);
+          lastErr = null;
+          break;
+        } catch (e) {
+          lastErr = e;
+          if (String(e.message).includes('422') && attempt < 3) {
+            statusEl.textContent = `他の更新と競合したため再試行中…（${attempt}回目）`;
+            await new Promise((r) => setTimeout(r, 1200));
+            continue;
+          }
+          throw e;
+        }
+      }
+      if (lastErr) throw lastErr;
       statusEl.textContent = '✅ 保存しました。約1分で本番に反映されます';
     } catch (err) {
-      statusEl.textContent = '❌ ' + (err.message || '保存に失敗しました');
+      statusEl.textContent = '❌ ' + (err.message || '保存に失敗しました') + '｜ページを再読み込みしてもう一度お試しください';
     } finally {
       btn.disabled = false;
     }
