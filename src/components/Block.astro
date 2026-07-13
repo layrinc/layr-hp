@@ -1,0 +1,357 @@
+---
+/**
+ * ブロック描画ディスパッチャ。page-home.json の1ブロックを受け取り、該当セクションを描画する。
+ * 種類: hero / stats / problem / ctaBand / service / reason / cases / column / promise /
+ *       message / faq / company / ctaFinal ＋ 汎用（heading / text / box / image / buttons / spacer）
+ * ※ プレビュー用のJS描画（admin/preview.astro）と見た目を一致させること。
+ */
+import settings from '../data/settings.json';
+import IllustWorry from './IllustWorry.astro';
+import IllustGrowth from './IllustGrowth.astro';
+import IllustConsult from './IllustConsult.astro';
+
+interface Props { block: { id: string; type: string; p: any }; posts?: any[] }
+const { block, posts = [] } = Astro.props;
+const p = block.p;
+const t = block.type;
+
+const consult = settings.line_url?.trim()
+  ? settings.line_url
+  : `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
+const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問い合わせ')}`;
+
+const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+const serviceIcons = [
+  '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
+  '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="13" x2="13" y2="13"/></svg>',
+];
+---
+{t === 'hero' && (
+  <section class="hero" aria-label="メインビジュアル">
+    <div class="hero-deco" aria-hidden="true"><div class="ring1"></div><div class="ring2"></div><div class="dot-grid"></div></div>
+    <div class="hero-inner">
+      <div class="hero-copy">
+        <p class="hero-eyebrow">{p.eyebrow}</p>
+        <h1>{p.catch_line1}<br /><span class="marker">{p.catch_line2}</span>{p.catch_line3 && <Fragment><br />{p.catch_line3}</Fragment>}</h1>
+        <p class="hero-sub">{p.sub}</p>
+        <div class="hero-actions">
+          <a class="btn btn-green btn-lg" href={consult}>{p.cta_primary}</a>
+          <a class="btn btn-black btn-lg" href="#service">{p.cta_secondary}</a>
+        </div>
+        <ul class="hero-chips">{p.chips.map((c: string) => <li>{c}</li>)}</ul>
+      </div>
+      <div class="hero-visual" aria-hidden="true">
+        <div class="hero-swoosh"></div>
+        <div class="browser-mock">
+          <div class="bm-bar"><span></span><span></span><span></span></div>
+          <div class="bm-body">
+            <div class="bm-side"><i></i><i></i><i></i><i></i><i></i></div>
+            <div class="bm-main">
+              <div class="bm-title"></div>
+              <div class="bm-chart"><b style="--h:38%"></b><b style="--h:62%"></b><b style="--h:48%"></b><b style="--h:82%"></b><b style="--h:66%"></b><b style="--h:96%"></b></div>
+              <div class="bm-row"></div><div class="bm-row short"></div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-badge"><span class="s1">{p.badge_line1}</span><span class="s2">{p.badge_line2}</span></div>
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="talk-header"><span class="oa-icon">S</span>〇〇サロン 公式LINE<span class="oa-check">友だち 3,214</span></div>
+            <div class="talk-body">
+              <div class="msg in">友だち追加ありがとうございます🎁 30秒のアンケートに答えると、初回クーポンをお届けします</div>
+              <div class="msg out">回答しました！</div>
+              <div class="msg in">ありがとうございます！あなた向けのクーポンです<span class="coupon">初回限定 20%OFFクーポン</span></div>
+            </div>
+            <div class="richmenu"><span class="hot">予約する</span><span>クーポン</span><span>メニュー</span><span>口コミ</span><span>アクセス</span><span>相談する</span></div>
+          </div>
+        </div>
+        {p.float_chips[0] && <div class="float-chip chip1">{p.float_chips[0].label}<strong>{p.float_chips[0].value}</strong></div>}
+        {p.float_chips[1] && <div class="float-chip chip2">{p.float_chips[1].label}<strong>{p.float_chips[1].value}</strong></div>}
+        {p.float_chips[2] && <div class="float-chip chip3">{p.float_chips[2].label}<strong>{p.float_chips[2].value}</strong></div>}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'stats' && (
+  <section class="stats">
+    {p.show_edit_note && <div class="draft-note"><p>【要編集】実績数値はサンプルです。カスタマイザーで実数値に差し替え、この注意書きをオフにしてください。</p></div>}
+    <div class="container">
+      <h2 class="stats-title">{p.title_before}<span class="marker">{p.title_marker}</span></h2>
+      <div class="stats-grid">
+        {p.items.map((item: any) => (
+          <div class="stat-card reveal">
+            <span class="stat-tag">{item.tag}</span>
+            <p class="stat-num">{item.arrow && <span class="up">▲</span>}{item.number}<small>{item.unit}</small></p>
+            <p class="stat-desc">{item.desc.split('\n').map((line: string, i: number) => <Fragment>{i > 0 && <br />}{line}</Fragment>)}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'problem' && (
+  <section class="problem">
+    <div class="container">
+      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="problem-cols">
+        <ul class="problem-list">{p.items.map((item: string) => <li class="reveal"><span class="check"></span>{item}</li>)}</ul>
+        <div class="problem-illust reveal" aria-hidden="true"><IllustWorry class="illust" /></div>
+      </div>
+      <div class="problem-arrow" aria-hidden="true"></div>
+      <div class="problem-answer reveal">
+        <strong>{p.answer_lead}<span class="marker">{p.answer_marker}</span>{p.answer_tail}</strong>
+        <p>{p.answer_body}</p>
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'ctaBand' && (
+  <div class="cta-band">
+    <div class="container cta-band-inner">
+      <div>
+        <h2>{p.title_before}<span>{p.title_em}</span>{p.title_after}</h2>
+        <p>{p.desc}</p>
+      </div>
+      <div class="cta-band-btns">
+        <a class="btn btn-green" href={consult}>{p.btn_primary}</a>
+        <a class="btn btn-white" href={contact}>{p.btn_secondary}</a>
+      </div>
+    </div>
+  </div>
+)}
+
+{t === 'service' && (
+  <section id="service">
+    <div class="container">
+      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p><p class="sec-lead">{p.lead}</p></div>
+      <div class="service-grid">
+        {p.items.map((s: any, i: number) => s.featured ? (
+          <div class="service-card wide reveal">
+            {s.badge && <span class="service-badge">{s.badge}</span>}
+            <p class="service-num">{s.number}</p><h3>{s.title}</h3><p>{s.desc}</p>
+            <ul class="service-tags">{s.tags.map((tg: string) => <li>{tg}</li>)}</ul>
+          </div>
+        ) : (
+          <div class="service-card reveal">
+            <div class="service-visual" aria-hidden="true" set:html={serviceIcons[i % serviceIcons.length]} />
+            <p class="service-num">{s.number}</p><h3>{s.title}</h3><p>{s.desc}</p>
+            <ul class="service-tags">{s.tags.map((tg: string) => <li>{tg}</li>)}</ul>
+          </div>
+        ))}
+      </div>
+      {p.note && <p class="service-note">{p.note}</p>}
+    </div>
+  </section>
+)}
+
+{t === 'reason' && (
+  <section class="reason" id="reason">
+    <div class="container">
+      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="reason-grid">
+        {p.items.map((r: any, i: number) => (
+          <div class="reason-card reveal">
+            <span class="reason-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{r.title}</h3><p>{r.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'cases' && (
+  <section id="case">
+    <div class="container">
+      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="sec-illust reveal" aria-hidden="true"><IllustGrowth class="illust illust-sm" /></div>
+    </div>
+    {p.show_edit_note && <div class="draft-note"><p>【要編集】以下の実績はサンプルです。カスタマイザーで実案件に差し替え、この注意書きをオフにしてください（クライアント名の掲載は先方の許可を取ってから）。</p></div>}
+    <div class="container">
+      <div class="case-grid">
+        {p.items.map((c: any) => (
+          <div class="case-card reveal">
+            <div class="case-head"><span class="case-tag">{c.tag}</span><h3>{c.title}</h3></div>
+            <div class="case-body">
+              <dl>
+                <div class="case-row"><dt>課題</dt><dd>{c.problem}</dd></div>
+                <div class="case-row"><dt>施策</dt><dd>{c.action}</dd></div>
+              </dl>
+            </div>
+            <div class="case-result">
+              <p class="label">{c.metric_label}</p>
+              <div class="case-graph" aria-hidden="true"><span class="bar b1" style={`--h:${c.graph_before}%`} data-label="Before"></span><span class="bar b2" style={`--h:${c.graph_after}%`} data-label="After"></span></div>
+              <div class="case-metric"><span class="before">{c.before}</span><span class="arrow">→</span><span class="after">{c.after_number}<small>{c.after_unit}</small></span></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'column' && (
+  <section id="column">
+    <div class="container">
+      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p><p class="sec-lead">{p.lead}</p></div>
+      <div class="column-grid">
+        {posts.slice(0, 3).map((post: any) => (
+          <a class="column-card reveal" href={`/blog/${post.id}/`}>
+            <div class="column-meta"><time datetime={iso(post.data.date)}>{fmt(post.data.date)}</time><span class="column-cat">{post.data.category}</span></div>
+            <h3>{post.data.title}</h3><p>{post.data.description}</p>
+            <span class="more">READ MORE ›</span>
+          </a>
+        ))}
+      </div>
+      <div class="column-more reveal"><a class="btn btn-black" href="/blog/">コラム一覧を見る</a></div>
+    </div>
+  </section>
+)}
+
+{t === 'promise' && (
+  <section class="promise" style="background:var(--bg)">
+    <div class="container">
+      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="promise-grid">
+        <div class="promise-box yes reveal">
+          <h3><span class="ico">○</span>お約束できること</h3>
+          <ul>{p.yes_items.map((item: any) => <li><span class="mark">○</span><div><strong>{item.title}</strong><span>{item.desc}</span></div></li>)}</ul>
+        </div>
+        <div class="promise-box no reveal">
+          <h3><span class="ico">×</span>お約束できないこと</h3>
+          <ul>{p.no_items.map((item: any) => <li><span class="mark">×</span><div><strong>{item.title}</strong><span>{item.desc}</span></div></li>)}</ul>
+        </div>
+      </div>
+      <div class="sec-illust reveal" aria-hidden="true"><IllustConsult class="illust illust-md" /></div>
+      <p class="promise-close reveal">{p.close_before}<br />{p.close_mid}<span class="marker">{p.close_marker}</span>{p.close_after}</p>
+    </div>
+  </section>
+)}
+
+{t === 'message' && (
+  <section class="message" id="message" style="background:#fff">
+    <div class="container">
+      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="message-wrap">
+        <div class="message-photo reveal">
+          {p.photo
+            ? <img src={p.photo} alt={p.sign_name} />
+            : <span class="todo">【要編集】<br />代表写真をカスタマイザーの<br />「代表挨拶」で設定</span>}
+        </div>
+        <div class="message-body reveal">
+          {p.paragraphs.map((para: string) => <p>{para}</p>)}
+          <div class="sign"><span class="title">{p.sign_title}</span><span class="name">{p.sign_name}</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'faq' && (
+  <section class="faq" id="faq" style="background:var(--bg)">
+    <div class="container">
+      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="faq-list reveal">
+        {p.items.map((item: any) => (
+          <details class="faq-item">
+            <summary><span class="q">Q.</span>{item.q}</summary>
+            <div class="a"><span class="mark">A.</span><p>{item.a}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'company' && (
+  <section class="company" id="company" style="background:#fff">
+    <div class="container">
+      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <table class="company-table reveal">
+        <tbody>
+          <tr><th>会社名</th><td>{p.name}</td></tr>
+          <tr><th>代表者</th><td>{p.representative}</td></tr>
+          <tr><th>所在地</th><td>{p.address}</td></tr>
+          <tr><th>設立</th><td>{p.founded}</td></tr>
+          <tr><th>事業内容</th><td><ul>{p.business.map((b: string) => <li>{b}</li>)}</ul></td></tr>
+          <tr><th>お問い合わせ</th><td><a href={`mailto:${settings.email}`}>{settings.email}</a></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+)}
+
+{t === 'ctaFinal' && (
+  <section class="cta-final" id="contact">
+    <div class="cta-final-inner">
+      <h2 class="sec-en">{p.en}</h2>
+      <h2>{p.title_line1}<br />{p.title_before}<span>{p.title_em}</span>{p.title_after}</h2>
+      <p set:html={String(p.desc || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}></p>
+      <a class="btn btn-green btn-lg" href={consult}>{p.btn}</a>
+      <p class="mail">メールでのご連絡：<a href={`mailto:${settings.email}`}>{settings.email}</a></p>
+    </div>
+  </section>
+)}
+
+{t === 'heading' && (
+  <section class="blk-sec">
+    <div class="container">
+      {p.level === 2
+        ? <h2 class={`blk-h blk-h2 ${p.align === 'center' ? 'is-center' : ''}`}>{p.text}</h2>
+        : p.level === 4
+          ? <h4 class={`blk-h blk-h4 ${p.align === 'center' ? 'is-center' : ''}`}>{p.text}</h4>
+          : <h3 class={`blk-h blk-h3 ${p.align === 'center' ? 'is-center' : ''}`}>{p.text}</h3>}
+    </div>
+  </section>
+)}
+
+{t === 'text' && (
+  <section class="blk-sec">
+    <div class="container">
+      <p class={`blk-text ${p.align === 'center' ? 'is-center' : ''}`} set:html={String(p.body || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}></p>
+    </div>
+  </section>
+)}
+
+{t === 'box' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class={`blk-box is-${p.style || 'plain'}`}>
+        {p.title && <p class="blk-box-title">{p.title}</p>}
+        <p set:html={String(p.body || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}></p>
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'image' && (
+  <section class="blk-sec">
+    <div class="container">
+      <figure class={`blk-img ${p.align === 'center' ? 'is-center' : ''}`} style={`--w:${p.width || 100}%`}>
+        {p.src ? <img src={p.src} alt={p.alt || ''} loading="lazy" /> : <div class="blk-img-empty">画像未設定（カスタマイザーでアップロード）</div>}
+        {p.caption && <figcaption>{p.caption}</figcaption>}
+      </figure>
+    </div>
+  </section>
+)}
+
+{t === 'buttons' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class={`blk-btns ${p.align === 'center' ? 'is-center' : ''}`}>
+        {(p.items || []).map((b: any) => (
+          <a class={`btn ${b.style === 'outline' ? 'btn-white' : b.style === 'dark' ? 'btn-black' : 'btn-green'}`} href={b.url === 'consult' ? consult : b.url === 'contact' ? contact : b.url}>{b.label}</a>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'spacer' && (
+  <div class={`blk-spacer is-${p.size || 'm'}`} aria-hidden="true"></div>
+)}

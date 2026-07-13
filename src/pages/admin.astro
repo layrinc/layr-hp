@@ -7,10 +7,14 @@
 import '../styles/style.css';
 import { getCollection } from 'astro:content';
 import settings from '../data/settings.json';
-import stats from '../data/stats.json';
-import cases from '../data/cases.json';
-import message from '../data/message.json';
 import theme from '../data/theme.json';
+import page from '../data/page-home.json';
+
+// ブロックからサイトヘルス判定用のデータを取り出す
+const findBlock = (type: string) => page.blocks.find((b) => b.type === type)?.p as any;
+const stats = findBlock('stats') || {};
+const cases = findBlock('cases') || {};
+const message = findBlock('message') || {};
 
 // 記事（下書き含む全件・新しい順）
 const posts = (await getCollection('blog')).sort(
@@ -32,26 +36,27 @@ const builtAt = new Date().toLocaleString('ja-JP', {
 type Task = { label: string; hint: string; link: string };
 const tasks: Task[] = [];
 if (stats.show_edit_note)
-  tasks.push({ label: '実績数値がサンプルのまま', hint: '実案件の数値に差し替えて「注意書き」をOFFに', link: '/admin/cms/#/collections/site/entries/stats' });
+  tasks.push({ label: '実績数値がサンプルのまま', hint: '実案件の数値に差し替えて「注意書き」をOFFに', link: '/admin/customize/' });
 if (cases.show_edit_note)
-  tasks.push({ label: '支援実績（CASE）がサンプルのまま', hint: '実案件に差し替えて「注意書き」をOFFに', link: '/admin/cms/#/collections/site/entries/cases' });
+  tasks.push({ label: '支援実績（CASE）がサンプルのまま', hint: '実案件に差し替えて「注意書き」をOFFに', link: '/admin/customize/' });
 if (!message.photo)
-  tasks.push({ label: '代表写真が未設定', hint: '代表挨拶に写真を入れると信頼感が上がる', link: '/admin/cms/#/collections/site/entries/message' });
+  tasks.push({ label: '代表写真が未設定', hint: 'ページビルダーの「代表挨拶」で写真をアップロード', link: '/admin/customize/' });
 if (!settings.line_url)
-  tasks.push({ label: 'LINE友だち追加URLが未設定', hint: '設定するとサイト全体の緑ボタンがLINE直行になる', link: '/admin/cms/#/collections/site/entries/settings' });
+  tasks.push({ label: 'LINE友だち追加URLが未設定', hint: '設定するとサイト全体の緑ボタンがLINE直行になる', link: '/admin/customize/' });
 if (!(settings as any).og_image)
-  tasks.push({ label: 'SNSシェア画像（OGP）が未設定', hint: 'シェアされた時の見栄えに直結', link: '/admin/cms/#/collections/site/entries/settings' });
+  tasks.push({ label: 'SNSシェア画像（OGP）が未設定', hint: 'シェアされた時の見栄えに直結（CMSの基本設定から）', link: '/admin/cms/#/collections/site/entries/settings' });
 if (drafts.length > 0)
   tasks.push({ label: `下書きの記事が${drafts.length}本ある`, hint: '仕上げて公開する', link: '/admin/cms/#/collections/blog' });
 
-// ===== クイック編集（管理画面の各セクションへの直リンク） =====
-const sections = [
-  ['① 基本設定', 'settings'], ['② ヒーロー', 'hero'], ['③ 実績数値', 'stats'],
-  ['④ 支援実績', 'cases'], ['⑤ お約束', 'promise'], ['⑥ 代表挨拶', 'message'],
-  ['⑦ FAQ', 'faq'], ['⑧ 会社概要', 'company'], ['⑨ デザイン設定', 'theme'],
-  ['⑩ お悩み', 'problem'], ['⑪ 事業内容', 'service'], ['⑫ 選ばれる理由', 'reason'],
-  ['⑬ CTA', 'cta'],
-] as const;
+// ===== ページのブロック一覧（ページビルダーへの入口） =====
+const blockNames: Record<string, string> = {
+  hero: '🚀 ヒーロー', stats: '📊 実績数値', problem: '😟 お悩み', ctaBand: '🟩 CTAバナー',
+  service: '🛠 事業内容', reason: '💡 選ばれる理由', cases: '📈 支援実績', column: '📰 コラム',
+  promise: '🤝 お約束', message: '👤 代表挨拶', faq: '❓ FAQ', company: '🏢 会社概要',
+  ctaFinal: '🌑 最終CTA', heading: '🔠 見出し', text: '📝 テキスト', box: '🧊 ボックス',
+  image: '🖼 画像', buttons: '🔘 ボタン', spacer: '↕️ 余白',
+};
+const pageBlocks = page.blocks.map((b) => blockNames[b.type] || b.type);
 ---
 <!doctype html>
 <html lang="ja">
@@ -74,7 +79,7 @@ const sections = [
       </div>
       <div class="dash-head-links">
         <a class="dash-btn ghost" href="/" target="_blank">サイトを見る ↗</a>
-        <a class="dash-btn ghost" href="/admin/customize/">🎨 カスタマイザー</a>
+        <a class="dash-btn ghost" href="/admin/customize/">🧱 ページビルダー</a>
         <a class="dash-btn primary" href="/admin/cms/#/collections/blog/new">＋ 新規記事を書く</a>
       </div>
     </header>
@@ -120,16 +125,17 @@ const sections = [
         )}
       </section>
 
-      <!-- ===== クイック編集 ===== -->
+      <!-- ===== ページビルダー ===== -->
       <section class="dash-panel">
-        <h2>クイック編集 <span class="dash-tag">トップページの各部分</span></h2>
+        <h2>ページ構成 <span class="dash-tag">現在{pageBlocks.length}ブロック</span></h2>
         <div class="dash-chips">
-          {sections.map(([label, name]) => (
-            <a class="dash-chip" href={`/admin/cms/#/collections/site/entries/${name}`}>{label}</a>
+          {pageBlocks.map((label) => (
+            <a class="dash-chip" href="/admin/customize/">{label}</a>
           ))}
         </div>
         <div class="dash-links">
-          <a href="/admin/cms/">✏️ 編集画面（CMS）を開く</a>
+          <a href="/admin/customize/"><strong>🧱 ページビルダーを開く</strong>（追加・並べ替え・編集・デザイン）</a>
+          <a href="/admin/cms/">✏️ 記事を書く・編集する（CMS）</a>
           <a href="https://github.com/layrinc/company-brain/actions" target="_blank" rel="noopener">⚙️ デプロイ状況（GitHub Actions）↗</a>
           <a href="https://vercel.com/ikkan-kawades-projects/layr-hp" target="_blank" rel="noopener">▲ Vercel ↗</a>
         </div>

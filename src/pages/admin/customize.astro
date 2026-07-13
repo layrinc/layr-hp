@@ -1,25 +1,14 @@
 ---
 /**
- * ライブカスタマイザー（WordPressのカスタマイザー相当）。
- * サイト設定の全セクションを、右の実サイトプレビューを見ながら編集できる。
- * 「保存して公開」でGitHubにコミット → 既存の自動デプロイで本番反映（約1分）。
- * ログインはCMSと同じGitHubアクセストークン（CMSログイン済みなら自動流用）。
+ * ブロックエディタ（WordPressのブロックエディタ＋カスタマイザー相当）。
+ * ページ＝ブロックの積み重ね。追加・並べ替え・複製・削除・項目の増減・画像挿入が全部ここでできる。
+ * 右のプレビュー（/admin/preview/）に即時反映し、「保存して公開」でGitHubへコミット→自動デプロイ。
  */
+import page from '../../data/page-home.json';
 import theme from '../../data/theme.json';
-import hero from '../../data/hero.json';
-import cta from '../../data/cta.json';
-import stats from '../../data/stats.json';
-import cases from '../../data/cases.json';
-import problem from '../../data/problem.json';
-import service from '../../data/service.json';
-import reason from '../../data/reason.json';
-import promise from '../../data/promise.json';
-import faq from '../../data/faq.json';
-import message from '../../data/message.json';
-import company from '../../data/company.json';
 import settings from '../../data/settings.json';
 
-const initial = { theme, hero, cta, stats, cases, problem, service, reason, promise, faq, message, company, settings };
+const initial = { page, theme, settings };
 ---
 <!doctype html>
 <html lang="ja">
@@ -27,7 +16,7 @@ const initial = { theme, hero, cta, stats, cases, problem, service, reason, prom
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
-  <title>カスタマイザー｜LAYR CMS</title>
+  <title>ページビルダー｜LAYR CMS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet" />
 </head>
@@ -35,7 +24,11 @@ const initial = { theme, hero, cta, stats, cases, problem, service, reason, prom
 
   <header class="cz-bar">
     <a class="cz-back" href="/admin/">‹ 管理ホーム</a>
-    <p class="cz-title">🎨 カスタマイザー <span>変更はプレビューに即時反映。「保存して公開」で本番へ</span></p>
+    <p class="cz-title">🧱 ページビルダー</p>
+    <div class="cz-tabs" role="tablist">
+      <button class="cz-tab is-active" data-tab="blocks">ページ構成</button>
+      <button class="cz-tab" data-tab="design">デザイン・全体設定</button>
+    </div>
     <div class="cz-bar-actions">
       <span class="cz-status" id="czStatus"></span>
       <button class="cz-btn ghost" id="czReset">リセット</button>
@@ -45,38 +38,45 @@ const initial = { theme, hero, cta, stats, cases, problem, service, reason, prom
 
   <div class="cz-main">
     <aside class="cz-panel">
-      <details class="cz-group" open>
-        <summary>🎨 デザイン（色・角丸・フォント）</summary>
-        <div class="cz-fields">
-          <label class="cz-color">メインカラー<input type="color" id="f-accent" /></label>
-          <label class="cz-color">メインカラー（濃）<input type="color" id="f-accent_dark" /></label>
-          <label class="cz-color">締めの深色<input type="color" id="f-base_black" /></label>
-          <label class="cz-color">薄い背景色<input type="color" id="f-bg_tint" /></label>
-          <label>角丸の大きさ <output id="radiusOut"></output>
-            <input type="range" id="f-radius" min="0" max="28" step="1" />
-          </label>
-          <label>英字フォント
-            <select id="f-font_en">
-              <option>Montserrat</option>
-              <option>Archivo</option>
-              <option>Poppins</option>
-            </select>
-          </label>
+
+      <div class="cz-pane" id="pane-blocks">
+        <div class="cz-panel-head">
+          <p>ブロックをクリックして編集。<b>↑↓</b>で並べ替え、<b>＋</b>で好きな場所に追加できます。</p>
         </div>
-      </details>
+        <div id="blockList"></div>
+        <button class="cz-add-main" id="addAtEnd">＋ ブロックを追加</button>
+      </div>
 
-      <!-- 文言グループはJSがスキーマから自動生成する -->
-      <div id="czGroups"></div>
-
-      <details class="cz-group">
-        <summary>🧩 追加CSS（上級者向け）</summary>
-        <div class="cz-fields">
-          <p class="cz-hint">WordPressの「追加CSS」相当。ここに書いたCSSはサイト全体に適用される。例：<code>.hero h1 &#123;letter-spacing:.05em&#125;</code></p>
-          <textarea id="f-custom_css" class="cz-css" rows="12" spellcheck="false" placeholder="/* ここにCSSを書くと即時プレビューされます */"></textarea>
+      <div class="cz-pane" id="pane-design" hidden>
+        <div class="cz-group-static">
+          <h3>🎨 テーマ（サイト全体の見た目）</h3>
+          <div class="cz-fields">
+            <label class="cz-color">メインカラー<input type="color" id="f-accent" /></label>
+            <label class="cz-color">メインカラー（濃）<input type="color" id="f-accent_dark" /></label>
+            <label class="cz-color">締めの深色<input type="color" id="f-base_black" /></label>
+            <label class="cz-color">薄い背景色<input type="color" id="f-bg_tint" /></label>
+            <label>角丸の大きさ <output id="radiusOut"></output><input type="range" id="f-radius" min="0" max="28" step="1" /></label>
+            <label>英字フォント<select id="f-font_en"><option>Montserrat</option><option>Archivo</option><option>Poppins</option></select></label>
+          </div>
         </div>
-      </details>
+        <div class="cz-group-static">
+          <h3>⚙️ 基本設定</h3>
+          <div class="cz-fields">
+            <label>問い合わせメールアドレス<input type="text" id="f-email" /></label>
+            <label>LINE友だち追加URL（空欄ならメールCTA）<input type="text" id="f-line_url" placeholder="https://lin.ee/xxxx" /></label>
+            <label>フッターのひとこと（改行可）<textarea id="f-tagline" rows="3"></textarea></label>
+          </div>
+        </div>
+        <div class="cz-group-static">
+          <h3>🧩 追加CSS（上級者向け）</h3>
+          <div class="cz-fields">
+            <p class="cz-hint">WordPressの「追加CSS」相当。サイト全体に適用され、プレビューに即時反映。</p>
+            <textarea id="f-custom_css" class="cz-css" rows="14" spellcheck="false" placeholder="/* 例: .hero h1 { letter-spacing: .04em } */"></textarea>
+          </div>
+        </div>
+        <p class="cz-note">記事の執筆・画像ライブラリは <a href="/admin/cms/">編集画面（CMS）</a> から。</p>
+      </div>
 
-      <p class="cz-note">※ 項目の<strong>追加・削除</strong>（サービスを増やす、FAQを足す等）と<strong>画像</strong>は <a href="/admin/cms/">編集画面（CMS）</a> から。ここでは今ある項目の内容とデザインを編集できます。記事の執筆もCMSから。</p>
     </aside>
 
     <section class="cz-stage">
@@ -85,10 +85,19 @@ const initial = { theme, hero, cta, stats, cases, problem, service, reason, prom
         <button class="cz-dev" data-w="768px">📱 タブレット</button>
         <button class="cz-dev" data-w="390px">📱 スマホ</button>
       </div>
-      <div class="cz-frame-wrap">
-        <iframe id="czFrame" src="/" title="サイトプレビュー"></iframe>
-      </div>
+      <div class="cz-frame-wrap"><iframe id="czFrame" src="/admin/preview/" title="サイトプレビュー"></iframe></div>
     </section>
+  </div>
+
+  <!-- ブロック追加ピッカー -->
+  <div class="cz-modal" id="pickerModal" hidden>
+    <div class="cz-modal-card cz-picker">
+      <div class="cz-picker-head"><h2>ブロックを追加</h2><button class="cz-x" id="pickerClose">✕</button></div>
+      <p class="cz-picker-cat">📦 セクション（大きな部品）</p>
+      <div class="cz-picker-grid" id="pickSections"></div>
+      <p class="cz-picker-cat">🔤 パーツ（自由に組める小さな部品）</p>
+      <div class="cz-picker-grid" id="pickParts"></div>
+    </div>
   </div>
 
   <!-- トークン入力モーダル -->
@@ -105,233 +114,350 @@ const initial = { theme, hero, cta, stats, cases, problem, service, reason, prom
   </div>
 
 <script define:vars={{ initial }} is:inline>
-  // ===== 状態 =====
+  // ================= 状態 =================
   const state = JSON.parse(JSON.stringify(initial));
   const frame = document.getElementById('czFrame');
   const statusEl = document.getElementById('czStatus');
+  const uid = () => 'b' + Math.random().toString(36).slice(2, 9);
   const fontMap = { Montserrat: 'Montserrat:wght@700;800', Archivo: 'Archivo:wght@700;800', Poppins: 'Poppins:wght@700;800' };
+  const openSet = new Set();
 
-  // パスで状態を読み書き（例: "stats.items.0.tag"）
-  const getP = (path) => path.split('.').reduce((o, k) => o?.[k], state);
-  const setP = (path, v) => { const ks = path.split('.'); const last = ks.pop(); const o = ks.reduce((o, k) => o[k], state); o[last] = v; };
+  // ================= ブロック定義 =================
+  // kind: t=1行 / ta=複数行 / flag=ON,OFF / pct=0〜100 / sel=選択 / img=画像 / strs=文字列リスト / arr=項目リスト
+  const DEFS = {
+    hero: { name: 'ヒーロー', emoji: '🚀', cat: 'section', desc: '最上部の大見出し＋スマホモック',
+      fields: [
+        ['eyebrow', 'キャッチ上の帯', 't'], ['catch_line1', 'キャッチ 1行目', 't'], ['catch_line2', 'キャッチ 2行目（マーカー）', 't'], ['catch_line3', 'キャッチ 3行目（空欄可）', 't'],
+        ['sub', 'サブコピー', 'ta'], ['cta_primary', '緑ボタン', 't'], ['cta_secondary', '白ボタン', 't'],
+        ['badge_line1', '丸バッジ上段', 't'], ['badge_line2', '丸バッジ下段', 't'],
+        ['chips', '下部チップ', 'strs', { itemLabel: 'チップ' }],
+        ['float_chips', 'スマホ横の数値チップ', 'arr', { itemLabel: 'チップ', itemFields: [['label', 'ラベル', 't'], ['value', '数値', 't']], itemDefault: { label: 'ラベル', value: '+100%' } }],
+      ],
+      defaults: { eyebrow: '帯コピー', catch_line1: 'キャッチコピー', catch_line2: 'マーカー部分', catch_line3: '', sub: 'サブコピー', cta_primary: '無料相談に申し込む', cta_secondary: 'サービスを見る', badge_line1: '初回相談', badge_line2: '無料', chips: ['チップ1'], float_chips: [] } },
+    stats: { name: '実績数値', emoji: '📊', cat: 'section', desc: '数字で見る成果カード',
+      fields: [
+        ['show_edit_note', '【要編集】注意帯を表示', 'flag'], ['title_before', '見出し・前半', 't'], ['title_marker', '見出し・マーカー', 't'],
+        ['items', 'カード', 'arr', { itemLabel: 'カード', itemFields: [['tag', '業種タグ', 't'], ['arrow', '▲を表示', 'flag'], ['number', '数値', 't'], ['unit', '単位', 't'], ['desc', '説明（改行可）', 'ta']], itemDefault: { tag: '業種', arrow: true, number: '2.0', unit: '倍', desc: '説明' } }],
+      ],
+      defaults: { show_edit_note: false, title_before: '数字で見る、', title_marker: '支援成果', items: [] } },
+    problem: { name: 'お悩み', emoji: '😟', cat: 'section', desc: 'チェックリスト＋回答',
+      fields: [
+        ['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'],
+        ['items', 'お悩みリスト', 'strs', { itemLabel: 'お悩み' }],
+        ['answer_lead', '回答・マーカー前', 't'], ['answer_marker', '回答・マーカー', 't'], ['answer_tail', '回答・マーカー後', 't'], ['answer_body', '回答・本文', 'ta'],
+      ],
+      defaults: { en: 'PROBLEM', title_jp: 'こんなお悩みはありませんか？', items: ['お悩み1'], answer_lead: '', answer_marker: '', answer_tail: '', answer_body: '' } },
+    ctaBand: { name: 'CTAバナー（緑）', emoji: '🟩', cat: 'section', desc: '中間の相談誘導バナー',
+      fields: [['title_before', '見出し・前', 't'], ['title_em', '見出し・強調', 't'], ['title_after', '見出し・後', 't'], ['desc', '説明', 'ta'], ['btn_primary', '緑ボタン', 't'], ['btn_secondary', '白ボタン', 't']],
+      defaults: { title_before: '無料相談、', title_em: '受付中', title_after: 'です。', desc: '', btn_primary: '無料相談に申し込む', btn_secondary: 'メールで問い合わせる' } },
+    service: { name: '事業内容', emoji: '🛠', cat: 'section', desc: 'サービスカード一覧',
+      fields: [
+        ['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'], ['lead', 'リード文', 'ta'], ['note', '注釈（※）', 't'],
+        ['items', 'サービス', 'arr', { itemLabel: 'サービス', itemFields: [['featured', '主力（横長で大きく表示）', 'flag'], ['badge', 'バッジ', 't'], ['number', '番号ラベル', 't'], ['title', '名称', 't'], ['desc', '説明', 'ta'], ['tags', 'タグ', 'strs', { itemLabel: 'タグ' }]], itemDefault: { featured: false, badge: '', number: 'SERVICE 00', title: '新サービス', desc: '説明', tags: [] } }],
+      ],
+      defaults: { en: 'SERVICE', title_jp: '事業内容', lead: '', note: '', items: [] } },
+    reason: { name: '選ばれる理由', emoji: '💡', cat: 'section', desc: '番号付き理由カード',
+      fields: [['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'], ['items', '理由', 'arr', { itemLabel: '理由', itemFields: [['title', '見出し', 't'], ['desc', '説明', 'ta']], itemDefault: { title: '理由', desc: '説明' } }]],
+      defaults: { en: 'REASON', title_jp: '選ばれる理由', items: [] } },
+    cases: { name: '支援実績（CASE）', emoji: '📈', cat: 'section', desc: 'Before/Afterグラフ付き事例',
+      fields: [
+        ['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'], ['show_edit_note', '【要編集】注意帯を表示', 'flag'],
+        ['items', '事例', 'arr', { itemLabel: '事例', itemFields: [['tag', '業種タグ', 't'], ['title', 'タイトル', 'ta'], ['problem', '課題', 'ta'], ['action', '施策', 'ta'], ['metric_label', '指標名', 't'], ['before', 'Before値', 't'], ['after_number', 'After数値', 't'], ['after_unit', 'After単位', 't'], ['graph_before', 'グラフ左%', 'pct'], ['graph_after', 'グラフ右%', 'pct']], itemDefault: { tag: '業種', title: '事例タイトル', problem: '', action: '', metric_label: '', before: '', after_number: '', after_unit: '', graph_before: 40, graph_after: 90 } }],
+      ],
+      defaults: { en: 'CASE', title_jp: '支援実績', show_edit_note: false, items: [] } },
+    column: { name: 'コラム（最新3件）', emoji: '📰', cat: 'section', desc: '最新記事が自動で並ぶ',
+      fields: [['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'], ['lead', 'リード文', 'ta']],
+      defaults: { en: 'COLUMN', title_jp: 'コラム', lead: '' } },
+    promise: { name: 'お約束', emoji: '🤝', cat: 'section', desc: '○×の約束リスト',
+      fields: [
+        ['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'],
+        ['yes_items', '○できること', 'arr', { itemLabel: '約束', itemFields: [['title', '見出し', 't'], ['desc', '説明', 'ta']], itemDefault: { title: '', desc: '' } }],
+        ['no_items', '×できないこと', 'arr', { itemLabel: '項目', itemFields: [['title', '見出し', 't'], ['desc', '説明', 'ta']], itemDefault: { title: '', desc: '' } }],
+        ['close_before', '締め・1行目', 't'], ['close_mid', '締め・マーカー前', 't'], ['close_marker', '締め・マーカー', 't'], ['close_after', '締め・マーカー後', 't'],
+      ],
+      defaults: { en: 'PROMISE', title_jp: 'お約束', yes_items: [], no_items: [], close_before: '', close_mid: '', close_marker: '', close_after: '' } },
+    message: { name: '代表挨拶', emoji: '👤', cat: 'section', desc: '写真＋メッセージ',
+      fields: [
+        ['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'], ['photo', '代表写真', 'img'],
+        ['paragraphs', '本文（段落）', 'strs', { itemLabel: '段落', ta: true }],
+        ['sign_title', '署名・肩書き', 't'], ['sign_name', '署名・名前', 't'],
+      ],
+      defaults: { en: 'MESSAGE', title_jp: '代表挨拶', photo: '', paragraphs: ['本文'], sign_title: '', sign_name: '' } },
+    faq: { name: 'よくあるご質問', emoji: '❓', cat: 'section', desc: 'アコーディオンQ&A',
+      fields: [['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'], ['items', 'Q&A', 'arr', { itemLabel: 'Q&A', itemFields: [['q', '質問', 'ta'], ['a', '回答', 'ta']], itemDefault: { q: '質問', a: '回答' } }]],
+      defaults: { en: 'FAQ', title_jp: 'よくあるご質問', items: [] } },
+    company: { name: '会社概要', emoji: '🏢', cat: 'section', desc: '会社情報テーブル',
+      fields: [['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'], ['name', '会社名', 't'], ['representative', '代表者', 't'], ['address', '所在地', 't'], ['founded', '設立', 't'], ['business', '事業内容', 'strs', { itemLabel: '事業' }]],
+      defaults: { en: 'COMPANY', title_jp: '会社概要', name: '', representative: '', address: '', founded: '', business: [] } },
+    ctaFinal: { name: '最終CTA（深緑）', emoji: '🌑', cat: 'section', desc: '最下部のお問い合わせ誘導',
+      fields: [['en', '英字ラベル', 't'], ['title_line1', '見出し1行目', 't'], ['title_before', '2行目・前', 't'], ['title_em', '2行目・強調', 't'], ['title_after', '2行目・後', 't'], ['desc', '説明（改行可）', 'ta'], ['btn', 'ボタン', 't']],
+      defaults: { en: 'CONTACT', title_line1: 'まずは', title_before: '', title_em: '無料相談', title_after: 'から。', desc: '', btn: '無料相談に申し込む' } },
+    heading: { name: '見出し', emoji: '🔠', cat: 'part', desc: '見出し2/3/4を1本',
+      fields: [['text', 'テキスト', 't'], ['level', '見出しレベル', 'sel', { options: [[2, '見出し2（下線・大）'], [3, '見出し3（緑バー）'], [4, '見出し4（緑文字）']] }], ['align', '配置', 'sel', { options: [['left', '左寄せ'], ['center', '中央']] }]],
+      defaults: { text: '見出しテキスト', level: 2, align: 'left' } },
+    text: { name: 'テキスト', emoji: '📝', cat: 'part', desc: '本文の段落（改行可）',
+      fields: [['body', '本文', 'ta'], ['align', '配置', 'sel', { options: [['left', '左寄せ'], ['center', '中央']] }]],
+      defaults: { body: '本文テキスト', align: 'left' } },
+    box: { name: 'ボックス', emoji: '🧊', cat: 'part', desc: '枠で囲んだ注目エリア',
+      fields: [['style', 'スタイル', 'sel', { options: [['plain', 'ノーマル（薄グレー）'], ['green', 'グリーン（ポイント）'], ['warn', '注意（黄）']] }], ['title', 'タイトル（空欄可）', 't'], ['body', '本文（改行可）', 'ta']],
+      defaults: { style: 'green', title: 'ポイント', body: '本文' } },
+    image: { name: '画像', emoji: '🖼', cat: 'part', desc: '画像＋キャプション',
+      fields: [['src', '画像', 'img'], ['alt', '代替テキスト（SEO）', 't'], ['caption', 'キャプション（空欄可）', 't'], ['width', '幅%', 'pct'], ['align', '配置', 'sel', { options: [['left', '左寄せ'], ['center', '中央']] }]],
+      defaults: { src: '', alt: '', caption: '', width: 100, align: 'center' } },
+    buttons: { name: 'ボタン', emoji: '🔘', cat: 'part', desc: 'CTAボタンの列',
+      fields: [['align', '配置', 'sel', { options: [['left', '左寄せ'], ['center', '中央']] }], ['items', 'ボタン', 'arr', { itemLabel: 'ボタン', itemFields: [['label', 'ラベル', 't'], ['url', 'リンク先（consult=相談 / contact=メール / URL）', 't'], ['style', '見た目', 'sel', { options: [['green', '緑'], ['outline', '白枠'], ['dark', '黒']] }]], itemDefault: { label: 'ボタン', url: 'consult', style: 'green' } }]],
+      defaults: { align: 'center', items: [{ label: '無料相談に申し込む', url: 'consult', style: 'green' }] } },
+    spacer: { name: '余白', emoji: '↕️', cat: 'part', desc: 'ブロック間のスペース',
+      fields: [['size', '大きさ', 'sel', { options: [['s', '小（28px）'], ['m', '中（64px）'], ['l', '大（120px）']] }]],
+      defaults: { size: 'm' } },
+  };
 
-  // ===== スキーマ（グループ→フィールド）。kind: t=1行 / ta=複数行 / ml=複数行(改行が<br>になる) / flag=ON,OFF / pct=0〜100 =====
-  const S = state;
-  const groups = [];
-  const g = (title, fields, open = false) => groups.push({ title, fields, open });
-
-  g('✏️ ① 基本設定（フッター・メール）', [
-    ['settings.email', '問い合わせメールアドレス', 't'],
-    ['settings.tagline', 'フッターのひとこと（改行可）', 'ml'],
-    ['settings.line_url', 'LINE友だち追加URL（保存後に反映）', 't'],
-  ]);
-  g('✏️ ② ヒーロー（最上部）', [
-    ['hero.eyebrow', 'キャッチ上の帯', 't'],
-    ['hero.catch_line1', 'キャッチコピー 1行目', 't'],
-    ['hero.catch_line2', 'キャッチコピー 2行目（マーカー）', 't'],
-    ['hero.catch_line3', 'キャッチコピー 3行目', 't'],
-    ['hero.sub', 'サブコピー', 'ta'],
-    ['hero.cta_primary', '緑ボタン', 't'],
-    ['hero.cta_secondary', '白ボタン', 't'],
-  ], true);
-  g('✏️ ③ 実績数値（数字で見る）', [
-    ['stats.show_edit_note', '【要編集】注意帯を表示', 'flag'],
-    ['stats.title_before', '見出し・前半', 't'],
-    ['stats.title_marker', '見出し・マーカー部分', 't'],
-    ...S.stats.items.flatMap((_, i) => [
-      [`stats.items.${i}.tag`, `カード${i + 1}｜業種タグ`, 't'],
-      [`stats.items.${i}.number`, `カード${i + 1}｜数値`, 't'],
-      [`stats.items.${i}.unit`, `カード${i + 1}｜単位`, 't'],
-      [`stats.items.${i}.desc`, `カード${i + 1}｜説明（改行可）`, 'ml'],
-    ]),
-  ]);
-  g('✏️ ④ 支援実績（CASE）', [
-    ['cases.show_edit_note', '【要編集】注意帯を表示', 'flag'],
-    ...S.cases.items.flatMap((_, i) => [
-      [`cases.items.${i}.tag`, `事例${i + 1}｜業種タグ`, 't'],
-      [`cases.items.${i}.title`, `事例${i + 1}｜タイトル`, 'ta'],
-      [`cases.items.${i}.problem`, `事例${i + 1}｜課題`, 'ta'],
-      [`cases.items.${i}.action`, `事例${i + 1}｜施策`, 'ta'],
-      [`cases.items.${i}.metric_label`, `事例${i + 1}｜指標名`, 't'],
-      [`cases.items.${i}.before`, `事例${i + 1}｜Before値`, 't'],
-      [`cases.items.${i}.after_number`, `事例${i + 1}｜After数値`, 't'],
-      [`cases.items.${i}.after_unit`, `事例${i + 1}｜After単位`, 't'],
-      [`cases.items.${i}.graph_before`, `事例${i + 1}｜棒グラフ左の高さ%`, 'pct'],
-      [`cases.items.${i}.graph_after`, `事例${i + 1}｜棒グラフ右の高さ%`, 'pct'],
-    ]),
-  ]);
-  g('✏️ ⑤ お約束', [
-    ...S.promise.yes_items.flatMap((_, i) => [
-      [`promise.yes_items.${i}.title`, `○できること${i + 1}｜見出し`, 't'],
-      [`promise.yes_items.${i}.desc`, `○できること${i + 1}｜説明`, 'ta'],
-    ]),
-    ...S.promise.no_items.flatMap((_, i) => [
-      [`promise.no_items.${i}.title`, `×できないこと${i + 1}｜見出し`, 't'],
-      [`promise.no_items.${i}.desc`, `×できないこと${i + 1}｜説明`, 'ta'],
-    ]),
-  ]);
-  g('✏️ ⑥ 代表挨拶', [
-    ...S.message.paragraphs.map((_, i) => [`message.paragraphs.${i}`, `本文 段落${i + 1}`, 'ta']),
-    ['message.sign_title', '署名・肩書き', 't'],
-    ['message.sign_name', '署名・名前', 't'],
-  ]);
-  g('✏️ ⑦ よくあるご質問', S.faq.items.flatMap((_, i) => [
-    [`faq.items.${i}.q`, `Q${i + 1}｜質問`, 'ta'],
-    [`faq.items.${i}.a`, `Q${i + 1}｜回答`, 'ta'],
-  ]));
-  g('✏️ ⑧ 会社概要', [
-    ['company.name', '会社名', 't'],
-    ['company.representative', '代表者', 't'],
-    ['company.address', '所在地', 't'],
-    ['company.founded', '設立', 't'],
-    ...S.company.business.map((_, i) => [`company.business.${i}`, `事業内容${i + 1}`, 't']),
-  ]);
-  g('✏️ ⑩ お悩み（PROBLEM）', [
-    ['problem.title_jp', '小見出し', 't'],
-    ...S.problem.items.map((_, i) => [`problem.items.${i}`, `お悩み${i + 1}`, 'ta']),
-    ['problem.answer_lead', '回答・マーカー前', 't'],
-    ['problem.answer_marker', '回答・マーカー部分', 't'],
-    ['problem.answer_tail', '回答・マーカー後', 't'],
-    ['problem.answer_body', '回答・本文', 'ta'],
-  ]);
-  g('✏️ ⑪ 事業内容（SERVICE）', [
-    ['service.title_jp', '小見出し', 't'],
-    ['service.lead', 'リード文', 'ta'],
-    ['service.note', '注釈（※の行）', 't'],
-    ...S.service.items.flatMap((s, i) => [
-      [`service.items.${i}.badge`, `サービス${i + 1}｜バッジ`, 't'],
-      [`service.items.${i}.number`, `サービス${i + 1}｜番号ラベル`, 't'],
-      [`service.items.${i}.title`, `サービス${i + 1}｜名称`, 't'],
-      [`service.items.${i}.desc`, `サービス${i + 1}｜説明`, 'ta'],
-      ...s.tags.map((_, j) => [`service.items.${i}.tags.${j}`, `サービス${i + 1}｜タグ${j + 1}`, 't']),
-    ]),
-  ]);
-  g('✏️ ⑫ 選ばれる理由（REASON）', [
-    ['reason.title_jp', '小見出し', 't'],
-    ...S.reason.items.flatMap((_, i) => [
-      [`reason.items.${i}.title`, `理由${i + 1}｜見出し`, 't'],
-      [`reason.items.${i}.desc`, `理由${i + 1}｜説明`, 'ta'],
-    ]),
-  ]);
-  g('✏️ ⑬ CTA（緑バナー・最下部）', [
-    ['cta.band_title_before', '【バナー】見出し・前', 't'],
-    ['cta.band_title_em', '【バナー】見出し・強調', 't'],
-    ['cta.band_title_after', '【バナー】見出し・後', 't'],
-    ['cta.band_desc', '【バナー】説明', 'ta'],
-    ['cta.band_btn_primary', '【バナー】緑ボタン', 't'],
-    ['cta.band_btn_secondary', '【バナー】白ボタン', 't'],
-    ['cta.final_title_line1', '【最下部】見出し1行目', 't'],
-    ['cta.final_title_before', '【最下部】2行目・前', 't'],
-    ['cta.final_title_em', '【最下部】2行目・強調', 't'],
-    ['cta.final_title_after', '【最下部】2行目・後', 't'],
-    ['cta.final_desc', '【最下部】説明（改行可）', 'ml'],
-    ['cta.final_btn', '【最下部】ボタン', 't'],
-  ]);
-
-  // ===== フォーム生成＋ライブ反映チャンネル登録 =====
-  const reg = { texts: [], ml: [], show: [], heights: [] };
-  const wrapAll = document.getElementById('czGroups');
-  groups.forEach(({ title, fields, open }) => {
-    const det = document.createElement('details');
-    det.className = 'cz-group';
-    if (open) det.open = true;
-    const sum = document.createElement('summary');
-    sum.textContent = title;
-    det.appendChild(sum);
-    const box = document.createElement('div');
-    box.className = 'cz-fields';
-    fields.forEach(([path, label, kind]) => {
-      const lab = document.createElement('label');
-      let input;
-      if (kind === 'flag') {
-        lab.className = 'cz-flag';
-        input = document.createElement('input');
-        input.type = 'checkbox';
-        input.checked = !!getP(path);
-        lab.appendChild(input);
-        lab.appendChild(document.createTextNode(label));
-        reg.show.push(path);
-      } else if (kind === 'pct') {
-        lab.textContent = label;
-        input = document.createElement('input');
-        input.type = 'number'; input.min = 0; input.max = 100;
-        input.value = getP(path);
-        lab.appendChild(input);
-        reg.heights.push(path);
-      } else {
-        lab.textContent = label;
-        input = kind === 't' ? document.createElement('input') : document.createElement('textarea');
-        if (kind === 't') input.type = 'text'; else input.rows = 3;
-        input.value = getP(path) ?? '';
-        lab.appendChild(input);
-        (kind === 'ml' ? reg.ml : reg.texts).push(path);
-      }
-      input.dataset.czPath = path;
-      input.dataset.czKind = kind;
-      box.appendChild(lab);
-    });
-    det.appendChild(box);
-    wrapAll.appendChild(det);
-  });
-
-  // ===== 委譲リスナー（全フィールド共通・input/changeの両方を拾う） =====
-  function onEdit(e) {
-    const t = e.target;
-    const path = t && t.dataset ? t.dataset.czPath : null;
-    if (!path) return;
-    const kind = t.dataset.czKind;
-    if (kind === 'flag') setP(path, t.checked);
-    else if (kind === 'pct') setP(path, Number(t.value) || 0);
-    else setP(path, t.value);
-    push();
+  // ================= フィールド生成 =================
+  function makeInput(kind, value, onChange, opts = {}) {
+    if (kind === 'flag') {
+      const w = document.createElement('label'); w.className = 'cz-flag';
+      const i = document.createElement('input'); i.type = 'checkbox'; i.checked = !!value;
+      i.addEventListener('input', () => onChange(i.checked));
+      w.appendChild(i); w.appendChild(document.createTextNode(opts.label || ''));
+      return { el: w, standalone: true };
+    }
+    let i;
+    if (kind === 'ta') { i = document.createElement('textarea'); i.rows = 3; i.value = value ?? ''; }
+    else if (kind === 'sel') {
+      i = document.createElement('select');
+      (opts.options || []).forEach(([v, l]) => { const o = document.createElement('option'); o.value = v; o.textContent = l; i.appendChild(o); });
+      i.value = String(value ?? '');
+    }
+    else if (kind === 'pct') { i = document.createElement('input'); i.type = 'number'; i.min = 0; i.max = 100; i.value = value ?? 100; }
+    else { i = document.createElement('input'); i.type = 'text'; i.value = value ?? ''; }
+    i.addEventListener('input', () => onChange(kind === 'pct' ? Number(i.value) || 0 : kind === 'sel' && /^\d+$/.test(i.value) ? Number(i.value) : i.value));
+    return { el: i };
   }
-  document.addEventListener('input', onEdit, true);
-  document.addEventListener('change', onEdit, true);
 
-  // 検証・拡張用フック（管理者ページ限定。レイのE2Eテストでも使用）
-  window.czState = state;
-  window.czSet = (path, v) => { setP(path, v); push(); };
+  function makeImgField(obj, key, onChange) {
+    const w = document.createElement('div'); w.className = 'cz-imgfield';
+    const thumb = document.createElement('div'); thumb.className = 'cz-imgthumb';
+    const setThumb = () => { thumb.style.backgroundImage = obj[key] ? `url("${obj[key]}")` : 'none'; thumb.textContent = obj[key] ? '' : '未設定'; };
+    setThumb();
+    const btns = document.createElement('div'); btns.className = 'cz-imgbtns';
+    const up = document.createElement('button'); up.type = 'button'; up.className = 'cz-mini'; up.textContent = '📁 画像を選ぶ';
+    const rm = document.createElement('button'); rm.type = 'button'; rm.className = 'cz-mini danger'; rm.textContent = '削除';
+    const file = document.createElement('input'); file.type = 'file'; file.accept = 'image/*'; file.hidden = true;
+    up.addEventListener('click', () => file.click());
+    file.addEventListener('change', () => {
+      const f = file.files[0]; if (!f) return;
+      if (f.size > 4 * 1024 * 1024) { alert('4MB以下の画像にしてください'); return; }
+      const r = new FileReader();
+      r.onload = () => { obj[key] = r.result; setThumb(); onChange(); };
+      r.readAsDataURL(f);
+    });
+    rm.addEventListener('click', () => { obj[key] = ''; setThumb(); onChange(); });
+    btns.appendChild(up); btns.appendChild(rm);
+    w.appendChild(thumb); w.appendChild(btns);
+    return w;
+  }
 
-  // ===== デザイン入力 =====
-  const $ = (id) => document.getElementById(id);
-  ['accent', 'accent_dark', 'base_black', 'bg_tint'].forEach((k) => {
-    $('f-' + k).value = state.theme[k];
-    $('f-' + k).addEventListener('input', (e) => { state.theme[k] = e.target.value; push(); });
+  function buildFields(container, obj, fields, onChange) {
+    fields.forEach(([key, label, kind, opts]) => {
+      if (kind === 'img') {
+        const lab = document.createElement('label'); lab.textContent = label;
+        lab.appendChild(makeImgField(obj, key, onChange));
+        container.appendChild(lab); return;
+      }
+      if (kind === 'strs') {
+        const wrap = document.createElement('div'); wrap.className = 'cz-arr';
+        const head = document.createElement('p'); head.className = 'cz-arr-label'; head.textContent = label;
+        wrap.appendChild(head);
+        const listEl = document.createElement('div');
+        const renderList = () => {
+          listEl.innerHTML = '';
+          (obj[key] || []).forEach((v, idx) => {
+            const row = document.createElement('div'); row.className = 'cz-strrow';
+            const i = (opts && opts.ta) ? document.createElement('textarea') : document.createElement('input');
+            if (opts && opts.ta) i.rows = 3; else i.type = 'text';
+            i.value = v;
+            i.addEventListener('input', () => { obj[key][idx] = i.value; onChange(); });
+            const del = document.createElement('button'); del.type = 'button'; del.className = 'cz-mini danger'; del.textContent = '✕';
+            del.title = '削除';
+            del.addEventListener('click', () => { obj[key].splice(idx, 1); renderList(); onChange(); });
+            row.appendChild(i); row.appendChild(del);
+            listEl.appendChild(row);
+          });
+        };
+        renderList();
+        const add = document.createElement('button'); add.type = 'button'; add.className = 'cz-mini add'; add.textContent = `＋ ${opts?.itemLabel || '項目'}を追加`;
+        add.addEventListener('click', () => { (obj[key] = obj[key] || []).push(''); renderList(); onChange(); });
+        wrap.appendChild(listEl); wrap.appendChild(add);
+        container.appendChild(wrap); return;
+      }
+      if (kind === 'arr') {
+        const wrap = document.createElement('div'); wrap.className = 'cz-arr';
+        const head = document.createElement('p'); head.className = 'cz-arr-label'; head.textContent = label;
+        wrap.appendChild(head);
+        const listEl = document.createElement('div');
+        const renderList = () => {
+          listEl.innerHTML = '';
+          (obj[key] || []).forEach((item, idx) => {
+            const card = document.createElement('div'); card.className = 'cz-itemcard';
+            const bar = document.createElement('div'); bar.className = 'cz-itembar';
+            bar.innerHTML = `<span>${opts.itemLabel || '項目'} ${idx + 1}</span>`;
+            const del = document.createElement('button'); del.type = 'button'; del.className = 'cz-mini danger'; del.textContent = '削除';
+            del.addEventListener('click', () => { obj[key].splice(idx, 1); renderList(); onChange(); });
+            bar.appendChild(del);
+            card.appendChild(bar);
+            const inner = document.createElement('div'); inner.className = 'cz-fields tight';
+            buildFields(inner, item, opts.itemFields, onChange);
+            card.appendChild(inner);
+            listEl.appendChild(card);
+          });
+        };
+        renderList();
+        const add = document.createElement('button'); add.type = 'button'; add.className = 'cz-mini add'; add.textContent = `＋ ${opts.itemLabel || '項目'}を追加`;
+        add.addEventListener('click', () => { (obj[key] = obj[key] || []).push(JSON.parse(JSON.stringify(opts.itemDefault))); renderList(); onChange(); });
+        wrap.appendChild(listEl); wrap.appendChild(add);
+        container.appendChild(wrap); return;
+      }
+      if (kind === 'flag') {
+        const { el } = makeInput('flag', obj[key], (v) => { obj[key] = v; onChange(); }, { label });
+        container.appendChild(el); return;
+      }
+      const lab = document.createElement('label'); lab.textContent = label;
+      const { el } = makeInput(kind, obj[key], (v) => { obj[key] = v; onChange(); }, opts);
+      lab.appendChild(el);
+      container.appendChild(lab);
+    });
+  }
+
+  // ================= ブロックリスト =================
+  const listEl = document.getElementById('blockList');
+  function snippet(b) {
+    const p = b.p;
+    const s = p.title_jp || p.catch_line1 || p.text || p.title_before || p.body || p.title_line1 || '';
+    return String(s).slice(0, 22);
+  }
+  function renderBlocks() {
+    listEl.innerHTML = '';
+    state.page.blocks.forEach((b, i) => {
+      const def = DEFS[b.type] || { name: b.type, emoji: '❔', fields: [] };
+      const card = document.createElement('div'); card.className = 'cz-block';
+      const head = document.createElement('div'); head.className = 'cz-block-head';
+      head.innerHTML = `<span class="cz-block-ico">${def.emoji}</span><span class="cz-block-name">${def.name}</span><span class="cz-block-snip">${snippet(b)}</span>`;
+      const ctrl = document.createElement('div'); ctrl.className = 'cz-block-ctrl';
+      const mk = (txt, title, fn, cls = '') => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'cz-ctrl ' + cls; bt.textContent = txt; bt.title = title; bt.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); return bt; };
+      ctrl.appendChild(mk('↑', '上へ', () => move(i, -1)));
+      ctrl.appendChild(mk('↓', '下へ', () => move(i, 1)));
+      ctrl.appendChild(mk('⧉', '複製', () => dup(i)));
+      ctrl.appendChild(mk('＋', 'この下に追加', () => openPicker(i + 1)));
+      ctrl.appendChild(mk('🗑', '削除', () => del(i), 'danger'));
+      head.appendChild(ctrl);
+      head.addEventListener('click', () => {
+        if (openSet.has(b.id)) openSet.delete(b.id); else openSet.add(b.id);
+        renderBlocks();
+        send(i);
+      });
+      card.appendChild(head);
+      if (openSet.has(b.id)) {
+        card.classList.add('is-open');
+        const body = document.createElement('div'); body.className = 'cz-fields';
+        buildFields(body, b.p, def.fields, () => send());
+        card.appendChild(body);
+      }
+      listEl.appendChild(card);
+    });
+  }
+  function move(i, d) {
+    const j = i + d; if (j < 0 || j >= state.page.blocks.length) return;
+    const [b] = state.page.blocks.splice(i, 1);
+    state.page.blocks.splice(j, 0, b);
+    renderBlocks(); send(j);
+  }
+  function dup(i) {
+    const c = JSON.parse(JSON.stringify(state.page.blocks[i])); c.id = uid();
+    state.page.blocks.splice(i + 1, 0, c);
+    renderBlocks(); send(i + 1);
+  }
+  function del(i) {
+    const def = DEFS[state.page.blocks[i].type];
+    if (!confirm(`「${def ? def.name : ''}」ブロックを削除しますか？（保存するまで本番には影響しません）`)) return;
+    state.page.blocks.splice(i, 1);
+    renderBlocks(); send();
+  }
+
+  // ================= ピッカー =================
+  const picker = document.getElementById('pickerModal');
+  let insertAt = null;
+  function openPicker(pos) { insertAt = pos; picker.hidden = false; }
+  document.getElementById('pickerClose').addEventListener('click', () => { picker.hidden = true; });
+  picker.addEventListener('click', (e) => { if (e.target === picker) picker.hidden = true; });
+  document.getElementById('addAtEnd').addEventListener('click', () => openPicker(state.page.blocks.length));
+  (function buildPicker() {
+    const sec = document.getElementById('pickSections');
+    const part = document.getElementById('pickParts');
+    Object.entries(DEFS).forEach(([type, def]) => {
+      const tile = document.createElement('button'); tile.type = 'button'; tile.className = 'cz-tile';
+      tile.innerHTML = `<span class="cz-tile-ico">${def.emoji}</span><span class="cz-tile-name">${def.name}</span><span class="cz-tile-desc">${def.desc}</span>`;
+      tile.addEventListener('click', () => {
+        const b = { id: uid(), type, p: JSON.parse(JSON.stringify(def.defaults)) };
+        state.page.blocks.splice(insertAt ?? state.page.blocks.length, 0, b);
+        openSet.add(b.id);
+        picker.hidden = true;
+        renderBlocks(); send(insertAt ?? state.page.blocks.length - 1);
+      });
+      (def.cat === 'section' ? sec : part).appendChild(tile);
+    });
+  })();
+
+  // ================= タブ =================
+  document.querySelectorAll('.cz-tab').forEach((t) => {
+    t.addEventListener('click', () => {
+      document.querySelectorAll('.cz-tab').forEach((x) => x.classList.remove('is-active'));
+      t.classList.add('is-active');
+      document.getElementById('pane-blocks').hidden = t.dataset.tab !== 'blocks';
+      document.getElementById('pane-design').hidden = t.dataset.tab !== 'design';
+    });
   });
-  $('f-radius').value = state.theme.radius;
-  $('radiusOut').textContent = state.theme.radius + 'px';
-  $('f-radius').addEventListener('input', (e) => { state.theme.radius = Number(e.target.value); $('radiusOut').textContent = e.target.value + 'px'; push(); });
-  $('f-font_en').value = state.theme.font_en;
-  $('f-font_en').addEventListener('input', (e) => { state.theme.font_en = e.target.value; push(); });
-  $('f-custom_css').value = state.theme.custom_css || '';
-  $('f-custom_css').addEventListener('input', (e) => { state.theme.custom_css = e.target.value; push(); });
 
-  // ===== ライブ反映（postMessage・即時送信） =====
-  function push() { sendNow(); }
-  window.czSend = () => sendNow();
-  function sendNow() {
+  // ================= デザイン・基本設定 =================
+  const $ = (id) => document.getElementById(id);
+  ['accent', 'accent_dark', 'base_black', 'bg_tint'].forEach((k) => { $('f-' + k).value = state.theme[k]; $('f-' + k).addEventListener('input', (e) => { state.theme[k] = e.target.value; send(); }); });
+  $('f-radius').value = state.theme.radius; $('radiusOut').textContent = state.theme.radius + 'px';
+  $('f-radius').addEventListener('input', (e) => { state.theme.radius = Number(e.target.value); $('radiusOut').textContent = e.target.value + 'px'; send(); });
+  $('f-font_en').value = state.theme.font_en;
+  $('f-font_en').addEventListener('input', (e) => { state.theme.font_en = e.target.value; send(); });
+  $('f-custom_css').value = state.theme.custom_css || '';
+  $('f-custom_css').addEventListener('input', (e) => { state.theme.custom_css = e.target.value; send(); });
+  $('f-email').value = state.settings.email;
+  $('f-email').addEventListener('input', (e) => { state.settings.email = e.target.value; });
+  $('f-line_url').value = state.settings.line_url || '';
+  $('f-line_url').addEventListener('input', (e) => { state.settings.line_url = e.target.value; });
+  $('f-tagline').value = state.settings.tagline;
+  $('f-tagline').addEventListener('input', (e) => { state.settings.tagline = e.target.value; });
+
+  // ================= ライブ反映 =================
+  let timer = null, ready = false;
+  function send(scrollTo) {
+    clearTimeout(timer);
+    timer = setTimeout(() => sendNow(scrollTo), 80);
+  }
+  function sendNow(scrollTo) {
     const t = state.theme;
     const gf = fontMap[t.font_en] || fontMap.Montserrat;
-    const msg = {
-      type: 'layr-preview',
-      vars: {
-        '--green': t.accent, '--green-dark': t.accent_dark, '--black': t.base_black,
-        '--bg': t.bg_tint, '--radius': t.radius + 'px',
-        '--font-en': `'${t.font_en}','Noto Sans JP',sans-serif`,
-      },
+    frame.contentWindow?.postMessage({
+      type: 'layr-blocks',
+      blocks: state.page.blocks,
+      vars: { '--green': t.accent, '--green-dark': t.accent_dark, '--black': t.base_black, '--bg': t.bg_tint, '--radius': t.radius + 'px', '--font-en': `'${t.font_en}','Noto Sans JP',sans-serif` },
       fontHref: `https://fonts.googleapis.com/css2?family=${gf}&display=swap`,
-      texts: {}, mlTexts: {}, show: {}, heights: {},
       css: t.custom_css || '',
-    };
-    reg.texts.forEach((p) => { msg.texts[p] = String(getP(p) ?? ''); });
-    reg.ml.forEach((p) => { msg.mlTexts[p] = String(getP(p) ?? ''); });
-    reg.show.forEach((p) => { msg.show[p] = !!getP(p); });
-    reg.heights.forEach((p) => { msg.heights[p] = Number(getP(p)) || 0; });
-    frame.contentWindow?.postMessage(msg, location.origin);
+      ...(typeof scrollTo === 'number' ? { scrollTo } : {}),
+    }, location.origin);
   }
-  frame.addEventListener('load', () => setTimeout(sendNow, 150));
+  window.addEventListener('message', (e) => {
+    if (e.origin !== location.origin) return;
+    if (e.data && e.data.type === 'layr-preview-ready') { ready = true; sendNow(); }
+  });
+  frame.addEventListener('load', () => setTimeout(() => sendNow(), 250));
 
-  // ===== 表示デバイス切替 =====
+  // ================= デバイス切替・リセット =================
   document.querySelectorAll('.cz-dev').forEach((b) => {
     b.addEventListener('click', () => {
       document.querySelectorAll('.cz-dev').forEach((x) => x.classList.remove('is-active'));
@@ -339,13 +465,11 @@ const initial = { theme, hero, cta, stats, cases, problem, service, reason, prom
       frame.style.width = b.dataset.w || '100%';
     });
   });
-
-  // ===== リセット =====
   document.getElementById('czReset').addEventListener('click', () => { if (confirm('未保存の変更を破棄して読み込み直しますか？')) location.reload(); });
 
-  // ===== 保存（GitHubへ1コミット → 自動デプロイ） =====
+  // ================= 保存 =================
   const REPO = 'layrinc/company-brain';
-  const BASE = '株式会社LAYR/layr-hp/src/data/';
+  const BASE = '株式会社LAYR/layr-hp/';
   const TOKEN_KEY = 'layrGhToken';
   const modal = $('czModal');
 
@@ -353,33 +477,20 @@ const initial = { theme, hero, cta, stats, cases, problem, service, reason, prom
     return new Promise((resolve) => {
       const saved = localStorage.getItem(TOKEN_KEY);
       if (saved) return resolve(saved);
-      // CMS（Sveltia）にログイン済みなら、そのトークンを自動で使い回す
       try {
         const cms = JSON.parse(localStorage.getItem('sveltia-cms.user') || '{}');
         if (cms && cms.token) { localStorage.setItem(TOKEN_KEY, cms.token); return resolve(cms.token); }
-      } catch (_) { /* 無視してモーダルへ */ }
+      } catch (_) { /* モーダルへ */ }
       modal.hidden = false;
-      $('czTokenOk').onclick = () => {
-        const v = $('czToken').value.trim();
-        if (!v) return;
-        localStorage.setItem(TOKEN_KEY, v);
-        modal.hidden = true;
-        resolve(v);
-      };
+      $('czTokenOk').onclick = () => { const v = $('czToken').value.trim(); if (!v) return; localStorage.setItem(TOKEN_KEY, v); modal.hidden = true; resolve(v); };
       $('czTokenCancel').onclick = () => { modal.hidden = true; resolve(null); };
     });
   }
 
   async function gh(path, opt = {}, token) {
-    const res = await fetch('https://api.github.com' + path, {
-      ...opt,
-      headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json', ...(opt.body ? { 'Content-Type': 'application/json' } : {}) },
-    });
+    const res = await fetch('https://api.github.com' + path, { ...opt, headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json', ...(opt.body ? { 'Content-Type': 'application/json' } : {}) } });
     if (res.status === 401 || res.status === 403) { localStorage.removeItem(TOKEN_KEY); throw new Error('認証エラー。トークンを確認してください（再度保存するとトークン入力が出ます）'); }
-    if (!res.ok) {
-      const j = await res.json().catch(() => ({}));
-      throw new Error('GitHub APIエラー: ' + res.status + (j.message ? '（' + j.message + '）' : ''));
-    }
+    if (!res.ok) { const j = await res.json().catch(() => ({})); throw new Error('GitHub APIエラー: ' + res.status + (j.message ? '（' + j.message + '）' : '')); }
     return res.json();
   }
 
@@ -390,23 +501,42 @@ const initial = { theme, hero, cta, stats, cases, problem, service, reason, prom
     btn.disabled = true;
     statusEl.textContent = '保存中…';
     try {
-      const fileKeys = ['theme', 'hero', 'cta', 'stats', 'cases', 'problem', 'service', 'reason', 'promise', 'faq', 'message', 'company', 'settings'];
-      const files = fileKeys.map((k) => ({ path: BASE + k + '.json', content: JSON.stringify(state[k], null, 2) + '\n' }));
-      // 保存の瞬間に別の保存/デプロイとぶつかった場合（422）は、最新に追従して自動リトライする
+      // 1) 画像（dataURL）をアップロード用に抽出し、保存用クローンではパスに置換
+      const pageClone = JSON.parse(JSON.stringify(state.page));
+      const uploads = [];
+      pageClone.blocks.forEach((b) => {
+        ['photo', 'src'].forEach((key) => {
+          const v = b.p && b.p[key];
+          if (typeof v === 'string' && v.startsWith('data:')) {
+            const m = v.match(/^data:image\/(png|jpe?g|gif|webp|svg\+xml);base64,(.+)$/);
+            if (!m) return;
+            const ext = m[1] === 'jpeg' ? 'jpg' : m[1].replace('+xml', '');
+            const name = `up-${Date.now()}-${uploads.length}.${ext}`;
+            uploads.push({ name, b64: m[2] });
+            b.p[key] = '/uploads/' + name;
+          }
+        });
+      });
+
       let lastErr = null;
       for (let attempt = 1; attempt <= 3; attempt++) {
         try {
+          // 2) 画像blobを作成
+          const treeEntries = [];
+          for (const u of uploads) {
+            const blob = await gh(`/repos/${REPO}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: u.b64, encoding: 'base64' }) }, token);
+            treeEntries.push({ path: BASE + 'public/uploads/' + u.name, mode: '100644', type: 'blob', sha: blob.sha });
+          }
+          // 3) JSON3点
+          treeEntries.push({ path: BASE + 'src/data/page-home.json', mode: '100644', type: 'blob', content: JSON.stringify(pageClone, null, 2) + '\n' });
+          treeEntries.push({ path: BASE + 'src/data/theme.json', mode: '100644', type: 'blob', content: JSON.stringify(state.theme, null, 2) + '\n' });
+          treeEntries.push({ path: BASE + 'src/data/settings.json', mode: '100644', type: 'blob', content: JSON.stringify(state.settings, null, 2) + '\n' });
+          // 4) コミット
           const ref = await gh(`/repos/${REPO}/git/ref/heads/main`, {}, token);
           const parentSha = ref.object.sha;
           const parent = await gh(`/repos/${REPO}/git/commits/${parentSha}`, {}, token);
-          const tree = await gh(`/repos/${REPO}/git/trees`, {
-            method: 'POST',
-            body: JSON.stringify({ base_tree: parent.tree.sha, tree: files.map((f) => ({ path: f.path, mode: '100644', type: 'blob', content: f.content })) }),
-          }, token);
-          const commit = await gh(`/repos/${REPO}/git/commits`, {
-            method: 'POST',
-            body: JSON.stringify({ message: 'layr-hp: カスタマイザーから設定を更新', tree: tree.sha, parents: [parentSha] }),
-          }, token);
+          const tree = await gh(`/repos/${REPO}/git/trees`, { method: 'POST', body: JSON.stringify({ base_tree: parent.tree.sha, tree: treeEntries }) }, token);
+          const commit = await gh(`/repos/${REPO}/git/commits`, { method: 'POST', body: JSON.stringify({ message: 'layr-hp: ページビルダーから更新', tree: tree.sha, parents: [parentSha] }) }, token);
           await gh(`/repos/${REPO}/git/refs/heads/main`, { method: 'PATCH', body: JSON.stringify({ sha: commit.sha }) }, token);
           lastErr = null;
           break;
@@ -423,63 +553,112 @@ const initial = { theme, hero, cta, stats, cases, problem, service, reason, prom
       if (lastErr) throw lastErr;
       statusEl.textContent = '✅ 保存しました。約1分で本番に反映されます';
     } catch (err) {
-      statusEl.textContent = '❌ ' + (err.message || '保存に失敗しました') + '｜ページを再読み込みしてもう一度お試しください';
+      statusEl.textContent = '❌ ' + (err.message || '保存に失敗しました') + '｜再読み込みして再試行してください';
     } finally {
       btn.disabled = false;
     }
   });
+
+  // 初期描画
+  renderBlocks();
 </script>
 
-<style>
+<style is:global>
   *{margin:0;padding:0;box-sizing:border-box}
-  .cz-body{font-family:"Noto Sans JP",-apple-system,sans-serif;background:#EEF1EF;height:100vh;display:flex;flex-direction:column;font-size:13.5px;color:#17211B}
-  .cz-bar{height:54px;background:#0F1613;color:#fff;display:flex;align-items:center;gap:18px;padding:0 16px;flex-shrink:0}
+  .cz-body{font-family:"Noto Sans JP",-apple-system,sans-serif;background:#EDF1EE;height:100vh;display:flex;flex-direction:column;font-size:14px;color:#17211B}
+  .cz-bar{height:58px;background:#0F1613;color:#fff;display:flex;align-items:center;gap:20px;padding:0 20px;flex-shrink:0}
   .cz-back{color:rgba(255,255,255,.75);text-decoration:none;font-weight:700;font-size:13px}
-  .cz-title{font-weight:900;font-size:14px}
-  .cz-title span{font-weight:500;font-size:11.5px;color:rgba(255,255,255,.6);margin-left:10px}
-  .cz-bar-actions{margin-left:auto;display:flex;align-items:center;gap:10px}
-  .cz-status{font-size:12px;color:#8FE6B2;max-width:340px}
-  .cz-btn{border:none;border-radius:999px;font-weight:800;font-size:12.5px;padding:9px 18px;cursor:pointer;font-family:inherit}
+  .cz-title{font-weight:900;font-size:14.5px;white-space:nowrap}
+  .cz-tabs{display:flex;gap:6px;background:rgba(255,255,255,.1);border-radius:999px;padding:4px}
+  .cz-tab{border:none;background:transparent;color:rgba(255,255,255,.7);font-weight:800;font-size:12.5px;padding:8px 18px;border-radius:999px;cursor:pointer;font-family:inherit}
+  .cz-tab.is-active{background:#fff;color:#0F1613}
+  .cz-bar-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
+  .cz-status{font-size:12px;color:#8FE6B2;max-width:320px}
+  .cz-btn{border:none;border-radius:999px;font-weight:800;font-size:13px;padding:10px 22px;cursor:pointer;font-family:inherit}
   .cz-btn.primary{background:#06C755;color:#fff}
   .cz-btn.primary:hover{background:#04A245}
   .cz-btn.primary:disabled{opacity:.6}
   .cz-btn.ghost{background:rgba(255,255,255,.14);color:#fff}
   .cz-main{flex:1;display:flex;min-height:0}
-  .cz-panel{width:330px;flex-shrink:0;background:#fff;overflow-y:auto;border-right:1px solid #E2E8E4;padding:10px 0 30px}
-  .cz-group{border-bottom:1px solid #EEF1EF}
-  .cz-group summary{cursor:pointer;font-weight:900;font-size:13px;padding:13px 18px;list-style:none;user-select:none}
-  .cz-group summary::-webkit-details-marker{display:none}
-  .cz-group[open] summary{color:#04A245}
-  .cz-fields{padding:2px 18px 18px;display:flex;flex-direction:column;gap:12px}
-  .cz-fields label{display:flex;flex-direction:column;gap:5px;font-weight:700;font-size:11.5px;color:#5F6E66}
-  .cz-fields input[type="text"],.cz-fields input[type="number"],.cz-fields textarea,.cz-fields select{font-family:inherit;font-size:13px;padding:9px 11px;border:1.5px solid #E2E8E4;border-radius:9px;background:#FAFCFB;color:#17211B;outline:none}
-  .cz-fields input:focus,.cz-fields textarea:focus{border-color:#06C755}
+  .cz-panel{width:400px;flex-shrink:0;background:#F7F9F8;overflow-y:auto;border-right:1px solid #E0E6E2;padding:18px 16px 40px}
+  .cz-panel-head p{font-size:12px;color:#5F6E66;line-height:1.8;padding:2px 4px 14px}
+  .cz-panel-head b{color:#04A245}
+
+  /* ブロックカード */
+  .cz-block{background:#fff;border:1px solid #E4EAE6;border-radius:14px;margin-bottom:10px;overflow:hidden;transition:box-shadow .15s}
+  .cz-block:hover{box-shadow:0 4px 16px rgba(13,43,31,.08)}
+  .cz-block.is-open{box-shadow:0 6px 20px rgba(13,43,31,.10);border-color:#06C755}
+  .cz-block-head{display:flex;align-items:center;gap:10px;padding:14px 14px;cursor:pointer;user-select:none}
+  .cz-block-ico{font-size:17px}
+  .cz-block-name{font-weight:900;font-size:13.5px;white-space:nowrap}
+  .cz-block-snip{font-size:11.5px;color:#8B978F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+  .cz-block-ctrl{display:flex;gap:4px;opacity:.35;transition:opacity .15s}
+  .cz-block:hover .cz-block-ctrl{opacity:1}
+  .cz-ctrl{border:none;background:#F0F3F1;border-radius:7px;width:27px;height:27px;font-size:12px;cursor:pointer;color:#3D4A43;font-family:inherit}
+  .cz-ctrl:hover{background:#DFF3E7;color:#04A245}
+  .cz-ctrl.danger:hover{background:#FDEEED;color:#D64541}
+  .cz-add-main{width:100%;border:2px dashed #C9D4CD;background:transparent;border-radius:14px;padding:15px;font-weight:800;font-size:13.5px;color:#5F6E66;cursor:pointer;font-family:inherit;margin-top:4px}
+  .cz-add-main:hover{border-color:#06C755;color:#04A245;background:#F0FAF4}
+
+  /* フィールド */
+  .cz-fields{padding:4px 16px 18px;display:flex;flex-direction:column;gap:15px}
+  .cz-fields.tight{padding:4px 12px 12px;gap:11px}
+  .cz-fields label{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:12px;color:#5F6E66}
+  .cz-fields input[type="text"],.cz-fields input[type="number"],.cz-fields textarea,.cz-fields select{font-family:inherit;font-size:13.5px;padding:11px 13px;border:1.5px solid #E0E6E2;border-radius:10px;background:#fff;color:#17211B;outline:none;line-height:1.7}
+  .cz-fields input:focus,.cz-fields textarea:focus,.cz-fields select:focus{border-color:#06C755}
   .cz-color{flex-direction:row!important;align-items:center;justify-content:space-between}
-  .cz-color input{width:52px;height:30px;border:1.5px solid #E2E8E4;border-radius:7px;background:#fff;padding:2px;cursor:pointer}
-  .cz-flag{flex-direction:row!important;align-items:center;gap:9px!important;font-size:12.5px!important;color:#17211B!important}
-  .cz-flag input{width:16px;height:16px;accent-color:#06C755}
-  .cz-css{font-family:ui-monospace,Menlo,monospace;font-size:12px;line-height:1.6}
+  .cz-color input{width:56px;height:32px;border:1.5px solid #E0E6E2;border-radius:8px;background:#fff;padding:2px;cursor:pointer}
+  .cz-flag{flex-direction:row!important;align-items:center;gap:10px!important;font-size:13px!important;color:#17211B!important;font-weight:700!important;cursor:pointer}
+  .cz-flag input{width:17px;height:17px;accent-color:#06C755}
+  .cz-arr{display:flex;flex-direction:column;gap:9px}
+  .cz-arr-label{font-weight:800;font-size:12px;color:#5F6E66}
+  .cz-itemcard{background:#F7F9F8;border:1px solid #E4EAE6;border-radius:11px;overflow:hidden}
+  .cz-itembar{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;font-weight:800;font-size:11.5px;color:#5F6E66;background:#F0F3F1}
+  .cz-strrow{display:flex;gap:7px;margin-bottom:7px}
+  .cz-strrow input,.cz-strrow textarea{flex:1}
+  .cz-mini{border:none;background:#EDF1EE;border-radius:8px;padding:8px 13px;font-weight:800;font-size:12px;color:#3D4A43;cursor:pointer;font-family:inherit;align-self:flex-start}
+  .cz-mini:hover{background:#DFF3E7;color:#04A245}
+  .cz-mini.danger:hover{background:#FDEEED;color:#D64541}
+  .cz-mini.add{width:100%;border:1.5px dashed #C9D4CD;background:transparent}
+  .cz-imgfield{display:flex;gap:12px;align-items:center}
+  .cz-imgthumb{width:86px;height:64px;border-radius:10px;background:#EDF1EE center/cover no-repeat;border:1.5px solid #E0E6E2;display:grid;place-items:center;font-size:10.5px;color:#8B978F;font-weight:700}
+  .cz-imgbtns{display:flex;flex-direction:column;gap:6px}
+
+  /* デザインタブ */
+  .cz-group-static{background:#fff;border:1px solid #E4EAE6;border-radius:14px;margin-bottom:12px;padding-top:14px}
+  .cz-group-static h3{font-size:13.5px;font-weight:900;padding:0 16px 10px}
+  .cz-css{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.7}
   .cz-hint{font-weight:500;font-size:11.5px;color:#5F6E66;line-height:1.7}
-  .cz-hint code{background:#EEF1EF;border-radius:4px;padding:1px 5px}
-  .cz-note{padding:14px 18px;font-size:11.5px;color:#5F6E66;line-height:1.7}
+  .cz-note{padding:10px 6px;font-size:11.5px;color:#5F6E66;line-height:1.7}
   .cz-note a{color:#04A245;font-weight:700}
+
+  /* ステージ */
   .cz-stage{flex:1;display:flex;flex-direction:column;min-width:0}
-  .cz-devices{display:flex;gap:8px;justify-content:center;padding:10px}
-  .cz-dev{border:1px solid #D8DFDA;background:#fff;border-radius:999px;font-size:12px;font-weight:700;padding:7px 16px;cursor:pointer;color:#5F6E66;font-family:inherit}
+  .cz-devices{display:flex;gap:8px;justify-content:center;padding:12px}
+  .cz-dev{border:1px solid #D5DDd7;background:#fff;border-radius:999px;font-size:12px;font-weight:700;padding:8px 18px;cursor:pointer;color:#5F6E66;font-family:inherit}
   .cz-dev.is-active{background:#0F1613;color:#fff;border-color:#0F1613}
-  .cz-frame-wrap{flex:1;display:flex;justify-content:center;overflow:hidden;padding:0 12px 12px}
-  #czFrame{width:100%;height:100%;border:none;border-radius:12px;background:#fff;box-shadow:0 10px 30px rgba(13,43,31,.12);transition:width .3s ease;max-width:100%}
+  .cz-frame-wrap{flex:1;display:flex;justify-content:center;overflow:hidden;padding:0 14px 14px}
+  #czFrame{width:100%;height:100%;border:none;border-radius:14px;background:#fff;box-shadow:0 10px 30px rgba(13,43,31,.12);transition:width .3s ease;max-width:100%}
+
+  /* モーダル */
   .cz-modal{position:fixed;inset:0;background:rgba(15,22,19,.55);display:grid;place-items:center;z-index:50}
   .cz-modal[hidden]{display:none}
-  .cz-modal-card{background:#fff;border-radius:16px;padding:28px;width:min(420px,90vw);display:flex;flex-direction:column;gap:12px}
-  .cz-modal-card h2{font-size:16px;font-weight:900}
+  .cz-modal-card{background:#fff;border-radius:18px;padding:28px;width:min(440px,92vw);display:flex;flex-direction:column;gap:13px;max-height:86vh;overflow-y:auto}
+  .cz-modal-card h2{font-size:16.5px;font-weight:900}
   .cz-modal-card p{font-size:12.5px;color:#5F6E66;line-height:1.7}
-  .cz-modal-card input{font-family:inherit;font-size:13px;padding:11px 12px;border:1.5px solid #E2E8E4;border-radius:9px;outline:none}
+  .cz-modal-card input[type="password"]{font-family:inherit;font-size:13px;padding:12px;border:1.5px solid #E0E6E2;border-radius:10px;outline:none}
   .cz-modal-actions{display:flex;justify-content:flex-end;gap:10px}
-  @media (max-width:900px){
-    .cz-panel{width:280px}
-    .cz-title span{display:none}
-  }
+  .cz-picker{width:min(620px,94vw)}
+  .cz-picker-head{display:flex;justify-content:space-between;align-items:center}
+  .cz-x{border:none;background:#EDF1EE;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:13px}
+  .cz-picker-cat{font-weight:900;font-size:12.5px;color:#5F6E66;margin-top:6px}
+  .cz-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
+  .cz-tile{border:1.5px solid #E4EAE6;background:#fff;border-radius:12px;padding:13px 11px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;gap:3px;text-align:left}
+  .cz-tile:hover{border-color:#06C755;background:#F0FAF4}
+  .cz-tile-ico{font-size:19px}
+  .cz-tile-name{font-weight:900;font-size:12.5px;color:#17211B}
+  .cz-tile-desc{font-size:10.5px;color:#8B978F;line-height:1.5}
+  @media (max-width:980px){.cz-panel{width:320px}.cz-tabs{display:none}}
 </style>
 </body>
 </html>

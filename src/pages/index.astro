@@ -1,436 +1,56 @@
 ---
+/**
+ * トップページ。中身は page-home.json のブロック配列で決まる（ブロック型CMS）。
+ * 編集はカスタマイザー（/admin/customize/）から。ここは器だけ。
+ */
 import Base from '../layouts/Base.astro';
+import Block from '../components/Block.astro';
+import page from '../data/page-home.json';
 import { getCollection } from 'astro:content';
 
-// ===== 管理画面（/admin →「サイト設定」）から編集できるデータ =====
-import settings from '../data/settings.json';
-import hero from '../data/hero.json';
-import stats from '../data/stats.json';
-import cases from '../data/cases.json';
-import faq from '../data/faq.json';
-import promiseData from '../data/promise.json';
-import message from '../data/message.json';
-import company from '../data/company.json';
-import theme from '../data/theme.json';
-import problem from '../data/problem.json';
-import service from '../data/service.json';
-import reason from '../data/reason.json';
-import cta from '../data/cta.json';
-import IllustWorry from '../components/IllustWorry.astro';
-import IllustGrowth from '../components/IllustGrowth.astro';
-import IllustConsult from '../components/IllustConsult.astro';
-
-// 事業内容カード（主力以外）のアイコン。順番に割り当て、足りなければ循環する。
-const serviceIcons = [
-  '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
-  '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="13" x2="13" y2="13"/></svg>',
-];
-
-// コラム最新3本を取得（下書きは除外・日付降順）
+// コラムブロック用に最新記事を取得（下書き除外・日付降順）
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const latest = posts.slice(0, 3);
-const fmt = (d: Date) =>
-  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
-const iso = (d: Date) => d.toISOString().slice(0, 10);
 
 const title = '株式会社LAYR｜LINE構築・運用を軸にしたマーケティング支援会社';
 const description = '株式会社LAYRは、LINE公式アカウントの構築・運用マーケティングと広告運用代行を軸に、中小企業の売上を伸ばすマーケティング支援会社です。広告からLINEまで一気通貫で設計し、リピート・紹介が生まれる仕組みを作ります。';
 
-// FAQの構造化データ(JSON-LD)。検索結果にQ&Aが展開表示される可能性が上がる。
-const faqJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: faq.items.map((item) => ({
-    '@type': 'Question',
-    name: item.q,
-    acceptedAnswer: { '@type': 'Answer', text: item.a },
-  })),
-};
-
-// 会社の構造化データ(JSON-LD)。検索エンジンに会社情報を正しく伝える。
-const orgJsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
-  name: company.name,
-  url: 'https://layr.co.jp',
-  email: settings.email,
-  description: 'LINE公式アカウントの構築・運用マーケティングと広告運用代行を軸にした、中小企業向けマーケティング支援会社。',
-  founder: { '@type': 'Person', name: '河出 壱貫' },
-  foundingDate: '2026-08',
-  areaServed: 'JP',
-  knowsAbout: ['LINE公式アカウント', 'LINEマーケティング', 'Web広告運用', 'デジタルマーケティング'],
-  address: {
-    '@type': 'PostalAddress',
-    streetAddress: '道玄坂1丁目10番8号 渋谷道玄坂東急ビル2F-C',
-    addressLocality: '渋谷区',
-    addressRegion: '東京都',
-    addressCountry: 'JP',
+// 構造化データ: 会社情報＋（FAQブロックがあれば）FAQPage
+const companyBlock = page.blocks.find((b) => b.type === 'company');
+const faqBlock = page.blocks.find((b) => b.type === 'faq');
+const jsonLd: object[] = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: companyBlock?.p?.name ?? '株式会社LAYR',
+    url: 'https://layr.co.jp',
+    email: 'info@layr.co.jp',
+    description: 'LINE公式アカウントの構築・運用マーケティングと広告運用代行を軸にした、中小企業向けマーケティング支援会社。',
+    founder: { '@type': 'Person', name: companyBlock?.p?.representative ?? '河出 壱貫' },
+    foundingDate: '2026-08',
+    areaServed: 'JP',
+    knowsAbout: ['LINE公式アカウント', 'LINEマーケティング', 'Web広告運用', 'デジタルマーケティング'],
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: '道玄坂1丁目10番8号 渋谷道玄坂東急ビル2F-C',
+      addressLocality: '渋谷区',
+      addressRegion: '東京都',
+      addressCountry: 'JP',
+    },
   },
-};
-
-// CTAリンク: LINE友だち追加URLが設定されていればそちら、無ければメール
-const consult = settings.line_url?.trim()
-  ? settings.line_url
-  : `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
-const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問い合わせ')}`;
+];
+if (faqBlock && Array.isArray(faqBlock.p?.items)) {
+  jsonLd.push({
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqBlock.p.items.map((item: any) => ({
+      '@type': 'Question',
+      name: item.q,
+      acceptedAnswer: { '@type': 'Answer', text: item.a },
+    })),
+  });
+}
 ---
-<Base title={title} description={description} jsonLd={[orgJsonLd, faqJsonLd]}>
-
-  <!-- ============ HERO ============ -->
-  <section class="hero" aria-label="メインビジュアル">
-    <div class="hero-deco" aria-hidden="true">
-      <div class="ring1"></div>
-      <div class="ring2"></div>
-      <div class="dot-grid"></div>
-    </div>
-    <div class="hero-inner">
-      <div class="hero-copy">
-        <p class="hero-eyebrow" data-edit="hero.eyebrow">{hero.eyebrow}</p>
-        <h1><span data-edit="hero.catch_line1">{hero.catch_line1}</span><br><span class="marker" data-edit="hero.catch_line2">{hero.catch_line2}</span><br><span data-edit="hero.catch_line3">{hero.catch_line3}</span></h1>
-        <p class="hero-sub" data-edit="hero.sub">{hero.sub}</p>
-        <div class="hero-actions">
-          <a class="btn btn-green btn-lg" href={consult}>{hero.cta_primary}</a>
-          <a class="btn btn-black btn-lg" href="#service">{hero.cta_secondary}</a>
-        </div>
-        <ul class="hero-chips">
-          {hero.chips.map((chip) => <li>{chip}</li>)}
-        </ul>
-      </div>
-      <div class="hero-visual" aria-hidden="true">
-        <div class="hero-swoosh"></div>
-        <!-- 管理画面風ウィンドウ（プロダクトUIコラージュの背面レイヤー） -->
-        <div class="browser-mock">
-          <div class="bm-bar"><span></span><span></span><span></span></div>
-          <div class="bm-body">
-            <div class="bm-side"><i></i><i></i><i></i><i></i><i></i></div>
-            <div class="bm-main">
-              <div class="bm-title"></div>
-              <div class="bm-chart"><b style="--h:38%"></b><b style="--h:62%"></b><b style="--h:48%"></b><b style="--h:82%"></b><b style="--h:66%"></b><b style="--h:96%"></b></div>
-              <div class="bm-row"></div>
-              <div class="bm-row short"></div>
-            </div>
-          </div>
-        </div>
-        <div class="hero-badge">
-          <span class="s1">{hero.badge_line1}</span>
-          <span class="s2">{hero.badge_line2}</span>
-        </div>
-        <div class="phone">
-          <div class="phone-screen">
-            <div class="talk-header">
-              <span class="oa-icon">S</span>
-              〇〇サロン 公式LINE
-              <span class="oa-check">友だち 3,214</span>
-            </div>
-            <div class="talk-body">
-              <div class="msg in">友だち追加ありがとうございます🎁 30秒のアンケートに答えると、初回クーポンをお届けします</div>
-              <div class="msg out">回答しました！</div>
-              <div class="msg in">ありがとうございます！あなた向けのクーポンです<span class="coupon">初回限定 20%OFFクーポン</span></div>
-            </div>
-            <div class="richmenu">
-              <span class="hot">予約する</span><span>クーポン</span><span>メニュー</span>
-              <span>口コミ</span><span>アクセス</span><span>相談する</span>
-            </div>
-          </div>
-        </div>
-        {hero.float_chips[0] && <div class="float-chip chip1">{hero.float_chips[0].label}<strong>{hero.float_chips[0].value}</strong></div>}
-        {hero.float_chips[1] && <div class="float-chip chip2">{hero.float_chips[1].label}<strong>{hero.float_chips[1].value}</strong></div>}
-        {hero.float_chips[2] && <div class="float-chip chip3">{hero.float_chips[2].label}<strong>{hero.float_chips[2].value}</strong></div>}
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ STATS ============ -->
-  <section class="stats" aria-labelledby="stats-title">
-    <div class="draft-note" data-edit-show="stats.show_edit_note" style={stats.show_edit_note ? '' : 'display:none'}><p>【要編集】実績数値はサンプルです。管理画面の「サイト設定 → 実績数値」で実数値に差し替え、この注意書きをオフにしてください。</p></div>
-    <div class="container">
-      <h2 class="stats-title" id="stats-title"><span data-edit="stats.title_before">{stats.title_before}</span><span class="marker" data-edit="stats.title_marker">{stats.title_marker}</span></h2>
-      <div class="stats-grid">
-        {stats.items.map((item, si) => (
-          <div class="stat-card reveal">
-            <span class="stat-tag" data-edit={`stats.items.${si}.tag`}>{item.tag}</span>
-            <p class="stat-num">{item.arrow && <span class="up">▲</span>}<span data-edit={`stats.items.${si}.number`}>{item.number}</span><small data-edit={`stats.items.${si}.unit`}>{item.unit}</small></p>
-            <p class="stat-desc" data-edit-ml={`stats.items.${si}.desc`}>{item.desc.split('\n').map((line, i) => <Fragment>{i > 0 && <br />}{line}</Fragment>)}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PROBLEM ============ -->
-  <section class="problem" aria-labelledby="problem-title">
-    <div class="container">
-      <div class="sec-head reveal" data-wm="PROBLEM">
-        <h2 class="sec-en" id="problem-title">PROBLEM</h2>
-        <p class="sec-jp" data-edit="problem.title_jp">{problem.title_jp}</p>
-      </div>
-      <div class="problem-cols">
-        <ul class="problem-list">
-          {problem.items.map((item, i) => (
-            <li class="reveal"><span class="check"></span><span data-edit={`problem.items.${i}`}>{item}</span></li>
-          ))}
-        </ul>
-        <div class="problem-illust reveal" aria-hidden="true">
-          <IllustWorry class="illust" />
-        </div>
-      </div>
-      <div class="problem-arrow" aria-hidden="true"></div>
-      <div class="problem-answer reveal">
-        <strong><span data-edit="problem.answer_lead">{problem.answer_lead}</span><span class="marker" data-edit="problem.answer_marker">{problem.answer_marker}</span><span data-edit="problem.answer_tail">{problem.answer_tail}</span></strong>
-        <p data-edit="problem.answer_body">{problem.answer_body}</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ CTA BAND ============ -->
-  <div class="cta-band angle-top">
-    <div class="container cta-band-inner">
-      <div>
-        <h2><span data-edit="cta.band_title_before">{cta.band_title_before}</span><span data-edit="cta.band_title_em">{cta.band_title_em}</span><span data-edit="cta.band_title_after">{cta.band_title_after}</span></h2>
-        <p data-edit="cta.band_desc">{cta.band_desc}</p>
-      </div>
-      <div class="cta-band-btns">
-        <a class="btn btn-green" href={consult} data-edit="cta.band_btn_primary">{cta.band_btn_primary}</a>
-        <a class="btn btn-white" href={contact} data-edit="cta.band_btn_secondary">{cta.band_btn_secondary}</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- ============ SERVICE ============ -->
-  <section id="service" aria-labelledby="service-title">
-    <div class="container">
-      <div class="sec-head reveal" data-wm="SERVICE">
-        <h2 class="sec-en" id="service-title">SERVICE</h2>
-        <p class="sec-jp" data-edit="service.title_jp">{service.title_jp}</p>
-        <p class="sec-lead" data-edit="service.lead">{service.lead}</p>
-      </div>
-      <div class="service-grid">
-        {service.items.map((s, i) => s.featured ? (
-          <div class="service-card wide reveal">
-            {s.badge && <span class="service-badge" data-edit={`service.items.${i}.badge`}>{s.badge}</span>}
-            <p class="service-num" data-edit={`service.items.${i}.number`}>{s.number}</p>
-            <h3 data-edit={`service.items.${i}.title`}>{s.title}</h3>
-            <p data-edit={`service.items.${i}.desc`}>{s.desc}</p>
-            <ul class="service-tags">{s.tags.map((t, j) => <li data-edit={`service.items.${i}.tags.${j}`}>{t}</li>)}</ul>
-          </div>
-        ) : (
-          <div class="service-card reveal">
-            <div class="service-visual" aria-hidden="true" set:html={serviceIcons[i % serviceIcons.length]} />
-            <p class="service-num" data-edit={`service.items.${i}.number`}>{s.number}</p>
-            <h3 data-edit={`service.items.${i}.title`}>{s.title}</h3>
-            <p data-edit={`service.items.${i}.desc`}>{s.desc}</p>
-            <ul class="service-tags">{s.tags.map((t, j) => <li data-edit={`service.items.${i}.tags.${j}`}>{t}</li>)}</ul>
-          </div>
-        ))}
-      </div>
-      <p class="service-note" data-edit="service.note" style={service.note ? '' : 'display:none'}>{service.note}</p>
-    </div>
-  </section>
-
-  <!-- ============ REASON ============ -->
-  <section class="reason" id="reason" aria-labelledby="reason-title">
-    <div class="container">
-      <div class="sec-head reveal" data-wm="REASON">
-        <h2 class="sec-en" id="reason-title">REASON</h2>
-        <p class="sec-jp" data-edit="reason.title_jp">{reason.title_jp}</p>
-      </div>
-      <div class="reason-grid">
-        {reason.items.map((r, i) => (
-          <div class="reason-card reveal">
-            <span class="reason-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-            <h3 data-edit={`reason.items.${i}.title`}>{r.title}</h3>
-            <p data-edit={`reason.items.${i}.desc`}>{r.desc}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ CASE ============ -->
-  <section id="case" aria-labelledby="case-title">
-    <div class="container">
-      <div class="sec-head reveal" data-wm="CASE">
-        <h2 class="sec-en" id="case-title">CASE</h2>
-        <p class="sec-jp">支援実績</p>
-      </div>
-      <div class="sec-illust reveal" aria-hidden="true">
-        <IllustGrowth class="illust illust-sm" />
-      </div>
-    </div>
-    <div class="draft-note" data-edit-show="cases.show_edit_note" style={cases.show_edit_note ? '' : 'display:none'}><p>【要編集】以下の実績はサンプルです。管理画面の「サイト設定 → 支援実績」で実案件に差し替え、この注意書きをオフにしてください（クライアント名の掲載は先方の許可を取ってから）。</p></div>
-    <div class="container">
-      <div class="case-grid">
-        {cases.items.map((c, i) => (
-          <div class="case-card reveal">
-            <div class="case-head">
-              <span class="case-tag" data-edit={`cases.items.${i}.tag`}>{c.tag}</span>
-              <h3 data-edit={`cases.items.${i}.title`}>{c.title}</h3>
-            </div>
-            <div class="case-body">
-              <dl>
-                <div class="case-row"><dt>課題</dt><dd data-edit={`cases.items.${i}.problem`}>{c.problem}</dd></div>
-                <div class="case-row"><dt>施策</dt><dd data-edit={`cases.items.${i}.action`}>{c.action}</dd></div>
-              </dl>
-            </div>
-            <div class="case-result">
-              <p class="label" data-edit={`cases.items.${i}.metric_label`}>{c.metric_label}</p>
-              <div class="case-graph" aria-hidden="true"><span class="bar b1" style={`--h:${c.graph_before}%`} data-edit-h={`cases.items.${i}.graph_before`} data-label="Before"></span><span class="bar b2" style={`--h:${c.graph_after}%`} data-edit-h={`cases.items.${i}.graph_after`} data-label="After"></span></div>
-              <div class="case-metric">
-                <span class="before" data-edit={`cases.items.${i}.before`}>{c.before}</span>
-                <span class="arrow">→</span>
-                <span class="after"><span data-edit={`cases.items.${i}.after_number`}>{c.after_number}</span><small data-edit={`cases.items.${i}.after_unit`}>{c.after_unit}</small></span>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ MARQUEE（文言はデザイン設定から。空なら非表示） ============ -->
-  {theme.marquee_items.length > 0 && (
-    <div class="marquee angle-both" aria-hidden="true">
-      <div class="marquee-track">
-        {[0, 1].map(() => theme.marquee_items.map((m) => <span class={m.highlight ? 'fill' : ''}>{m.text}</span>))}
-      </div>
-    </div>
-  )}
-
-  <!-- ============ COLUMN（管理画面から追加された記事が自動で並ぶ） ============ -->
-  <section id="column" aria-labelledby="column-title">
-    <div class="container">
-      <div class="sec-head reveal" data-wm="COLUMN">
-        <h2 class="sec-en" id="column-title">COLUMN</h2>
-        <p class="sec-jp">LINEマーケティングコラム</p>
-        <p class="sec-lead">現場で得たLINE活用・広告運用の知見を発信しています。</p>
-      </div>
-      <div class="column-grid">
-        {latest.map((post) => (
-          <a class="column-card reveal" href={`/blog/${post.id}/`}>
-            <div class="column-meta"><time datetime={iso(post.data.date)}>{fmt(post.data.date)}</time><span class="column-cat">{post.data.category}</span></div>
-            <h3>{post.data.title}</h3>
-            <p>{post.data.description}</p>
-            <span class="more">READ MORE ›</span>
-          </a>
-        ))}
-      </div>
-      <div class="column-more reveal">
-        <a class="btn btn-black" href="/blog/">コラム一覧を見る</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ PROMISE ============ -->
-  <section class="promise" aria-labelledby="promise-title" style="background:var(--bg)">
-    <div class="container">
-      <div class="sec-head reveal" data-wm="PROMISE">
-        <h2 class="sec-en" id="promise-title">PROMISE</h2>
-        <p class="sec-jp">LAYRのお約束</p>
-      </div>
-      <div class="promise-grid">
-        <div class="promise-box yes reveal">
-          <h3><span class="ico">○</span>お約束できること</h3>
-          <ul>
-            {promiseData.yes_items.map((item, i) => (
-              <li><span class="mark">○</span><div><strong data-edit={`promise.yes_items.${i}.title`}>{item.title}</strong><span data-edit={`promise.yes_items.${i}.desc`}>{item.desc}</span></div></li>
-            ))}
-          </ul>
-        </div>
-        <div class="promise-box no reveal">
-          <h3><span class="ico">×</span>お約束できないこと</h3>
-          <ul>
-            {promiseData.no_items.map((item, i) => (
-              <li><span class="mark">×</span><div><strong data-edit={`promise.no_items.${i}.title`}>{item.title}</strong><span data-edit={`promise.no_items.${i}.desc`}>{item.desc}</span></div></li>
-            ))}
-          </ul>
-        </div>
-      </div>
-      <div class="sec-illust reveal" aria-hidden="true">
-        <IllustConsult class="illust illust-md" />
-      </div>
-      <p class="promise-close reveal">この方針にご共感いただける方は、<br>ぜひ<span class="marker">無料相談</span>にお申し込みください。</p>
-    </div>
-  </section>
-
-  <!-- ============ MESSAGE ============ -->
-  <section class="message" id="message" aria-labelledby="message-title" style="background:#fff">
-    <div class="container">
-      <div class="sec-head reveal" data-wm="MESSAGE">
-        <h2 class="sec-en" id="message-title">MESSAGE</h2>
-        <p class="sec-jp">代表挨拶</p>
-      </div>
-      <div class="message-wrap">
-        <div class="message-photo reveal">
-          {message.photo
-            ? <img src={message.photo} alt={`${company.name} ${message.sign_name}`} />
-            : <span class="todo">【要編集】<br>代表写真を管理画面の<br>「サイト設定 → 代表挨拶」で設定</span>}
-        </div>
-        <div class="message-body reveal">
-          {message.paragraphs.map((p, i) => <p data-edit={`message.paragraphs.${i}`}>{p}</p>)}
-          <div class="sign">
-            <span class="title" data-edit="message.sign_title">{message.sign_title}</span>
-            <span class="name" data-edit="message.sign_name">{message.sign_name}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ FAQ ============ -->
-  <section class="faq" id="faq" aria-labelledby="faq-title" style="background:var(--bg)">
-    <div class="container">
-      <div class="sec-head reveal" data-wm="FAQ">
-        <h2 class="sec-en" id="faq-title">FAQ</h2>
-        <p class="sec-jp">よくあるご質問</p>
-      </div>
-      <div class="faq-list reveal">
-        {faq.items.map((item, i) => (
-          <details class="faq-item">
-            <summary><span class="q">Q.</span><span data-edit={`faq.items.${i}.q`}>{item.q}</span></summary>
-            <div class="a"><span class="mark">A.</span><p data-edit={`faq.items.${i}.a`}>{item.a}</p></div>
-          </details>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ============ COMPANY ============ -->
-  <section class="company" id="company" aria-labelledby="company-title" style="background:#fff">
-    <div class="container">
-      <div class="sec-head reveal" data-wm="COMPANY">
-        <h2 class="sec-en" id="company-title">COMPANY</h2>
-        <p class="sec-jp">会社概要</p>
-      </div>
-      <table class="company-table reveal">
-        <tbody>
-          <tr><th>会社名</th><td data-edit="company.name">{company.name}</td></tr>
-          <tr><th>代表者</th><td data-edit="company.representative">{company.representative}</td></tr>
-          <tr><th>所在地</th><td data-edit="company.address">{company.address}</td></tr>
-          <tr><th>設立</th><td data-edit="company.founded">{company.founded}</td></tr>
-          <tr>
-            <th>事業内容</th>
-            <td>
-              <ul>
-                {company.business.map((b, i) => <li data-edit={`company.business.${i}`}>{b}</li>)}
-              </ul>
-            </td>
-          </tr>
-          <tr><th>お問い合わせ</th><td><a href={`mailto:${settings.email}`} data-edit="settings.email">{settings.email}</a></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </section>
-
-  <!-- ============ FINAL CTA ============ -->
-  <section class="cta-final" id="contact" aria-labelledby="cta-title">
-    <div class="cta-final-inner">
-      <h2 class="sec-en">CONTACT</h2>
-      <h2 id="cta-title"><span data-edit="cta.final_title_line1">{cta.final_title_line1}</span><br><span data-edit="cta.final_title_before">{cta.final_title_before}</span><span data-edit="cta.final_title_em">{cta.final_title_em}</span><span data-edit="cta.final_title_after">{cta.final_title_after}</span></h2>
-      <p data-edit-ml="cta.final_desc" set:html={cta.final_desc.replace(/\n/g, '<br>')}></p>
-      <a class="btn btn-green btn-lg" href={consult} data-edit="cta.final_btn">{cta.final_btn}</a>
-      <p class="mail">メールでのご連絡：<a href={`mailto:${settings.email}`} data-edit="settings.email">{settings.email}</a></p>
-    </div>
-  </section>
-
+<Base title={title} description={description} jsonLd={jsonLd}>
+  {page.blocks.map((block) => <Block block={block} posts={posts} />)}
 </Base>
