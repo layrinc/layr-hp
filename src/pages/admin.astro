@@ -55,6 +55,9 @@ const blockNames: Record<string, string> = {
   promise: '🤝 お約束', message: '👤 代表挨拶', faq: '❓ FAQ', company: '🏢 会社概要',
   ctaFinal: '🌑 最終CTA', heading: '🔠 見出し', text: '📝 テキスト', box: '🧊 ボックス',
   image: '🖼 画像', buttons: '🔘 ボタン', spacer: '↕️ 余白',
+  sectionHead: '🏷 セクション見出し', capBox: '📦 キャプションボックス', iconBox: '💡 アイコンボックス',
+  speech: '💬 吹き出し', list: '✅ リスト', steps: '🪜 ステップ', accordion: '🔽 アコーディオン',
+  quote: '❝ 引用', cols2: '🀫 2カラム', postList: '📰 記事リスト',
 };
 const pageBlocks = page.blocks.map((b) => blockNames[b.type] || b.type);
 ---

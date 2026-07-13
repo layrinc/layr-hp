@@ -13,7 +13,7 @@ import { getCollection } from 'astro:content';
 
 const postsRaw = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 3);
+  .slice(0, 9);
 const posts = postsRaw.map((p) => ({
   id: p.id,
   title: p.data.title,
@@ -71,6 +71,17 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
   <script define:vars={{ posts, previewSettings }} is:inline>
     const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const nl = (s) => esc(s).replace(/\n/g, '<br>');
+    // リッチテキスト: 全部エスケープ後、正規形タグ（strong/em/mark.mk-*/span.tc-*/a href）だけ復元。本番 Block.astro と同一仕様
+    const rich = (s) => esc(s)
+      .replace(/&lt;(\/?)(strong|em)&gt;/g, '<$1$2>')
+      .replace(/&lt;mark class=&quot;(mk-[gy])&quot;&gt;/g, '<mark class="$1">')
+      .replace(/&lt;\/mark&gt;/g, '</mark>')
+      .replace(/&lt;span class=&quot;(tc-[gr])&quot;&gt;/g, '<span class="$1">')
+      .replace(/&lt;\/span&gt;/g, '</span>')
+      .replace(/&lt;a href=&quot;((?:https?:\/\/|\/|#|mailto:)[^\s]*?)&quot;&gt;/g, '<a href="$1">')
+      .replace(/&lt;\/a&gt;/g, '</a>')
+      .replace(/\n/g, '<br>');
+    const icoBadge = { point: '💡', warn: '⚠️', memo: '📝', check: '✅' };
     const tpl = (id) => document.getElementById(id).innerHTML;
     const consult = previewSettings.line_url && previewSettings.line_url.trim()
       ? previewSettings.line_url
@@ -118,7 +129,7 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
         return `<section id="case"><div class="container">${secHead(p)}<div class="sec-illust reveal" aria-hidden="true">${tpl('tpl-growth')}</div></div>${p.show_edit_note ? '<div class="draft-note"><p>【要編集】以下の実績はサンプルです。カスタマイザーで実案件に差し替え、この注意書きをオフにしてください（クライアント名の掲載は先方の許可を取ってから）。</p></div>' : ''}<div class="container"><div class="case-grid">${p.items.map((c) => `<div class="case-card reveal"><div class="case-head"><span class="case-tag">${esc(c.tag)}</span><h3>${esc(c.title)}</h3></div><div class="case-body"><dl><div class="case-row"><dt>課題</dt><dd>${esc(c.problem)}</dd></div><div class="case-row"><dt>施策</dt><dd>${esc(c.action)}</dd></div></dl></div><div class="case-result"><p class="label">${esc(c.metric_label)}</p><div class="case-graph" aria-hidden="true"><span class="bar b1" style="--h:${Number(c.graph_before) || 0}%" data-label="Before"></span><span class="bar b2" style="--h:${Number(c.graph_after) || 0}%" data-label="After"></span></div><div class="case-metric"><span class="before">${esc(c.before)}</span><span class="arrow">→</span><span class="after">${esc(c.after_number)}<small>${esc(c.after_unit)}</small></span></div></div></div>`).join('')}</div></div></section>`;
       },
       column(p) {
-        return `<section id="column"><div class="container">${secHead(p, p.lead)}<div class="column-grid">${posts.map((post) => `<a class="column-card reveal" href="/blog/${post.id}/"><div class="column-meta"><time datetime="${post.date}">${fmtD(post.date)}</time><span class="column-cat">${esc(post.category)}</span></div><h3>${esc(post.title)}</h3><p>${esc(post.description)}</p><span class="more">READ MORE ›</span></a>`).join('')}</div><div class="column-more reveal"><a class="btn btn-black" href="/blog/">コラム一覧を見る</a></div></div></section>`;
+        return `<section id="column"><div class="container">${secHead(p, p.lead)}<div class="column-grid">${posts.slice(0, 3).map((post) => `<a class="column-card reveal" href="/blog/${post.id}/"><div class="column-meta"><time datetime="${post.date}">${fmtD(post.date)}</time><span class="column-cat">${esc(post.category)}</span></div><h3>${esc(post.title)}</h3><p>${esc(post.description)}</p><span class="more">READ MORE ›</span></a>`).join('')}</div><div class="column-more reveal"><a class="btn btn-black" href="/blog/">コラム一覧を見る</a></div></div></section>`;
       },
       promise(p) {
         const li = (mark, it) => `<li><span class="mark">${mark}</span><div><strong>${esc(it.title)}</strong><span>${esc(it.desc)}</span></div></li>`;
@@ -141,10 +152,42 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
         return `<section class="blk-sec"><div class="container"><${tag} class="blk-h blk-h${p.level || 3} ${p.align === 'center' ? 'is-center' : ''}">${esc(p.text)}</${tag}></div></section>`;
       },
       text(p) {
-        return `<section class="blk-sec"><div class="container"><p class="blk-text ${p.align === 'center' ? 'is-center' : ''}">${nl(p.body)}</p></div></section>`;
+        return `<section class="blk-sec"><div class="container"><p class="blk-text blk-rich ${p.align === 'center' ? 'is-center' : ''}">${rich(p.body)}</p></div></section>`;
       },
       box(p) {
-        return `<section class="blk-sec"><div class="container"><div class="blk-box is-${p.style || 'plain'}">${p.title ? `<p class="blk-box-title">${esc(p.title)}</p>` : ''}<p>${nl(p.body)}</p></div></div></section>`;
+        return `<section class="blk-sec"><div class="container"><div class="blk-box is-${p.style || 'plain'}">${p.title ? `<p class="blk-box-title">${esc(p.title)}</p>` : ''}<p class="blk-rich">${rich(p.body)}</p></div></div></section>`;
+      },
+      sectionHead(p) {
+        return `<section class="blk-sec"><div class="container"><div class="sec-head ${p.align === 'center' ? 'is-center' : ''}"><h2 class="sec-en">${esc(p.en)}</h2><p class="sec-jp">${esc(p.title_jp)}</p>${p.lead ? `<p class="sec-lead">${esc(p.lead)}</p>` : ''}</div></div></section>`;
+      },
+      capBox(p) {
+        return `<section class="blk-sec"><div class="container"><div class="blk-cap is-${p.color || 'green'}"><p class="blk-cap-title">${esc(p.title)}</p><div class="blk-cap-body blk-rich">${rich(p.body)}</div></div></div></section>`;
+      },
+      iconBox(p) {
+        return `<section class="blk-sec"><div class="container"><div class="blk-ico is-${p.type || 'point'}"><span class="blk-ico-badge" aria-hidden="true">${icoBadge[p.type] || '💡'}</span><div class="blk-ico-inner">${p.title ? `<p class="blk-ico-title">${esc(p.title)}</p>` : ''}<div class="blk-rich">${rich(p.body)}</div></div></div></div></section>`;
+      },
+      speech(p) {
+        const face = p.avatar ? `<img src="${esc(p.avatar)}" alt="${esc(p.name)}">` : '<span class="noimg" aria-hidden="true">🙂</span>';
+        return `<section class="blk-sec"><div class="container"><div class="blk-speech is-${p.side === 'right' ? 'right' : 'left'} is-${p.color === 'green' ? 'green' : 'gray'}"><div class="blk-speech-face">${face}${p.name ? `<p class="blk-speech-name">${esc(p.name)}</p>` : ''}</div><div class="blk-speech-bubble blk-rich">${rich(p.body)}</div></div></div></section>`;
+      },
+      list(p) {
+        return `<section class="blk-sec"><div class="container"><ul class="blk-list is-${p.style || 'check'}">${(p.items || []).map((it) => `<li class="blk-rich">${rich(it)}</li>`).join('')}</ul></div></section>`;
+      },
+      steps(p) {
+        return `<section class="blk-sec"><div class="container"><div class="blk-steps">${(p.items || []).map((s, i) => `<div class="blk-step"><span class="blk-step-num" aria-hidden="true">${i + 1}</span><p class="blk-step-title">${esc(s.title)}</p>${s.body ? `<div class="blk-step-body blk-rich">${rich(s.body)}</div>` : ''}</div>`).join('')}</div></div></section>`;
+      },
+      accordion(p) {
+        return `<section class="blk-sec"><div class="container"><div class="faq-list">${(p.items || []).map((it) => `<details class="faq-item"><summary><span class="q">Q.</span>${esc(it.q)}</summary><div class="a"><span class="mark">A.</span><p class="blk-rich">${rich(it.a)}</p></div></details>`).join('')}</div></div></section>`;
+      },
+      quote(p) {
+        return `<section class="blk-sec"><div class="container"><blockquote class="blk-quote"><span class="blk-rich">${rich(p.body)}</span>${p.cite ? `<cite>出典：${esc(p.cite)}</cite>` : ''}</blockquote></div></section>`;
+      },
+      cols2(p) {
+        const col = (title, body) => `<div class="blk-col">${title ? `<p class="blk-col-title">${esc(title)}</p>` : ''}<div class="blk-rich">${rich(body)}</div></div>`;
+        return `<section class="blk-sec"><div class="container"><div class="blk-cols">${col(p.left_title, p.left_body)}${col(p.right_title, p.right_body)}</div></div></section>`;
+      },
+      postList(p) {
+        return `<section class="blk-sec"><div class="container"><div class="column-grid">${posts.slice(0, Number(p.count) || 3).map((post) => `<a class="column-card" href="/blog/${post.id}/"><div class="column-meta"><time datetime="${post.date}">${fmtD(post.date)}</time><span class="column-cat">${esc(post.category)}</span></div><h3>${esc(post.title)}</h3><p>${esc(post.description)}</p><span class="more">READ MORE ›</span></a>`).join('')}</div>${p.more_label ? `<div class="column-more"><a class="btn btn-black" href="/blog/">${esc(p.more_label)}</a></div>` : ''}</div></section>`;
       },
       image(p) {
         return `<section class="blk-sec"><div class="container"><figure class="blk-img ${p.align === 'center' ? 'is-center' : ''}" style="--w:${p.width || 100}%">${p.src ? `<img src="${esc(p.src)}" alt="${esc(p.alt)}">` : '<div class="blk-img-empty">画像未設定（左のパネルでアップロード）</div>'}${p.caption ? `<figcaption>${esc(p.caption)}</figcaption>` : ''}</figure></div></section>`;

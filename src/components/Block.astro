@@ -23,6 +23,21 @@ const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問�
 const fmt = (d: Date) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 
+// リッチテキスト描画: 全部エスケープしてから、エディタが出力する正規形タグだけ復元する
+// （許可: strong / em / mark.mk-* / span.tc-* / a href。改行は \n → <br>）
+const escHtml = (s: any) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const rich = (s: any) => escHtml(s)
+  .replace(/&lt;(\/?)(strong|em)&gt;/g, '<$1$2>')
+  .replace(/&lt;mark class=&quot;(mk-[gy])&quot;&gt;/g, '<mark class="$1">')
+  .replace(/&lt;\/mark&gt;/g, '</mark>')
+  .replace(/&lt;span class=&quot;(tc-[gr])&quot;&gt;/g, '<span class="$1">')
+  .replace(/&lt;\/span&gt;/g, '</span>')
+  .replace(/&lt;a href=&quot;((?:https?:\/\/|\/|#|mailto:)[^\s]*?)&quot;&gt;/g, '<a href="$1">')
+  .replace(/&lt;\/a&gt;/g, '</a>')
+  .replace(/\n/g, '<br>');
+
+const icoBadge: Record<string, string> = { point: '💡', warn: '⚠️', memo: '📝', check: '✅' };
+
 const serviceIcons = [
   '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
   '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="13" x2="13" y2="13"/></svg>',
@@ -313,7 +328,7 @@ const serviceIcons = [
 {t === 'text' && (
   <section class="blk-sec">
     <div class="container">
-      <p class={`blk-text ${p.align === 'center' ? 'is-center' : ''}`} set:html={String(p.body || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}></p>
+      <p class={`blk-text blk-rich ${p.align === 'center' ? 'is-center' : ''}`} set:html={rich(p.body)}></p>
     </div>
   </section>
 )}
@@ -323,8 +338,145 @@ const serviceIcons = [
     <div class="container">
       <div class={`blk-box is-${p.style || 'plain'}`}>
         {p.title && <p class="blk-box-title">{p.title}</p>}
-        <p set:html={String(p.body || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}></p>
+        <p class="blk-rich" set:html={rich(p.body)}></p>
       </div>
+    </div>
+  </section>
+)}
+
+{t === 'sectionHead' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class={`sec-head ${p.align === 'center' ? 'is-center' : ''}`}>
+        <h2 class="sec-en">{p.en}</h2>
+        <p class="sec-jp">{p.title_jp}</p>
+        {p.lead && <p class="sec-lead">{p.lead}</p>}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'capBox' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class={`blk-cap is-${p.color || 'green'}`}>
+        <p class="blk-cap-title">{p.title}</p>
+        <div class="blk-cap-body blk-rich" set:html={rich(p.body)}></div>
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'iconBox' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class={`blk-ico is-${p.type || 'point'}`}>
+        <span class="blk-ico-badge" aria-hidden="true">{icoBadge[p.type] || '💡'}</span>
+        <div class="blk-ico-inner">
+          {p.title && <p class="blk-ico-title">{p.title}</p>}
+          <div class="blk-rich" set:html={rich(p.body)}></div>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'speech' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class={`blk-speech is-${p.side === 'right' ? 'right' : 'left'} is-${p.color === 'green' ? 'green' : 'gray'}`}>
+        <div class="blk-speech-face">
+          {p.avatar ? <img src={p.avatar} alt={p.name || ''} loading="lazy" /> : <span class="noimg" aria-hidden="true">🙂</span>}
+          {p.name && <p class="blk-speech-name">{p.name}</p>}
+        </div>
+        <div class="blk-speech-bubble blk-rich" set:html={rich(p.body)}></div>
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'list' && (
+  <section class="blk-sec">
+    <div class="container">
+      <ul class={`blk-list is-${p.style || 'check'}`}>
+        {(p.items || []).map((item: string) => <li class="blk-rich" set:html={rich(item)}></li>)}
+      </ul>
+    </div>
+  </section>
+)}
+
+{t === 'steps' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class="blk-steps">
+        {(p.items || []).map((s: any, i: number) => (
+          <div class="blk-step">
+            <span class="blk-step-num" aria-hidden="true">{i + 1}</span>
+            <p class="blk-step-title">{s.title}</p>
+            {s.body && <div class="blk-step-body blk-rich" set:html={rich(s.body)}></div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'accordion' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class="faq-list">
+        {(p.items || []).map((item: any) => (
+          <details class="faq-item">
+            <summary><span class="q">Q.</span>{item.q}</summary>
+            <div class="a"><span class="mark">A.</span><p class="blk-rich" set:html={rich(item.a)}></p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'quote' && (
+  <section class="blk-sec">
+    <div class="container">
+      <blockquote class="blk-quote">
+        <span class="blk-rich" set:html={rich(p.body)}></span>
+        {p.cite && <cite>出典：{p.cite}</cite>}
+      </blockquote>
+    </div>
+  </section>
+)}
+
+{t === 'cols2' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class="blk-cols">
+        <div class="blk-col">
+          {p.left_title && <p class="blk-col-title">{p.left_title}</p>}
+          <div class="blk-rich" set:html={rich(p.left_body)}></div>
+        </div>
+        <div class="blk-col">
+          {p.right_title && <p class="blk-col-title">{p.right_title}</p>}
+          <div class="blk-rich" set:html={rich(p.right_body)}></div>
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'postList' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class="column-grid">
+        {posts.slice(0, Number(p.count) || 3).map((post: any) => (
+          <a class="column-card" href={`/blog/${post.id}/`}>
+            <div class="column-meta"><time datetime={iso(post.data.date)}>{fmt(post.data.date)}</time><span class="column-cat">{post.data.category}</span></div>
+            <h3>{post.data.title}</h3><p>{post.data.description}</p>
+            <span class="more">READ MORE ›</span>
+          </a>
+        ))}
+      </div>
+      {p.more_label && <div class="column-more"><a class="btn btn-black" href="/blog/">{p.more_label}</a></div>}
     </div>
   </section>
 )}

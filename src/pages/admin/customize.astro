@@ -41,7 +41,7 @@ const initial = { page, theme, settings };
 
       <div class="cz-pane" id="pane-blocks">
         <div class="cz-panel-head">
-          <p>ブロックをクリックして編集。<b>↑↓</b>で並べ替え、<b>＋</b>で好きな場所に追加できます。</p>
+          <p>ブロックをクリックして編集。<b>↑↓</b>で並べ替え、<b>＋</b>で好きな場所に追加。本文は文字を選択して<b>太字・マーカー・文字色・リンク</b>を付けられます。</p>
         </div>
         <div id="blockList"></div>
         <button class="cz-add-main" id="addAtEnd">＋ ブロックを追加</button>
@@ -93,10 +93,12 @@ const initial = { page, theme, settings };
   <div class="cz-modal" id="pickerModal" hidden>
     <div class="cz-modal-card cz-picker">
       <div class="cz-picker-head"><h2>ブロックを追加</h2><button class="cz-x" id="pickerClose">✕</button></div>
-      <p class="cz-picker-cat">📦 セクション（大きな部品）</p>
-      <div class="cz-picker-grid" id="pickSections"></div>
-      <p class="cz-picker-cat">🔤 パーツ（自由に組める小さな部品）</p>
+      <p class="cz-picker-cat">🔤 基本パーツ（見出し・文章・画像・ボタン）</p>
       <div class="cz-picker-grid" id="pickParts"></div>
+      <p class="cz-picker-cat">✨ 装飾パーツ（WPテーマ風の記事装飾）</p>
+      <div class="cz-picker-grid" id="pickDeco"></div>
+      <p class="cz-picker-cat">📦 完成セクション（デザイン済みの大きな部品）</p>
+      <div class="cz-picker-grid" id="pickSections"></div>
     </div>
   </div>
 
@@ -195,12 +197,42 @@ const initial = { page, theme, settings };
     heading: { name: '見出し', emoji: '🔠', cat: 'part', desc: '見出し2/3/4を1本',
       fields: [['text', 'テキスト', 't'], ['level', '見出しレベル', 'sel', { options: [[2, '見出し2（下線・大）'], [3, '見出し3（緑バー）'], [4, '見出し4（緑文字）']] }], ['align', '配置', 'sel', { options: [['left', '左寄せ'], ['center', '中央']] }]],
       defaults: { text: '見出しテキスト', level: 2, align: 'left' } },
-    text: { name: 'テキスト', emoji: '📝', cat: 'part', desc: '本文の段落（改行可）',
-      fields: [['body', '本文', 'ta'], ['align', '配置', 'sel', { options: [['left', '左寄せ'], ['center', '中央']] }]],
+    text: { name: 'テキスト', emoji: '📝', cat: 'part', desc: '本文の段落（太字・マーカー可）',
+      fields: [['body', '本文（選択して装飾できます）', 'rich'], ['align', '配置', 'sel', { options: [['left', '左寄せ'], ['center', '中央']] }]],
       defaults: { body: '本文テキスト', align: 'left' } },
     box: { name: 'ボックス', emoji: '🧊', cat: 'part', desc: '枠で囲んだ注目エリア',
-      fields: [['style', 'スタイル', 'sel', { options: [['plain', 'ノーマル（薄グレー）'], ['green', 'グリーン（ポイント）'], ['warn', '注意（黄）']] }], ['title', 'タイトル（空欄可）', 't'], ['body', '本文（改行可）', 'ta']],
+      fields: [['style', 'スタイル', 'sel', { options: [['plain', 'ノーマル（薄グレー）'], ['green', 'グリーン（ポイント）'], ['warn', '注意（黄）']] }], ['title', 'タイトル（空欄可）', 't'], ['body', '本文', 'rich']],
       defaults: { style: 'green', title: 'ポイント', body: '本文' } },
+    sectionHead: { name: 'セクション見出し', emoji: '🏷', cat: 'part', desc: '英字ラベル＋大見出し（LPと同デザイン）',
+      fields: [['en', '英字ラベル（例: COLUMN）', 't'], ['title_jp', '見出し', 't'], ['lead', 'リード文（空欄可）', 'ta'], ['align', '配置', 'sel', { options: [['left', '左寄せ'], ['center', '中央']] }]],
+      defaults: { en: 'SECTION', title_jp: '見出しテキスト', lead: '', align: 'left' } },
+    capBox: { name: 'キャプションボックス', emoji: '📦', cat: 'deco', desc: '色付きタイトルバー＋本文',
+      fields: [['color', 'カラー', 'sel', { options: [['green', 'グリーン'], ['dark', 'ダーク'], ['red', 'レッド'], ['gray', 'グレー']] }], ['title', 'タイトル', 't'], ['body', '本文', 'rich']],
+      defaults: { color: 'green', title: 'タイトル', body: '本文' } },
+    iconBox: { name: 'アイコンボックス', emoji: '💡', cat: 'deco', desc: 'ポイント・注意・メモ・チェック',
+      fields: [['type', '種類', 'sel', { options: [['point', '💡 ポイント（緑）'], ['warn', '⚠️ 注意（赤）'], ['memo', '📝 メモ（グレー）'], ['check', '✅ チェック（緑枠）']] }], ['title', 'タイトル（空欄可）', 't'], ['body', '本文', 'rich']],
+      defaults: { type: 'point', title: 'ポイント', body: '本文' } },
+    speech: { name: '吹き出し', emoji: '💬', cat: 'deco', desc: '会話風の吹き出し＋顔アイコン',
+      fields: [['side', '向き', 'sel', { options: [['left', '左（アイコンが左）'], ['right', '右（アイコンが右）']] }], ['color', '吹き出しの色', 'sel', { options: [['gray', 'グレー'], ['green', 'グリーン']] }], ['avatar', '顔アイコン画像', 'img'], ['name', '名前（空欄可）', 't'], ['body', 'セリフ', 'rich']],
+      defaults: { side: 'left', color: 'gray', avatar: '', name: '', body: 'セリフを入力' } },
+    list: { name: 'リスト', emoji: '✅', cat: 'deco', desc: 'チェック・番号・矢印リスト',
+      fields: [['style', 'スタイル', 'sel', { options: [['check', '✓ チェック'], ['num', '① 番号'], ['arrow', '› 矢印'], ['dot', '・ ドット']] }], ['items', '項目', 'strs', { itemLabel: '項目' }]],
+      defaults: { style: 'check', items: ['項目1', '項目2'] } },
+    steps: { name: 'ステップ', emoji: '🪜', cat: 'deco', desc: '手順をSTEP形式で表示',
+      fields: [['items', 'ステップ', 'arr', { itemLabel: 'STEP', itemFields: [['title', 'タイトル', 't'], ['body', '説明（空欄可）', 'rich']], itemDefault: { title: 'ステップ', body: '' } }]],
+      defaults: { items: [{ title: 'お問い合わせ', body: '' }, { title: 'ヒアリング', body: '' }] } },
+    accordion: { name: 'アコーディオン', emoji: '🔽', cat: 'deco', desc: 'クリックで開閉するQ&A',
+      fields: [['items', '項目', 'arr', { itemLabel: '項目', itemFields: [['q', '見出し（質問）', 't'], ['a', '中身（回答）', 'rich']], itemDefault: { q: '質問', a: '回答' } }]],
+      defaults: { items: [{ q: '質問', a: '回答' }] } },
+    quote: { name: '引用', emoji: '❝', cat: 'deco', desc: '引用文＋出典',
+      fields: [['body', '引用文', 'ta'], ['cite', '出典（空欄可）', 't']],
+      defaults: { body: '引用文', cite: '' } },
+    cols2: { name: '2カラム', emoji: '🀫', cat: 'deco', desc: '左右2列のボックス',
+      fields: [['left_title', '左タイトル（空欄可）', 't'], ['left_body', '左本文', 'rich'], ['right_title', '右タイトル（空欄可）', 't'], ['right_body', '右本文', 'rich']],
+      defaults: { left_title: '', left_body: '左の本文', right_title: '', right_body: '右の本文' } },
+    postList: { name: '記事リスト', emoji: '📰', cat: 'deco', desc: '最新コラムをカードで表示',
+      fields: [['count', '表示件数', 'sel', { options: [[3, '3件'], [6, '6件'], [9, '9件']] }], ['more_label', '一覧ボタンの文言（空欄で非表示）', 't']],
+      defaults: { count: 3, more_label: 'コラム一覧を見る' } },
     image: { name: '画像', emoji: '🖼', cat: 'part', desc: '画像＋キャプション',
       fields: [['src', '画像', 'img'], ['alt', '代替テキスト（SEO）', 't'], ['caption', 'キャプション（空欄可）', 't'], ['width', '幅%', 'pct'], ['align', '配置', 'sel', { options: [['left', '左寄せ'], ['center', '中央']] }]],
       defaults: { src: '', alt: '', caption: '', width: 100, align: 'center' } },
@@ -257,8 +289,98 @@ const initial = { page, theme, settings };
     return w;
   }
 
+  // ============ リッチテキスト編集（太字・マーカー・文字色・リンク） ============
+  // 保存形式は正規形HTML: <strong>/<em>/<mark class="mk-g|mk-y">/<span class="tc-g|tc-r">/<a href>、改行は \n
+  const escR = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const richToDom = (s) => escR(s)
+    .replace(/&lt;(\/?)(strong|em)&gt;/g, '<$1$2>')
+    .replace(/&lt;mark class=&quot;(mk-[gy])&quot;&gt;/g, '<mark class="$1">')
+    .replace(/&lt;\/mark&gt;/g, '</mark>')
+    .replace(/&lt;span class=&quot;(tc-[gr])&quot;&gt;/g, '<span class="$1">')
+    .replace(/&lt;\/span&gt;/g, '</span>')
+    .replace(/&lt;a href=&quot;((?:https?:\/\/|\/|#|mailto:)[^\s]*?)&quot;&gt;/g, '<a href="$1">')
+    .replace(/&lt;\/a&gt;/g, '</a>')
+    .replace(/\n/g, '<br>');
+  function serializeRich(node) {
+    let out = '';
+    node.childNodes.forEach((n) => {
+      if (n.nodeType === 3) { out += n.nodeValue.replace(/ /g, ' '); return; }
+      if (n.nodeType !== 1) return;
+      const tag = n.tagName;
+      if (tag === 'BR') { out += '\n'; return; }
+      const inner = serializeRich(n);
+      if (tag === 'B' || tag === 'STRONG') out += inner ? `<strong>${inner}</strong>` : '';
+      else if (tag === 'I' || tag === 'EM') out += inner ? `<em>${inner}</em>` : '';
+      else if (tag === 'MARK' && /^mk-[gy]$/.test(n.className)) out += inner ? `<mark class="${n.className}">${inner}</mark>` : '';
+      else if (tag === 'SPAN' && /^tc-[gr]$/.test(n.className)) out += inner ? `<span class="${n.className}">${inner}</span>` : '';
+      else if (tag === 'A' && /^(https?:\/\/|\/|#|mailto:)/.test(n.getAttribute('href') || '')) out += inner ? `<a href="${n.getAttribute('href')}">${inner}</a>` : '';
+      else if (tag === 'DIV' || tag === 'P') out += (out && !out.endsWith('\n') ? '\n' : '') + inner;
+      else out += inner;
+    });
+    return out;
+  }
+  function wrapSel(ed, tag, cls, href) {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+    const range = sel.getRangeAt(0);
+    if (range.collapsed || !ed.contains(range.commonAncestorContainer)) return;
+    const el = document.createElement(tag);
+    if (cls) el.className = cls;
+    if (href) el.setAttribute('href', href);
+    try { range.surroundContents(el); }
+    catch (_) { el.appendChild(range.extractContents()); range.insertNode(el); }
+    sel.removeAllRanges();
+    ed.dispatchEvent(new Event('input'));
+  }
+  function clearSel(ed) {
+    const sel = window.getSelection();
+    if (!sel.rangeCount) return;
+    const range = sel.getRangeAt(0);
+    if (range.collapsed || !ed.contains(range.commonAncestorContainer)) return;
+    const txt = range.toString();
+    range.deleteContents();
+    range.insertNode(document.createTextNode(txt));
+    ed.dispatchEvent(new Event('input'));
+  }
+  function makeRichField(value, onChange) {
+    const wrap = document.createElement('div'); wrap.className = 'cz-richwrap';
+    const bar = document.createElement('div'); bar.className = 'cz-rt';
+    const ed = document.createElement('div'); ed.className = 'cz-rich'; ed.contentEditable = 'true'; ed.spellcheck = false;
+    ed.innerHTML = richToDom(value);
+    const btn = (html, title, fn) => {
+      const b = document.createElement('button'); b.type = 'button'; b.className = 'cz-rtb'; b.innerHTML = html; b.title = title;
+      b.addEventListener('mousedown', (e) => e.preventDefault());
+      b.addEventListener('click', fn);
+      bar.appendChild(b);
+    };
+    btn('<b>B</b>', '太字', () => wrapSel(ed, 'strong'));
+    btn('<mark class="mk-g">マ</mark>', '緑マーカー', () => wrapSel(ed, 'mark', 'mk-g'));
+    btn('<mark class="mk-y">マ</mark>', '黄マーカー', () => wrapSel(ed, 'mark', 'mk-y'));
+    btn('<span class="tc-g">A</span>', '緑文字', () => wrapSel(ed, 'span', 'tc-g'));
+    btn('<span class="tc-r">A</span>', '赤文字', () => wrapSel(ed, 'span', 'tc-r'));
+    btn('🔗', 'リンク', () => {
+      const u = prompt('リンク先URL（https://… / /blog/ / #service / mailto:）');
+      if (u && /^(https?:\/\/|\/|#|mailto:)/.test(u.trim())) wrapSel(ed, 'a', null, u.trim());
+      else if (u) alert('URLは https:// か / か # か mailto: で始めてください');
+    });
+    btn('⌫', '選択部分の装飾を解除', () => clearSel(ed));
+    ed.addEventListener('input', () => onChange(serializeRich(ed)));
+    ed.addEventListener('paste', (e) => {
+      e.preventDefault();
+      document.execCommand('insertText', false, (e.clipboardData || window.clipboardData).getData('text/plain'));
+    });
+    ed.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); document.execCommand('insertLineBreak'); } });
+    wrap.appendChild(bar); wrap.appendChild(ed);
+    return wrap;
+  }
+
   function buildFields(container, obj, fields, onChange) {
     fields.forEach(([key, label, kind, opts]) => {
+      if (kind === 'rich') {
+        const lab = document.createElement('label'); lab.textContent = label;
+        lab.appendChild(makeRichField(obj[key], (v) => { obj[key] = v; onChange(); }));
+        container.appendChild(lab); return;
+      }
       if (kind === 'img') {
         const lab = document.createElement('label'); lab.textContent = label;
         lab.appendChild(makeImgField(obj, key, onChange));
@@ -332,8 +454,9 @@ const initial = { page, theme, settings };
   const listEl = document.getElementById('blockList');
   function snippet(b) {
     const p = b.p;
-    const s = p.title_jp || p.catch_line1 || p.text || p.title_before || p.body || p.title_line1 || '';
-    return String(s).slice(0, 22);
+    const first = Array.isArray(p.items) && p.items[0] ? (p.items[0].q || p.items[0].title || p.items[0].label || p.items[0]) : '';
+    const s = p.title_jp || p.catch_line1 || p.text || p.title || p.title_before || p.body || p.name || p.title_line1 || p.left_body || first || '';
+    return String(s).replace(/<[^>]+>/g, '').slice(0, 22);
   }
   function renderBlocks() {
     listEl.innerHTML = '';
@@ -391,8 +514,7 @@ const initial = { page, theme, settings };
   picker.addEventListener('click', (e) => { if (e.target === picker) picker.hidden = true; });
   document.getElementById('addAtEnd').addEventListener('click', () => openPicker(state.page.blocks.length));
   (function buildPicker() {
-    const sec = document.getElementById('pickSections');
-    const part = document.getElementById('pickParts');
+    const cats = { section: document.getElementById('pickSections'), part: document.getElementById('pickParts'), deco: document.getElementById('pickDeco') };
     Object.entries(DEFS).forEach(([type, def]) => {
       const tile = document.createElement('button'); tile.type = 'button'; tile.className = 'cz-tile';
       tile.innerHTML = `<span class="cz-tile-ico">${def.emoji}</span><span class="cz-tile-name">${def.name}</span><span class="cz-tile-desc">${def.desc}</span>`;
@@ -403,7 +525,7 @@ const initial = { page, theme, settings };
         picker.hidden = true;
         renderBlocks(); send(insertAt ?? state.page.blocks.length - 1);
       });
-      (def.cat === 'section' ? sec : part).appendChild(tile);
+      (cats[def.cat] || cats.part).appendChild(tile);
     });
   })();
 
@@ -505,7 +627,7 @@ const initial = { page, theme, settings };
       const pageClone = JSON.parse(JSON.stringify(state.page));
       const uploads = [];
       pageClone.blocks.forEach((b) => {
-        ['photo', 'src'].forEach((key) => {
+        ['photo', 'src', 'avatar'].forEach((key) => {
           const v = b.p && b.p[key];
           if (typeof v === 'string' && v.startsWith('data:')) {
             const m = v.match(/^data:image\/(png|jpe?g|gif|webp|svg\+xml);base64,(.+)$/);
@@ -620,6 +742,21 @@ const initial = { page, theme, settings };
   .cz-mini:hover{background:#DFF3E7;color:#04A245}
   .cz-mini.danger:hover{background:#FDEEED;color:#D64541}
   .cz-mini.add{width:100%;border:1.5px dashed #C9D4CD;background:transparent}
+  /* リッチテキスト編集 */
+  .cz-richwrap{display:flex;flex-direction:column;border:1.5px solid #E0E6E2;border-radius:10px;background:#fff;overflow:hidden}
+  .cz-richwrap:focus-within{border-color:#06C755}
+  .cz-rt{display:flex;gap:2px;padding:6px 8px;border-bottom:1px solid #EEF2EF;background:#FAFBFA}
+  .cz-rtb{border:none;background:transparent;border-radius:6px;min-width:28px;height:26px;cursor:pointer;font-size:12.5px;font-family:inherit;display:grid;place-items:center;padding:0 5px}
+  .cz-rtb:hover{background:#EDF1EE}
+  .cz-rtb b{font-weight:900}
+  .cz-rich{padding:11px 13px;font-size:13.5px;line-height:1.9;min-height:72px;outline:none;color:#17211B;font-weight:500;overflow-wrap:break-word}
+  .cz-rich:empty::before{content:"本文を入力…";color:#B4BEB8}
+  .cz-rich mark.mk-g,.cz-rtb mark.mk-g{background:linear-gradient(transparent 62%,rgba(6,199,85,.45) 62%);color:inherit}
+  .cz-rich mark.mk-y,.cz-rtb mark.mk-y{background:linear-gradient(transparent 62%,#FFDF66 62%);color:inherit}
+  .cz-rich .tc-g,.cz-rtb .tc-g{color:#04A245;font-weight:800}
+  .cz-rich .tc-r,.cz-rtb .tc-r{color:#D64541;font-weight:800}
+  .cz-rich a{color:#04A245;text-decoration:underline}
+  .cz-rich strong{font-weight:900}
   .cz-imgfield{display:flex;gap:12px;align-items:center}
   .cz-imgthumb{width:86px;height:64px;border-radius:10px;background:#EDF1EE center/cover no-repeat;border:1.5px solid #E0E6E2;display:grid;place-items:center;font-size:10.5px;color:#8B978F;font-weight:700}
   .cz-imgbtns{display:flex;flex-direction:column;gap:6px}
