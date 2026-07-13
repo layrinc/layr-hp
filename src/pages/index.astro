@@ -52,5 +52,11 @@ if (faqBlock && Array.isArray(faqBlock.p?.items)) {
 }
 ---
 <Base title={title} description={description} jsonLd={jsonLd}>
-  {page.blocks.map((block) => <Block block={block} posts={posts} />)}
+  {page.blocks.map((block) => {
+    // _fs = ブロック単位の文字サイズ倍率（CSSの font-size:calc(... * var(--fs,1)) が拾う）
+    const fs = Number((block.p as any)?._fs) || 1;
+    return fs !== 1
+      ? <div style={`--fs:${fs}`}><Block block={block} posts={posts} /></div>
+      : <Block block={block} posts={posts} />;
+  })}
 </Base>

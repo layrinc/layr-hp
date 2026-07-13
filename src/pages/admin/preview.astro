@@ -203,7 +203,11 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
     const root = document.getElementById('pv-root');
     function render(blocks) {
       root.innerHTML = blocks.map((b) => {
-        try { return R[b.type] ? R[b.type](b.p) : ''; } catch (e) { return `<p style="color:red;padding:20px">ブロック描画エラー(${b.type}): ${esc(e.message)}</p>`; }
+        try {
+          const html = R[b.type] ? R[b.type](b.p) : '';
+          const fs = Number(b.p && b.p._fs) || 1;
+          return fs !== 1 ? `<div style="--fs:${fs}">${html}</div>` : html;
+        } catch (e) { return `<p style="color:red;padding:20px">ブロック描画エラー(${b.type}): ${esc(e.message)}</p>`; }
       }).join('');
       root.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
     }

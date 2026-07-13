@@ -482,7 +482,13 @@ const initial = { page, theme, settings };
       if (openSet.has(b.id)) {
         card.classList.add('is-open');
         const body = document.createElement('div'); body.className = 'cz-fields';
-        buildFields(body, b.p, def.fields, () => send());
+        // 全ブロック共通: 文字サイズ倍率（--fs としてブロック全体に適用）
+        if (b.p._fs == null) b.p._fs = '1';
+        const fieldsWithFs = def.fields.concat([[
+          '_fs', '文字サイズ（このブロック全体）', 'sel',
+          { options: [['0.9', '小（90%）'], ['1', '標準'], ['1.12', '大（112%）'], ['1.25', '特大（125%）']] },
+        ]]);
+        buildFields(body, b.p, fieldsWithFs, () => send());
         card.appendChild(body);
       }
       listEl.appendChild(card);
