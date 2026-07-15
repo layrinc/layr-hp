@@ -10,7 +10,7 @@ export async function getStaticPaths() {
 }
 
 const { post } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 
 const fmt = (d: Date) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
@@ -20,6 +20,23 @@ const title = `${post.data.title}｜株式会社LAYR`;
 const consult = settings.line_url?.trim()
   ? settings.line_url
   : `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
+
+// 目次（h2・h3を自動収集。2本以上あるときだけ表示）
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
+
+// 関連記事: 同カテゴリの新しい順→足りなければ他カテゴリで補完（自分は除外・最大3本）
+const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const related = [
+  ...allPosts.filter((p) => p.data.category === post.data.category),
+  ...allPosts.filter((p) => p.data.category !== post.data.category),
+].slice(0, 3);
+
+// シェアURL
+const pageUrl = new URL(`/blog/${post.id}/`, Astro.site).href;
+const shareX = `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=${encodeURIComponent(pageUrl)}`;
+const shareLine = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(pageUrl)}`;
 
 // 記事の構造化データ(JSON-LD)。検索結果でリッチに表示されやすくする。
 const articleJsonLd = {
@@ -31,7 +48,7 @@ const articleJsonLd = {
   inLanguage: 'ja',
   author: { '@type': 'Organization', name: '株式会社LAYR' },
   publisher: { '@type': 'Organization', name: '株式会社LAYR' },
-  mainEntityOfPage: new URL(`/blog/${post.id}/`, Astro.site).href,
+  mainEntityOfPage: pageUrl,
   ...(post.data.image ? { image: new URL(post.data.image, Astro.site).href } : {}),
 };
 
@@ -47,22 +64,70 @@ const breadcrumbJsonLd = {
 };
 ---
 <Base title={title} description={post.data.description} ogType="article" ogImage={post.data.image} jsonLd={[articleJsonLd, breadcrumbJsonLd]}>
-  <article class="article" style="padding-top:170px">
+  <article class="article" style="padding-top:150px">
+    <nav class="article-bc" aria-label="パンくず">
+      <a href="/">ホーム</a><span>›</span><a href="/blog/">コラム</a><span>›</span><em>{post.data.title}</em>
+    </nav>
     <div class="article-meta">
       <time datetime={iso(post.data.date)} style="font-family:var(--font-en);font-weight:700;font-size:13px;color:var(--muted)">{fmt(post.data.date)}</time>
       <span class="column-cat">{post.data.category}</span>
     </div>
     <h1>{post.data.title}</h1>
 
+    {toc.length >= 2 && (
+      <nav class="article-toc" aria-label="目次">
+        <p class="article-toc-title">📑 目次</p>
+        <ol>
+          {toc.map((h) => (
+            <li class={h.depth === 3 ? 'is-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
+          ))}
+        </ol>
+      </nav>
+    )}
+
     <Content />
+
+    <div class="article-share" aria-label="この記事をシェア">
+      <span class="article-share-label">SHARE</span>
+      <a class="article-share-btn is-x" href={shareX} target="_blank" rel="noopener">𝕏 ポスト</a>
+      <a class="article-share-btn is-line" href={shareLine} target="_blank" rel="noopener">LINEで送る</a>
+      <button class="article-share-btn is-copy" type="button" data-url={pageUrl}>🔗 リンクをコピー</button>
+    </div>
 
     <div class="article-cta">
       <p>自社のLINE・広告の現状、無料でご相談いただけます</p>
       <a class="btn btn-green" href={consult}>無料相談に申し込む</a>
     </div>
 
+    {related.length > 0 && (
+      <section class="article-related">
+        <h2 class="article-related-title">あわせて読みたい</h2>
+        <div class="column-grid">
+          {related.map((p) => (
+            <a class="column-card" href={`/blog/${p.id}/`}>
+              <div class="column-meta"><time datetime={iso(p.data.date)}>{fmt(p.data.date)}</time><span class="column-cat">{p.data.category}</span></div>
+              <h3>{p.data.title}</h3><p>{p.data.description}</p>
+              <span class="more">READ MORE ›</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
     <div class="article-back">
       <a href="/blog/">‹ コラム一覧へ戻る</a>
     </div>
   </article>
+
+  <script is:inline>
+    document.querySelector('.article-share-btn.is-copy')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      try {
+        await navigator.clipboard.writeText(btn.dataset.url);
+        const prev = btn.textContent;
+        btn.textContent = '✅ コピーしました';
+        setTimeout(() => { btn.textContent = prev; }, 1800);
+      } catch (_) { prompt('このURLをコピーしてください', btn.dataset.url); }
+    });
+  </script>
 </Base>

@@ -371,6 +371,55 @@ section{padding:104px 0}
 .article-cta p{font-weight:900;font-size:calc(17px * var(--fs,1));margin-bottom:18px}
 .article-back{text-align:center;margin-top:44px}
 .article-back a{font-weight:700;font-size:calc(14px * var(--fs,1));color:var(--green-dark)}
+
+/* ---- 記事: パンくず ---- */
+.article-bc{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:calc(12px * var(--fs,1));color:var(--muted);margin-bottom:22px}
+.article-bc a{font-weight:700;color:var(--green-dark)}
+.article-bc span{color:#B9C4BE}
+.article-bc em{font-style:normal;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:22em}
+
+/* ---- 記事: 目次（h2/h3自動生成） ---- */
+.article-toc{background:var(--bg);border-radius:var(--radius);padding:22px 26px;margin-bottom:40px}
+.article-toc-title{font-weight:900;font-size:calc(14px * var(--fs,1));margin-bottom:10px}
+.article-toc ol{counter-reset:tocn;display:flex;flex-direction:column;gap:7px;margin:0;padding:0}
+.article-toc li{counter-increment:tocn;padding-left:30px;position:relative;font-size:calc(13.5px * var(--fs,1))}
+.article-toc li::before{content:counter(tocn);position:absolute;left:0;top:2px;width:20px;height:20px;border-radius:50%;background:var(--green);color:#fff;font-family:var(--font-en);font-weight:800;font-size:calc(11px * var(--fs,1));display:grid;place-items:center}
+.article-toc li.is-sub{margin-left:22px}
+.article-toc li.is-sub::before{background:#C7D1CB;color:var(--text)}
+.article-toc a{font-weight:700;color:var(--text)}
+.article-toc a:hover{color:var(--green-dark)}
+
+/* ---- 記事: 本文内の装飾ブロック（:::記法）はLPと同クラス。記事幅に馴染ませる ---- */
+.article :is(.blk-box,.blk-cap,.blk-ico,.blk-speech){margin:28px 0;max-width:none}
+.article :is(.blk-box,.blk-cap-body,.blk-ico,.blk-speech-bubble) p{margin-bottom:10px;font-size:calc(14.5px * var(--fs,1))}
+.article :is(.blk-box,.blk-cap-body,.blk-ico,.blk-speech-bubble) p:last-child{margin-bottom:0}
+.article :is(.blk-box,.blk-cap-body,.blk-ico,.blk-speech-bubble) :is(ul,ol){margin-bottom:0}
+
+/* ---- 記事: 引用・表・画像 ---- */
+.article blockquote:not([class]){background:var(--bg);border-left:5px solid var(--green);border-radius:0 var(--radius) var(--radius) 0;padding:20px 24px;margin:28px 0;font-size:calc(14.5px * var(--fs,1))}
+.article blockquote:not([class]) p{margin-bottom:0}
+.article table{width:100%;border-collapse:collapse;margin:28px 0;font-size:calc(14px * var(--fs,1));border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+.article th{background:var(--black);color:#fff;font-weight:800;padding:11px 14px;text-align:left}
+.article td{background:#fff;padding:11px 14px;border-top:1px solid var(--line)}
+.article tr:nth-child(even) td{background:var(--bg)}
+.article p > img{border-radius:var(--radius);margin:6px 0}
+
+/* ---- 記事: シェア ---- */
+.article-share{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:48px;padding-top:26px;border-top:1px solid var(--line)}
+.article-share-label{font-family:var(--font-en);font-weight:800;font-size:calc(11.5px * var(--fs,1));letter-spacing:.18em;color:var(--muted)}
+.article-share-btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:999px;font-weight:800;font-size:calc(12.5px * var(--fs,1));padding:10px 20px;cursor:pointer;font-family:inherit;transition:transform .2s,opacity .2s}
+.article-share-btn:hover{transform:translateY(-2px);opacity:.9}
+.article-share-btn.is-x{background:var(--black);color:#fff}
+.article-share-btn.is-line{background:var(--green);color:#fff}
+.article-share-btn.is-copy{background:var(--bg);color:var(--text);border:1.5px solid var(--line)}
+
+/* ---- 記事: 関連記事 ---- */
+.article-related{margin-top:56px}
+.article-related-title{font-size:calc(19px * var(--fs,1))!important;font-weight:900;margin:0 0 20px!important;padding:0!important;border:none!important}
+.article-related .column-grid{grid-template-columns:1fr;gap:12px;margin-bottom:0}
+.article-related .column-card{padding:22px 24px}
+.article-related .column-card h3{font-size:calc(15.5px * var(--fs,1))}
+.article-related .column-card p{font-size:calc(12.5px * var(--fs,1));margin-bottom:0}
 .post-list{max-width:820px;margin:0 auto;padding:56px 24px 100px;display:flex;flex-direction:column;gap:14px}
 .post-item{background:#fff;border:none;border-radius:calc(var(--radius) + 2px);padding:28px 30px;box-shadow:var(--shadow);transition:transform .2s,box-shadow .2s;display:block}
 .post-item:hover{transform:translateY(-3px);box-shadow:var(--shadow-hover)}
