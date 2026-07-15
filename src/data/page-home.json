@@ -4,7 +4,7 @@
       "id": "b-hero",
       "type": "hero",
       "p": {
-        "eyebrow": "LINEマーケティング支援",
+        "eyebrow": "",
         "catch_line1": "LINEマーケティングで",
         "catch_line2": "社会に価値を届ける",
         "catch_line3": "",
@@ -31,7 +31,8 @@
             "label": "顧客獲得単価",
             "value": "1/2"
           }
-        ]
+        ],
+        "_fs": "1"
       }
     },
     {
