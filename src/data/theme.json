@@ -1,10 +1,10 @@
 {
-  "accent": "#06C755",
-  "accent_dark": "#04A245",
+  "accent": "#67ad38",
+  "accent_dark": "#328721",
   "base_black": "#0F1613",
   "bg_tint": "#F5F8F6",
   "radius": 28,
-  "font_en": "Archivo",
+  "font_en": "Poppins",
   "show_watermark": false,
   "marquee_items": [],
   "custom_css": ""
