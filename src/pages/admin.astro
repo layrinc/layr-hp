@@ -60,6 +60,14 @@ const blockNames: Record<string, string> = {
   quote: '❝ 引用', cols2: '🀫 2カラム', postList: '📰 記事リスト',
 };
 const pageBlocks = page.blocks.map((b) => blockNames[b.type] || b.type);
+
+// 下層ページ一覧（ビルダーで作成した src/data/pages/*.json）
+const subMods = import.meta.glob('../data/pages/*.json', { eager: true });
+const subPageList = Object.entries(subMods).map(([path, mod]) => {
+  const slug = path.split('/').pop()!.replace('.json', '');
+  const pg = (mod as any).default;
+  return { slug, title: pg.title || slug, count: (pg.blocks || []).length };
+});
 ---
 <!doctype html>
 <html lang="ja">
@@ -130,11 +138,13 @@ const pageBlocks = page.blocks.map((b) => blockNames[b.type] || b.type);
 
       <!-- ===== ページビルダー ===== -->
       <section class="dash-panel">
-        <h2>ページ構成 <span class="dash-tag">現在{pageBlocks.length}ブロック</span></h2>
+        <h2>ページ一覧 <span class="dash-tag">{subPageList.length + 1}ページ</span></h2>
         <div class="dash-chips">
-          {pageBlocks.map((label) => (
-            <a class="dash-chip" href="/admin/customize/">{label}</a>
+          <a class="dash-chip" href="/admin/customize/" style="font-weight:900">🏠 トップページ（{pageBlocks.length}ブロック）</a>
+          {subPageList.map((pg) => (
+            <a class="dash-chip" href={`/admin/customize/?page=${pg.slug}`}>📄 {pg.title}（{pg.count}ブロック）</a>
           ))}
+          <a class="dash-chip" href="/admin/customize/" style="border-style:dashed">＋ 新規ページ</a>
         </div>
         <div class="dash-links">
           <a href="/admin/customize/"><strong>🧱 ページビルダーを開く</strong>（追加・並べ替え・編集・デザイン）</a>

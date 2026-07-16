@@ -8,7 +8,15 @@ import page from '../../data/page-home.json';
 import theme from '../../data/theme.json';
 import settings from '../../data/settings.json';
 
-const initial = { page, theme, settings };
+// 下層ページ（src/data/pages/*.json）。ビルダーの「＋新規ページ」で増える
+const subMods = import.meta.glob('../../data/pages/*.json', { eager: true });
+const subPages: Record<string, any> = {};
+for (const [path, mod] of Object.entries(subMods)) {
+  const slug = path.split('/').pop()!.replace('.json', '');
+  subPages[slug] = (mod as any).default;
+}
+
+const initial = { page, theme, settings, subPages };
 ---
 <!doctype html>
 <html lang="ja">
@@ -40,8 +48,14 @@ const initial = { page, theme, settings };
     <aside class="cz-panel">
 
       <div class="cz-pane" id="pane-blocks">
+        <div class="cz-pagebar">
+          <select id="pageSel" title="編集するページを切り替え"></select>
+          <button class="cz-mini" id="pageAdd" title="新しいページを作る">＋ 新規</button>
+          <button class="cz-mini" id="pageSet" title="このページの設定">⚙</button>
+        </div>
+        <p class="cz-pageurl" id="pageUrl"></p>
         <div class="cz-panel-head">
-          <p>ブロックをクリックして編集。<b>↑↓</b>で並べ替え、<b>＋</b>で好きな場所に追加。本文は文字を選択して<b>太字・マーカー・文字色・リンク</b>を付けられます。</p>
+          <p>ブロックは<b>⠿をドラッグ</b>して並べ替え（↑↓でも可）。クリックで編集、<b>＋</b>で追加。本文は文字を選択して<b>太字・マーカー・文字色・リンク</b>を付けられます。</p>
         </div>
         <div id="blockList"></div>
         <button class="cz-add-main" id="addAtEnd">＋ ブロックを追加</button>
@@ -102,6 +116,33 @@ const initial = { page, theme, settings };
     </div>
   </div>
 
+  <!-- 新規ページ作成モーダル -->
+  <div class="cz-modal" id="pageModal" hidden>
+    <div class="cz-modal-card">
+      <h2>新しいページを作る</h2>
+      <label class="cz-mlabel">ページ名<input type="text" id="npTitle" placeholder="例: サービス詳細" /></label>
+      <label class="cz-mlabel">URL（英小文字・数字・ハイフン）<input type="text" id="npSlug" placeholder="例: service-line" /></label>
+      <label class="cz-mlabel">説明（SEO・検索結果に出る文。空欄可）<textarea id="npDesc" rows="2"></textarea></label>
+      <p>作成すると layr.co.jp/<b id="npSlugEcho">…</b>/ になります（公開されるのは「保存して公開」後）。</p>
+      <div class="cz-modal-actions">
+        <button class="cz-btn ghost" id="npCancel">キャンセル</button>
+        <button class="cz-btn primary" id="npOk">作成</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ページ設定モーダル -->
+  <div class="cz-modal" id="pageSetModal" hidden>
+    <div class="cz-modal-card">
+      <h2>ページ設定</h2>
+      <div id="psBody"></div>
+      <div class="cz-modal-actions">
+        <button class="cz-btn danger-ghost" id="psDelete">🗑 このページを削除</button>
+        <button class="cz-btn primary" id="psClose">閉じる</button>
+      </div>
+    </div>
+  </div>
+
   <!-- トークン入力モーダル -->
   <div class="cz-modal" id="czModal" hidden>
     <div class="cz-modal-card">
@@ -123,6 +164,106 @@ const initial = { page, theme, settings };
   const uid = () => 'b' + Math.random().toString(36).slice(2, 9);
   const fontMap = { Montserrat: 'Montserrat:wght@700;800', Archivo: 'Archivo:wght@700;800', Poppins: 'Poppins:wght@700;800' };
   const openSet = new Set();
+
+  // ================= ページ（トップ＋下層） =================
+  // home の blocks は state.page.blocks と同じ配列を共有（splice等は全てin-placeなので同期が保たれる）
+  const pages = { home: { title: 'トップページ', description: '', blocks: state.page.blocks, fixed: true } };
+  Object.entries(state.subPages || {}).forEach(([slug, pg]) => {
+    pages[slug] = { title: pg.title || slug, description: pg.description || '', blocks: pg.blocks || [] };
+  });
+  const deletedPages = new Set();
+  const RESERVED = ['home', 'index', 'blog', 'admin', 'document', 'privacy', 'dashboard', 'uploads', 'api', 'assets'];
+  let cur = 'home';
+  const qp = new URLSearchParams(location.search).get('page');
+  if (qp && pages[qp]) cur = qp;
+  const curBlocks = () => pages[cur].blocks;
+
+  const pageSel = document.getElementById('pageSel');
+  function renderPageBar() {
+    pageSel.innerHTML = '';
+    Object.entries(pages).forEach(([slug, pg]) => {
+      const o = document.createElement('option');
+      o.value = slug;
+      o.textContent = (slug === 'home' ? '🏠 ' : '📄 ') + pg.title;
+      pageSel.appendChild(o);
+    });
+    pageSel.value = cur;
+    document.getElementById('pageUrl').textContent = cur === 'home' ? 'URL: layr.co.jp/' : `URL: layr.co.jp/${cur}/`;
+  }
+  function switchPage(slug) {
+    cur = slug;
+    openSet.clear();
+    renderPageBar();
+    renderBlocks();
+    send();
+  }
+  pageSel.addEventListener('change', () => switchPage(pageSel.value));
+
+  // --- 新規ページ ---
+  const pageModal = document.getElementById('pageModal');
+  const npSlug = document.getElementById('npSlug');
+  npSlug.addEventListener('input', () => { document.getElementById('npSlugEcho').textContent = npSlug.value || '…'; });
+  document.getElementById('pageAdd').addEventListener('click', () => {
+    document.getElementById('npTitle').value = '';
+    npSlug.value = '';
+    document.getElementById('npDesc').value = '';
+    document.getElementById('npSlugEcho').textContent = '…';
+    pageModal.hidden = false;
+  });
+  document.getElementById('npCancel').addEventListener('click', () => { pageModal.hidden = true; });
+  document.getElementById('npOk').addEventListener('click', () => {
+    const title = document.getElementById('npTitle').value.trim();
+    const slug = npSlug.value.trim().toLowerCase();
+    if (!title) { alert('ページ名を入力してください'); return; }
+    if (!/^[a-z0-9][a-z0-9-]{0,39}$/.test(slug)) { alert('URLは英小文字・数字・ハイフンで入力してください（例: service-line）'); return; }
+    if (RESERVED.includes(slug)) { alert(`「${slug}」はシステムで使用中のため使えません`); return; }
+    if (pages[slug]) { alert('そのURLのページは既にあります'); return; }
+    pages[slug] = {
+      title,
+      description: document.getElementById('npDesc').value.trim(),
+      blocks: [
+        { id: uid(), type: 'sectionHead', p: { en: 'PAGE', title_jp: title, lead: '', align: 'left' } },
+        { id: uid(), type: 'text', p: { body: 'ここに本文を書きます。「＋ ブロックを追加」で自由に組み立ててください。', align: 'left' } },
+      ],
+    };
+    deletedPages.delete(slug);
+    pageModal.hidden = true;
+    switchPage(slug);
+  });
+
+  // --- ページ設定・削除 ---
+  const pageSetModal = document.getElementById('pageSetModal');
+  document.getElementById('pageSet').addEventListener('click', () => {
+    const pg = pages[cur];
+    const body = document.getElementById('psBody');
+    body.innerHTML = '';
+    if (pg.fixed) {
+      body.innerHTML = '<p>トップページのタイトル・説明文はSEO最適化済みの固定設定です（変更したい時はレイに指示）。</p>';
+    } else {
+      const mk = (label, value, key, ta) => {
+        const lab = document.createElement('label'); lab.className = 'cz-mlabel'; lab.textContent = label;
+        const i = document.createElement(ta ? 'textarea' : 'input');
+        if (ta) i.rows = 2; else i.type = 'text';
+        i.value = value;
+        i.addEventListener('input', () => { pg[key] = i.value; if (key === 'title') renderPageBar(); });
+        lab.appendChild(i); body.appendChild(lab);
+      };
+      mk('ページ名', pg.title, 'title');
+      mk('説明（SEO）', pg.description, 'description', true);
+      const p = document.createElement('p'); p.innerHTML = `URL: <b>layr.co.jp/${cur}/</b>（URLの変更は作り直しで対応）`;
+      body.appendChild(p);
+    }
+    document.getElementById('psDelete').style.display = pg.fixed ? 'none' : '';
+    pageSetModal.hidden = false;
+  });
+  document.getElementById('psClose').addEventListener('click', () => { pageSetModal.hidden = true; });
+  document.getElementById('psDelete').addEventListener('click', () => {
+    if (!confirm(`ページ「${pages[cur].title}」（/${cur}/）を削除しますか？\n「保存して公開」した時点で本番からも消えます。`)) return;
+    deletedPages.add(cur);
+    delete pages[cur];
+    pageSetModal.hidden = true;
+    switchPage('home');
+  });
 
   // ================= ブロック定義 =================
   // kind: t=1行 / ta=複数行 / flag=ON,OFF / pct=0〜100 / sel=選択 / img=画像 / strs=文字列リスト / arr=項目リスト
@@ -458,13 +599,14 @@ const initial = { page, theme, settings };
     const s = p.title_jp || p.catch_line1 || p.text || p.title || p.title_before || p.body || p.name || p.title_line1 || p.left_body || first || '';
     return String(s).replace(/<[^>]+>/g, '').slice(0, 22);
   }
+  let dragIdx = null;
   function renderBlocks() {
     listEl.innerHTML = '';
-    state.page.blocks.forEach((b, i) => {
+    curBlocks().forEach((b, i) => {
       const def = DEFS[b.type] || { name: b.type, emoji: '❔', fields: [] };
       const card = document.createElement('div'); card.className = 'cz-block';
       const head = document.createElement('div'); head.className = 'cz-block-head';
-      head.innerHTML = `<span class="cz-block-ico">${def.emoji}</span><span class="cz-block-name">${def.name}</span><span class="cz-block-snip">${snippet(b)}</span>`;
+      head.innerHTML = `<span class="cz-drag" title="ドラッグで並べ替え">⠿</span><span class="cz-block-ico">${def.emoji}</span><span class="cz-block-name">${def.name}</span><span class="cz-block-snip">${snippet(b)}</span>`;
       const ctrl = document.createElement('div'); ctrl.className = 'cz-block-ctrl';
       const mk = (txt, title, fn, cls = '') => { const bt = document.createElement('button'); bt.type = 'button'; bt.className = 'cz-ctrl ' + cls; bt.textContent = txt; bt.title = title; bt.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); return bt; };
       ctrl.appendChild(mk('↑', '上へ', () => move(i, -1)));
@@ -477,6 +619,41 @@ const initial = { page, theme, settings };
         if (openSet.has(b.id)) openSet.delete(b.id); else openSet.add(b.id);
         renderBlocks();
         send(i);
+      });
+      // ---- ドラッグ&ドロップ並べ替え（ヘッダー行が持ち手） ----
+      head.draggable = true;
+      head.addEventListener('dragstart', (e) => {
+        dragIdx = i;
+        card.classList.add('is-dragging');
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', String(i));
+      });
+      head.addEventListener('dragend', () => {
+        dragIdx = null;
+        listEl.querySelectorAll('.cz-block').forEach((c) => c.classList.remove('is-dragging', 'drop-above', 'drop-below'));
+      });
+      card.addEventListener('dragover', (e) => {
+        if (dragIdx === null || dragIdx === i) return;
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        const r = card.getBoundingClientRect();
+        const above = e.clientY < r.top + r.height / 2;
+        card.classList.toggle('drop-above', above);
+        card.classList.toggle('drop-below', !above);
+      });
+      card.addEventListener('dragleave', () => card.classList.remove('drop-above', 'drop-below'));
+      card.addEventListener('drop', (e) => {
+        if (dragIdx === null || dragIdx === i) return;
+        e.preventDefault();
+        const r = card.getBoundingClientRect();
+        const above = e.clientY < r.top + r.height / 2;
+        let to = above ? i : i + 1;
+        if (dragIdx < to) to -= 1;
+        const arr = curBlocks();
+        const [moved] = arr.splice(dragIdx, 1);
+        arr.splice(to, 0, moved);
+        dragIdx = null;
+        renderBlocks(); send(to);
       });
       card.appendChild(head);
       if (openSet.has(b.id)) {
@@ -495,20 +672,23 @@ const initial = { page, theme, settings };
     });
   }
   function move(i, d) {
-    const j = i + d; if (j < 0 || j >= state.page.blocks.length) return;
-    const [b] = state.page.blocks.splice(i, 1);
-    state.page.blocks.splice(j, 0, b);
+    const arr = curBlocks();
+    const j = i + d; if (j < 0 || j >= arr.length) return;
+    const [b] = arr.splice(i, 1);
+    arr.splice(j, 0, b);
     renderBlocks(); send(j);
   }
   function dup(i) {
-    const c = JSON.parse(JSON.stringify(state.page.blocks[i])); c.id = uid();
-    state.page.blocks.splice(i + 1, 0, c);
+    const arr = curBlocks();
+    const c = JSON.parse(JSON.stringify(arr[i])); c.id = uid();
+    arr.splice(i + 1, 0, c);
     renderBlocks(); send(i + 1);
   }
   function del(i) {
-    const def = DEFS[state.page.blocks[i].type];
+    const arr = curBlocks();
+    const def = DEFS[arr[i].type];
     if (!confirm(`「${def ? def.name : ''}」ブロックを削除しますか？（保存するまで本番には影響しません）`)) return;
-    state.page.blocks.splice(i, 1);
+    arr.splice(i, 1);
     renderBlocks(); send();
   }
 
@@ -518,7 +698,7 @@ const initial = { page, theme, settings };
   function openPicker(pos) { insertAt = pos; picker.hidden = false; }
   document.getElementById('pickerClose').addEventListener('click', () => { picker.hidden = true; });
   picker.addEventListener('click', (e) => { if (e.target === picker) picker.hidden = true; });
-  document.getElementById('addAtEnd').addEventListener('click', () => openPicker(state.page.blocks.length));
+  document.getElementById('addAtEnd').addEventListener('click', () => openPicker(curBlocks().length));
   (function buildPicker() {
     const cats = { section: document.getElementById('pickSections'), part: document.getElementById('pickParts'), deco: document.getElementById('pickDeco') };
     Object.entries(DEFS).forEach(([type, def]) => {
@@ -526,10 +706,11 @@ const initial = { page, theme, settings };
       tile.innerHTML = `<span class="cz-tile-ico">${def.emoji}</span><span class="cz-tile-name">${def.name}</span><span class="cz-tile-desc">${def.desc}</span>`;
       tile.addEventListener('click', () => {
         const b = { id: uid(), type, p: JSON.parse(JSON.stringify(def.defaults)) };
-        state.page.blocks.splice(insertAt ?? state.page.blocks.length, 0, b);
+        const arr = curBlocks();
+        arr.splice(insertAt ?? arr.length, 0, b);
         openSet.add(b.id);
         picker.hidden = true;
-        renderBlocks(); send(insertAt ?? state.page.blocks.length - 1);
+        renderBlocks(); send(insertAt ?? arr.length - 1);
       });
       (cats[def.cat] || cats.part).appendChild(tile);
     });
@@ -572,7 +753,7 @@ const initial = { page, theme, settings };
     const gf = fontMap[t.font_en] || fontMap.Montserrat;
     frame.contentWindow?.postMessage({
       type: 'layr-blocks',
-      blocks: state.page.blocks,
+      blocks: curBlocks(),
       vars: { '--green': t.accent, '--green-dark': t.accent_dark, '--black': t.base_black, '--bg': t.bg_tint, '--radius': t.radius + 'px', '--font-en': `'${t.font_en}','Noto Sans JP',sans-serif` },
       fontHref: `https://fonts.googleapis.com/css2?family=${gf}&display=swap`,
       css: t.custom_css || '',
@@ -629,21 +810,31 @@ const initial = { page, theme, settings };
     btn.disabled = true;
     statusEl.textContent = '保存中…';
     try {
-      // 1) 画像（dataURL）をアップロード用に抽出し、保存用クローンではパスに置換
-      const pageClone = JSON.parse(JSON.stringify(state.page));
+      // 1) 全ページの画像（dataURL）をアップロード用に抽出し、保存用クローンではパスに置換
       const uploads = [];
-      pageClone.blocks.forEach((b) => {
-        ['photo', 'src', 'avatar'].forEach((key) => {
-          const v = b.p && b.p[key];
-          if (typeof v === 'string' && v.startsWith('data:')) {
-            const m = v.match(/^data:image\/(png|jpe?g|gif|webp|svg\+xml);base64,(.+)$/);
-            if (!m) return;
-            const ext = m[1] === 'jpeg' ? 'jpg' : m[1].replace('+xml', '');
-            const name = `up-${Date.now()}-${uploads.length}.${ext}`;
-            uploads.push({ name, b64: m[2] });
-            b.p[key] = '/uploads/' + name;
-          }
+      const collectUploads = (blocks) => {
+        blocks.forEach((b) => {
+          ['photo', 'src', 'avatar'].forEach((key) => {
+            const v = b.p && b.p[key];
+            if (typeof v === 'string' && v.startsWith('data:')) {
+              const m = v.match(/^data:image\/(png|jpe?g|gif|webp|svg\+xml);base64,(.+)$/);
+              if (!m) return;
+              const ext = m[1] === 'jpeg' ? 'jpg' : m[1].replace('+xml', '');
+              const name = `up-${Date.now()}-${uploads.length}.${ext}`;
+              uploads.push({ name, b64: m[2] });
+              b.p[key] = '/uploads/' + name;
+            }
+          });
         });
+      };
+      const pageClone = JSON.parse(JSON.stringify(state.page));
+      pageClone.blocks = JSON.parse(JSON.stringify(pages.home.blocks));
+      collectUploads(pageClone.blocks);
+      const subClones = {};
+      Object.entries(pages).forEach(([slug, pg]) => {
+        if (slug === 'home') return;
+        subClones[slug] = { title: pg.title, description: pg.description, blocks: JSON.parse(JSON.stringify(pg.blocks)) };
+        collectUploads(subClones[slug].blocks);
       });
 
       let lastErr = null;
@@ -655,10 +846,16 @@ const initial = { page, theme, settings };
             const blob = await gh(`/repos/${REPO}/git/blobs`, { method: 'POST', body: JSON.stringify({ content: u.b64, encoding: 'base64' }) }, token);
             treeEntries.push({ path: BASE + 'public/uploads/' + u.name, mode: '100644', type: 'blob', sha: blob.sha });
           }
-          // 3) JSON3点
+          // 3) トップ＋テーマ＋設定＋下層ページ（削除したページは sha:null で削除）
           treeEntries.push({ path: BASE + 'src/data/page-home.json', mode: '100644', type: 'blob', content: JSON.stringify(pageClone, null, 2) + '\n' });
           treeEntries.push({ path: BASE + 'src/data/theme.json', mode: '100644', type: 'blob', content: JSON.stringify(state.theme, null, 2) + '\n' });
           treeEntries.push({ path: BASE + 'src/data/settings.json', mode: '100644', type: 'blob', content: JSON.stringify(state.settings, null, 2) + '\n' });
+          Object.entries(subClones).forEach(([slug, pg]) => {
+            treeEntries.push({ path: BASE + `src/data/pages/${slug}.json`, mode: '100644', type: 'blob', content: JSON.stringify(pg, null, 2) + '\n' });
+          });
+          deletedPages.forEach((slug) => {
+            if (state.subPages && state.subPages[slug]) treeEntries.push({ path: BASE + `src/data/pages/${slug}.json`, mode: '100644', type: 'blob', sha: null });
+          });
           // 4) コミット
           const ref = await gh(`/repos/${REPO}/git/ref/heads/main`, {}, token);
           const parentSha = ref.object.sha;
@@ -679,6 +876,9 @@ const initial = { page, theme, settings };
         }
       }
       if (lastErr) throw lastErr;
+      deletedPages.forEach((slug) => { delete (state.subPages || {})[slug]; });
+      deletedPages.clear();
+      Object.keys(subClones).forEach((slug) => { (state.subPages = state.subPages || {})[slug] = subClones[slug]; });
       statusEl.textContent = '✅ 保存しました。約1分で本番に反映されます';
     } catch (err) {
       statusEl.textContent = '❌ ' + (err.message || '保存に失敗しました') + '｜再読み込みして再試行してください';
@@ -688,6 +888,7 @@ const initial = { page, theme, settings };
   });
 
   // 初期描画
+  renderPageBar();
   renderBlocks();
 </script>
 
@@ -711,6 +912,25 @@ const initial = { page, theme, settings };
   .cz-panel{width:400px;flex-shrink:0;background:#F7F9F8;overflow-y:auto;border-right:1px solid #E0E6E2;padding:18px 16px 40px}
   .cz-panel-head p{font-size:12px;color:#5F6E66;line-height:1.8;padding:2px 4px 14px}
   .cz-panel-head b{color:#04A245}
+
+  /* ページ切替バー */
+  .cz-pagebar{display:flex;gap:8px;margin-bottom:6px}
+  .cz-pagebar select{flex:1;font-family:inherit;font-weight:800;font-size:13px;padding:10px 12px;border:1.5px solid #E0E6E2;border-radius:10px;background:#fff;color:#17211B;outline:none;cursor:pointer}
+  .cz-pagebar select:focus{border-color:#06C755}
+  .cz-pagebar .cz-mini{align-self:stretch;white-space:nowrap}
+  .cz-pageurl{font-size:11px;color:#8B978F;font-weight:700;padding:0 4px 10px;font-family:ui-monospace,Menlo,monospace}
+  .cz-mlabel{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:12px;color:#5F6E66}
+  .cz-mlabel input,.cz-mlabel textarea{font-family:inherit;font-size:13.5px;padding:11px 13px;border:1.5px solid #E0E6E2;border-radius:10px;outline:none}
+  .cz-mlabel input:focus,.cz-mlabel textarea:focus{border-color:#06C755}
+  .cz-btn.danger-ghost{background:transparent;color:#D64541;border:1.5px solid #F3C9C7;margin-right:auto}
+  .cz-btn.danger-ghost:hover{background:#FDEEED}
+
+  /* ドラッグ&ドロップ */
+  .cz-drag{cursor:grab;color:#B4BEB8;font-size:15px;letter-spacing:-1px;user-select:none;padding:0 2px}
+  .cz-block-head:active .cz-drag{cursor:grabbing}
+  .cz-block.is-dragging{opacity:.45}
+  .cz-block.drop-above{box-shadow:0 -3px 0 0 #06C755, 0 6px 20px rgba(13,43,31,.10)}
+  .cz-block.drop-below{box-shadow:0 3px 0 0 #06C755, 0 6px 20px rgba(13,43,31,.10)}
 
   /* ブロックカード */
   .cz-block{background:#fff;border:1px solid #E4EAE6;border-radius:14px;margin-bottom:10px;overflow:hidden;transition:box-shadow .15s}
