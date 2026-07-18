@@ -9,6 +9,7 @@ import settings from '../data/settings.json';
 import IllustWorry from './IllustWorry.astro';
 import IllustGrowth from './IllustGrowth.astro';
 import IllustConsult from './IllustConsult.astro';
+import { ILLUSTS } from '../lib/illusts.mjs';
 
 interface Props { block: { id: string; type: string; p: any }; posts?: any[] }
 const { block, posts = [] } = Astro.props;
@@ -459,6 +460,74 @@ const serviceIcons = [
           {p.right_title && <p class="blk-col-title">{p.right_title}</p>}
           <div class="blk-rich" set:html={rich(p.right_body)}></div>
         </div>
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'illust' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class={`blk-illust is-${p.size || 'm'} ${p.align === 'left' ? 'is-left' : ''}`} aria-hidden="true">
+        {p.kind === 'worry' ? <IllustWorry class="illust" />
+          : p.kind === 'growth' ? <IllustGrowth class="illust" />
+          : p.kind === 'consult' ? <IllustConsult class="illust" />
+          : <Fragment set:html={ILLUSTS[p.kind] || ILLUSTS.rocket} />}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'mediaText' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class={`blk-media ${p.side === 'right' ? 'is-right' : ''}`}>
+        <div class="blk-media-img">
+          {p.img ? <img src={p.img} alt={p.alt || p.title || ''} loading="lazy" /> : <div class="blk-img-empty">画像未設定</div>}
+        </div>
+        <div class="blk-media-body">
+          {p.title && <h3 class="blk-media-title">{p.title}</h3>}
+          <div class="blk-rich" set:html={rich(p.body)}></div>
+          {p.btn_label && <a class="btn btn-green" style="margin-top:18px" href={p.btn_url === 'consult' ? consult : p.btn_url === 'contact' ? contact : (p.btn_url || '#')}>{p.btn_label}</a>}
+        </div>
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'gallery' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class={`blk-gallery cols-${p.cols || 3}`}>
+        {(p.items || []).map((g: any) => (
+          <figure class="blk-gallery-item">
+            {g.src ? <img src={g.src} alt={g.cap || ''} loading="lazy" /> : <div class="blk-img-empty">画像未設定</div>}
+            {g.cap && <figcaption>{g.cap}</figcaption>}
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'cardGrid' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class={`blk-cards cols-${p.cols || 3}`}>
+        {(p.items || []).map((c: any) => {
+          const href = c.url === 'consult' ? consult : c.url === 'contact' ? contact : c.url;
+          const inner = (
+            <Fragment>
+              <div class="blk-card-img">{c.img ? <img src={c.img} alt={c.title || ''} loading="lazy" /> : <div class="blk-img-empty small">画像未設定</div>}</div>
+              <div class="blk-card-body">
+                {c.title && <h3>{c.title}</h3>}
+                {c.body && <p class="blk-rich" set:html={rich(c.body)}></p>}
+                {href && <span class="more">READ MORE ›</span>}
+              </div>
+            </Fragment>
+          );
+          return href ? <a class="blk-card is-link" href={href}>{inner}</a> : <div class="blk-card">{inner}</div>;
+        })}
       </div>
     </div>
   </section>

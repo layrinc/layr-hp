@@ -13,6 +13,15 @@
       }
     },
     {
+      "id": "il-chat",
+      "type": "illust",
+      "p": {
+        "kind": "chat",
+        "size": "m",
+        "align": "center"
+      }
+    },
+    {
       "id": "sl-h-worry",
       "type": "heading",
       "p": {
@@ -170,6 +179,15 @@
             "a": "問題ありません。ゼロからの設計こそ得意領域です。現状の課題整理からご一緒します。"
           }
         ]
+      }
+    },
+    {
+      "id": "il-rocket",
+      "type": "illust",
+      "p": {
+        "kind": "rocket",
+        "size": "m",
+        "align": "center"
       }
     },
     {

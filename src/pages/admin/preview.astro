@@ -9,6 +9,7 @@ import IllustWorry from '../../components/IllustWorry.astro';
 import IllustGrowth from '../../components/IllustGrowth.astro';
 import IllustConsult from '../../components/IllustConsult.astro';
 import settings from '../../data/settings.json';
+import { ILLUSTS } from '../../lib/illusts.mjs';
 import { getCollection } from 'astro:content';
 
 const postsRaw = (await getCollection('blog', ({ data }) => !data.draft))
@@ -68,7 +69,7 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
     #pv-root .reveal{opacity:1;transform:none}
   </style>
 
-  <script define:vars={{ posts, previewSettings }} is:inline>
+  <script define:vars={{ posts, previewSettings, ILLUSTS }} is:inline>
     const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     const nl = (s) => esc(s).replace(/\n/g, '<br>');
     // リッチテキスト: 全部エスケープ後、正規形タグ（strong/em/mark.mk-*/span.tc-*/a href）だけ復元。本番 Block.astro と同一仕様
@@ -185,6 +186,27 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
       cols2(p) {
         const col = (title, body) => `<div class="blk-col">${title ? `<p class="blk-col-title">${esc(title)}</p>` : ''}<div class="blk-rich">${rich(body)}</div></div>`;
         return `<section class="blk-sec"><div class="container"><div class="blk-cols">${col(p.left_title, p.left_body)}${col(p.right_title, p.right_body)}</div></div></section>`;
+      },
+      illust(p) {
+        const legacy = { worry: 'tpl-worry', growth: 'tpl-growth', consult: 'tpl-consult' };
+        const svg = legacy[p.kind] ? tpl(legacy[p.kind]) : (ILLUSTS[p.kind] || ILLUSTS.rocket);
+        return `<section class="blk-sec"><div class="container"><div class="blk-illust is-${p.size || 'm'} ${p.align === 'left' ? 'is-left' : ''}" aria-hidden="true">${svg}</div></div></section>`;
+      },
+      mediaText(p) {
+        const img = p.img ? `<img src="${esc(p.img)}" alt="${esc(p.alt || p.title)}">` : '<div class="blk-img-empty">画像未設定（左のパネルでアップロード）</div>';
+        const btn = p.btn_label ? `<a class="btn btn-green" style="margin-top:18px" href="${p.btn_url === 'consult' ? consult : p.btn_url === 'contact' ? contact : esc(p.btn_url || '#')}">${esc(p.btn_label)}</a>` : '';
+        return `<section class="blk-sec"><div class="container"><div class="blk-media ${p.side === 'right' ? 'is-right' : ''}"><div class="blk-media-img">${img}</div><div class="blk-media-body">${p.title ? `<h3 class="blk-media-title">${esc(p.title)}</h3>` : ''}<div class="blk-rich">${rich(p.body)}</div>${btn}</div></div></div></section>`;
+      },
+      gallery(p) {
+        return `<section class="blk-sec"><div class="container"><div class="blk-gallery cols-${p.cols || 3}">${(p.items || []).map((g) => `<figure class="blk-gallery-item">${g.src ? `<img src="${esc(g.src)}" alt="${esc(g.cap)}">` : '<div class="blk-img-empty">画像未設定</div>'}${g.cap ? `<figcaption>${esc(g.cap)}</figcaption>` : ''}</figure>`).join('')}</div></div></section>`;
+      },
+      cardGrid(p) {
+        const card = (c) => {
+          const href = c.url === 'consult' ? consult : c.url === 'contact' ? contact : c.url;
+          const inner = `<div class="blk-card-img">${c.img ? `<img src="${esc(c.img)}" alt="${esc(c.title)}">` : '<div class="blk-img-empty small">画像未設定</div>'}</div><div class="blk-card-body">${c.title ? `<h3>${esc(c.title)}</h3>` : ''}${c.body ? `<p class="blk-rich">${rich(c.body)}</p>` : ''}${href ? '<span class="more">READ MORE ›</span>' : ''}</div>`;
+          return href ? `<a class="blk-card is-link" href="${esc(href)}">${inner}</a>` : `<div class="blk-card">${inner}</div>`;
+        };
+        return `<section class="blk-sec"><div class="container"><div class="blk-cards cols-${p.cols || 3}">${(p.items || []).map(card).join('')}</div></div></section>`;
       },
       postList(p) {
         return `<section class="blk-sec"><div class="container"><div class="column-grid">${posts.slice(0, Number(p.count) || 3).map((post) => `<a class="column-card" href="/blog/${post.id}/"><div class="column-meta"><time datetime="${post.date}">${fmtD(post.date)}</time><span class="column-cat">${esc(post.category)}</span></div><h3>${esc(post.title)}</h3><p>${esc(post.description)}</p><span class="more">READ MORE ›</span></a>`).join('')}</div>${p.more_label ? `<div class="column-more"><a class="btn btn-black" href="/blog/">${esc(p.more_label)}</a></div>` : ''}</div></section>`;

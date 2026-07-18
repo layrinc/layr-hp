@@ -258,6 +258,15 @@
       }
     },
     {
+      "id": "il-consult",
+      "type": "illust",
+      "p": {
+        "kind": "consult",
+        "size": "m",
+        "align": "center"
+      }
+    },
+    {
       "id": "b-pr-close",
       "type": "text",
       "p": {

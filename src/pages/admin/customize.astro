@@ -371,6 +371,18 @@ const initial = { page, theme, settings, subPages };
     cols2: { name: '2カラム', emoji: '🀫', cat: 'deco', desc: '左右2列のボックス',
       fields: [['left_title', '左タイトル（空欄可）', 't'], ['left_body', '左本文', 'rich'], ['right_title', '右タイトル（空欄可）', 't'], ['right_body', '右本文', 'rich']],
       defaults: { left_title: '', left_body: '左の本文', right_title: '', right_body: '右の本文' } },
+    illust: { name: 'イラスト', emoji: '🎨', cat: 'deco', desc: 'サイト同梱のフラットイラストを配置',
+      fields: [['kind', 'イラストの種類', 'sel', { options: [['consult', '🤝 相談・伴走'], ['growth', '📈 成果グラフと人'], ['worry', '😟 悩む人'], ['rocket', '🚀 ロケット（成長）'], ['chat', '💬 スマホチャット'], ['megaphone', '📣 メガホン（集客）']] }], ['size', '大きさ', 'sel', { options: [['s', '小'], ['m', '中'], ['l', '大']] }], ['align', '配置', 'sel', { options: [['center', '中央'], ['left', '左寄せ']] }]],
+      defaults: { kind: 'rocket', size: 'm', align: 'center' } },
+    mediaText: { name: '画像＋テキスト', emoji: '🖼️', cat: 'deco', desc: '写真とテキストの2カラム（WP風）',
+      fields: [['side', '画像の位置', 'sel', { options: [['left', '左'], ['right', '右']] }], ['img', '画像', 'img'], ['alt', '画像の説明（SEO）', 't'], ['title', '見出し（空欄可）', 't'], ['body', '本文', 'rich'], ['btn_label', 'ボタン文言（空欄で非表示）', 't'], ['btn_url', 'ボタンのリンク先（consult / contact / URL）', 't']],
+      defaults: { side: 'left', img: '', alt: '', title: '見出し', body: '本文テキスト', btn_label: '', btn_url: 'consult' } },
+    gallery: { name: 'ギャラリー', emoji: '🏞', cat: 'deco', desc: '写真をまとめてグリッド表示',
+      fields: [['cols', '列数', 'sel', { options: [[2, '2列'], [3, '3列'], [4, '4列']] }], ['items', '写真', 'imgs']],
+      defaults: { cols: 3, items: [] } },
+    cardGrid: { name: '画像カード', emoji: '🃏', cat: 'deco', desc: '画像＋見出し＋文のカードを並べる',
+      fields: [['cols', '列数', 'sel', { options: [[2, '2列'], [3, '3列']] }], ['items', 'カード', 'arr', { itemLabel: 'カード', itemFields: [['img', '画像', 'img'], ['title', '見出し', 't'], ['body', '説明', 'rich'], ['url', 'リンク先（空欄可 / consult / URL）', 't']], itemDefault: { img: '', title: 'カード見出し', body: '説明文', url: '' } }]],
+      defaults: { cols: 3, items: [{ img: '', title: 'カード見出し', body: '説明文', url: '' }] } },
     postList: { name: '記事リスト', emoji: '📰', cat: 'deco', desc: '最新コラムをカードで表示',
       fields: [['count', '表示件数', 'sel', { options: [[3, '3件'], [6, '6件'], [9, '9件']] }], ['more_label', '一覧ボタンの文言（空欄で非表示）', 't']],
       defaults: { count: 3, more_label: 'コラム一覧を見る' } },
@@ -515,8 +527,53 @@ const initial = { page, theme, settings, subPages };
     return wrap;
   }
 
+  // 複数画像フィールド（ギャラリー用）: サムネイル一覧＋まとめてアップロード
+  function makeImgsField(obj, key, onChange) {
+    const wrap = document.createElement('div'); wrap.className = 'cz-imgs';
+    const grid = document.createElement('div'); grid.className = 'cz-imgs-grid';
+    const renderGrid = () => {
+      grid.innerHTML = '';
+      (obj[key] = obj[key] || []).forEach((item, idx) => {
+        const cell = document.createElement('div'); cell.className = 'cz-imgs-cell';
+        const th = document.createElement('div'); th.className = 'cz-imgs-thumb';
+        th.style.backgroundImage = item.src ? `url("${item.src}")` : 'none';
+        const del = document.createElement('button'); del.type = 'button'; del.className = 'cz-imgs-x'; del.textContent = '✕'; del.title = 'この写真を外す';
+        del.addEventListener('click', () => { obj[key].splice(idx, 1); renderGrid(); onChange(); });
+        const cap = document.createElement('input'); cap.type = 'text'; cap.placeholder = 'キャプション'; cap.value = item.cap || '';
+        cap.addEventListener('input', () => { item.cap = cap.value; onChange(); });
+        th.appendChild(del);
+        cell.appendChild(th); cell.appendChild(cap);
+        grid.appendChild(cell);
+      });
+    };
+    renderGrid();
+    const add = document.createElement('button'); add.type = 'button'; add.className = 'cz-mini add'; add.textContent = '📁 写真を追加（複数選択OK）';
+    const file = document.createElement('input'); file.type = 'file'; file.accept = 'image/*'; file.multiple = true; file.hidden = true;
+    add.addEventListener('click', () => file.click());
+    file.addEventListener('change', () => {
+      const files = [...file.files].slice(0, 12);
+      let pending = files.length;
+      if (!pending) return;
+      files.forEach((f) => {
+        if (f.size > 4 * 1024 * 1024) { alert(`${f.name} は4MB超のためスキップしました`); if (--pending === 0) { renderGrid(); onChange(); } return; }
+        const r = new FileReader();
+        r.onload = () => { obj[key].push({ src: r.result, cap: '' }); if (--pending === 0) { renderGrid(); onChange(); } };
+        r.readAsDataURL(f);
+      });
+      file.value = '';
+    });
+    wrap.appendChild(grid); wrap.appendChild(add); wrap.appendChild(file);
+    return wrap;
+  }
+
   function buildFields(container, obj, fields, onChange) {
     fields.forEach(([key, label, kind, opts]) => {
+      if (kind === 'imgs') {
+        const head = document.createElement('p'); head.className = 'cz-arr-label'; head.textContent = label;
+        container.appendChild(head);
+        container.appendChild(makeImgsField(obj, key, onChange));
+        return;
+      }
       if (kind === 'rich') {
         const lab = document.createElement('label'); lab.textContent = label;
         lab.appendChild(makeRichField(obj[key], (v) => { obj[key] = v; onChange(); }));
@@ -812,21 +869,24 @@ const initial = { page, theme, settings, subPages };
     try {
       // 1) 全ページの画像（dataURL）をアップロード用に抽出し、保存用クローンではパスに置換
       const uploads = [];
-      const collectUploads = (blocks) => {
-        blocks.forEach((b) => {
-          ['photo', 'src', 'avatar'].forEach((key) => {
-            const v = b.p && b.p[key];
-            if (typeof v === 'string' && v.startsWith('data:')) {
-              const m = v.match(/^data:image\/(png|jpe?g|gif|webp|svg\+xml);base64,(.+)$/);
-              if (!m) return;
-              const ext = m[1] === 'jpeg' ? 'jpg' : m[1].replace('+xml', '');
-              const name = `up-${Date.now()}-${uploads.length}.${ext}`;
-              uploads.push({ name, b64: m[2] });
-              b.p[key] = '/uploads/' + name;
-            }
-          });
+      const IMG_KEYS = ['photo', 'src', 'avatar', 'img'];
+      // ブロック内を再帰的に走査し、dataURL画像を全部アップロード対象に差し替える
+      // （ギャラリーitems・画像カードitems等、入れ子の画像も拾う）
+      const walkUploads = (node) => {
+        if (Array.isArray(node)) { node.forEach(walkUploads); return; }
+        if (!node || typeof node !== 'object') return;
+        Object.entries(node).forEach(([key, v]) => {
+          if (IMG_KEYS.includes(key) && typeof v === 'string' && v.startsWith('data:')) {
+            const m = v.match(/^data:image\/(png|jpe?g|gif|webp|svg\+xml);base64,(.+)$/);
+            if (!m) return;
+            const ext = m[1] === 'jpeg' ? 'jpg' : m[1].replace('+xml', '');
+            const name = `up-${Date.now()}-${uploads.length}.${ext}`;
+            uploads.push({ name, b64: m[2] });
+            node[key] = '/uploads/' + name;
+          } else if (v && typeof v === 'object') walkUploads(v);
         });
       };
+      const collectUploads = (blocks) => walkUploads(blocks);
       const pageClone = JSON.parse(JSON.stringify(state.page));
       pageClone.blocks = JSON.parse(JSON.stringify(pages.home.blocks));
       collectUploads(pageClone.blocks);
@@ -984,6 +1044,12 @@ const initial = { page, theme, settings, subPages };
   .cz-rich a{color:#04A245;text-decoration:underline}
   .cz-rich strong{font-weight:900}
   .cz-imgfield{display:flex;gap:12px;align-items:center}
+  .cz-imgs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:9px}
+  .cz-imgs-cell{display:flex;flex-direction:column;gap:5px}
+  .cz-imgs-thumb{position:relative;aspect-ratio:4/3;border-radius:9px;background:#EDF1EE center/cover no-repeat;border:1.5px solid #E0E6E2}
+  .cz-imgs-x{position:absolute;top:4px;right:4px;border:none;background:rgba(15,22,19,.75);color:#fff;border-radius:6px;width:20px;height:20px;font-size:10px;cursor:pointer}
+  .cz-imgs-x:hover{background:#D64541}
+  .cz-imgs-cell input{font-family:inherit;font-size:11px;padding:6px 8px;border:1.5px solid #E0E6E2;border-radius:7px;outline:none}
   .cz-imgthumb{width:86px;height:64px;border-radius:10px;background:#EDF1EE center/cover no-repeat;border:1.5px solid #E0E6E2;display:grid;place-items:center;font-size:10.5px;color:#8B978F;font-weight:700}
   .cz-imgbtns{display:flex;flex-direction:column;gap:6px}
 
