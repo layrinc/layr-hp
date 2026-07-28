@@ -35,7 +35,7 @@ const breadcrumbJsonLd = {
 };
 ---
 <Base title={title} description={description} jsonLd={[breadcrumbJsonLd]}>
-  <div class="subpage-pad" style="height:72px"></div>
+  <div class="subpage-pad"></div>
   {pageData.blocks.map((block: any) => {
     const fs = Number(block.p?._fs) || 1;
     return fs !== 1

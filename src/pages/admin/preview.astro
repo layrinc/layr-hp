@@ -93,7 +93,7 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
       '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
       '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="13" x2="13" y2="13"/></svg>',
     ];
-    const secHead = (p, lead) => `<div class="sec-head reveal"><h2 class="sec-en">${esc(p.en)}</h2><p class="sec-jp">${esc(p.title_jp)}</p>${lead ? `<p class="sec-lead">${esc(lead)}</p>` : ''}</div>`;
+    const secHead = (p, lead) => `<div class="sec-head reveal"><p class="sec-en">${esc(p.en)}</p><h2 class="sec-jp">${esc(p.title_jp)}</h2>${lead ? `<p class="sec-lead">${esc(lead)}</p>` : ''}</div>`;
     const fmtD = (isoStr) => isoStr.replace(/-/g, '.').replace(/\.(\d)\./, '.0$1.');
 
     const R = {
@@ -108,6 +108,21 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
           if (fc) el.innerHTML = esc(fc.label) + '<strong>' + esc(fc.value) + '</strong>'; else el.remove();
         });
         return `<section class="hero"><div class="hero-deco" aria-hidden="true"><div class="ring1"></div><div class="ring2"></div><div class="dot-grid"></div></div><div class="hero-inner"><div class="hero-copy"><p class="hero-eyebrow">${esc(p.eyebrow)}</p><h1>${esc(p.catch_line1)}<br><span class="marker">${esc(p.catch_line2)}</span>${p.catch_line3 ? '<br>' + esc(p.catch_line3) : ''}</h1><p class="hero-sub">${esc(p.sub)}</p><div class="hero-actions"><a class="btn btn-green btn-lg" href="${consult}">${esc(p.cta_primary)}</a><a class="btn btn-black btn-lg" href="#service">${esc(p.cta_secondary)}</a></div><ul class="hero-chips">${(p.chips || []).map((c) => `<li>${esc(c)}</li>`).join('')}</ul></div>${vis.innerHTML}</div></section>`;
+      },
+      heroText(p) {
+        const t2 = p.line2 ? '<br>' + (p.marker ? `<span class="marker">${esc(p.line2)}</span>` : esc(p.line2)) : '';
+        const t3 = p.line3 ? '<br>' + esc(p.line3) : '';
+        // Block.astro の splitPoint と同じ分け方（ラベル小 ＋ 数値を第2階層に立てる）
+        const pts = (p.points || []).map((c) => {
+          const m = String(c ?? '').match(/^(\S+?)[ 　]+(.+)$/);
+          const label = m ? `<span class="label">${esc(m[1])}</span>` : '';
+          return `<li>${label}<span class="val">${esc(m ? m[2] : c)}</span></li>`;
+        }).join('');
+        return `<section class="hero2"><div class="container hero2-inner">${p.eyebrow ? `<p class="hero2-eyebrow">${esc(p.eyebrow)}</p>` : ''}<h1 class="hero2-title">${esc(p.line1)}${t2}${t3}</h1>${p.sub ? `<p class="hero2-sub">${rich(p.sub)}</p>` : ''}<div class="hero2-actions">${p.cta_primary ? `<a class="btn btn-green btn-lg" href="${consult}">${esc(p.cta_primary)}</a>` : ''}${p.cta_secondary ? `<a class="btn btn-black btn-lg" href="${esc(p.cta_secondary_url || '#service')}">${esc(p.cta_secondary)}</a>` : ''}</div>${pts ? `<ul class="hero2-points">${pts}</ul>` : ''}</div></section>`;
+      },
+      pricing(p) {
+        const cards = (p.items || []).map((it) => `<div class="price-card ${it.featured ? 'is-featured' : ''}">${it.tag ? `<p class="price-tag">${esc(it.tag)}</p>` : ''}<h3 class="price-name">${esc(it.name)}</h3><p class="price-amount"><span class="price-num">${esc(it.amount)}</span><small>${esc(it.unit)}</small></p>${it.note ? `<p class="price-note">${esc(it.note)}</p>` : ''}${(it.items || []).length ? `<ul class="price-list">${it.items.map((x) => `<li>${esc(x)}</li>`).join('')}</ul>` : ''}</div>`).join('');
+        return `<section class="blk-sec"><div class="container"><div class="price-grid cols-${(p.items || []).length || 2}">${cards}</div>${p.note ? `<p class="price-foot">${esc(p.note)}</p>` : ''}</div></section>`;
       },
       stats(p) {
         return `<section class="stats">${p.show_edit_note ? '<div class="draft-note"><p>【要編集】実績数値はサンプルです。カスタマイザーで実数値に差し替え、この注意書きをオフにしてください。</p></div>' : ''}<div class="container"><h2 class="stats-title">${esc(p.title_before)}<span class="marker">${esc(p.title_marker)}</span></h2><div class="stats-grid">${p.items.map((it) => `<div class="stat-card reveal"><span class="stat-tag">${esc(it.tag)}</span><p class="stat-num">${it.arrow ? '<span class="up">▲</span>' : ''}${esc(it.number)}<small>${esc(it.unit)}</small></p><p class="stat-desc">${nl(it.desc)}</p></div>`).join('')}</div></div></section>`;
@@ -134,19 +149,19 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
       },
       promise(p) {
         const li = (mark, it) => `<li><span class="mark">${mark}</span><div><strong>${esc(it.title)}</strong><span>${esc(it.desc)}</span></div></li>`;
-        return `<section class="promise" style="background:var(--bg)"><div class="container">${secHead(p)}<div class="promise-grid"><div class="promise-box yes reveal"><h3><span class="ico">○</span>お約束できること</h3><ul>${p.yes_items.map((it) => li('○', it)).join('')}</ul></div><div class="promise-box no reveal"><h3><span class="ico">×</span>お約束できないこと</h3><ul>${p.no_items.map((it) => li('×', it)).join('')}</ul></div></div><div class="sec-illust reveal" aria-hidden="true">${tpl('tpl-consult')}</div><p class="promise-close reveal">${esc(p.close_before)}<br>${esc(p.close_mid)}<span class="marker">${esc(p.close_marker)}</span>${esc(p.close_after)}</p></div></section>`;
+        return `<section class="promise"><div class="container">${secHead(p)}<div class="promise-grid"><div class="promise-box yes reveal"><h3><span class="ico">○</span>お約束できること</h3><ul>${p.yes_items.map((it) => li('○', it)).join('')}</ul></div><div class="promise-box no reveal"><h3><span class="ico">×</span>お約束できないこと</h3><ul>${p.no_items.map((it) => li('×', it)).join('')}</ul></div></div><div class="sec-illust reveal" aria-hidden="true">${tpl('tpl-consult')}</div><p class="promise-close reveal">${esc(p.close_before)}<br>${esc(p.close_mid)}<span class="marker">${esc(p.close_marker)}</span>${esc(p.close_after)}</p></div></section>`;
       },
       message(p) {
-        return `<section class="message" style="background:#fff"><div class="container">${secHead(p)}<div class="message-wrap"><div class="message-photo reveal">${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.sign_name)}">` : '<span class="todo">【要編集】<br>代表写真をカスタマイザーの<br>「代表挨拶」で設定</span>'}</div><div class="message-body reveal">${p.paragraphs.map((para) => `<p>${esc(para)}</p>`).join('')}<div class="sign"><span class="title">${esc(p.sign_title)}</span><span class="name">${esc(p.sign_name)}</span></div></div></div></div></section>`;
+        return `<section class="message"><div class="container">${secHead(p)}<div class="message-wrap"><div class="message-photo reveal">${p.photo ? `<img src="${esc(p.photo)}" alt="${esc(p.sign_name)}">` : '<span class="todo">【要編集】<br>代表写真をカスタマイザーの<br>「代表挨拶」で設定</span>'}</div><div class="message-body reveal">${p.paragraphs.map((para) => `<p>${esc(para)}</p>`).join('')}<div class="sign"><span class="title">${esc(p.sign_title)}</span><span class="name">${esc(p.sign_name)}</span></div></div></div></div></section>`;
       },
       faq(p) {
-        return `<section class="faq" style="background:var(--bg)"><div class="container">${secHead(p)}<div class="faq-list reveal">${p.items.map((it) => `<details class="faq-item"><summary><span class="q">Q.</span>${esc(it.q)}</summary><div class="a"><span class="mark">A.</span><p>${esc(it.a)}</p></div></details>`).join('')}</div></div></section>`;
+        return `<section class="faq"><div class="container">${secHead(p)}<div class="faq-list reveal">${p.items.map((it) => `<details class="faq-item"><summary><span class="q">Q.</span>${esc(it.q)}</summary><div class="a"><span class="mark">A.</span><p>${esc(it.a)}</p></div></details>`).join('')}</div></div></section>`;
       },
       company(p) {
-        return `<section class="company" style="background:#fff"><div class="container">${secHead(p)}<table class="company-table reveal"><tbody><tr><th>会社名</th><td>${esc(p.name)}</td></tr><tr><th>代表者</th><td>${esc(p.representative)}</td></tr><tr><th>所在地</th><td>${esc(p.address)}</td></tr><tr><th>設立</th><td>${esc(p.founded)}</td></tr><tr><th>事業内容</th><td><ul>${p.business.map((b) => `<li>${esc(b)}</li>`).join('')}</ul></td></tr><tr><th>お問い合わせ</th><td><a href="${contact}">${esc(previewSettings.email)}</a></td></tr></tbody></table></div></section>`;
+        return `<section class="company"><div class="container">${secHead(p)}<table class="company-table reveal"><tbody><tr><th>会社名</th><td>${esc(p.name)}</td></tr><tr><th>代表者</th><td>${esc(p.representative)}</td></tr><tr><th>所在地</th><td>${esc(p.address)}</td></tr><tr><th>設立</th><td>${esc(p.founded)}</td></tr><tr><th>事業内容</th><td><ul>${p.business.map((b) => `<li>${esc(b)}</li>`).join('')}</ul></td></tr><tr><th>お問い合わせ</th><td><a href="${contact}">${esc(previewSettings.email)}</a></td></tr></tbody></table></div></section>`;
       },
       ctaFinal(p) {
-        return `<section class="cta-final"><div class="cta-final-inner"><h2 class="sec-en">${esc(p.en)}</h2><h2>${esc(p.title_line1)}<br>${esc(p.title_before)}<span>${esc(p.title_em)}</span>${esc(p.title_after)}</h2><p>${nl(p.desc)}</p><a class="btn btn-green btn-lg" href="${consult}">${esc(p.btn)}</a><p class="mail">メールでのご連絡：<a href="${contact}">${esc(previewSettings.email)}</a></p></div></section>`;
+        return `<section class="cta-final"><div class="cta-final-inner"><p class="sec-en">${esc(p.en)}</p><h2>${esc(p.title_line1)}<br>${esc(p.title_before)}<span>${esc(p.title_em)}</span>${esc(p.title_after)}</h2><p>${nl(p.desc)}</p><a class="btn btn-green btn-lg" href="${consult}">${esc(p.btn)}</a><p class="mail">メールでのご連絡：<a href="${contact}">${esc(previewSettings.email)}</a></p></div></section>`;
       },
       heading(p) {
         const tag = p.level === 2 ? 'h2' : p.level === 4 ? 'h4' : 'h3';
@@ -159,7 +174,7 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
         return `<section class="blk-sec"><div class="container"><div class="blk-box is-${p.style || 'plain'}">${p.title ? `<p class="blk-box-title">${esc(p.title)}</p>` : ''}<p class="blk-rich">${rich(p.body)}</p></div></div></section>`;
       },
       sectionHead(p) {
-        return `<section class="blk-sec"><div class="container"><div class="sec-head ${p.align === 'center' ? 'is-center' : ''}"><h2 class="sec-en">${esc(p.en)}</h2><p class="sec-jp">${esc(p.title_jp)}</p>${p.lead ? `<p class="sec-lead">${esc(p.lead)}</p>` : ''}</div></div></section>`;
+        return `<section class="blk-sec"><div class="container"><div class="sec-head ${p.align === 'center' ? 'is-center' : ''}"><p class="sec-en">${esc(p.en)}</p><h2 class="sec-jp">${esc(p.title_jp)}</h2>${p.lead ? `<p class="sec-lead">${esc(p.lead)}</p>` : ''}</div></div></section>`;
       },
       capBox(p) {
         return `<section class="blk-sec"><div class="container"><div class="blk-cap is-${p.color || 'green'}"><p class="blk-cap-title">${esc(p.title)}</p><div class="blk-cap-body blk-rich">${rich(p.body)}</div></div></div></section>`;

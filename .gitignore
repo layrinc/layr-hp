@@ -17,3 +17,6 @@ dist/
 
 # Drive同期の重複ファイル退避先
 _archive/
+
+# デザイン比較用モック（本番公開しない検討用）
+public/_mockups/

@@ -21,7 +21,7 @@ collections:
   - name: blog
     label: コラム記事
     label_singular: コラム記事
-    description: LINEマーケティング・広告運用のコラム。保存すると自動でサイトに反映されます（約1〜2分）。
+    description: LINE公式アカウントの構築・運用に関するコラム。保存すると自動でサイトに反映されます（約1〜2分）。
     folder: "株式会社LAYR/layr-hp/src/content/blog"
     create: true
     # 記事URL = このスラッグ。英数字で入力する。
@@ -35,7 +35,7 @@ collections:
       - label: "カテゴリ"
         name: "category"
         widget: "select"
-        options: ["LINE運用", "LINEマーケティング", "広告運用"]
+        options: ["LINE運用", "LINEマーケティング", "LINE構築"]
         default: "LINE運用"
       - { label: "下書き（チェック中は公開されない）", name: "draft", widget: "boolean", default: false }
       - { label: "SNSシェア画像（任意・OGP）", name: "image", widget: "image", required: false, hint: "X/LINE等でシェアされた時に出る画像。1200×630px推奨" }

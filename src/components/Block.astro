@@ -39,6 +39,13 @@ const rich = (s: any) => escHtml(s)
 
 const icoBadge: Record<string, string> = { point: '💡', warn: '⚠️', memo: '📝', check: '✅' };
 
+// ヒーローの実績値「ラベル 数値」を最初の空白で分け、数値を第2階層として立てる。
+// （空白がなければ全体を数値として扱う。カスタマイザー側の入力形式は変えない）
+const splitPoint = (s: string): [string, string] => {
+  const m = String(s ?? '').match(/^(\S+?)[ 　]+(.+)$/);
+  return m ? [m[1], m[2]] : ['', String(s ?? '')];
+};
+
 const serviceIcons = [
   '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="3" y1="20" x2="21" y2="20"/></svg>',
   '<svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="13" x2="13" y2="13"/></svg>',
@@ -91,6 +98,49 @@ const serviceIcons = [
   </section>
 )}
 
+{t === 'heroText' && (
+  <section class="hero2" aria-label="メインビジュアル">
+    <div class="container hero2-inner">
+      {p.eyebrow && <p class="hero2-eyebrow">{p.eyebrow}</p>}
+      <h1 class="hero2-title">
+        {p.line1}
+        {p.line2 && <Fragment><br />{p.marker ? <span class="marker">{p.line2}</span> : p.line2}</Fragment>}
+        {p.line3 && <Fragment><br />{p.line3}</Fragment>}
+      </h1>
+      {p.sub && <p class="hero2-sub" set:html={rich(p.sub)}></p>}
+      <div class="hero2-actions">
+        {p.cta_primary && <a class="btn btn-green btn-lg" href={consult}>{p.cta_primary}</a>}
+        {p.cta_secondary && <a class="btn btn-black btn-lg" href={p.cta_secondary_url || '#service'}>{p.cta_secondary}</a>}
+      </div>
+      {p.points?.length > 0 && (
+        <ul class="hero2-points">{p.points.map((c: string) => {
+          const [label, val] = splitPoint(c);
+          return <li>{label && <span class="label">{label}</span>}<span class="val">{val}</span></li>;
+        })}</ul>
+      )}
+    </div>
+  </section>
+)}
+
+{t === 'pricing' && (
+  <section class="blk-sec">
+    <div class="container">
+      <div class={`price-grid reveal cols-${(p.items || []).length || 2}`}>
+        {(p.items || []).map((it: any) => (
+          <div class={`price-card ${it.featured ? 'is-featured' : ''}`}>
+            {it.tag && <p class="price-tag">{it.tag}</p>}
+            <h3 class="price-name">{it.name}</h3>
+            <p class="price-amount"><span class="price-num">{it.amount}</span><small>{it.unit}</small></p>
+            {it.note && <p class="price-note">{it.note}</p>}
+            {it.items?.length > 0 && <ul class="price-list">{it.items.map((x: string) => <li>{x}</li>)}</ul>}
+          </div>
+        ))}
+      </div>
+      {p.note && <p class="price-foot">{p.note}</p>}
+    </div>
+  </section>
+)}
+
 {t === 'stats' && (
   <section class="stats">
     {p.show_edit_note && <div class="draft-note"><p>【要編集】実績数値はサンプルです。カスタマイザーで実数値に差し替え、この注意書きをオフにしてください。</p></div>}
@@ -112,7 +162,7 @@ const serviceIcons = [
 {t === 'problem' && (
   <section class="problem">
     <div class="container">
-      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
       <div class="problem-cols">
         <ul class="problem-list">{p.items.map((item: string) => <li class="reveal"><span class="check"></span>{item}</li>)}</ul>
         <div class="problem-illust reveal" aria-hidden="true"><IllustWorry class="illust" /></div>
@@ -144,7 +194,7 @@ const serviceIcons = [
 {t === 'service' && (
   <section id="service">
     <div class="container">
-      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p><p class="sec-lead">{p.lead}</p></div>
+      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2><p class="sec-lead">{p.lead}</p></div>
       <div class="service-grid">
         {p.items.map((s: any, i: number) => s.featured ? (
           <div class="service-card wide reveal">
@@ -168,7 +218,7 @@ const serviceIcons = [
 {t === 'reason' && (
   <section class="reason" id="reason">
     <div class="container">
-      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
       <div class="reason-grid">
         {p.items.map((r: any, i: number) => (
           <div class="reason-card reveal">
@@ -184,7 +234,7 @@ const serviceIcons = [
 {t === 'cases' && (
   <section id="case">
     <div class="container">
-      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
       <div class="sec-illust reveal" aria-hidden="true"><IllustGrowth class="illust illust-sm" /></div>
     </div>
     {p.show_edit_note && <div class="draft-note"><p>【要編集】以下の実績はサンプルです。カスタマイザーで実案件に差し替え、この注意書きをオフにしてください（クライアント名の掲載は先方の許可を取ってから）。</p></div>}
@@ -214,7 +264,7 @@ const serviceIcons = [
 {t === 'column' && (
   <section id="column">
     <div class="container">
-      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p><p class="sec-lead">{p.lead}</p></div>
+      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2><p class="sec-lead">{p.lead}</p></div>
       <div class="column-grid">
         {posts.slice(0, 3).map((post: any) => (
           <a class="column-card reveal" href={`/blog/${post.id}/`}>
@@ -230,9 +280,9 @@ const serviceIcons = [
 )}
 
 {t === 'promise' && (
-  <section class="promise" style="background:var(--bg)">
+  <section class="promise">
     <div class="container">
-      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
       <div class="promise-grid">
         <div class="promise-box yes reveal">
           <h3><span class="ico">○</span>お約束できること</h3>
@@ -250,9 +300,9 @@ const serviceIcons = [
 )}
 
 {t === 'message' && (
-  <section class="message" id="message" style="background:#fff">
+  <section class="message" id="message">
     <div class="container">
-      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
       <div class="message-wrap">
         <div class="message-photo reveal">
           {p.photo
@@ -269,9 +319,9 @@ const serviceIcons = [
 )}
 
 {t === 'faq' && (
-  <section class="faq" id="faq" style="background:var(--bg)">
+  <section class="faq" id="faq">
     <div class="container">
-      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
       <div class="faq-list reveal">
         {p.items.map((item: any) => (
           <details class="faq-item">
@@ -285,9 +335,9 @@ const serviceIcons = [
 )}
 
 {t === 'company' && (
-  <section class="company" id="company" style="background:#fff">
+  <section class="company" id="company">
     <div class="container">
-      <div class="sec-head reveal"><h2 class="sec-en">{p.en}</h2><p class="sec-jp">{p.title_jp}</p></div>
+      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
       <table class="company-table reveal">
         <tbody>
           <tr><th>会社名</th><td>{p.name}</td></tr>
@@ -305,7 +355,7 @@ const serviceIcons = [
 {t === 'ctaFinal' && (
   <section class="cta-final" id="contact">
     <div class="cta-final-inner">
-      <h2 class="sec-en">{p.en}</h2>
+      <p class="sec-en">{p.en}</p>
       <h2>{p.title_line1}<br />{p.title_before}<span>{p.title_em}</span>{p.title_after}</h2>
       <p set:html={String(p.desc || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}></p>
       <a class="btn btn-green btn-lg" href={consult}>{p.btn}</a>
@@ -348,9 +398,9 @@ const serviceIcons = [
 {t === 'sectionHead' && (
   <section class="blk-sec">
     <div class="container">
-      <div class={`sec-head ${p.align === 'center' ? 'is-center' : ''}`}>
-        <h2 class="sec-en">{p.en}</h2>
-        <p class="sec-jp">{p.title_jp}</p>
+      <div class={`sec-head reveal ${p.align === 'center' ? 'is-center' : ''}`}>
+        <p class="sec-en">{p.en}</p>
+        <h2 class="sec-jp">{p.title_jp}</h2>
         {p.lead && <p class="sec-lead">{p.lead}</p>}
       </div>
     </div>
@@ -409,7 +459,7 @@ const serviceIcons = [
 {t === 'steps' && (
   <section class="blk-sec">
     <div class="container">
-      <div class="blk-steps">
+      <div class="blk-steps reveal">
         {(p.items || []).map((s: any, i: number) => (
           <div class="blk-step">
             <span class="blk-step-num" aria-hidden="true">{i + 1}</span>

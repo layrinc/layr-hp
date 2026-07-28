@@ -64,12 +64,12 @@ const breadcrumbJsonLd = {
 };
 ---
 <Base title={title} description={post.data.description} ogType="article" ogImage={post.data.image} jsonLd={[articleJsonLd, breadcrumbJsonLd]}>
-  <article class="article" style="padding-top:150px">
+  <article class="article is-post">
     <nav class="article-bc" aria-label="パンくず">
       <a href="/">ホーム</a><span>›</span><a href="/blog/">コラム</a><span>›</span><em>{post.data.title}</em>
     </nav>
     <div class="article-meta">
-      <time datetime={iso(post.data.date)} style="font-family:var(--font-en);font-weight:700;font-size:13px;color:var(--muted)">{fmt(post.data.date)}</time>
+      <time datetime={iso(post.data.date)}>{fmt(post.data.date)}</time>
       <span class="column-cat">{post.data.category}</span>
     </div>
     <h1>{post.data.title}</h1>
@@ -95,7 +95,7 @@ const breadcrumbJsonLd = {
     </div>
 
     <div class="article-cta">
-      <p>自社のLINE・広告の現状、無料でご相談いただけます</p>
+      <p>自社のLINE公式アカウントの現状、無料でご相談いただけます</p>
       <a class="btn btn-green" href={consult}>無料相談に申し込む</a>
     </div>
 

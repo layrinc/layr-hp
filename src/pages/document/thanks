@@ -20,12 +20,12 @@ const description = '資料請求ありがとうございました。1営業日�
 </Base>
 
 <style>
-  .thanks-sec{padding:170px 0 110px;background:var(--bg);min-height:70vh}
-  .thanks-card{max-width:620px;margin:0 auto;background:#fff;border-radius:calc(var(--radius) + 6px);box-shadow:var(--shadow);padding:56px 40px;text-align:center}
-  .thanks-ico{width:64px;height:64px;border-radius:50%;background:var(--green);margin:0 auto 22px;position:relative}
+  /* 角丸・罫線・リンク色・ウエイトは style.css 側に一本化 */
+  .thanks-sec{padding:170px 0 110px;min-height:70vh}
+  .thanks-card{max-width:620px;margin:0 auto;background:var(--paper);padding:56px 40px;text-align:center}
+  .thanks-ico{width:64px;height:64px;border-radius:50%;background:var(--green-cta);margin:0 auto 22px;position:relative}
   .thanks-ico::after{content:"";position:absolute;left:20px;top:26px;width:24px;height:13px;border-left:4px solid #fff;border-bottom:4px solid #fff;transform:rotate(-45deg)}
-  .thanks-card h1{font-size:clamp(20px,3vw,26px);font-weight:900;margin-bottom:16px}
-  .thanks-card p{font-size:14.5px;color:var(--muted);margin-bottom:30px}
-  .thanks-card p a{color:var(--green-dark);font-weight:700}
+  .thanks-card h1{font-size:calc(clamp(20px,3vw,24px) * var(--fs,1));margin-bottom:16px}
+  .thanks-card p{font-size:calc(15px * var(--fs,1));color:var(--muted);margin-bottom:30px}
   .thanks-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
 </style>

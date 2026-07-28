@@ -12,8 +12,8 @@ import { getCollection } from 'astro:content';
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const title = '株式会社LAYR｜LINE構築・運用を軸にしたマーケティング支援会社';
-const description = '株式会社LAYRは、LINE公式アカウントの構築・運用マーケティングと広告運用代行を軸に、中小企業の売上を伸ばすマーケティング支援会社です。広告からLINEまで一気通貫で設計し、リピート・紹介が生まれる仕組みを作ります。';
+const title = '株式会社LAYR｜LINE公式アカウントの構築・運用｜LINEマーケティング専業';
+const description = '株式会社LAYRは、LINE公式アカウントの構築と運用・改善に特化したLINEマーケティング専業の会社です。アカウント設計・リッチメニュー・シナリオ配信の構築から、月次の配信企画・効果測定・改善提案までを一貫して担当し、リピートと紹介が生まれる仕組みを作ります。';
 
 // 構造化データ: 会社情報＋（FAQブロックがあれば）FAQPage
 const companyBlock = page.blocks.find((b) => b.type === 'company');
@@ -25,11 +25,11 @@ const jsonLd: object[] = [
     name: companyBlock?.p?.name ?? '株式会社LAYR',
     url: 'https://layr.co.jp',
     email: 'info@layr.co.jp',
-    description: 'LINE公式アカウントの構築・運用マーケティングと広告運用代行を軸にした、中小企業向けマーケティング支援会社。',
+    description: 'LINE公式アカウントの構築と運用・改善に特化した、中小企業向けLINEマーケティング専業の会社。',
     founder: { '@type': 'Person', name: companyBlock?.p?.representative ?? '河出 壱貫' },
     foundingDate: '2026-08',
     areaServed: 'JP',
-    knowsAbout: ['LINE公式アカウント', 'LINEマーケティング', 'Web広告運用', 'デジタルマーケティング'],
+    knowsAbout: ['LINE公式アカウント', 'LINEマーケティング', 'LINE公式アカウント構築', 'ステップ配信', 'リッチメニュー設計', 'セグメント配信'],
     address: {
       '@type': 'PostalAddress',
       streetAddress: '道玄坂1丁目10番8号 渋谷道玄坂東急ビル2F-C',

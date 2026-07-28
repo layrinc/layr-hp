@@ -69,7 +69,7 @@ const initial = { page, theme, settings, subPages };
             <label class="cz-color">メインカラー（濃）<input type="color" id="f-accent_dark" /></label>
             <label class="cz-color">締めの深色<input type="color" id="f-base_black" /></label>
             <label class="cz-color">薄い背景色<input type="color" id="f-bg_tint" /></label>
-            <label>角丸の大きさ <output id="radiusOut"></output><input type="range" id="f-radius" min="0" max="28" step="1" /></label>
+            <label>角丸の強さ（0〜28） <output id="radiusOut"></output><input type="range" id="f-radius" min="0" max="28" step="1" /></label>
             <label>英字フォント<select id="f-font_en"><option>Montserrat</option><option>Archivo</option><option>Poppins</option></select></label>
           </div>
         </div>
@@ -277,6 +277,21 @@ const initial = { page, theme, settings, subPages };
         ['float_chips', 'スマホ横の数値チップ', 'arr', { itemLabel: 'チップ', itemFields: [['label', 'ラベル', 't'], ['value', '数値', 't']], itemDefault: { label: 'ラベル', value: '+100%' } }],
       ],
       defaults: { eyebrow: '帯コピー', catch_line1: 'キャッチコピー', catch_line2: 'マーカー部分', catch_line3: '', sub: 'サブコピー', cta_primary: '無料相談に申し込む', cta_secondary: 'サービスを見る', badge_line1: '初回相談', badge_line2: '無料', chips: ['チップ1'], float_chips: [] } },
+    heroText: { name: 'ヒーロー（画像なし）', emoji: '✍️', cat: 'section', desc: 'テキストだけの静かなファーストビュー',
+      fields: [
+        ['eyebrow', '小さな上帯（空欄可）', 't'], ['line1', '見出し 1行目', 't'], ['line2', '見出し 2行目（空欄可）', 't'],
+        ['marker', '2行目にマーカーを引く', 'flag'], ['line3', '見出し 3行目（空欄可）', 't'],
+        ['sub', 'サブコピー', 'rich'],
+        ['cta_primary', '緑ボタン（空欄で非表示）', 't'], ['cta_secondary', '白ボタン（空欄で非表示）', 't'], ['cta_secondary_url', '白ボタンのリンク先', 't'],
+        ['points', '下の要点リスト', 'strs', { itemLabel: '要点' }],
+      ],
+      defaults: { eyebrow: '', line1: '見出し1行目', line2: '見出し2行目', marker: true, line3: '', sub: 'サブコピー', cta_primary: '無料相談に申し込む', cta_secondary: 'サービスを見る', cta_secondary_url: '#service', points: [] } },
+    pricing: { name: '料金', emoji: '💰', cat: 'section', desc: '料金プランのカード',
+      fields: [
+        ['items', 'プラン', 'arr', { itemLabel: 'プラン', itemFields: [['featured', '目立たせる', 'flag'], ['tag', '小ラベル', 't'], ['name', 'プラン名', 't'], ['amount', '金額', 't'], ['unit', '単位（円〜 など）', 't'], ['note', '補足', 't'], ['items', '含まれるもの', 'strs', { itemLabel: '項目' }]], itemDefault: { featured: false, tag: '', name: 'プラン名', amount: '00', unit: '万円〜', note: '', items: [] } }],
+        ['note', '注釈（※）', 'ta'],
+      ],
+      defaults: { items: [], note: '' } },
     stats: { name: '実績数値', emoji: '📊', cat: 'section', desc: '数字で見る成果カード',
       fields: [
         ['show_edit_note', '【要編集】注意帯を表示', 'flag'], ['title_before', '見出し・前半', 't'], ['title_marker', '見出し・マーカー', 't'],
@@ -786,8 +801,8 @@ const initial = { page, theme, settings, subPages };
   // ================= デザイン・基本設定 =================
   const $ = (id) => document.getElementById(id);
   ['accent', 'accent_dark', 'base_black', 'bg_tint'].forEach((k) => { $('f-' + k).value = state.theme[k]; $('f-' + k).addEventListener('input', (e) => { state.theme[k] = e.target.value; send(); }); });
-  $('f-radius').value = state.theme.radius; $('radiusOut').textContent = state.theme.radius + 'px';
-  $('f-radius').addEventListener('input', (e) => { state.theme.radius = Number(e.target.value); $('radiusOut').textContent = e.target.value + 'px'; send(); });
+  $('f-radius').value = state.theme.radius; $('radiusOut').textContent = state.theme.radius;
+  $('f-radius').addEventListener('input', (e) => { state.theme.radius = Number(e.target.value); $('radiusOut').textContent = e.target.value; send(); });
   $('f-font_en').value = state.theme.font_en;
   $('f-font_en').addEventListener('input', (e) => { state.theme.font_en = e.target.value; send(); });
   $('f-custom_css').value = state.theme.custom_css || '';

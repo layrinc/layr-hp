@@ -8,7 +8,7 @@ import Base from '../../layouts/Base.astro';
 import settings from '../../data/settings.json';
 
 const title = 'サービス紹介資料ダウンロード｜株式会社LAYR';
-const description = '株式会社LAYRのサービス紹介資料（LINE公式アカウント構築・運用、広告運用代行の支援内容と料金目安）を無料でお送りします。フォーム入力後、メールで資料をお届けします。';
+const description = 'LINEマーケティング専業・株式会社LAYRのサービス紹介資料（LINE公式アカウントの構築と、運用・改善の支援内容と料金目安）を無料でお送りします。フォーム入力後、メールで資料をお届けします。';
 
 // 送信先: FormSubmit経由で会社メールへ。送信後はサンクスページへ戻す。
 const formAction = `https://formsubmit.co/${settings.email}`;
@@ -22,22 +22,22 @@ const thanksUrl = new URL('/document/thanks/', Astro.site).href;
       <div class="doc-intro">
         <p class="sec-en">DOCUMENT</p>
         <h1 class="doc-title">LAYR サービス紹介資料</h1>
-        <p class="doc-lead">LINE構築・運用と広告運用の支援内容、料金の目安、進め方をまとめた資料です。フォーム送信後、メールでお届けします。</p>
+        <p class="doc-lead">LINE公式アカウントの構築と、運用・改善の支援内容、料金の目安、進め方をまとめた資料です。フォーム送信後、メールでお届けします。</p>
 
         <div class="doc-slides" aria-hidden="true">
           <div class="ds ds1"><span class="ds-tag">LAYR</span><b>サービス紹介資料</b></div>
           <div class="ds ds2"><i></i><i class="short"></i><em style="--h:46%"></em><em style="--h:78%"></em><em style="--h:60%"></em></div>
-          <div class="ds ds3"><i></i><i></i><i class="short"></i></div>
+          <div class="ds"><i></i><i></i><i class="short"></i></div>
           <div class="ds ds4"><span class="ds-pill"></span><i></i><i class="short"></i></div>
         </div>
 
         <h2 class="doc-sub">資料に含まれる内容</h2>
         <ul class="doc-list">
-          <li>LAYRのサービス全体像（LINE構築・運用 × 広告運用）</li>
-          <li>支援範囲と進め方（無料相談〜構築〜運用改善）</li>
-          <li>料金の目安（初期構築・月額運用）</li>
-          <li>支援イメージ・活用事例</li>
-          <li>よくあるご質問</li>
+          <li>LAYRのサービス全体像（LINE公式アカウントの構築／運用・改善）</li>
+          <li>構築の支援範囲（アカウント設計・リッチメニュー・シナリオ配信・友だち追加導線）</li>
+          <li>運用の支援範囲（月次の配信企画・セグメント配信・効果測定・改善提案）</li>
+          <li>進め方（無料相談〜構築〜運用改善）と料金の目安</li>
+          <li>支援イメージ・活用事例、よくあるご質問</li>
         </ul>
       </div>
 
@@ -68,7 +68,7 @@ const thanksUrl = new URL('/document/thanks/', Astro.site).href;
               <option value="">選択してください</option>
               <option>LINE公式アカウントの構築</option>
               <option>LINEの運用・配信代行</option>
-              <option>広告運用（広告×LINE）</option>
+              <option>LINEの友だち集め・登録導線の改善</option>
               <option>全般的に相談したい</option>
             </select>
           </label>
@@ -144,41 +144,39 @@ const thanksUrl = new URL('/document/thanks/', Astro.site).href;
 </script>
 
 <style>
-  .doc-sec{padding:150px 0 100px;background:var(--bg)}
+  /* 配色・タイポ・角丸・罫線は style.css に一本化した。
+     ここにはこのページ固有のレイアウトだけ置く。 */
+  .doc-sec{padding:150px 0 100px}
   .doc-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:52px;align-items:start}
-  .doc-title{font-size:clamp(26px,3.6vw,38px);font-weight:900;line-height:1.5;margin-top:10px}
-  .doc-lead{color:var(--muted);font-size:15px;margin-top:14px;max-width:520px}
+  .doc-title{font-size:calc(clamp(24px,3.6vw,32px) * var(--fs,1));margin-top:10px}
+  .doc-lead{color:var(--muted);margin-top:14px;max-width:36em}
   .doc-slides{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:28px 0 34px;max-width:480px}
-  .ds{aspect-ratio:16/10;border-radius:12px;background:#fff;box-shadow:var(--shadow);padding:14px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:7px;justify-content:center}
-  .ds1{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;align-items:flex-start;justify-content:flex-end}
-  .ds1 .ds-tag{font-family:var(--font-en);font-weight:800;font-size:10px;letter-spacing:.14em;background:rgba(255,255,255,.25);border-radius:999px;padding:2px 10px}
-  .ds1 b{font-size:13.5px;font-weight:900;line-height:1.5}
-  .ds i{display:block;height:8px;border-radius:4px;background:#EDF1EE}
+  .ds{aspect-ratio:16/10;background:var(--paper);padding:14px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:7px;justify-content:center}
+  .ds1{background:var(--green-cta);color:#fff;align-items:flex-start;justify-content:flex-end}
+  .ds1 .ds-tag{background:color-mix(in srgb, #FFFFFF 25%, transparent);padding:2px 10px}
+  .ds i{display:block;height:8px;border-radius:2px;background:var(--bg)}
   .ds i.short{width:60%}
   .ds2{flex-direction:row;align-items:flex-end;gap:8px;padding:16px 18px}
   .ds2 i{display:none}
-  .ds2 em{flex:1;height:var(--h);border-radius:4px 4px 0 0;background:color-mix(in srgb, var(--green) 35%, #E8F3EC)}
+  .ds2 em{flex:1;height:var(--h);border-radius:2px 2px 0 0;background:var(--line)}
   .ds2 em:last-child{background:var(--green)}
-  .ds4 .ds-pill{width:42%;height:12px;border-radius:999px;background:var(--green-pale)}
-  .doc-sub{font-size:17px;font-weight:900;margin-bottom:14px}
+  .ds4 .ds-pill{width:42%;height:12px;background:var(--green-pale)}
+  .doc-sub{margin-bottom:14px}
   .doc-list{display:flex;flex-direction:column;gap:9px}
-  .doc-list li{padding-left:30px;position:relative;font-size:14.5px;font-weight:700}
-  .doc-list li::before{content:"";position:absolute;left:0;top:4px;width:20px;height:20px;border-radius:50%;background:var(--green)}
-  .doc-list li::after{content:"";position:absolute;left:5px;top:10px;width:9px;height:5px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg)}
-  .doc-form-card{background:#fff;border-radius:calc(var(--radius) + 6px);padding:36px 34px;box-shadow:var(--shadow)}
-  .doc-form-note{font-size:13.5px;color:var(--muted);font-weight:700;margin-bottom:22px;line-height:1.8}
+  .doc-list li{position:relative}
+  .doc-form-card{background:var(--paper);padding:36px 34px}
+  .doc-form-note{margin-bottom:22px}
   .doc-form{display:flex;flex-direction:column;gap:16px}
-  .doc-form label{font-size:13.5px;font-weight:800;display:flex;flex-direction:column;gap:7px}
-  .req{color:#fff;background:var(--green);border-radius:6px;font-size:10.5px;font-weight:800;padding:1px 8px;margin-left:6px;display:inline-block}
-  .opt{color:var(--muted);background:var(--bg);border-radius:6px;font-size:10.5px;font-weight:800;padding:1px 8px;margin-left:6px;display:inline-block}
-  .doc-form input[type="text"],.doc-form input[type="email"],.doc-form input[type="tel"],.doc-form select{font-family:var(--font-jp);font-size:14.5px;padding:13px 15px;border:1.5px solid var(--line);border-radius:12px;background:#FAFCFB;color:var(--text);outline:none;transition:border-color .2s}
-  .doc-form input:focus,.doc-form select:focus{border-color:var(--green)}
-  .doc-consent{flex-direction:row!important;align-items:flex-start;gap:10px!important;font-weight:500!important;font-size:12.5px!important;color:var(--muted);line-height:1.7}
-  .doc-consent input{margin-top:4px;accent-color:var(--green);width:16px;height:16px}
+  .doc-form label{display:flex;flex-direction:column;gap:7px}
+  .req{color:#fff;padding:1px 8px;margin-left:6px;display:inline-block}
+  .opt{color:var(--muted);padding:1px 8px;margin-left:6px;display:inline-block}
+  .doc-form input[type="text"],.doc-form input[type="email"],.doc-form input[type="tel"],.doc-form select{font-family:var(--font-jp);font-size:calc(15px * var(--fs,1));padding:13px 15px;color:var(--text);outline:none;transition:border-color .2s}
+  .doc-consent{flex-direction:row!important;align-items:flex-start;gap:10px!important;font-weight:400!important;font-size:calc(13px * var(--fs,1))!important;color:var(--muted)}
+  .doc-consent input{margin-top:4px;accent-color:var(--green-cta);width:16px;height:16px}
   .doc-submit{width:100%;border:none;font-family:var(--font-jp)}
-  .doc-submit:disabled{opacity:.6;cursor:wait;transform:none}
-  .doc-fallback{background:#FDF6E7;border:1.5px dashed #D6A210;border-radius:14px;padding:20px 22px;text-align:center}
-  .doc-fallback p{font-size:13px;color:#7A5B09;line-height:1.8;margin-bottom:14px}
+  .doc-submit:disabled{opacity:.6;cursor:wait}
+  .doc-fallback{padding:20px 22px;text-align:center}
+  .doc-fallback p{font-size:calc(13px * var(--fs,1));color:var(--muted);margin-bottom:14px}
   .doc-fallback .btn{width:100%}
   @media (max-width:900px){
     .doc-wrap{grid-template-columns:1fr;gap:40px}
