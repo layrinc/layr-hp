@@ -1,0 +1,186 @@
+/* ===== layer 03 / motion : スクロール演出・stagger・ホバー（style.css の後ろに連結） ===== */
+
+:root{
+  --e-out:cubic-bezier(.16,1,.3,1);        /* 立ち上がり用（減速） */
+  --e-ui:cubic-bezier(.2,.7,.3,1);         /* ホバー・UI用 */
+  --rise:.7s;
+  --stagger:80ms;
+  --sd-hover:0 14px 34px color-mix(in srgb, var(--black) 13%, transparent);
+  --sd-hover-g:0 14px 34px color-mix(in srgb, var(--green-dark) 16%, transparent);
+}
+
+@keyframes layr-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+/* ============================================================
+   1. reveal（表示アニメーション）
+   transition ではなく animation で出すことで、ホバーの transform と
+   競合させない（stagger の delay がホバーに引きずられない）。
+   ============================================================ */
+.reveal{opacity:0;transform:translateY(14px);transition:none}
+.reveal.is-visible{
+  opacity:1;transform:none;
+  animation:layr-rise var(--rise) var(--e-out) backwards;
+}
+
+/* コンテナ側に .reveal が付くブロック（料金・STEP・FAQ）は子を順に出す */
+:is(.price-grid,.blk-steps,.faq-list).reveal > *{opacity:0}
+:is(.price-grid,.blk-steps,.faq-list).reveal.is-visible{animation:none}
+:is(.price-grid,.blk-steps,.faq-list).reveal.is-visible > *{
+  opacity:1;
+  animation:layr-rise var(--rise) var(--e-out) backwards;
+}
+
+/* ---- stagger（最大6つ目まで） ---- */
+:is(.stats-grid,.service-grid,.reason-grid,.case-grid,.price-grid,
+    .blk-steps,.column-grid,.problem-list,.promise-grid,.hero2-points) > *:nth-child(1){animation-delay:0ms}
+:is(.stats-grid,.service-grid,.reason-grid,.case-grid,.price-grid,
+    .blk-steps,.column-grid,.problem-list,.promise-grid,.hero2-points) > *:nth-child(2){animation-delay:calc(var(--stagger) * 1)}
+:is(.stats-grid,.service-grid,.reason-grid,.case-grid,.price-grid,
+    .blk-steps,.column-grid,.problem-list,.promise-grid,.hero2-points) > *:nth-child(3){animation-delay:calc(var(--stagger) * 2)}
+:is(.stats-grid,.service-grid,.reason-grid,.case-grid,.price-grid,
+    .blk-steps,.column-grid,.problem-list,.promise-grid,.hero2-points) > *:nth-child(4){animation-delay:calc(var(--stagger) * 3)}
+:is(.stats-grid,.service-grid,.reason-grid,.case-grid,.price-grid,
+    .blk-steps,.column-grid,.problem-list,.promise-grid,.hero2-points) > *:nth-child(5){animation-delay:calc(var(--stagger) * 4)}
+:is(.stats-grid,.service-grid,.reason-grid,.case-grid,.price-grid,
+    .blk-steps,.column-grid,.problem-list,.promise-grid,.hero2-points) > *:nth-child(n+6){animation-delay:calc(var(--stagger) * 5)}
+/* FAQ は行数が多いので刻みを細かく */
+.faq-list.reveal.is-visible > *:nth-child(1){animation-delay:0ms}
+.faq-list.reveal.is-visible > *:nth-child(2){animation-delay:60ms}
+.faq-list.reveal.is-visible > *:nth-child(3){animation-delay:120ms}
+.faq-list.reveal.is-visible > *:nth-child(4){animation-delay:180ms}
+.faq-list.reveal.is-visible > *:nth-child(5){animation-delay:240ms}
+.faq-list.reveal.is-visible > *:nth-child(n+6){animation-delay:300ms}
+
+/* ============================================================
+   2. カードのホバー（浮く＋影が広がる）
+   ============================================================ */
+.stat-card,.service-card,.reason-card,.case-card,.price-card,.column-card,.blk-step,.blk-card{
+  transition:transform .3s var(--e-ui), box-shadow .3s var(--e-ui), border-color .3s var(--e-ui);
+}
+.stat-card:hover,.reason-card:hover,.price-card:hover,.blk-step:hover{
+  transform:translateY(-4px);box-shadow:var(--sd-hover);
+}
+.case-card:hover,.column-card:hover,.service-card:hover,.blk-card.is-link:hover{
+  transform:translateY(-4px);box-shadow:var(--sd-hover);border-color:var(--green-line);
+}
+.price-card.is-featured:hover{box-shadow:var(--sd-hover-g)}
+/* カード内の小要素も連動させる（上品な範囲で） */
+.stat-card .stat-num,.case-metric .after{transition:transform .3s var(--e-ui)}
+.column-card .more,.blk-card .more{
+  transition:transform .3s var(--e-ui), color .25s var(--e-ui);
+}
+.column-card:hover .more,.blk-card.is-link:hover .more{transform:translateX(3px);color:var(--green-dark)}
+.service-card .service-visual{transition:transform .35s var(--e-ui), background-color .3s var(--e-ui)}
+.service-card:hover .service-visual{transform:translateY(-2px) scale(1.04)}
+
+/* ============================================================
+   3. ボタン・リンク
+   ============================================================ */
+.btn{transition:background-color .25s var(--e-ui), color .25s var(--e-ui),
+     border-color .25s var(--e-ui), transform .25s var(--e-ui), box-shadow .3s var(--e-ui)}
+.btn::after{transition:transform .3s var(--e-out)}
+.btn:hover::after,.btn:focus-visible::after{transform:translateX(4px)}
+
+/* テキストリンク: 下線が左から伸びる（薄い基準線＋緑の伸びる線の2枚重ね） */
+.company-table td a,.cta-final .mail a,.faq-item .a p a,.blk-rich a{
+  text-decoration:none;
+  background-image:
+    linear-gradient(currentColor,currentColor),
+    linear-gradient(color-mix(in srgb, currentColor 34%, transparent),color-mix(in srgb, currentColor 34%, transparent));
+  background-repeat:no-repeat;
+  background-position:0 100%,0 100%;
+  background-size:0 2px,100% 1px;
+  padding-bottom:2px;
+  transition:background-size .35s var(--e-out), color .25s var(--e-ui);
+}
+.company-table td a:hover,.cta-final .mail a:hover,
+.faq-item .a p a:hover,.blk-rich a:hover{background-size:100% 2px,100% 1px}
+
+/* グローバルナビ / フッターは既存の下線・矢印を活かして速度だけ整える */
+.gnav a::after{transition:transform .3s var(--e-out)}
+.footer-nav a{transition:opacity .25s var(--e-ui), color .25s var(--e-ui), transform .25s var(--e-ui)}
+.footer-nav a:hover{transform:translateX(2px)}
+
+/* ============================================================
+   4. FAQ（アコーディオン）
+   ============================================================ */
+.faq-item{transition:box-shadow .3s var(--e-ui), border-color .3s var(--e-ui)}
+.faq-item:hover{border-color:var(--green-line)}
+.faq-item summary{transition:background-color .25s var(--e-ui), color .2s var(--e-ui)}
+.faq-item summary:hover{background:color-mix(in srgb, var(--green) 5%, #fff)}
+.faq-item summary::before{transition:transform .3s var(--e-ui), background-color .25s var(--e-ui)}
+.faq-item summary:hover::before{transform:translateY(-50%) scale(1.08)}
+.faq-item summary .q{transition:transform .3s var(--e-ui)}
+.faq-item[open] summary{background:color-mix(in srgb, var(--green) 4%, #fff)}
+
+/* ============================================================
+   5. 導入事例 Before/After バー（0 → --h へ伸びる）
+   ============================================================ */
+.case-card.reveal .case-graph .bar{
+  height:0;
+  transition:height .85s var(--e-out);
+}
+.case-card.reveal.is-visible .case-graph .bar{height:var(--h,50%)}
+.case-card.reveal.is-visible .case-graph .bar.b1{transition-delay:.22s}
+.case-card.reveal.is-visible .case-graph .bar.b2{transition-delay:.38s}
+.case-card.reveal .case-graph .bar::after{transition:opacity .4s var(--e-out) .5s;opacity:0}
+.case-card.reveal.is-visible .case-graph .bar::after{opacity:1}
+
+/* ============================================================
+   6. その他の細部
+   ============================================================ */
+.hero2-points li,.hero-chips li,.service-tags li{
+  transition:transform .28s var(--e-ui), box-shadow .28s var(--e-ui), border-color .28s var(--e-ui);
+}
+.hero2-points li:hover{transform:translateY(-3px);box-shadow:var(--sd-hover)}
+.service-tags li:hover{border-color:var(--green-line)}
+.company-table tr{transition:background-color .25s var(--e-ui)}
+.company-table tbody tr:hover td{background:color-mix(in srgb, var(--green) 3%, #fff)}
+.message-photo img{transition:transform .5s var(--e-ui)}
+.message-wrap:hover .message-photo img{transform:scale(1.02)}
+.menu-btn span{transition:transform .25s var(--e-ui), opacity .2s var(--e-ui)}
+
+/* ============================================================
+   7. 事故防止：JSが動かない環境でも必ず見える
+   ============================================================ */
+.no-js .reveal,
+.no-js :is(.price-grid,.blk-steps,.faq-list).reveal > *{opacity:1;animation:none}
+.no-js .reveal{transform:none}
+.no-js .case-card .case-graph .bar{height:var(--h,50%)}
+
+@media (scripting:none){
+  .reveal{opacity:1 !important;transform:none !important;animation:none !important}
+  :is(.price-grid,.blk-steps,.faq-list).reveal > *{opacity:1 !important;animation:none !important}
+  .case-card.reveal .case-graph .bar{height:var(--h,50%) !important;transition:none !important}
+}
+
+@media print{
+  .reveal{opacity:1 !important;transform:none !important;animation:none !important}
+  :is(.price-grid,.blk-steps,.faq-list).reveal > *{opacity:1 !important;animation:none !important}
+  .case-card.reveal .case-graph .bar{height:var(--h,50%) !important}
+}
+
+/* ============================================================
+   8. 動きを減らす設定（必須・全部止める）
+   ※ transform:none は .reveal 本体だけに限定する
+     （.reason-num などの配置用 transform を壊さないため）
+   ============================================================ */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{
+    animation:none !important;
+    animation-delay:0s !important;
+    transition:none !important;
+    scroll-behavior:auto !important;
+  }
+  .reveal{opacity:1 !important;transform:none !important}
+  :is(.price-grid,.blk-steps,.faq-list).reveal > *{opacity:1 !important}
+  .case-card.reveal .case-graph .bar{height:var(--h,50%) !important}
+  .case-card.reveal .case-graph .bar::after{opacity:1 !important}
+  .stat-card:hover,.service-card:hover,.reason-card:hover,.case-card:hover,
+  .price-card:hover,.column-card:hover,.blk-step:hover,.blk-card.is-link:hover,
+  .hero2-points li:hover,.footer-nav a:hover,.btn:hover{transform:none !important}
+  .btn:hover::after,.faq-item summary:hover::before{transform:none !important}
+  .faq-item summary::before{transform:translateY(-50%) !important}
+  .service-card:hover .service-visual,.column-card:hover .more,
+  .blk-card.is-link:hover .more,.message-wrap:hover .message-photo img{transform:none !important}
+}

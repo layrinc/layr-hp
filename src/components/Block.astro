@@ -10,6 +10,7 @@ import IllustWorry from './IllustWorry.astro';
 import IllustGrowth from './IllustGrowth.astro';
 import IllustConsult from './IllustConsult.astro';
 import { ILLUSTS } from '../lib/illusts.mjs';
+import { ISO } from '../lib/iso-illusts.mjs';
 
 interface Props { block: { id: string; type: string; p: any }; posts?: any[] }
 const { block, posts = [] } = Astro.props;
@@ -112,14 +113,41 @@ const serviceIcons = [
         {p.cta_primary && <a class="btn btn-green btn-lg" href={consult}>{p.cta_primary}</a>}
         {p.cta_secondary && <a class="btn btn-black btn-lg" href={p.cta_secondary_url || '#service'}>{p.cta_secondary}</a>}
       </div>
+      {p.scene && (
+        <div class="hero2-scene" aria-hidden="true">
+          <div class="hs-row">
+            <div class="hs-item" set:html={ISO.shop}></div>
+            <div class="hs-item is-main" set:html={ISO.phone}></div>
+            <div class="hs-item" set:html={ISO.crowd}></div>
+          </div>
+          <div class="hs-path" set:html={ISO.path}></div>
+        </div>
+      )}
       {p.points?.length > 0 && (
         <ul class="hero2-points">{p.points.map((c: string) => {
           const [label, val] = splitPoint(c);
           return <li>{label && <span class="label">{label}</span>}<span class="val">{val}</span></li>;
         })}</ul>
       )}
+      {(p.badge_top || p.badge_num || p.badge_unit) && (
+        <div class="hero2-badge">
+          <span class="b-top">{p.badge_top}</span>
+          <strong class="b-num">{p.badge_num}</strong>
+          <span class="b-unit">{p.badge_unit}</span>
+        </div>
+      )}
     </div>
   </section>
+)}
+
+{t === 'marquee' && (
+  <div class="mq" aria-hidden="true">
+    <div class="mq-track" style={`--mq-speed:${Number(p.speed) || 28}s`}>
+      {[0, 1].map(() => (p.items || []).map((it: string) => (
+        <Fragment><span class="mq-item">{it}</span><span class="mq-sep">····&gt;</span></Fragment>
+      )))}
+    </div>
+  </div>
 )}
 
 {t === 'pricing' && (
@@ -162,10 +190,11 @@ const serviceIcons = [
 {t === 'problem' && (
   <section class="problem">
     <div class="container">
-      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
+      {(p.en || p.title_jp) && <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>}
       <div class="problem-cols">
         <ul class="problem-list">{p.items.map((item: string) => <li class="reveal"><span class="check"></span>{item}</li>)}</ul>
-        <div class="problem-illust reveal" aria-hidden="true"><IllustWorry class="illust" /></div>
+        {/* サイト全体をアイソメトリック3Dで統一するため、フラット線画ではなく iso を使う */}
+        <div class="problem-illust reveal is-iso" aria-hidden="true"><Fragment set:html={ISO.bubbles} /></div>
       </div>
       <div class="problem-arrow" aria-hidden="true"></div>
       <div class="problem-answer reveal">
@@ -194,7 +223,7 @@ const serviceIcons = [
 {t === 'service' && (
   <section id="service">
     <div class="container">
-      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2><p class="sec-lead">{p.lead}</p></div>
+      {(p.en || p.title_jp) && <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2><p class="sec-lead">{p.lead}</p></div>}
       <div class="service-grid">
         {p.items.map((s: any, i: number) => s.featured ? (
           <div class="service-card wide reveal">
@@ -218,7 +247,7 @@ const serviceIcons = [
 {t === 'reason' && (
   <section class="reason" id="reason">
     <div class="container">
-      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
+      {(p.en || p.title_jp) && <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>}
       <div class="reason-grid">
         {p.items.map((r: any, i: number) => (
           <div class="reason-card reveal">
@@ -234,8 +263,9 @@ const serviceIcons = [
 {t === 'cases' && (
   <section id="case">
     <div class="container">
-      <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
-      <div class="sec-illust reveal" aria-hidden="true"><IllustGrowth class="illust illust-sm" /></div>
+      {(p.en || p.title_jp) && <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>}
+      {/* 支援実績の直前には illust ブロック（iso-chart）が入る構成なので、
+          ここに固定イラストを重ねると1画面に2枚並んで冗長になる。意図的に置かない。 */}
     </div>
     {p.show_edit_note && <div class="draft-note"><p>【要編集】以下の実績はサンプルです。カスタマイザーで実案件に差し替え、この注意書きをオフにしてください（クライアント名の掲載は先方の許可を取ってから）。</p></div>}
     <div class="container">
@@ -293,7 +323,7 @@ const serviceIcons = [
           <ul>{p.no_items.map((item: any) => <li><span class="mark">×</span><div><strong>{item.title}</strong><span>{item.desc}</span></div></li>)}</ul>
         </div>
       </div>
-      <div class="sec-illust reveal" aria-hidden="true"><IllustConsult class="illust illust-md" /></div>
+      <div class="sec-illust reveal is-iso" aria-hidden="true"><Fragment set:html={ISO.consult} /></div>
       <p class="promise-close reveal">{p.close_before}<br />{p.close_mid}<span class="marker">{p.close_marker}</span>{p.close_after}</p>
     </div>
   </section>
@@ -399,7 +429,8 @@ const serviceIcons = [
   <section class="blk-sec">
     <div class="container">
       <div class={`sec-head reveal ${p.align === 'center' ? 'is-center' : ''}`}>
-        <p class="sec-en">{p.en}</p>
+        {p.watermark && <span class="sec-wm" aria-hidden="true">{p.watermark}</span>}
+        {p.pill ? <span class="sec-pill">{p.en}</span> : <p class="sec-en">{p.en}</p>}
         <h2 class="sec-jp">{p.title_jp}</h2>
         {p.lead && <p class="sec-lead">{p.lead}</p>}
       </div>
@@ -518,11 +549,13 @@ const serviceIcons = [
 {t === 'illust' && (
   <section class="blk-sec">
     <div class="container">
-      <div class={`blk-illust is-${p.size || 'm'} ${p.align === 'left' ? 'is-left' : ''}`} aria-hidden="true">
+      <div class={`blk-illust is-${p.size || 'm'} ${p.align === 'left' ? 'is-left' : ''} ${String(p.kind || '').startsWith('iso-') ? 'is-iso' : ''}`} aria-hidden="true">
         {p.kind === 'worry' ? <IllustWorry class="illust" />
           : p.kind === 'growth' ? <IllustGrowth class="illust" />
           : p.kind === 'consult' ? <IllustConsult class="illust" />
-          : <Fragment set:html={ILLUSTS[p.kind] || ILLUSTS.rocket} />}
+          : String(p.kind || '').startsWith('iso-')
+            ? <Fragment set:html={ISO[String(p.kind).slice(4)] || ISO.shop} />
+            : <Fragment set:html={ILLUSTS[p.kind] || ILLUSTS.rocket} />}
       </div>
     </div>
   </section>

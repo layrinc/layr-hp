@@ -1,0 +1,149 @@
+/* ===== Layer 02: アイコン（線画SVG / stroke 1.8・round・単色） ===== */
+
+/* --------------------------------------------------------------
+   アイコン辞書（data URI）
+   viewBox 24 / fill:none / stroke-width:1.8 / linecap:round に統一。
+   ※data URI内はCSS変数が使えないため色は直書き。
+     mask対応ブラウザでは下部の @supports で --green-ink に再着色する。
+   -------------------------------------------------------------- */
+:root{
+  --ico-check:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059841' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4.5 12.6l4.8 4.8L19.5 6.6'/%3E%3C/svg%3E");
+  --ico-chatgear:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059841' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6a2.5 2.5 0 0 1 2.5-2.5h13A2.5 2.5 0 0 1 21 6v8a2.5 2.5 0 0 1-2.5 2.5H9.8L5.5 20v-3.5A2.5 2.5 0 0 1 3 14z'/%3E%3Ccircle cx='12' cy='10' r='2.3'/%3E%3Cpath d='M12 5.4v1.3M12 13.3v1.3M7.4 10h1.3M15.3 10h1.3M8.75 6.75l.92.92M14.33 12.33l.92.92M15.25 6.75l-.92.92M9.67 12.33l-.92.92'/%3E%3C/svg%3E");
+  --ico-chart:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059841' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3.6 3.8v15.1a1.5 1.5 0 0 0 1.5 1.5h15.3'/%3E%3Cpath d='M7.2 15.6l3.6-4.1 3 2.5L20 7.1'/%3E%3Cpath d='M16.2 7.1H20v3.8'/%3E%3C/svg%3E");
+  --ico-globe:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059841' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='8.5'/%3E%3Cpath d='M3.5 12h17'/%3E%3Cpath d='M12 3.5c2.2 2.3 3.4 5.3 3.4 8.5s-1.2 6.2-3.4 8.5c-2.2-2.3-3.4-5.3-3.4-8.5S9.8 5.8 12 3.5z'/%3E%3C/svg%3E");
+  --ico-user:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059841' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='8.2' r='3.6'/%3E%3Cpath d='M4.9 20.2c0-3.7 3.2-5.9 7.1-5.9s7.1 2.2 7.1 5.9'/%3E%3C/svg%3E");
+  --ico-layers:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059841' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 3.2l8.3 4.3-8.3 4.3-8.3-4.3z'/%3E%3Cpath d='M4.4 12.2L12 16.1l7.6-3.9'/%3E%3Cpath d='M4.4 16.4L12 20.3l7.6-3.9'/%3E%3C/svg%3E");
+  --ico-chat:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059841' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 6a2.5 2.5 0 0 1 2.5-2.5h13A2.5 2.5 0 0 1 21 6v8a2.5 2.5 0 0 1-2.5 2.5H9.8L5.5 20v-3.5A2.5 2.5 0 0 1 3 14z'/%3E%3Cpath d='M7.6 8.4h8.8M7.6 11.7h5.6'/%3E%3C/svg%3E");
+  --ico-clip:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059841' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 4.6H7.2a1.7 1.7 0 0 0-1.7 1.7v13a1.7 1.7 0 0 0 1.7 1.7h9.6a1.7 1.7 0 0 0 1.7-1.7v-13A1.7 1.7 0 0 0 16.8 4.6H15'/%3E%3Crect x='9' y='2.9' width='6' height='3.4' rx='1.2'/%3E%3Cpath d='M8.8 11.6h6.4M8.8 15.3h4.2'/%3E%3C/svg%3E");
+  --ico-gear:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059841' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='3.1'/%3E%3Cpath d='M12 3.2v2.3M12 18.5v2.3M20.8 12h-2.3M5.5 12H3.2M18.2 5.8l-1.6 1.6M7.4 16.6l-1.6 1.6M18.2 18.2l-1.6-1.6M7.4 7.4L5.8 5.8'/%3E%3C/svg%3E");
+  --ico-loop:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23059841' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20.3 12a8.3 8.3 0 0 1-14.2 5.9'/%3E%3Cpath d='M3.7 12a8.3 8.3 0 0 1 14.2-5.9'/%3E%3Cpath d='M17.9 2.9v3.4h-3.4M6.1 21.1v-3.4h3.4'/%3E%3C/svg%3E");
+}
+
+/* --------------------------------------------------------------
+   共通描画（この6箇所だけがアイコンレイヤーの対象）
+   -------------------------------------------------------------- */
+.hero2-points li::before,
+.service-visual::before,
+.reason-card::before,
+.blk-step::before,
+.problem-list .check::after,
+.price-list li::after{
+  background-image:var(--ico);
+  background-repeat:no-repeat;
+  background-position:center;
+  background-size:var(--ico-size, contain);
+  pointer-events:none;
+}
+
+/* mask対応環境ではテーマの緑（--green-ink）で再着色する */
+@supports ((-webkit-mask-image:none) or (mask-image:none)){
+  .hero2-points li::before,
+  .service-visual::before,
+  .reason-card::before,
+  .blk-step::before,
+  .problem-list .check::after,
+  .price-list li::after{
+    background-image:none;
+    background-color:var(--green-ink);
+    -webkit-mask:var(--ico) center / var(--ico-size, contain) no-repeat;
+    mask:var(--ico) center / var(--ico-size, contain) no-repeat;
+  }
+}
+
+/* --------------------------------------------------------------
+   お悩みリストのチェック（丸に収めた線画チェック）
+   -------------------------------------------------------------- */
+.problem-list .check{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--green-pale);
+  box-shadow:inset 0 0 0 1px var(--green-line);
+  margin-top:2px;
+}
+.problem-list .check::after{
+  content:"";position:absolute;inset:0;
+  width:auto;height:auto;border:0;transform:none;
+  --ico:var(--ico-check);
+  --ico-size:14px 14px;
+}
+
+/* --------------------------------------------------------------
+   料金リストのチェック（同じチェック字形・縮小版）
+   -------------------------------------------------------------- */
+.price-list li::after{
+  content:"";position:absolute;left:0;top:.42em;
+  width:18px;height:18px;border:0;transform:none;
+  --ico:var(--ico-check);
+  --ico-size:10px 10px;
+}
+
+/* --------------------------------------------------------------
+   サービスカード（1:構築＝吹き出し＋歯車 / 2:運用改善＝折れ線グラフ）
+   -------------------------------------------------------------- */
+.service-visual{
+  width:78px;height:78px;border-radius:50%;
+  background:var(--green-pale);
+  box-shadow:inset 0 0 0 1px var(--green-line);
+  display:grid;place-items:center;margin:0 auto 18px;
+}
+.service-visual > svg{display:none}
+.service-visual::before{
+  content:"";display:block;width:38px;height:38px;
+  --ico:var(--ico-chatgear);
+}
+.service-grid .service-card:nth-child(even) .service-visual::before{--ico:var(--ico-chart)}
+.service-card.wide .service-visual{display:none}
+
+/* --------------------------------------------------------------
+   選ばれる理由（番号バッジの下に小さなアクセントアイコン）
+   -------------------------------------------------------------- */
+.reason-card::before{
+  content:"";display:block;width:26px;height:26px;
+  margin:2px auto 12px;opacity:.85;
+  --ico:var(--ico-layers);
+}
+.reason-grid .reason-card:nth-child(2)::before{--ico:var(--ico-user)}
+.reason-grid .reason-card:nth-child(3)::before{--ico:var(--ico-chart)}
+.reason-card h3{margin-top:0}
+
+/* --------------------------------------------------------------
+   ステップ（丸数字の下に控えめな工程アイコン）
+   -------------------------------------------------------------- */
+.blk-step::before{
+  content:"";display:block;width:22px;height:22px;
+  margin:0 auto 10px;opacity:.5;
+  --ico:var(--ico-chat);
+}
+.blk-steps .blk-step:nth-child(2)::before{--ico:var(--ico-clip)}
+.blk-steps .blk-step:nth-child(3)::before{--ico:var(--ico-gear)}
+.blk-steps .blk-step:nth-child(4)::before{--ico:var(--ico-loop)}
+
+/* --------------------------------------------------------------
+   ヒーローの実績ポイント（対応エリア / 担当 / 支援範囲）
+   -------------------------------------------------------------- */
+.hero2-points li{padding-top:16px}
+.hero2-points li::before{
+  content:"";display:block;width:22px;height:22px;
+  margin:0 auto 9px;
+  --ico:var(--ico-globe);
+}
+.hero2-points li:nth-child(2)::before{--ico:var(--ico-user)}
+.hero2-points li:nth-child(3)::before{--ico:var(--ico-layers)}
+
+/* --------------------------------------------------------------
+   レスポンシブ（視覚的重量を全種で保つ）
+   -------------------------------------------------------------- */
+@media (max-width:980px){
+  .service-visual{width:70px;height:70px}
+  .service-visual::before{width:34px;height:34px}
+}
+@media (max-width:640px){
+  .service-visual{width:62px;height:62px;margin-bottom:14px}
+  .service-visual::before{width:30px;height:30px}
+  .reason-card::before{width:24px;height:24px;margin-bottom:10px}
+  .hero2-points li::before{width:20px;height:20px;margin-bottom:8px}
+  .blk-step::before{width:20px;height:20px}
+}
+@media (max-width:390px){
+  .problem-list .check{width:24px;height:24px}
+  .problem-list .check::after{--ico-size:13px 13px}
+}

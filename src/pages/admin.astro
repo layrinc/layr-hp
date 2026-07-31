@@ -59,7 +59,7 @@ const blockNames: Record<string, string> = {
   speech: '💬 吹き出し', list: '✅ リスト', steps: '🪜 ステップ', accordion: '🔽 アコーディオン',
   quote: '❝ 引用', cols2: '🀫 2カラム', postList: '📰 記事リスト',
   illust: '🎨 イラスト', mediaText: '🖼️ 画像＋テキスト', gallery: '🏞 ギャラリー', cardGrid: '🃏 画像カード',
-  heroText: '✍️ ヒーロー（画像なし）', pricing: '💰 料金',
+  heroText: '✍️ ヒーロー（画像なし）', pricing: '💰 料金', marquee: '🎞 流れる帯',
 };
 const pageBlocks = page.blocks.map((b) => blockNames[b.type] || b.type);
 
@@ -186,48 +186,48 @@ const subPageList = Object.entries(subMods).map(([path, mod]) => {
 
 <style>
   .dash-body{background:#F3F5F4;min-height:100vh}
-  .dash{max-width:1040px;margin:0 auto;padding:36px 20px 60px;font-size:14px}
+  .dash{max-width:1040px;margin:0 auto;padding:36px 20px 60px;font-size:calc(14px * var(--fs,1))}
   .dash-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:22px}
-  .dash-brand{font-family:var(--font-en);font-weight:800;font-size:13px;letter-spacing:.18em;color:var(--muted)}
+  .dash-brand{font-family:var(--font-en);font-weight:800;font-size:calc(13px * var(--fs,1));letter-spacing:.18em;color:var(--muted)}
   .dash-brand span{color:var(--green-dark)}
-  .dash-head h1{font-size:22px;font-weight:900;margin-top:2px}
+  .dash-head h1{font-size:calc(22px * var(--fs,1));font-weight:900;margin-top:2px}
   .dash-head-links{display:flex;gap:10px}
-  .dash-btn{display:inline-block;padding:10px 18px;border-radius:8px;font-weight:700;font-size:13px}
+  .dash-btn{display:inline-block;padding:10px 18px;border-radius:8px;font-weight:700;font-size:calc(13px * var(--fs,1))}
   .dash-btn.primary{background:var(--green);color:#fff}
   .dash-btn.primary:hover{background:var(--green-dark)}
   .dash-btn.ghost{background:#fff;border:1px solid var(--line);color:var(--text)}
   .dash-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
   .dash-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 20px}
-  .dash-card .num{font-family:var(--font-en);font-weight:800;font-size:30px;line-height:1.2;color:var(--text)}
-  .dash-card .num.small{font-size:15px;padding:8px 0 7px}
-  .dash-card .num small{font-size:13px;margin-left:2px;font-weight:700}
-  .dash-card .cap{color:var(--muted);font-size:12px;font-weight:700;margin-top:2px}
+  .dash-card .num{font-family:var(--font-en);font-weight:800;font-size:calc(30px * var(--fs,1));line-height:1.2;color:var(--text)}
+  .dash-card .num.small{font-size:calc(15px * var(--fs,1));padding:8px 0 7px}
+  .dash-card .num small{font-size:calc(13px * var(--fs,1));margin-left:2px;font-weight:700}
+  .dash-card .cap{color:var(--muted);font-size:calc(12px * var(--fs,1));font-weight:700;margin-top:2px}
   .dash-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
   .dash-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-bottom:14px}
-  .dash-panel h2{font-size:15px;font-weight:900;margin-bottom:14px}
-  .dash-tag{font-size:11px;font-weight:700;color:var(--muted);background:#F3F5F4;border-radius:999px;padding:3px 10px;margin-left:8px;vertical-align:middle}
+  .dash-panel h2{font-size:calc(15px * var(--fs,1));font-weight:900;margin-bottom:14px}
+  .dash-tag{font-size:calc(11px * var(--fs,1));font-weight:700;color:var(--muted);background:#F3F5F4;border-radius:999px;padding:3px 10px;margin-left:8px;vertical-align:middle}
   .dash-done{color:var(--green-dark);font-weight:700}
   .dash-tasks{display:flex;flex-direction:column;gap:8px}
   .dash-tasks a{display:block;background:#FFF9F0;border:1px solid #F0DFC0;border-radius:10px;padding:11px 14px;color:var(--text);text-decoration:none}
   .dash-tasks a:hover{border-color:var(--green)}
-  .dash-tasks strong{display:block;font-size:13.5px}
-  .dash-tasks span{font-size:12px;color:var(--muted)}
+  .dash-tasks strong{display:block;font-size:calc(13.5px * var(--fs,1))}
+  .dash-tasks span{font-size:calc(12px * var(--fs,1));color:var(--muted)}
   .dash-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-  .dash-chip{background:#F3F5F4;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:12.5px;font-weight:700;color:var(--text);text-decoration:none}
+  .dash-chip{background:#F3F5F4;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-size:calc(12.5px * var(--fs,1));font-weight:700;color:var(--text);text-decoration:none}
   .dash-chip:hover{border-color:var(--green);color:var(--green-dark)}
   .dash-links{display:flex;flex-direction:column;gap:8px;border-top:1px dashed var(--line);padding-top:12px}
-  .dash-links a{color:var(--text);font-weight:700;font-size:13px;text-decoration:none}
+  .dash-links a{color:var(--text);font-weight:700;font-size:calc(13px * var(--fs,1));text-decoration:none}
   .dash-links a:hover{color:var(--green-dark)}
   .dash-table{width:100%;border-collapse:collapse}
-  .dash-table th{text-align:left;font-size:11.5px;color:var(--muted);font-weight:700;padding:6px 10px;border-bottom:1px solid var(--line)}
+  .dash-table th{text-align:left;font-size:calc(11.5px * var(--fs,1));color:var(--muted);font-weight:700;padding:6px 10px;border-bottom:1px solid var(--line)}
   .dash-table td{padding:11px 10px;border-bottom:1px solid #F0F2F1;vertical-align:middle}
-  .dash-table .ttl{font-weight:700;font-size:13.5px}
-  .cat{font-size:11.5px;font-weight:700;color:var(--green-dark);background:var(--green-pale);border-radius:4px;padding:3px 9px}
-  .st{font-size:11.5px;font-weight:800;border-radius:4px;padding:3px 9px}
+  .dash-table .ttl{font-weight:700;font-size:calc(13.5px * var(--fs,1))}
+  .cat{font-size:calc(11.5px * var(--fs,1));font-weight:700;color:var(--green-dark);background:var(--green-pale);border-radius:4px;padding:3px 9px}
+  .st{font-size:calc(11.5px * var(--fs,1));font-weight:800;border-radius:4px;padding:3px 9px}
   .st.live{color:var(--green-dark);background:var(--green-pale)}
   .st.draft{color:#9C640C;background:#FDF3E7}
   .acts a{font-weight:700;color:var(--green-dark);margin-right:12px;text-decoration:none}
-  .dash-foot{color:var(--muted);font-size:12px;margin-top:6px}
+  .dash-foot{color:var(--muted);font-size:calc(12px * var(--fs,1));margin-top:6px}
   .sw{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:-1px}
   @media (max-width:760px){
     .dash-cards{grid-template-columns:1fr 1fr}

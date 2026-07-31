@@ -283,9 +283,11 @@ const initial = { page, theme, settings, subPages };
         ['marker', '2行目にマーカーを引く', 'flag'], ['line3', '見出し 3行目（空欄可）', 't'],
         ['sub', 'サブコピー', 'rich'],
         ['cta_primary', '緑ボタン（空欄で非表示）', 't'], ['cta_secondary', '白ボタン（空欄で非表示）', 't'], ['cta_secondary_url', '白ボタンのリンク先', 't'],
+        ['scene', '3Dイラストの3シーン（店舗→スマホ→賑わう店）を表示', 'flag'],
         ['points', '下の要点リスト', 'strs', { itemLabel: '要点' }],
+        ['badge_top', '円バッジ・上段（空欄で非表示）', 't'], ['badge_num', '円バッジ・数値', 't'], ['badge_unit', '円バッジ・単位', 't'],
       ],
-      defaults: { eyebrow: '', line1: '見出し1行目', line2: '見出し2行目', marker: true, line3: '', sub: 'サブコピー', cta_primary: '無料相談に申し込む', cta_secondary: 'サービスを見る', cta_secondary_url: '#service', points: [] } },
+      defaults: { eyebrow: '', line1: '見出し1行目', line2: '見出し2行目', marker: true, line3: '', sub: 'サブコピー', cta_primary: '無料相談に申し込む', cta_secondary: 'サービスを見る', cta_secondary_url: '#service', scene: false, points: [], badge_top: '', badge_num: '', badge_unit: '' } },
     pricing: { name: '料金', emoji: '💰', cat: 'section', desc: '料金プランのカード',
       fields: [
         ['items', 'プラン', 'arr', { itemLabel: 'プラン', itemFields: [['featured', '目立たせる', 'flag'], ['tag', '小ラベル', 't'], ['name', 'プラン名', 't'], ['amount', '金額', 't'], ['unit', '単位（円〜 など）', 't'], ['note', '補足', 't'], ['items', '含まれるもの', 'strs', { itemLabel: '項目' }]], itemDefault: { featured: false, tag: '', name: 'プラン名', amount: '00', unit: '万円〜', note: '', items: [] } }],
@@ -308,6 +310,12 @@ const initial = { page, theme, settings, subPages };
     ctaBand: { name: 'CTAバナー（緑）', emoji: '🟩', cat: 'section', desc: '中間の相談誘導バナー',
       fields: [['title_before', '見出し・前', 't'], ['title_em', '見出し・強調', 't'], ['title_after', '見出し・後', 't'], ['desc', '説明', 'ta'], ['btn_primary', '緑ボタン', 't'], ['btn_secondary', '白ボタン', 't']],
       defaults: { title_before: '無料相談、', title_em: '受付中', title_after: 'です。', desc: '', btn_primary: '無料相談に申し込む', btn_secondary: 'メールで問い合わせる' } },
+    marquee: { name: '流れる帯', emoji: '🎞', cat: 'section', desc: '緑の帯を短いコピーが横に流れ続ける',
+      fields: [
+        ['items', '流すコピー', 'strs', { itemLabel: 'コピー' }],
+        ['speed', '一周の秒数（既定28）', 't'],
+      ],
+      defaults: { items: ['コピー1', 'コピー2', 'コピー3'], speed: 28 } },
     service: { name: '事業内容', emoji: '🛠', cat: 'section', desc: 'サービスカード一覧',
       fields: [
         ['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'], ['lead', 'リード文', 'ta'], ['note', '注釈（※）', 't'],
@@ -360,8 +368,8 @@ const initial = { page, theme, settings, subPages };
       fields: [['style', 'スタイル', 'sel', { options: [['plain', 'ノーマル（薄グレー）'], ['green', 'グリーン（ポイント）'], ['warn', '注意（黄）']] }], ['title', 'タイトル（空欄可）', 't'], ['body', '本文', 'rich']],
       defaults: { style: 'green', title: 'ポイント', body: '本文' } },
     sectionHead: { name: 'セクション見出し', emoji: '🏷', cat: 'part', desc: '英字ラベル＋大見出し（LPと同デザイン）',
-      fields: [['en', '英字ラベル（例: COLUMN）', 't'], ['title_jp', '見出し', 't'], ['lead', 'リード文（空欄可）', 'ta'], ['align', '配置', 'sel', { options: [['left', '左寄せ'], ['center', '中央']] }]],
-      defaults: { en: 'SECTION', title_jp: '見出しテキスト', lead: '', align: 'left' } },
+      fields: [['en', '英字ラベル（例: COLUMN）', 't'], ['pill', '英字ラベルを黒ピルにする', 'flag'], ['watermark', '背景の巨大英字（空欄で非表示）', 't'], ['title_jp', '見出し', 't'], ['lead', 'リード文（空欄可）', 'ta'], ['align', '配置', 'sel', { options: [['left', '左寄せ'], ['center', '中央']] }]],
+      defaults: { en: 'SECTION', pill: false, watermark: '', title_jp: '見出しテキスト', lead: '', align: 'left' } },
     capBox: { name: 'キャプションボックス', emoji: '📦', cat: 'deco', desc: '色付きタイトルバー＋本文',
       fields: [['color', 'カラー', 'sel', { options: [['green', 'グリーン'], ['dark', 'ダーク'], ['red', 'レッド'], ['gray', 'グレー']] }], ['title', 'タイトル', 't'], ['body', '本文', 'rich']],
       defaults: { color: 'green', title: 'タイトル', body: '本文' } },
@@ -387,7 +395,10 @@ const initial = { page, theme, settings, subPages };
       fields: [['left_title', '左タイトル（空欄可）', 't'], ['left_body', '左本文', 'rich'], ['right_title', '右タイトル（空欄可）', 't'], ['right_body', '右本文', 'rich']],
       defaults: { left_title: '', left_body: '左の本文', right_title: '', right_body: '右の本文' } },
     illust: { name: 'イラスト', emoji: '🎨', cat: 'deco', desc: 'サイト同梱のフラットイラストを配置',
-      fields: [['kind', 'イラストの種類', 'sel', { options: [['consult', '🤝 相談・伴走'], ['growth', '📈 成果グラフと人'], ['worry', '😟 悩む人'], ['rocket', '🚀 ロケット（成長）'], ['chat', '💬 スマホチャット'], ['megaphone', '📣 メガホン（集客）']] }], ['size', '大きさ', 'sel', { options: [['s', '小'], ['m', '中'], ['l', '大']] }], ['align', '配置', 'sel', { options: [['center', '中央'], ['left', '左寄せ']] }]],
+      fields: [['kind', 'イラストの種類', 'sel', { options: [
+        ['consult', '🤝 相談・伴走'], ['growth', '📈 成果グラフと人'], ['worry', '😟 悩む人'], ['rocket', '🚀 ロケット（成長）'], ['chat', '💬 スマホチャット'], ['megaphone', '📣 メガホン（集客）'],
+        ['iso-shop', '🏪 3D 店舗'], ['iso-phone', '📱 3D スマホ＋LINEトーク'], ['iso-crowd', '🎉 3D 賑わう店'], ['iso-bubbles', '💬 3D 吹き出し'], ['iso-chart', '📊 3D 成長グラフ'], ['iso-path', '〰️ 3D つなぎパス'], ['iso-consult', '🗣 3D 相談'], ['iso-report', '📄 3D 月次レポート'], ['iso-build', '🧱 3D 構築'],
+      ] }], ['size', '大きさ', 'sel', { options: [['s', '小'], ['m', '中'], ['l', '大']] }], ['align', '配置', 'sel', { options: [['center', '中央'], ['left', '左寄せ']] }]],
       defaults: { kind: 'rocket', size: 'm', align: 'center' } },
     mediaText: { name: '画像＋テキスト', emoji: '🖼️', cat: 'deco', desc: '写真とテキストの2カラム（WP風）',
       fields: [['side', '画像の位置', 'sel', { options: [['left', '左'], ['right', '右']] }], ['img', '画像', 'img'], ['alt', '画像の説明（SEO）', 't'], ['title', '見出し（空欄可）', 't'], ['body', '本文', 'rich'], ['btn_label', 'ボタン文言（空欄で非表示）', 't'], ['btn_url', 'ボタンのリンク先（consult / contact / URL）', 't']],
@@ -969,39 +980,39 @@ const initial = { page, theme, settings, subPages };
 
 <style is:global>
   *{margin:0;padding:0;box-sizing:border-box}
-  .cz-body{font-family:"Noto Sans JP",-apple-system,sans-serif;background:#EDF1EE;height:100vh;display:flex;flex-direction:column;font-size:14px;color:#17211B}
+  .cz-body{font-family:"Noto Sans JP",-apple-system,sans-serif;background:#EDF1EE;height:100vh;display:flex;flex-direction:column;font-size:calc(14px * var(--fs,1));color:#17211B}
   .cz-bar{height:58px;background:#0F1613;color:#fff;display:flex;align-items:center;gap:20px;padding:0 20px;flex-shrink:0}
-  .cz-back{color:rgba(255,255,255,.75);text-decoration:none;font-weight:700;font-size:13px}
-  .cz-title{font-weight:900;font-size:14.5px;white-space:nowrap}
+  .cz-back{color:rgba(255,255,255,.75);text-decoration:none;font-weight:700;font-size:calc(13px * var(--fs,1))}
+  .cz-title{font-weight:900;font-size:calc(14.5px * var(--fs,1));white-space:nowrap}
   .cz-tabs{display:flex;gap:6px;background:rgba(255,255,255,.1);border-radius:999px;padding:4px}
-  .cz-tab{border:none;background:transparent;color:rgba(255,255,255,.7);font-weight:800;font-size:12.5px;padding:8px 18px;border-radius:999px;cursor:pointer;font-family:inherit}
+  .cz-tab{border:none;background:transparent;color:rgba(255,255,255,.7);font-weight:800;font-size:calc(12.5px * var(--fs,1));padding:8px 18px;border-radius:999px;cursor:pointer;font-family:inherit}
   .cz-tab.is-active{background:#fff;color:#0F1613}
   .cz-bar-actions{margin-left:auto;display:flex;align-items:center;gap:12px}
-  .cz-status{font-size:12px;color:#8FE6B2;max-width:320px}
-  .cz-btn{border:none;border-radius:999px;font-weight:800;font-size:13px;padding:10px 22px;cursor:pointer;font-family:inherit}
+  .cz-status{font-size:calc(12px * var(--fs,1));color:#8FE6B2;max-width:320px}
+  .cz-btn{border:none;border-radius:999px;font-weight:800;font-size:calc(13px * var(--fs,1));padding:10px 22px;cursor:pointer;font-family:inherit}
   .cz-btn.primary{background:#06C755;color:#fff}
   .cz-btn.primary:hover{background:#04A245}
   .cz-btn.primary:disabled{opacity:.6}
   .cz-btn.ghost{background:rgba(255,255,255,.14);color:#fff}
   .cz-main{flex:1;display:flex;min-height:0}
   .cz-panel{width:400px;flex-shrink:0;background:#F7F9F8;overflow-y:auto;border-right:1px solid #E0E6E2;padding:18px 16px 40px}
-  .cz-panel-head p{font-size:12px;color:#5F6E66;line-height:1.8;padding:2px 4px 14px}
+  .cz-panel-head p{font-size:calc(12px * var(--fs,1));color:#5F6E66;line-height:1.8;padding:2px 4px 14px}
   .cz-panel-head b{color:#04A245}
 
   /* ページ切替バー */
   .cz-pagebar{display:flex;gap:8px;margin-bottom:6px}
-  .cz-pagebar select{flex:1;font-family:inherit;font-weight:800;font-size:13px;padding:10px 12px;border:1.5px solid #E0E6E2;border-radius:10px;background:#fff;color:#17211B;outline:none;cursor:pointer}
+  .cz-pagebar select{flex:1;font-family:inherit;font-weight:800;font-size:calc(13px * var(--fs,1));padding:10px 12px;border:1.5px solid #E0E6E2;border-radius:10px;background:#fff;color:#17211B;outline:none;cursor:pointer}
   .cz-pagebar select:focus{border-color:#06C755}
   .cz-pagebar .cz-mini{align-self:stretch;white-space:nowrap}
-  .cz-pageurl{font-size:11px;color:#8B978F;font-weight:700;padding:0 4px 10px;font-family:ui-monospace,Menlo,monospace}
-  .cz-mlabel{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:12px;color:#5F6E66}
-  .cz-mlabel input,.cz-mlabel textarea{font-family:inherit;font-size:13.5px;padding:11px 13px;border:1.5px solid #E0E6E2;border-radius:10px;outline:none}
+  .cz-pageurl{font-size:calc(11px * var(--fs,1));color:#8B978F;font-weight:700;padding:0 4px 10px;font-family:ui-monospace,Menlo,monospace}
+  .cz-mlabel{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:calc(12px * var(--fs,1));color:#5F6E66}
+  .cz-mlabel input,.cz-mlabel textarea{font-family:inherit;font-size:calc(13.5px * var(--fs,1));padding:11px 13px;border:1.5px solid #E0E6E2;border-radius:10px;outline:none}
   .cz-mlabel input:focus,.cz-mlabel textarea:focus{border-color:#06C755}
   .cz-btn.danger-ghost{background:transparent;color:#D64541;border:1.5px solid #F3C9C7;margin-right:auto}
   .cz-btn.danger-ghost:hover{background:#FDEEED}
 
   /* ドラッグ&ドロップ */
-  .cz-drag{cursor:grab;color:#B4BEB8;font-size:15px;letter-spacing:-1px;user-select:none;padding:0 2px}
+  .cz-drag{cursor:grab;color:#B4BEB8;font-size:calc(15px * var(--fs,1));letter-spacing:-1px;user-select:none;padding:0 2px}
   .cz-block-head:active .cz-drag{cursor:grabbing}
   .cz-block.is-dragging{opacity:.45}
   .cz-block.drop-above{box-shadow:0 -3px 0 0 #06C755, 0 6px 20px rgba(13,43,31,.10)}
@@ -1012,34 +1023,34 @@ const initial = { page, theme, settings, subPages };
   .cz-block:hover{box-shadow:0 4px 16px rgba(13,43,31,.08)}
   .cz-block.is-open{box-shadow:0 6px 20px rgba(13,43,31,.10);border-color:#06C755}
   .cz-block-head{display:flex;align-items:center;gap:10px;padding:14px 14px;cursor:pointer;user-select:none}
-  .cz-block-ico{font-size:17px}
-  .cz-block-name{font-weight:900;font-size:13.5px;white-space:nowrap}
-  .cz-block-snip{font-size:11.5px;color:#8B978F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+  .cz-block-ico{font-size:calc(17px * var(--fs,1))}
+  .cz-block-name{font-weight:900;font-size:calc(13.5px * var(--fs,1));white-space:nowrap}
+  .cz-block-snip{font-size:calc(11.5px * var(--fs,1));color:#8B978F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
   .cz-block-ctrl{display:flex;gap:4px;opacity:.35;transition:opacity .15s}
   .cz-block:hover .cz-block-ctrl{opacity:1}
-  .cz-ctrl{border:none;background:#F0F3F1;border-radius:7px;width:27px;height:27px;font-size:12px;cursor:pointer;color:#3D4A43;font-family:inherit}
+  .cz-ctrl{border:none;background:#F0F3F1;border-radius:7px;width:27px;height:27px;font-size:calc(12px * var(--fs,1));cursor:pointer;color:#3D4A43;font-family:inherit}
   .cz-ctrl:hover{background:#DFF3E7;color:#04A245}
   .cz-ctrl.danger:hover{background:#FDEEED;color:#D64541}
-  .cz-add-main{width:100%;border:2px dashed #C9D4CD;background:transparent;border-radius:14px;padding:15px;font-weight:800;font-size:13.5px;color:#5F6E66;cursor:pointer;font-family:inherit;margin-top:4px}
+  .cz-add-main{width:100%;border:2px dashed #C9D4CD;background:transparent;border-radius:14px;padding:15px;font-weight:800;font-size:calc(13.5px * var(--fs,1));color:#5F6E66;cursor:pointer;font-family:inherit;margin-top:4px}
   .cz-add-main:hover{border-color:#06C755;color:#04A245;background:#F0FAF4}
 
   /* フィールド */
   .cz-fields{padding:4px 16px 18px;display:flex;flex-direction:column;gap:15px}
   .cz-fields.tight{padding:4px 12px 12px;gap:11px}
-  .cz-fields label{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:12px;color:#5F6E66}
-  .cz-fields input[type="text"],.cz-fields input[type="number"],.cz-fields textarea,.cz-fields select{font-family:inherit;font-size:13.5px;padding:11px 13px;border:1.5px solid #E0E6E2;border-radius:10px;background:#fff;color:#17211B;outline:none;line-height:1.7}
+  .cz-fields label{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:calc(12px * var(--fs,1));color:#5F6E66}
+  .cz-fields input[type="text"],.cz-fields input[type="number"],.cz-fields textarea,.cz-fields select{font-family:inherit;font-size:calc(13.5px * var(--fs,1));padding:11px 13px;border:1.5px solid #E0E6E2;border-radius:10px;background:#fff;color:#17211B;outline:none;line-height:1.7}
   .cz-fields input:focus,.cz-fields textarea:focus,.cz-fields select:focus{border-color:#06C755}
   .cz-color{flex-direction:row!important;align-items:center;justify-content:space-between}
   .cz-color input{width:56px;height:32px;border:1.5px solid #E0E6E2;border-radius:8px;background:#fff;padding:2px;cursor:pointer}
-  .cz-flag{flex-direction:row!important;align-items:center;gap:10px!important;font-size:13px!important;color:#17211B!important;font-weight:700!important;cursor:pointer}
+  .cz-flag{flex-direction:row!important;align-items:center;gap:10px!important;font-size:calc(13px * var(--fs,1))!important;color:#17211B!important;font-weight:700!important;cursor:pointer}
   .cz-flag input{width:17px;height:17px;accent-color:#06C755}
   .cz-arr{display:flex;flex-direction:column;gap:9px}
-  .cz-arr-label{font-weight:800;font-size:12px;color:#5F6E66}
+  .cz-arr-label{font-weight:800;font-size:calc(12px * var(--fs,1));color:#5F6E66}
   .cz-itemcard{background:#F7F9F8;border:1px solid #E4EAE6;border-radius:11px;overflow:hidden}
-  .cz-itembar{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;font-weight:800;font-size:11.5px;color:#5F6E66;background:#F0F3F1}
+  .cz-itembar{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;font-weight:800;font-size:calc(11.5px * var(--fs,1));color:#5F6E66;background:#F0F3F1}
   .cz-strrow{display:flex;gap:7px;margin-bottom:7px}
   .cz-strrow input,.cz-strrow textarea{flex:1}
-  .cz-mini{border:none;background:#EDF1EE;border-radius:8px;padding:8px 13px;font-weight:800;font-size:12px;color:#3D4A43;cursor:pointer;font-family:inherit;align-self:flex-start}
+  .cz-mini{border:none;background:#EDF1EE;border-radius:8px;padding:8px 13px;font-weight:800;font-size:calc(12px * var(--fs,1));color:#3D4A43;cursor:pointer;font-family:inherit;align-self:flex-start}
   .cz-mini:hover{background:#DFF3E7;color:#04A245}
   .cz-mini.danger:hover{background:#FDEEED;color:#D64541}
   .cz-mini.add{width:100%;border:1.5px dashed #C9D4CD;background:transparent}
@@ -1047,10 +1058,10 @@ const initial = { page, theme, settings, subPages };
   .cz-richwrap{display:flex;flex-direction:column;border:1.5px solid #E0E6E2;border-radius:10px;background:#fff;overflow:hidden}
   .cz-richwrap:focus-within{border-color:#06C755}
   .cz-rt{display:flex;gap:2px;padding:6px 8px;border-bottom:1px solid #EEF2EF;background:#FAFBFA}
-  .cz-rtb{border:none;background:transparent;border-radius:6px;min-width:28px;height:26px;cursor:pointer;font-size:12.5px;font-family:inherit;display:grid;place-items:center;padding:0 5px}
+  .cz-rtb{border:none;background:transparent;border-radius:6px;min-width:28px;height:26px;cursor:pointer;font-size:calc(12.5px * var(--fs,1));font-family:inherit;display:grid;place-items:center;padding:0 5px}
   .cz-rtb:hover{background:#EDF1EE}
   .cz-rtb b{font-weight:900}
-  .cz-rich{padding:11px 13px;font-size:13.5px;line-height:1.9;min-height:72px;outline:none;color:#17211B;font-weight:500;overflow-wrap:break-word}
+  .cz-rich{padding:11px 13px;font-size:calc(13.5px * var(--fs,1));line-height:1.9;min-height:72px;outline:none;color:#17211B;font-weight:500;overflow-wrap:break-word}
   .cz-rich:empty::before{content:"本文を入力…";color:#B4BEB8}
   .cz-rich mark.mk-g,.cz-rtb mark.mk-g{background:linear-gradient(transparent 62%,rgba(6,199,85,.45) 62%);color:inherit}
   .cz-rich mark.mk-y,.cz-rtb mark.mk-y{background:linear-gradient(transparent 62%,#FFDF66 62%);color:inherit}
@@ -1062,24 +1073,24 @@ const initial = { page, theme, settings, subPages };
   .cz-imgs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:9px}
   .cz-imgs-cell{display:flex;flex-direction:column;gap:5px}
   .cz-imgs-thumb{position:relative;aspect-ratio:4/3;border-radius:9px;background:#EDF1EE center/cover no-repeat;border:1.5px solid #E0E6E2}
-  .cz-imgs-x{position:absolute;top:4px;right:4px;border:none;background:rgba(15,22,19,.75);color:#fff;border-radius:6px;width:20px;height:20px;font-size:10px;cursor:pointer}
+  .cz-imgs-x{position:absolute;top:4px;right:4px;border:none;background:rgba(15,22,19,.75);color:#fff;border-radius:6px;width:20px;height:20px;font-size:calc(10px * var(--fs,1));cursor:pointer}
   .cz-imgs-x:hover{background:#D64541}
-  .cz-imgs-cell input{font-family:inherit;font-size:11px;padding:6px 8px;border:1.5px solid #E0E6E2;border-radius:7px;outline:none}
-  .cz-imgthumb{width:86px;height:64px;border-radius:10px;background:#EDF1EE center/cover no-repeat;border:1.5px solid #E0E6E2;display:grid;place-items:center;font-size:10.5px;color:#8B978F;font-weight:700}
+  .cz-imgs-cell input{font-family:inherit;font-size:calc(11px * var(--fs,1));padding:6px 8px;border:1.5px solid #E0E6E2;border-radius:7px;outline:none}
+  .cz-imgthumb{width:86px;height:64px;border-radius:10px;background:#EDF1EE center/cover no-repeat;border:1.5px solid #E0E6E2;display:grid;place-items:center;font-size:calc(10.5px * var(--fs,1));color:#8B978F;font-weight:700}
   .cz-imgbtns{display:flex;flex-direction:column;gap:6px}
 
   /* デザインタブ */
   .cz-group-static{background:#fff;border:1px solid #E4EAE6;border-radius:14px;margin-bottom:12px;padding-top:14px}
-  .cz-group-static h3{font-size:13.5px;font-weight:900;padding:0 16px 10px}
-  .cz-css{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;line-height:1.7}
-  .cz-hint{font-weight:500;font-size:11.5px;color:#5F6E66;line-height:1.7}
-  .cz-note{padding:10px 6px;font-size:11.5px;color:#5F6E66;line-height:1.7}
+  .cz-group-static h3{font-size:calc(13.5px * var(--fs,1));font-weight:900;padding:0 16px 10px}
+  .cz-css{font-family:ui-monospace,Menlo,monospace;font-size:calc(12.5px * var(--fs,1));line-height:1.7}
+  .cz-hint{font-weight:500;font-size:calc(11.5px * var(--fs,1));color:#5F6E66;line-height:1.7}
+  .cz-note{padding:10px 6px;font-size:calc(11.5px * var(--fs,1));color:#5F6E66;line-height:1.7}
   .cz-note a{color:#04A245;font-weight:700}
 
   /* ステージ */
   .cz-stage{flex:1;display:flex;flex-direction:column;min-width:0}
   .cz-devices{display:flex;gap:8px;justify-content:center;padding:12px}
-  .cz-dev{border:1px solid #D5DDd7;background:#fff;border-radius:999px;font-size:12px;font-weight:700;padding:8px 18px;cursor:pointer;color:#5F6E66;font-family:inherit}
+  .cz-dev{border:1px solid #D5DDd7;background:#fff;border-radius:999px;font-size:calc(12px * var(--fs,1));font-weight:700;padding:8px 18px;cursor:pointer;color:#5F6E66;font-family:inherit}
   .cz-dev.is-active{background:#0F1613;color:#fff;border-color:#0F1613}
   .cz-frame-wrap{flex:1;display:flex;justify-content:center;overflow:hidden;padding:0 14px 14px}
   #czFrame{width:100%;height:100%;border:none;border-radius:14px;background:#fff;box-shadow:0 10px 30px rgba(13,43,31,.12);transition:width .3s ease;max-width:100%}
@@ -1088,20 +1099,20 @@ const initial = { page, theme, settings, subPages };
   .cz-modal{position:fixed;inset:0;background:rgba(15,22,19,.55);display:grid;place-items:center;z-index:50}
   .cz-modal[hidden]{display:none}
   .cz-modal-card{background:#fff;border-radius:18px;padding:28px;width:min(440px,92vw);display:flex;flex-direction:column;gap:13px;max-height:86vh;overflow-y:auto}
-  .cz-modal-card h2{font-size:16.5px;font-weight:900}
-  .cz-modal-card p{font-size:12.5px;color:#5F6E66;line-height:1.7}
-  .cz-modal-card input[type="password"]{font-family:inherit;font-size:13px;padding:12px;border:1.5px solid #E0E6E2;border-radius:10px;outline:none}
+  .cz-modal-card h2{font-size:calc(16.5px * var(--fs,1));font-weight:900}
+  .cz-modal-card p{font-size:calc(12.5px * var(--fs,1));color:#5F6E66;line-height:1.7}
+  .cz-modal-card input[type="password"]{font-family:inherit;font-size:calc(13px * var(--fs,1));padding:12px;border:1.5px solid #E0E6E2;border-radius:10px;outline:none}
   .cz-modal-actions{display:flex;justify-content:flex-end;gap:10px}
   .cz-picker{width:min(620px,94vw)}
   .cz-picker-head{display:flex;justify-content:space-between;align-items:center}
-  .cz-x{border:none;background:#EDF1EE;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:13px}
-  .cz-picker-cat{font-weight:900;font-size:12.5px;color:#5F6E66;margin-top:6px}
+  .cz-x{border:none;background:#EDF1EE;border-radius:8px;width:30px;height:30px;cursor:pointer;font-size:calc(13px * var(--fs,1))}
+  .cz-picker-cat{font-weight:900;font-size:calc(12.5px * var(--fs,1));color:#5F6E66;margin-top:6px}
   .cz-picker-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}
   .cz-tile{border:1.5px solid #E4EAE6;background:#fff;border-radius:12px;padding:13px 11px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;gap:3px;text-align:left}
   .cz-tile:hover{border-color:#06C755;background:#F0FAF4}
-  .cz-tile-ico{font-size:19px}
-  .cz-tile-name{font-weight:900;font-size:12.5px;color:#17211B}
-  .cz-tile-desc{font-size:10.5px;color:#8B978F;line-height:1.5}
+  .cz-tile-ico{font-size:calc(19px * var(--fs,1))}
+  .cz-tile-name{font-weight:900;font-size:calc(12.5px * var(--fs,1));color:#17211B}
+  .cz-tile-desc{font-size:calc(10.5px * var(--fs,1));color:#8B978F;line-height:1.5}
   @media (max-width:980px){.cz-panel{width:320px}.cz-tabs{display:none}}
 </style>
 </body>

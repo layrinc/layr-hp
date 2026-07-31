@@ -1,0 +1,268 @@
+/* ===== layer 04: typography & numerals（タイポ＆数値レイヤー / style.css の後ろに連結） ===== */
+
+/* ------------------------------------------------------------
+   1. 数字の格を上げる（等幅数字＋英字フォント＋やや詰める）
+   ------------------------------------------------------------ */
+.stat-num,
+.price-num,
+.case-metric .after,
+.case-metric .before,
+.hero2-points .val,
+.float-chip strong,
+.reason-num,
+.blk-step-num,
+.column-meta time,
+.article-meta time{
+  font-variant-numeric:tabular-nums lining-nums;
+  font-feature-settings:"tnum" 1,"lnum" 1;
+}
+
+/* 大きな数字は英字フォントで堂々と。単位は小さく、ベースラインを合わせる */
+.stat-num,
+.price-num,
+.case-metric .after{
+  font-family:var(--font-en);
+  letter-spacing:-.02em;
+  font-variant-numeric:tabular-nums lining-nums;
+  white-space:nowrap;
+}
+.stat-num{min-height:1.05em}
+.stat-num small,
+.case-metric .after small{
+  display:inline-block;
+  font-family:var(--font-jp);
+  letter-spacing:.02em;
+  margin-left:.16em;
+  vertical-align:baseline;
+  transform:translateY(-.02em);
+}
+.stat-num small{font-size:calc(18px * var(--fs,1))}
+.case-metric .after small{font-size:calc(14.5px * var(--fs,1))}
+.stat-num .up{
+  font-size:calc(15px * var(--fs,1));
+  margin-right:.2em;
+  vertical-align:.12em;
+  letter-spacing:0;
+}
+.case-metric .before{letter-spacing:.01em;opacity:.85}
+.case-metric .arrow{font-family:var(--font-en);letter-spacing:0;opacity:.9}
+
+/* ヒーローの数値ポイント */
+.hero2-points .val{
+  font-family:var(--font-en);
+  letter-spacing:.005em;
+  font-variant-numeric:tabular-nums lining-nums;
+}
+.hero2-points .label{font-feature-settings:"palt" 1;letter-spacing:.08em}
+.float-chip strong{font-family:var(--font-en);letter-spacing:-.01em}
+
+/* 丸数字（理由 / STEP）＝英字フォントで揃える */
+.reason-num,.blk-step-num{letter-spacing:.01em;font-variant-numeric:lining-nums}
+
+/* カウントアップ中も幅が揺れない */
+.is-counting,
+[data-count],
+[data-countup]{
+  font-variant-numeric:tabular-nums lining-nums;
+  font-feature-settings:"tnum" 1,"lnum" 1;
+  white-space:nowrap;
+}
+.stat-num.is-counting,
+.price-num.is-counting{display:inline-block;min-width:2ch;text-align:center}
+
+/* ------------------------------------------------------------
+   2. 料金カードの金額組み（桁が揃って読みやすい）
+   ------------------------------------------------------------ */
+.price-amount{
+  gap:.12em;
+  flex-wrap:wrap;
+  align-items:baseline;
+  justify-content:center;
+}
+.price-num{font-variant-numeric:tabular-nums lining-nums}
+.price-amount small{
+  display:inline-block;
+  font-family:var(--font-jp);
+  letter-spacing:.03em;
+  transform:translateY(-.04em);
+}
+.price-name{letter-spacing:-.005em}
+.price-tag,.stat-tag,.case-tag,.column-cat{font-feature-settings:"palt" 1;letter-spacing:.04em}
+.price-note,.price-foot{
+  max-width:42em;margin-inline:auto;line-height:1.95;
+}
+.price-list li{letter-spacing:-.005em;font-feature-settings:"palt" 1}
+
+/* ------------------------------------------------------------
+   3. 英字ラベル（.sec-en）＝左右に細い罫線を添える
+   ------------------------------------------------------------ */
+.sec-en{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:.95em;
+  letter-spacing:.28em;
+  font-variant-numeric:lining-nums;
+}
+.sec-en::before,
+.sec-en::after{
+  content:"";
+  flex:0 1 28px;
+  min-width:12px;
+  height:1px;
+  background:currentColor;
+  opacity:.4;
+  pointer-events:none;
+}
+.sec-en::after{margin-left:-.28em}   /* 字送りの余白ぶんを戻して光学的に中央へ */
+.sec-head.is-center .sec-en,
+.page-hero .sec-en,
+.cta-final .sec-en{justify-content:center}
+.cta-final .sec-en::before,
+.cta-final .sec-en::after{opacity:.55}
+
+/* 実績ブロックの擬似ラベル "NUMBERS" も字送りぶんを補正 */
+.stats-title::before{letter-spacing:.28em;text-indent:.28em}
+
+/* その他の英字ラベル */
+.service-num,.column-card .more,.blk-card-body .more,
+.article-share-label,.footer h4,.case-graph .bar::after{
+  font-variant-numeric:lining-nums;
+}
+.service-num{letter-spacing:.2em;text-indent:.2em}
+
+/* ------------------------------------------------------------
+   4. 日本語見出しの詰め（palt ＋ わずかなマイナス字送り）
+   ------------------------------------------------------------ */
+.sec-jp,
+.stats-title,
+.hero2-title,
+.hero h1,
+.cta-band h2,
+.cta-final h2,
+.problem-answer strong,
+.promise-close,
+.doc-title,
+.pp-title,
+.blk-h,
+.blk-step-title,
+.blk-media-title,
+.service-card h3,
+.reason-card h3,
+.promise-box h3,
+.case-head h3,
+.column-card h3,
+.post-item h2,
+.faq-item summary,
+.article h1,.article h2,.article h3{
+  font-feature-settings:"palt" 1;
+  letter-spacing:-.01em;
+}
+.sec-jp{text-wrap:balance}
+.hero2-title{letter-spacing:-.012em}
+.cta-band h2,.cta-final h2{letter-spacing:-.008em}
+.stats-title,.promise-close,.problem-answer strong{text-wrap:balance}
+
+/* 小見出し・カードタイトルは詰めすぎない */
+.service-card h3,.reason-card h3,.case-head h3,.column-card h3,
+.post-item h2,.blk-card-body h3,.faq-item summary{letter-spacing:-.005em}
+
+/* ------------------------------------------------------------
+   5. マーカー・強調の質を上げる
+   ------------------------------------------------------------ */
+.marker,
+mark.mk-g,
+mark.mk-y{
+  background-repeat:no-repeat;
+  background-position:0 90%;
+  background-size:100% .34em;
+  padding:0 .1em;
+  border-radius:1px;
+}
+.marker{
+  background-image:linear-gradient(
+    to top,
+    var(--marker-ink) 0%,
+    color-mix(in srgb, var(--marker-ink) 48%, transparent) 100%
+  );
+}
+mark.mk-g{
+  background-image:linear-gradient(
+    to top,
+    var(--marker-ink) 0%,
+    color-mix(in srgb, var(--marker-ink) 48%, transparent) 100%
+  );
+}
+mark.mk-y{
+  background-image:linear-gradient(
+    to top,
+    var(--mark-y) 0%,
+    color-mix(in srgb, var(--mark-y) 48%, transparent) 100%
+  );
+}
+/* 大見出しの中では太さと位置を上げ、文字幅に沿わせる */
+.hero2-title .marker{
+  background-size:100% .3em;
+  background-position:0 88%;
+  padding:0 .12em;
+}
+.stats-title .marker,
+.problem-answer strong .marker,
+.promise-close .marker{
+  background-size:100% .32em;
+  background-position:0 89%;
+}
+
+/* 強調 */
+strong{letter-spacing:.005em}
+.blk-rich strong,.article strong,.problem-answer p strong{
+  font-weight:700;color:var(--black);
+}
+.hero2-sub strong,.article .point strong{letter-spacing:.01em}
+.tc-g,.tc-r{letter-spacing:.005em}
+
+/* 引用 */
+.blk-quote{font-feature-settings:"palt" 1;letter-spacing:-.003em}
+.blk-quote cite{font-family:var(--font-en);letter-spacing:.06em;font-size:calc(12px * var(--fs,1))}
+
+/* ------------------------------------------------------------
+   6. 本文の行長と行間（読みやすい 42em / 1.95〜2.05）
+   ------------------------------------------------------------ */
+.sec-lead{max-width:42em;margin-inline:auto;line-height:2;text-wrap:pretty}
+.hero2-sub{max-width:min(40em,100%);line-height:2;text-wrap:pretty}
+.hero-sub{max-width:42em;line-height:2}
+.problem-answer p{max-width:42em;margin-inline:auto;line-height:2.02}
+.service-card > p,
+.reason-card p,
+.case-row dd,
+.faq-item .a p,
+.blk-step-body,
+.blk-media-body,
+.blk-ico-inner,
+.blk-col{max-width:42em;line-height:1.95}
+.message-body p{max-width:42em;line-height:2.05}
+.service-note,.column-card p,.blk-card-body p{max-width:42em;margin-inline:auto;line-height:1.95}
+.blk-text,.article p{max-width:42em;line-height:2.02}
+.blk-text.is-center,.blk-text:not(.is-center){margin-inline:auto}
+.cta-final p{max-width:34em;margin-inline:auto;line-height:2}
+.cta-band p{max-width:42em;line-height:1.9}
+.promise-box li div span{line-height:1.9}
+.company-table td{font-feature-settings:"palt" 1;line-height:1.9}
+.footer-tagline{max-width:34em;line-height:1.95}
+
+/* ------------------------------------------------------------
+   7. 小さい画面での微調整
+   ------------------------------------------------------------ */
+@media (max-width:640px){
+  .sec-en{gap:.7em;letter-spacing:.22em}
+  .sec-en::before,.sec-en::after{flex:0 1 18px}
+  .sec-en::after{margin-left:-.22em}
+  .stats-title::before{letter-spacing:.22em;text-indent:.22em}
+  .stat-num small{font-size:calc(16px * var(--fs,1))}
+  .hero2-title{letter-spacing:-.008em}
+  .cta-band p,.cta-final p{margin-inline:auto}
+}
+@media (max-width:390px){
+  .sec-en::before,.sec-en::after{flex:0 1 12px}
+  .price-amount{gap:.08em}
+}

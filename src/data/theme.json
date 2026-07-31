@@ -1,8 +1,8 @@
 {
-  "accent": "#67ad38",
-  "accent_dark": "#328721",
-  "base_black": "#0F1613",
-  "bg_tint": "#EEF1ED",
+  "accent": "#0F9E96",
+  "accent_dark": "#0A736D",
+  "base_black": "#0E1A1C",
+  "bg_tint": "#F2F6F6",
   "radius": 28,
   "font_en": "Poppins",
   "show_watermark": false,
