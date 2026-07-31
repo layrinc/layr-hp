@@ -1901,3 +1901,388 @@ section + .blk-sec:has(> .container > .sec-head){padding-top:var(--sec-pad)}
   .blk-illust.is-iso.is-l svg{max-width:min(320px, 100%)}
   .blk-illust.is-iso.is-m svg{max-width:min(280px, 100%)}
 }
+
+/* ============================================================
+   v9 追加レイヤー：モック public/_alt/v4-zigzag.html の意匠へ寄せる
+   ------------------------------------------------------------
+   方針
+   - 中央揃えをやめ、「1px罫線つきの英字eyebrow ＋ 左揃えの日本語見出し」へ統一
+   - 競合と酷似する意匠（マーキー帯 / 黒ピル / 巨大アウトライン英字 /
+     円形バッジ / 中央の巨大見出し＋マーカー下線）は無効化する
+   - ジグザグ2カラム（.zz）と波形の区切り（.zz-wave）を新設
+   - 配色はティール / フレッシュグリーン / 白グレー / ダークの4系統のみ
+   ※ font-size は必ず calc(値 * var(--fs,1))。色は --green / --green-dark 経由。
+   ============================================================ */
+
+:root{
+  /* 極薄ティール（モックの --tint 相当）。テーマ変更に追従させる */
+  --zz-tint:color-mix(in srgb, var(--green) 8%, #FFFFFF);
+  --zz-ink-2:#2E4247;
+  --zz-ink-3:#5F7378;
+  --zz-line:#C7D5D7;
+  --zz-maxw:1180px;
+  /* モック .sec の padding（上 clamp(84,9vw,124) / 下 clamp(120,13vw,186)）に寄せる。
+     下は波の高さ(最大108px)ぶんの逃げを含む。 */
+  --zz-pad-t:clamp(66px, 8vw, 116px);
+  --zz-pad-b:clamp(100px, 12vw, 176px);
+}
+
+/* ------------------------------------------------------------
+   v9-0. 禁止パターンの無効化（JSONからも外すが、CSSでも封じる）
+   ------------------------------------------------------------ */
+/* 巨大アウトライン英字ウォーターマーク */
+.sec-wm{display:none}
+.stats > .container::before,
+.problem .sec-head::before,
+#service .sec-head::before,
+.reason .sec-head::before,
+#case .sec-head::before,
+#column .sec-head::before,
+.promise .sec-head::before,
+.message .sec-head::before,
+.faq .sec-head::before,
+.company .sec-head::before{content:none;display:none}
+/* 緑のマーキー帯 */
+.mq{display:none}
+/* 円形の実績バッジ */
+.hero2-badge{display:none}
+
+/* ------------------------------------------------------------
+   v9-1. eyebrow：黒ピル → 1px罫線つきの英字小ラベル
+   ------------------------------------------------------------ */
+.sec-pill,.sec-en,.stats-title::before{
+  display:block;width:fit-content;
+  background:none;color:var(--green-dark);
+  border-radius:0;
+  border-left:1px solid var(--zz-line);
+  padding:2px 0 2px 14px;
+  margin-bottom:16px;
+  font-family:var(--font-en);
+  font-size:calc(12.5px * var(--fs,1));
+  font-weight:600;
+  letter-spacing:.2em;
+  line-height:1.5;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+/* 下層ページの .page-hero は中央揃えのまま。
+   v9-1 の width:fit-content で英字ラベルだけ左に寄ってしまうのを戻す。 */
+.page-hero .sec-en,.page-hero .sec-pill{
+  margin-left:auto;margin-right:auto;
+  border-left:0;padding-left:0;
+}
+
+/* ------------------------------------------------------------
+   v9-2. セクション見出し：左揃え・緑の下線を廃止
+   ------------------------------------------------------------ */
+.sec-head,.sec-head.is-center{text-align:left}
+.sec-head .sec-jp{padding-bottom:0}
+.sec-head .sec-jp::after,
+.sec-head.is-center .sec-jp::after,
+.stats-title::after{display:none;content:none}
+.sec-head.is-center .sec-pill,
+.sec-head.is-center .sec-en{margin-left:0;margin-right:0}
+.sec-head.is-center .sec-lead{margin-left:0;margin-right:0}
+.sec-jp,.stats-title{
+  font-weight:700;
+  letter-spacing:-.01em;
+  line-height:1.42;
+}
+.sec-lead{margin:20px 0 0;max-width:46em;color:var(--zz-ink-2);line-height:2.1}
+/* 中央の巨大見出し＋マーカー下線をやめ、キーワードはティール文字色で立てる */
+.sec-jp .marker,.stats-title .marker{background:none;color:var(--green);padding:0}
+
+/* ============================================================
+   v9-3. ジグザグ2カラム（.zz）
+   Block.astro の zigzag ブロックが吐く構造:
+     section.zz[.is-tint]
+       > .zz-wave（波形。あるときだけ・上端に絶対配置）
+       > .container.zz-row.is-left|.is-right
+           > .zz-txt（.zz-eyebrow / .zz-title / .zz-lead / .zz-points / .zz-btn）
+           > .zz-fig（> .zz-blob + アイソメ3D SVG）
+   ============================================================ */
+.zz{
+  position:relative;
+  overflow:hidden;                      /* 波形とブロブのはみ出しを封じる */
+  background:var(--paper);
+  padding:var(--zz-pad-t) 0 var(--zz-pad-b);
+}
+.zz.is-tint{background:var(--zz-tint)}
+
+/* ---- 波形の区切り（セクション上端）---- */
+/* 波形は「曲線より上」を塗って閉じている（Block.astro の L1440,0 L0,0 Z）。
+   その塗り＝ひとつ前のセクションの背景色なので、
+   自分がティールなら直前は白、自分が白なら直前はティール、と反転させる。 */
+.zz > .zz-wave{
+  position:absolute;
+  left:0;right:0;top:-1px;
+  z-index:0;
+  height:clamp(44px, 7vw, 108px);
+  line-height:0;
+  pointer-events:none;
+  color:var(--zz-tint);
+}
+.zz.is-tint > .zz-wave{color:var(--paper)}
+.zz > .zz-wave svg{display:block;width:100%;height:100%}
+/* ティール面の下端 → 次の白面へ抜ける波（曲線より下を塗って閉じている） */
+.zz > .zz-wave--b{top:auto;bottom:-1px;color:var(--paper)}
+
+/* ---- 2カラム。is-right でイラストを左へ入れ替える ---- */
+.zz-row{
+  position:relative;z-index:1;
+  max-width:var(--zz-maxw);
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  align-items:center;
+  gap:clamp(30px, 5vw, 88px);
+}
+.zz-row.is-left  > .zz-txt{order:1}
+.zz-row.is-left  > .zz-fig{order:2}
+.zz-row.is-right > .zz-fig{order:1}
+.zz-row.is-right > .zz-txt{order:2}
+.zz-row.is-right > .zz-txt{margin-left:auto}
+
+/* ---- テキスト側 ---- */
+.zz-txt{max-width:560px;min-width:0}
+.zz-eyebrow{
+  display:flex;align-items:center;gap:12px;
+  margin:0 0 20px;line-height:1;
+}
+.zz-eyebrow i{
+  display:block;width:1px;height:26px;flex:0 0 auto;
+  background:var(--zz-line);
+}
+.zz-eyebrow span{
+  font-family:var(--font-en);
+  font-size:calc(12.5px * var(--fs,1));
+  font-weight:600;letter-spacing:.2em;line-height:1.5;
+  color:var(--green-dark);
+  text-transform:uppercase;
+}
+.zz-title{
+  margin:0 0 22px;
+  font-size:calc(clamp(25px, 3.3vw, 42px) * var(--fs,1));
+  font-weight:700;line-height:1.42;letter-spacing:-.01em;
+  color:var(--black);
+}
+/* 強調はマーカーではなくティール文字色（モックの h2 em と同じ） */
+.zz-title .marker,.zz-title mark.mk-g,.zz-title mark.mk-y{background:none;color:var(--green);padding:0}
+.zz-title .tc-g,.zz-title em{font-style:normal;color:var(--green);font-weight:700}
+/* モックの h2 em と同じく、強調語は途中で折り返さない。
+   はみ出しは .zz の overflow:hidden が受けるので横スクロールにはならない。 */
+.zz-title em,.zz-title .marker,.zz-title .tc-g{white-space:nowrap}
+.zz-lead{
+  margin:0 0 30px;
+  font-size:calc(15.5px * var(--fs,1));
+  color:var(--zz-ink-2);line-height:2.15;
+}
+.zz-lead > *:last-child{margin-bottom:0}
+
+/* ---- 要点リスト（上下1px罫線のみ・カードにしない）---- */
+.zz-points{display:grid;gap:0;margin:0;padding:0;list-style:none}
+.zz-points li{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:13px 0;
+  border-top:1px solid color-mix(in srgb, var(--black) 10%, transparent);
+  font-size:calc(15px * var(--fs,1));
+  line-height:1.85;
+}
+.zz-points li:last-child{border-bottom:1px solid color-mix(in srgb, var(--black) 10%, transparent)}
+.zz-points li svg{width:17px;height:17px;flex:0 0 auto;margin-top:7px}
+
+/* ---- CTA は1つ。矢印つきの塗りボタン（.btn の擬似矢印は殺す）---- */
+.zz-btn{margin-top:34px}
+.zz-points + .zz-btn{margin-top:32px}
+.zz-btn::after{content:none;display:none}
+.zz-btn .zz-ar{width:18px;height:10px;flex:0 0 auto}
+
+/* ---- 図版：アイソメ3D＋背後の淡いブロブ ---- */
+.zz-fig{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  min-width:0;
+  padding:clamp(10px, 2vw, 26px);
+}
+.zz-blob{
+  position:absolute;z-index:0;
+  width:88%;max-width:100%;aspect-ratio:1 / .94;
+  pointer-events:none;
+  background:radial-gradient(58% 58% at 42% 38%,
+    color-mix(in srgb, var(--green) 26%, transparent),
+    color-mix(in srgb, var(--green) 10%, transparent) 56%,
+    transparent 76%);
+  border-radius:58% 42% 47% 53% / 44% 51% 49% 56%;
+}
+/* 逆側の段はブロブの形と色味を振って、繰り返しに見せない */
+.zz-row.is-right .zz-blob{
+  background:radial-gradient(58% 58% at 56% 40%,
+    color-mix(in srgb, var(--iso-green) 24%, transparent),
+    color-mix(in srgb, var(--iso-green) 9%, transparent) 56%,
+    transparent 76%);
+  border-radius:44% 56% 60% 40% / 56% 44% 56% 44%;
+}
+.zz-fig > svg{
+  position:relative;z-index:1;
+  display:block;
+  width:100%;max-width:min(520px, 100%);height:auto;
+}
+
+/* ============================================================
+   v9-4. ヒーロー（.hero2）をモックV4のヒーローへ
+   左＝左揃えテキスト（罫線つき英字eyebrow＋キーワードだけティール）
+   右＝アイソメ3Dイラスト＋ブロブ／CTAは1つ
+   ============================================================ */
+.hero2{
+  overflow:hidden;
+  background:var(--paper);
+  border-bottom:0;
+  padding:clamp(60px, 8vw, 116px) 0 clamp(72px, 9vw, 124px);
+}
+.hero2::after{content:none;display:none}
+
+.hero2-inner{text-align:left}
+/* イラストがある時だけ2カラム。テキスト系は1列目、図版は全行にまたがる2列目 */
+.hero2-inner:has(.hero2-fig){
+  display:grid;
+  grid-template-columns:minmax(0, 1.12fr) minmax(0, .88fr);
+  column-gap:clamp(24px, 4vw, 64px);
+  align-items:center;
+}
+.hero2-inner:has(.hero2-fig) > *{grid-column:1}
+/* 行は暗黙生成なので grid-row:1/-1 は 1行しか張れない。
+   テキスト側の行数より十分多い span を指定して、図版を全行にまたがらせる。
+   余った行は中身がないので高さ0のまま。 */
+.hero2-inner:has(.hero2-fig) > .hero2-fig{
+  grid-column:2;grid-row:1 / span 10;align-self:center;
+}
+
+.hero2-eyebrow{
+  display:flex;align-items:center;gap:12px;
+  width:fit-content;
+  margin-bottom:26px;padding:0;
+  background:none;border:0;border-radius:0;box-shadow:none;
+  color:var(--green-dark);
+  font-family:var(--font-en);
+  font-size:calc(12.5px * var(--fs,1));
+  font-weight:600;letter-spacing:.22em;line-height:1;
+}
+.hero2-eyebrow::before{
+  content:"";display:block;flex:0 0 auto;
+  width:34px;height:1px;background:var(--green);
+}
+.hero2-title{
+  font-weight:700;line-height:1.32;letter-spacing:-.02em;
+  max-width:14em;
+}
+/* マーカー下線をやめ、キーワードだけティール文字色 */
+.hero2-title .marker{background:none;color:var(--green);padding:0}
+.hero2-sub{
+  margin:26px 0 0;max-width:30em;
+  color:var(--zz-ink-2);line-height:2.1;
+}
+.hero2-sub strong{color:var(--green-dark)}
+.hero2-actions{margin-top:34px;justify-content:flex-start;gap:18px}
+/* CTAは1つに寄せる。2つ目が残っていても塗りボタンを並べず、静かなリンクに落とす */
+.hero2-actions .btn-black{
+  background:none;color:var(--green-dark);
+  box-shadow:none;padding-left:0;padding-right:0;
+}
+.hero2-actions .btn-black:hover{
+  background:none;transform:none;box-shadow:none;
+  color:var(--black);
+}
+
+/* ---- ヒーローの図版＋ブロブ ---- */
+.hero2-fig{
+  position:relative;
+  display:flex;align-items:center;justify-content:center;
+  min-width:0;
+  padding:clamp(8px, 1.6vw, 22px);
+}
+.hero2-blob{
+  position:absolute;z-index:0;
+  width:92%;max-width:100%;aspect-ratio:1 / .94;
+  pointer-events:none;
+  background:radial-gradient(58% 58% at 42% 38%,
+    color-mix(in srgb, var(--green) 26%, transparent),
+    color-mix(in srgb, var(--green) 10%, transparent) 56%,
+    transparent 76%);
+  border-radius:58% 42% 47% 53% / 44% 51% 49% 56%;
+}
+.hero2-fig > svg{
+  position:relative;z-index:1;
+  display:block;
+  width:100%;max-width:min(580px, 100%);height:auto;
+}
+
+/* ---- ヒーロー下の実績値：白カード3枚をやめ、罫線の並びへ ---- */
+.hero2-points{
+  margin:44px 0 0;max-width:none;
+  grid-template-columns:repeat(auto-fit, minmax(180px, 1fr));
+  gap:0 clamp(24px, 4vw, 54px);
+}
+.hero2-points li{
+  background:none;border:0;border-top:1px solid var(--zz-line);
+  border-radius:0;box-shadow:none;
+  padding:16px 0 0;text-align:left;
+}
+/* イラストがある時は左カラム内に収まるので、3列を明示して詰める */
+.hero2-inner:has(.hero2-fig) .hero2-points{
+  grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:0 clamp(14px, 2vw, 30px);
+}
+.hero2-points .label{color:var(--green-dark);letter-spacing:.14em;font-weight:600}
+
+/* ============================================================
+   v9-5. レスポンシブ
+   980px以下でジグザグを解除し、「イラスト → テキスト」の縦積みへ統一
+   ============================================================ */
+@media (max-width:980px){
+  .zz{padding:clamp(50px, 8vw, 78px) 0 clamp(60px, 10vw, 96px)}
+  .zz-row,
+  .zz-row.is-left,
+  .zz-row.is-right{
+    grid-template-columns:1fr;
+    gap:clamp(24px, 5vw, 38px);
+  }
+  /* 左右どちらの段でも、イラストが先・テキストが後 */
+  .zz-row.is-left  > .zz-fig,
+  .zz-row.is-right > .zz-fig{order:1}
+  .zz-row.is-left  > .zz-txt,
+  .zz-row.is-right > .zz-txt{order:2;max-width:none;margin-left:0}
+  .zz-fig > svg{max-width:min(400px, 100%)}
+  .zz-blob{width:76%}
+
+  /* ヒーローも縦積み。イラストを先頭へ */
+  .hero2-inner:has(.hero2-fig){display:block}
+  .hero2-inner:has(.hero2-fig) > .hero2-fig{margin:30px auto 0}
+  .hero2-title{max-width:none}
+  .hero2-fig > svg{max-width:min(420px, 100%)}
+  .hero2-blob{width:78%}
+}
+
+@media (max-width:640px){
+  .zz > .zz-wave{height:clamp(34px, 9vw, 56px)}
+  .zz-title{margin-bottom:18px}
+  .zz-lead{margin-bottom:24px}
+  .zz-fig{padding:0}
+  .zz-fig > svg{max-width:min(340px, 100%)}
+  .zz-btn{width:100%;justify-content:center}
+  .hero2-fig{padding:0}
+  .hero2-fig > svg{max-width:min(340px, 100%)}
+  .hero2-actions{flex-direction:column;align-items:stretch;gap:12px}
+  .hero2-actions .btn{justify-content:center}
+  .hero2-actions .btn-black{justify-content:flex-start}
+  .hero2-points{margin-top:34px}
+}
+
+@media (max-width:390px){
+  .zz-fig > svg,
+  .hero2-fig > svg{max-width:min(290px, 100%)}
+  .zz-points li{gap:11px}
+  .sec-pill,.sec-en,.stats-title::before{letter-spacing:.16em;padding-left:12px}
+}
+
+@media (prefers-reduced-motion:reduce){
+  .zz-blob,.hero2-blob{animation:none}
+}

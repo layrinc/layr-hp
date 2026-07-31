@@ -100,6 +100,15 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
     const secHead = (p, lead) => (!p.en && !p.title_jp) ? '' : `<div class="sec-head reveal"><p class="sec-en">${esc(p.en)}</p><h2 class="sec-jp">${esc(p.title_jp)}</h2>${lead ? `<p class="sec-lead">${esc(lead)}</p>` : ''}</div>`;
     const fmtD = (isoStr) => isoStr.replace(/-/g, '.').replace(/\.(\d)\./, '.0$1.');
 
+    // ===== zigzag 用パーツ（Block.astro と同一） =====
+    const ZZ_WAVE = {
+      a: 'M0,46 C170,102 330,6 560,32 C782,57 902,106 1122,86 C1272,72 1362,36 1440,18',
+      b: 'M0,18 C150,58 300,100 528,90 C752,80 884,18 1084,26 C1244,32 1352,70 1440,94',
+    };
+    const zzWave = (tint) => (tint ? ZZ_WAVE.a : ZZ_WAVE.b);
+    const zzCheck = '<svg viewBox="0 0 17 17" aria-hidden="true"><circle cx="8.5" cy="8.5" r="8.5" fill="rgba(15,158,150,.12)"/><path d="M4.6 8.7l2.6 2.6 5.2-5.6" stroke="#0F9E96" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const zzArrow = '<svg class="zz-ar" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h15M11 1l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
     const R = {
       hero(p) {
         const vis = document.createElement('div');
@@ -252,6 +261,26 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
       },
       spacer(p) {
         return `<div class="blk-spacer is-${p.size || 'm'}" aria-hidden="true"></div>`;
+      },
+      // ジグザグ2カラム（本番 Block.astro の t === 'zigzag' と同一構造）
+      zigzag(p) {
+        const d = zzWave(p.tint);
+        const wave = p.wave
+          ? `<div class="zz-wave" aria-hidden="true"><svg viewBox="0 0 1440 120" preserveAspectRatio="none" focusable="false"><path d="${d} L1440,0 L0,0 Z" fill="currentColor"/><path d="${d}" fill="none" stroke="rgba(15,158,150,.30)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></div>`
+          : '';
+        const eyebrow = p.eyebrow ? `<p class="zz-eyebrow"><i></i><span>${esc(p.eyebrow)}</span></p>` : '';
+        const title = p.title ? `<h2 class="zz-title">${rich(p.title)}</h2>` : '';
+        const lead = p.lead ? `<div class="zz-lead blk-rich">${rich(p.lead)}</div>` : '';
+        const pts = (p.points || []).length
+          ? `<ul class="zz-points">${p.points.map((it) => `<li>${zzCheck}<span>${rich(it)}</span></li>`).join('')}</ul>`
+          : '';
+        const btn = p.btn_label
+          ? `<a class="btn btn-green zz-btn" href="${p.btn_url === 'consult' ? consult : p.btn_url === 'contact' ? contact : esc(p.btn_url || '#')}">${esc(p.btn_label)}${zzArrow}</a>`
+          : '';
+        const fig = (p.iso && ISO[p.iso])
+          ? `<div class="zz-fig" aria-hidden="true"><span class="zz-blob"></span>${ISO[p.iso]}</div>`
+          : '';
+        return `<section class="zz ${p.tint ? 'is-tint' : ''}">${wave}<div class="container zz-row is-${p.side === 'right' ? 'right' : 'left'}"><div class="zz-txt">${eyebrow}${title}${lead}${pts}${btn}</div>${fig}</div></section>`;
       },
     };
 
