@@ -742,3 +742,95 @@ const serviceIcons = [
     )}
   </section>
 )}
+
+{t === 'contact' && (
+  <section class="cform" id="contact">
+    <div class="container cform-wrap">
+      <div class="cform-head">
+        {p.en && <p class="zz-eyebrow cform-eyebrow"><i></i><span>{p.en}</span></p>}
+        {p.title && <h2 class="cform-title" set:html={rich(p.title)}></h2>}
+        {p.lead && <p class="cform-lead" set:html={rich(p.lead)}></p>}
+      </div>
+      <form class="cform-form" id="cfForm" action={`https://formsubmit.co/${settings.email}`} method="POST">
+        <input type="hidden" name="_subject" value="【LAYRサイト】お問い合わせ" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+        <div class="cform-grid">
+          <label>お名前 <span class="req">必須</span>
+            <input type="text" name="お名前" required placeholder="山田 太郎" autocomplete="name" />
+          </label>
+          <label>会社名・屋号
+            <input type="text" name="会社名" placeholder="株式会社◯◯（任意）" autocomplete="organization" />
+          </label>
+          <label>メールアドレス <span class="req">必須</span>
+            <input type="email" name="メールアドレス" required placeholder="you@example.com" autocomplete="email" />
+          </label>
+          <label>ご相談内容
+            <select name="ご相談内容">
+              <option>無料相談の予約（オンライン30分）</option>
+              <option>LINE公式アカウント構築について</option>
+              <option>LINEマーケティング支援（運用・改善）について</option>
+              <option>その他</option>
+            </select>
+          </label>
+        </div>
+        <label class="cform-msg">お問い合わせ内容 <span class="req">必須</span>
+          <textarea name="お問い合わせ内容" rows="6" required placeholder="現状のLINEの運用状況や、相談したいことをご記入ください。"></textarea>
+        </label>
+        <div class="cform-foot">
+          <p class="cform-note">通常1営業日以内にご返信します。この段階での売り込みは行いません。</p>
+          <button class="btn btn-green zz-btn cform-submit" type="submit" id="cfSubmit">
+            送信する
+            <svg class="zz-ar" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h15M11 1l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </button>
+        </div>
+        <p class="cform-ok" id="cfOk" hidden>✅ 送信しました。通常1営業日以内にご返信します。</p>
+        <div class="cform-fb" id="cfFb" hidden>
+          <p>送信システムに接続できませんでした。お手数ですが、下のボタンからメールでお送りください（内容は自動でセットされます）。</p>
+          <a class="btn btn-black" id="cfMailto" href="#">メールで送る</a>
+        </div>
+      </form>
+    </div>
+    <script is:inline define:vars={{ cfEmail: settings.email }}>
+      (function () {
+        const form = document.getElementById('cfForm');
+        if (!form || form.dataset.bound) return;
+        form.dataset.bound = '1';
+        const btn = document.getElementById('cfSubmit');
+        const ok = document.getElementById('cfOk');
+        const fb = document.getElementById('cfFb');
+        const ml = document.getElementById('cfMailto');
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (form.querySelector('[name="_honey"]').value) return;
+          btn.disabled = true;
+          const prev = btn.firstChild.textContent;
+          btn.firstChild.textContent = '送信中… ';
+          const data = new FormData(form);
+          const ctrl = new AbortController();
+          const timer = setTimeout(() => ctrl.abort(), 8000);
+          try {
+            const res = await fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+              method: 'POST', body: data, headers: { Accept: 'application/json' }, signal: ctrl.signal,
+            });
+            clearTimeout(timer);
+            if (!res.ok) throw new Error('http ' + res.status);
+            form.querySelectorAll('input:not([type="hidden"]), textarea').forEach((el) => { el.value = ''; });
+            ok.hidden = false; fb.hidden = true;
+            ok.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          } catch (_) {
+            clearTimeout(timer);
+            const g = (n) => String(data.get(n) || '');
+            const body = 'お名前: ' + g('お名前') + '\n会社名: ' + g('会社名') + '\nメール: ' + g('メールアドレス') + '\nご相談内容: ' + g('ご相談内容') + '\n\n' + g('お問い合わせ内容');
+            ml.href = 'mailto:' + cfEmail + '?subject=' + encodeURIComponent('【お問い合わせ】LAYRサイトより') + '&body=' + encodeURIComponent(body);
+            fb.hidden = false;
+            fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          } finally {
+            btn.disabled = false;
+            btn.firstChild.textContent = prev;
+          }
+        });
+      })();
+    </script>
+  </section>
+)}

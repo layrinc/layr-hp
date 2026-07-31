@@ -2329,3 +2329,44 @@ section + .blk-sec:has(> .container > .sec-head){padding-top:var(--sec-pad)}
   .zz-steps .zz-step::before{transform:scaleY(1)!important}
   .zz-steps .zz-step .zz-step-n{background:var(--green);border-color:var(--green);color:#fff}
 }
+
+/* ============================================================
+   v11: お問い合わせフォーム（最終セクション・ダーク地に白カード）
+   ============================================================ */
+.cform{background:var(--black);padding:clamp(84px,10vw,132px) 0;overflow:hidden}
+.cform-wrap{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:clamp(36px,6vw,84px);align-items:start;max-width:1120px}
+.cform-eyebrow{margin-bottom:18px}
+.cform .zz-eyebrow span{color:#7FD6D0}
+.cform .zz-eyebrow i{background:#7FD6D0}
+.cform-title{color:#fff;font-weight:900;font-size:calc(clamp(26px,3.4vw,40px) * var(--fs,1));line-height:1.5;letter-spacing:-.015em;margin:0 0 18px}
+.cform-title em{font-style:normal;color:#5ECBC4}
+.cform-lead{color:#B9C9CB;font-size:calc(14.5px * var(--fs,1));line-height:2;max-width:34em;margin:0}
+.cform-form{background:#fff;border-radius:calc(var(--radius) * .6);padding:clamp(24px,3.4vw,40px)}
+.cform-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 18px;margin-bottom:16px}
+.cform-form label{display:flex;flex-direction:column;gap:7px;font-weight:800;font-size:calc(12.5px * var(--fs,1));color:#3D4E50}
+.cform-form .req{display:inline-block;margin-left:6px;font-size:calc(10px * var(--fs,1));font-weight:800;color:#fff;background:var(--green);border-radius:4px;padding:1.5px 7px;vertical-align:2px}
+.cform-form label .req{align-self:flex-start;position:absolute}
+.cform-form label{position:relative}
+.cform-form label .req{left:auto;right:0;top:0}
+.cform-form input,.cform-form select,.cform-form textarea{font-family:inherit;font-size:calc(14px * var(--fs,1));padding:12px 14px;border:1.5px solid #DDE6E6;border-radius:10px;background:#FBFDFD;color:var(--text,#0E1A1C);outline:none;line-height:1.7;transition:border-color .2s,box-shadow .2s;width:100%}
+.cform-form input:focus,.cform-form select:focus,.cform-form textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px color-mix(in srgb, var(--green) 14%, transparent)}
+.cform-msg{margin-bottom:14px}
+.cform-foot{display:flex;align-items:center;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.cform-note{font-size:calc(12px * var(--fs,1));color:#6B7B7D;line-height:1.8;margin:0;max-width:26em;font-weight:500}
+.cform-submit{white-space:nowrap}
+.cform-ok{margin:16px 0 0;font-weight:800;font-size:calc(14px * var(--fs,1));color:var(--green-dark)}
+.cform-fb{margin:16px 0 0;background:#FBF6E8;border:1.5px dashed #D6B24A;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.cform-fb p{font-size:calc(12.5px * var(--fs,1));line-height:1.8;color:#7A6420;margin:0;font-weight:600}
+.cform-fb .btn{align-self:flex-start}
+@media (max-width:980px){
+  .cform-wrap{grid-template-columns:1fr;gap:34px}
+}
+@media (max-width:640px){
+  .cform-grid{grid-template-columns:1fr}
+  .cform-foot{flex-direction:column;align-items:stretch}
+  .cform-submit{width:100%;justify-content:center}
+}
+
+/* v11補correction: hidden属性を確実に効かせる／見出しの折り返し調整 */
+.cform-fb[hidden],.cform-ok[hidden]{display:none!important}
+.cform-title{font-size:calc(clamp(24px,2.7vw,34px) * var(--fs,1))}

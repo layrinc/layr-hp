@@ -263,6 +263,10 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
         return `<div class="blk-spacer is-${p.size || 'm'}" aria-hidden="true"></div>`;
       },
       // ジグザグ2カラム（本番 Block.astro の t === 'zigzag' と同一構造）
+      contact(p) {
+        const eyebrow = p.en ? `<p class="zz-eyebrow cform-eyebrow"><i></i><span>${esc(p.en)}</span></p>` : '';
+        return `<section class="cform" id="contact"><div class="container cform-wrap"><div class="cform-head">${eyebrow}${p.title ? `<h2 class="cform-title">${rich(p.title)}</h2>` : ''}${p.lead ? `<p class="cform-lead">${rich(p.lead)}</p>` : ''}</div><form class="cform-form" onsubmit="return false"><div class="cform-grid"><label>お名前 <span class="req">必須</span><input type="text" placeholder="山田 太郎" /></label><label>会社名・屋号<input type="text" placeholder="株式会社◯◯（任意）" /></label><label>メールアドレス <span class="req">必須</span><input type="email" placeholder="you@example.com" /></label><label>ご相談内容<select><option>無料相談の予約（オンライン30分）</option></select></label></div><label class="cform-msg">お問い合わせ内容 <span class="req">必須</span><textarea rows="6" placeholder="現状のLINEの運用状況や、相談したいことをご記入ください。"></textarea></label><div class="cform-foot"><p class="cform-note">通常1営業日以内にご返信します。この段階での売り込みは行いません。</p><button class="btn btn-green zz-btn cform-submit" type="button">送信する${zzArrow}</button></div></form></div></section>`;
+      },
       zigzag(p) {
         const d = zzWave(p.tint);
         const wave = p.wave

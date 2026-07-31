@@ -83,29 +83,11 @@
       }
     },
     {
-      "id": "b-zz-case",
-      "type": "zigzag",
-      "p": {
-        "side": "right",
-        "tint": false,
-        "wave": true,
-        "iso": "crowd",
-        "eyebrow": "04 ／ CASE",
-        "title": "3つの現場で、\n起きたこと。",
-        "lead": "配信設計と友だち追加導線を組み直した3件です。追う指標を1つに絞り、3ヶ月単位で検証しました。数字の内訳は下のカードに並べています。",
-        "points": [
-          "オンラインスクール ／ 属性アンケートでセグメントを分け、興味別のシナリオ配信を構築",
-          "美容サロン ／ 来店履歴に合わせたステップ配信と、失客前リマインドを設計",
-          "整体院 ／ 着地点を友だち追加に変更し、登録後のシナリオ配信で予約まで育成"
-        ]
-      }
-    },
-    {
       "id": "b-cases",
       "type": "cases",
       "p": {
-        "en": "",
-        "title_jp": "",
+        "en": "CASE",
+        "title_jp": "支援実績",
         "show_edit_note": false,
         "items": [
           {
@@ -151,11 +133,11 @@
       "id": "b-zz-feature",
       "type": "zigzag",
       "p": {
-        "side": "left",
+        "side": "right",
         "tint": true,
         "wave": true,
         "iso": "shop",
-        "eyebrow": "05 ／ FEATURE",
+        "eyebrow": "04 ／ FEATURE",
         "title": "LAYRに任せると、\n何が変わるか。",
         "lead": "構築だけを請け負って離れる会社でも、運用だけを代行する会社でもありません。作った人間がそのまま毎月回すから、設計の意図が薄まらないまま改善が積み上がります。",
         "points": [
@@ -169,11 +151,11 @@
       "id": "b-zz-flow",
       "type": "zigzag",
       "p": {
-        "side": "right",
+        "side": "left",
         "tint": false,
         "wave": false,
         "iso": "phone",
-        "eyebrow": "06 ／ FLOW",
+        "eyebrow": "05 ／ FLOW",
         "title": "相談から、\n運用開始まで。",
         "lead": "初回相談はオンラインで30分。この段階での売り込みはしません。LINEより先にやるべきことがある場合は、正直にそうお伝えします。",
         "points": [],
@@ -327,16 +309,13 @@
       }
     },
     {
-      "id": "b-ctafinal",
-      "type": "ctaFinal",
+      "id": "b-contact",
+      "type": "contact",
       "p": {
         "en": "CONTACT",
-        "title_line1": "まずは30分、",
-        "title_before": "現状を",
-        "title_em": "聞かせて",
-        "title_after": "ください。",
-        "desc": "アカウントをこれから作る段階でも、すでに運用していて伸び悩んでいる段階でも構いません。\nオンライン30分で現状を伺い、何から手をつけるべきかをその場でお伝えします。",
-        "btn": "無料相談する（オンライン30分）"
+        "title": "まずは30分、\n現状を聞かせてください。",
+        "lead": "無料相談のご予約も、ざっくりしたご質問も、このフォームからどうぞ。通常1営業日以内にご返信します。この段階での売り込みは行いません。",
+        "_fs": "1"
       }
     }
   ]

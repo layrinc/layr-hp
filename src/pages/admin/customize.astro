@@ -358,6 +358,9 @@ const initial = { page, theme, settings, subPages };
     ctaFinal: { name: '最終CTA（深緑）', emoji: '🌑', cat: 'section', desc: '最下部のお問い合わせ誘導',
       fields: [['en', '英字ラベル', 't'], ['title_line1', '見出し1行目', 't'], ['title_before', '2行目・前', 't'], ['title_em', '2行目・強調', 't'], ['title_after', '2行目・後', 't'], ['desc', '説明（改行可）', 'ta'], ['btn', 'ボタン', 't']],
       defaults: { en: 'CONTACT', title_line1: 'まずは', title_before: '', title_em: '無料相談', title_after: 'から。', desc: '', btn: '無料相談に申し込む' } },
+    contact: { name: 'お問い合わせフォーム', emoji: '✉️', cat: 'section', desc: '名前・メール・本文の送信フォーム（送信失敗時はメール下書きに自動切替）',
+      fields: [['en', '英字の小ラベル', 't'], ['title', '見出し', 't'], ['lead', 'リード文', 'ta']],
+      defaults: { en: 'CONTACT', title: 'まずは30分、\n現状を聞かせてください。', lead: '無料相談のご予約も、ざっくりしたご質問も、このフォームからどうぞ。' } },
     zigzag: { name: 'ジグザグ', emoji: '🔀', cat: 'section', desc: '3Dイラストと文章を左右交互に並べる（波形の区切り付き）',
       fields: [
         ['side', 'イラストの位置', 'sel', { options: [['left', '左（文章が右）'], ['right', '右（文章が左）']] }],
