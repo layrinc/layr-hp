@@ -693,6 +693,19 @@ const serviceIcons = [
         {p.eyebrow && <p class="zz-eyebrow"><i></i><span>{p.eyebrow}</span></p>}
         {p.title && <h2 class="zz-title" set:html={rich(p.title)}></h2>}
         {p.lead && <div class="zz-lead blk-rich" set:html={rich(p.lead)}></div>}
+        {(p.steps || []).length > 0 && (
+          <ol class="zz-steps reveal">
+            {p.steps.map((s: any, i: number) => (
+              <li class="zz-step">
+                <span class="zz-step-n" aria-hidden="true">{i + 1}</span>
+                <div class="zz-step-b">
+                  <strong class="zz-step-t">{s.t}</strong>
+                  {s.d && <p class="zz-step-d" set:html={rich(s.d)}></p>}
+                </div>
+              </li>
+            ))}
+          </ol>
+        )}
         {(p.points || []).length > 0 && (
           <ul class="zz-points">
             {p.points.map((it: string) => (

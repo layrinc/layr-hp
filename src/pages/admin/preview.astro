@@ -271,6 +271,9 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
         const eyebrow = p.eyebrow ? `<p class="zz-eyebrow"><i></i><span>${esc(p.eyebrow)}</span></p>` : '';
         const title = p.title ? `<h2 class="zz-title">${rich(p.title)}</h2>` : '';
         const lead = p.lead ? `<div class="zz-lead blk-rich">${rich(p.lead)}</div>` : '';
+        const steps = (p.steps || []).length
+          ? `<ol class="zz-steps reveal is-visible">${p.steps.map((s, i) => `<li class="zz-step"><span class="zz-step-n" aria-hidden="true">${i + 1}</span><div class="zz-step-b"><strong class="zz-step-t">${esc(s.t)}</strong>${s.d ? `<p class="zz-step-d">${rich(s.d)}</p>` : ''}</div></li>`).join('')}</ol>`
+          : '';
         const pts = (p.points || []).length
           ? `<ul class="zz-points">${p.points.map((it) => `<li>${zzCheck}<span>${rich(it)}</span></li>`).join('')}</ul>`
           : '';
@@ -280,7 +283,7 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
         const fig = (p.iso && ISO[p.iso])
           ? `<div class="zz-fig" aria-hidden="true"><span class="zz-blob"></span>${ISO[p.iso]}</div>`
           : '';
-        return `<section class="zz ${p.tint ? 'is-tint' : ''}">${wave}<div class="container zz-row is-${p.side === 'right' ? 'right' : 'left'}"><div class="zz-txt">${eyebrow}${title}${lead}${pts}${btn}</div>${fig}</div></section>`;
+        return `<section class="zz ${p.tint ? 'is-tint' : ''}">${wave}<div class="container zz-row is-${p.side === 'right' ? 'right' : 'left'}"><div class="zz-txt">${eyebrow}${title}${lead}${steps}${pts}${btn}</div>${fig}</div></section>`;
       },
     };
 
