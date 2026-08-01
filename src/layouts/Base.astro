@@ -31,7 +31,7 @@ const showDocPop = !Astro.url.pathname.startsWith('/document');
 const fontMap: Record<string, { family: string; gf: string }> = {
   Montserrat: { family: 'Montserrat', gf: 'Montserrat:wght@700;800' },
   Archivo: { family: 'Archivo', gf: 'Archivo:wght@700;800' },
-  Poppins: { family: 'Poppins', gf: 'Poppins:wght@700;800' },
+  Poppins: { family: 'Poppins', gf: 'Poppins:wght@500;700;800' },
 };
 const font = fontMap[theme.font_en] ?? fontMap.Montserrat;
 // 和文は 400 / 500 / 700 の3ウエイトのみ使う（900は公開ページで未使用のため読まない）
@@ -54,7 +54,7 @@ const taglineLines = settings.tagline.split('\n');
 // （ここをハードコードすると、ヘッダーロゴとCTAで色相の違う緑が並ぶ事故になる）
 const faviconAccent = encodeURIComponent(theme.accent);
 const faviconBase = encodeURIComponent(theme.base_black);
-const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='${faviconBase}'/%3E%3Cpath d='M8 21l8 4 8-4' fill='none' stroke='${faviconAccent}' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' opacity='.55'/%3E%3Cpath d='M8 16l8 4 8-4' fill='none' stroke='${faviconAccent}' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round' opacity='.8'/%3E%3Cpath d='M16 7l8 4-8 4-8-4z' fill='${faviconAccent}'/%3E%3C/svg%3E`;
+const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='${faviconBase}'/%3E%3Cpath d='M11.5 8v15h10' fill='none' stroke='${faviconAccent}' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E`;
 ---
 <!doctype html>
 <html lang="ja" class="no-js">
@@ -90,17 +90,13 @@ const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
 <header class="header">
   <div class="header-inner">
     <a href="/" class="brand" aria-label="株式会社LAYR トップへ">
-      <svg width="30" height="30" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M6 21.5l10 5 10-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".45"/>
-        <path d="M6 15.5l10 5 10-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>
-        <path d="M16 5l10 5-10 5-10-5 10-5z" fill="currentColor"/>
-      </svg>
       <span>
         <span class="brand-name">LAYR</span>
         <span class="brand-sub">LINEマーケティング支援</span>
       </span>
     </a>
     <nav class="gnav" id="gnav" aria-label="グローバルナビゲーション">
+      <p class="gnav-label" aria-hidden="true">MENU</p>
       <ul>
         <li><a href="/#service">サービス</a></li>
         <li><a href="/#reason">できること</a></li>
@@ -109,7 +105,13 @@ const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
         <li><a href="/blog/">コラム</a></li>
         <li><a href="/#company">会社概要</a></li>
       </ul>
+      <div class="gnav-cta">
+        <a class="btn btn-green" href={consult}>LINE活用 無料相談</a>
+        <a class="btn btn-black" href="/#contact">お問い合わせフォーム</a>
+        <p class="gnav-mail">メール: <a href={`mailto:${settings.email}`}>{settings.email}</a></p>
+      </div>
     </nav>
+    <div class="gnav-backdrop" id="gnavBackdrop" aria-hidden="true"></div>
     <div class="header-btns">
       <a class="btn btn-black" href="/#contact">お問い合わせ</a>
       <a class="btn btn-green" href={consult}>LINE活用 無料相談</a>
@@ -128,11 +130,6 @@ const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
   <div class="footer-inner">
     <div>
       <div class="brand">
-        <svg width="26" height="26" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <path d="M6 21.5l10 5 10-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".45"/>
-          <path d="M6 15.5l10 5 10-5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" opacity=".75"/>
-          <path d="M16 5l10 5-10 5-10-5 10-5z" fill="currentColor"/>
-        </svg>
         <span class="brand-name">LAYR</span>
       </div>
       <p class="footer-tagline" data-edit-ml="settings.tagline">{taglineLines.map((line, i) => <Fragment>{i > 0 && <br />}{line}</Fragment>)}</p>
@@ -226,19 +223,22 @@ const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
   // モバイルメニュー開閉
   const btn = document.getElementById('menuBtn');
   const nav = document.getElementById('gnav');
+  const backdrop = document.getElementById('gnavBackdrop');
+  const setMenu = (open: boolean) => {
+    if (!btn || !nav) return;
+    nav.classList.toggle('is-open', open);
+    document.documentElement.classList.toggle('nav-open', open);
+    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    btn.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
+  };
   if (btn && nav) {
-    btn.addEventListener('click', () => {
-      const open = nav.classList.toggle('is-open');
-      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      btn.setAttribute('aria-label', open ? 'メニューを閉じる' : 'メニューを開く');
-    });
+    btn.addEventListener('click', () => setMenu(!nav.classList.contains('is-open')));
     nav.addEventListener('click', (e) => {
       const t = e.target as HTMLElement;
-      if (t.tagName === 'A') {
-        nav.classList.remove('is-open');
-        btn.setAttribute('aria-expanded', 'false');
-      }
+      if (t.closest('a')) setMenu(false);
     });
+    backdrop?.addEventListener('click', () => setMenu(false));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
   }
 
   // 右下の資料ポップアップ: 折りたたみ状態を記憶する
