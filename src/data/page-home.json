@@ -180,7 +180,7 @@
             "amount": "3-15",
             "unit": "万円／月",
             "note": "税別・目安 ／ 月額・構築後の継続支援",
-            "featured": true,
+            "featured": false,
             "items": [
               "月次の配信企画",
               "配信ライティング",
