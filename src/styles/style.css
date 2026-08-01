@@ -2376,3 +2376,22 @@ section + .blk-sec:has(> .container > .sec-head){padding-top:var(--sec-pad)}
 @media (max-width:640px){
   .reason-grid:has(> :nth-child(4):last-child){grid-template-columns:1fr}
 }
+
+/* ============================================================
+   v12: 数字フォントを一般的なものへ／CONTACT背景を明るく
+   ============================================================ */
+/* --- 数字: 装飾的な英字フォント(Poppins等)をやめ、本文と同じ書体で --- */
+.price-num,.price-amount,.price-amount small,
+.hero2-points .val,.zz-step-n,.stat-num,.case-metric .after,.b-num{
+  font-family:var(--font-jp)!important;font-variant-numeric:tabular-nums;letter-spacing:0}
+.price-num{font-weight:800}
+.hero2-points .val{font-weight:800}
+
+/* --- CONTACT: 深緑の暗背景 → 極薄ティールの明背景 --- */
+.cform{background:color-mix(in srgb, var(--green) 7%, #fff)}
+.cform-title{color:var(--text,#0E1A1C)}
+.cform-title em{color:var(--green-dark)}
+.cform-lead{color:var(--muted,#5A6B6D)}
+.cform .zz-eyebrow span{color:var(--green-dark)}
+.cform .zz-eyebrow i{background:var(--green-dark)}
+.cform-form{border:1px solid #E3ECEC;box-shadow:0 10px 34px rgba(14,26,28,.06)}
