@@ -443,7 +443,7 @@ const serviceIcons = [
 )}
 
 {t === 'sectionHead' && (
-  <section class="blk-sec">
+  <section class="blk-sec" id={p.anchor || undefined}>
     <div class="container">
       <div class={`sec-head reveal ${p.align === 'center' ? 'is-center' : ''}`}>
         {p.watermark && <span class="sec-wm" aria-hidden="true">{p.watermark}</span>}
@@ -679,7 +679,7 @@ const serviceIcons = [
 
 {/* ジグザグ2カラム（モック v4-zigzag.html の .row / .txt / .fig / .blob / .wave 相当） */}
 {t === 'zigzag' && (
-  <section class={`zz ${p.tint ? 'is-tint' : ''}`}>
+  <section class={`zz ${p.tint ? 'is-tint' : ''}`} id={p.anchor || undefined}>
     {p.wave && (
       <div class="zz-wave" aria-hidden="true">
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" focusable="false">

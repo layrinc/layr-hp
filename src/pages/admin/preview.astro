@@ -193,7 +193,7 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
       sectionHead(p) {
         const wm = p.watermark ? `<span class="sec-wm" aria-hidden="true">${esc(p.watermark)}</span>` : '';
         const label = p.pill ? `<span class="sec-pill">${esc(p.en)}</span>` : `<p class="sec-en">${esc(p.en)}</p>`;
-        return `<section class="blk-sec"><div class="container"><div class="sec-head ${p.align === 'center' ? 'is-center' : ''}">${wm}${label}<h2 class="sec-jp">${esc(p.title_jp)}</h2>${p.lead ? `<p class="sec-lead">${esc(p.lead)}</p>` : ''}</div></div></section>`;
+        return `<section class="blk-sec"${p.anchor ? ` id="${esc(p.anchor)}"` : ''}><div class="container"><div class="sec-head ${p.align === 'center' ? 'is-center' : ''}">${wm}${label}<h2 class="sec-jp">${esc(p.title_jp)}</h2>${p.lead ? `<p class="sec-lead">${esc(p.lead)}</p>` : ''}</div></div></section>`;
       },
       marquee(p) {
         const items = (p.items || []);
@@ -287,7 +287,7 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
         const fig = (p.iso && ISO[p.iso])
           ? `<div class="zz-fig" aria-hidden="true"><span class="zz-blob"></span>${ISO[p.iso]}</div>`
           : '';
-        return `<section class="zz ${p.tint ? 'is-tint' : ''}">${wave}<div class="container zz-row is-${p.side === 'right' ? 'right' : 'left'}"><div class="zz-txt">${eyebrow}${title}${lead}${steps}${pts}${btn}</div>${fig}</div></section>`;
+        return `<section class="zz ${p.tint ? 'is-tint' : ''}"${p.anchor ? ` id="${esc(p.anchor)}"` : ''}>${wave}<div class="container zz-row is-${p.side === 'right' ? 'right' : 'left'}"><div class="zz-txt">${eyebrow}${title}${lead}${steps}${pts}${btn}</div>${fig}</div></section>`;
       },
     };
 
