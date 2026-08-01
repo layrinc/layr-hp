@@ -2370,3 +2370,9 @@ section + .blk-sec:has(> .container > .sec-head){padding-top:var(--sec-pad)}
 /* v11補correction: hidden属性を確実に効かせる／見出しの折り返し調整 */
 .cform-fb[hidden],.cform-ok[hidden]{display:none!important}
 .cform-title{font-size:calc(clamp(24px,2.7vw,34px) * var(--fs,1))}
+
+/* v11補: できること等、カードが4枚ちょうどの時は2×2で組む（3+1の不揃い回避） */
+.reason-grid:has(> :nth-child(4):last-child){grid-template-columns:repeat(2,1fr)}
+@media (max-width:640px){
+  .reason-grid:has(> :nth-child(4):last-child){grid-template-columns:1fr}
+}
