@@ -81,7 +81,7 @@
             "desc": "リッチメニュー・配信画像・LP・バナーなど、LINEと連動するクリエイティブを制作します。"
           },
           {
-            "title": "Web広告運用代行（Meta・Google・LINEヤフー広告）",
+            "title": "Web広告運用代行",
             "desc": "友だち追加広告を含む運用型広告の設計・運用・改善を代行します。"
           }
         ],
@@ -160,7 +160,7 @@
           {
             "tag": "PLAN 01 ／ 構築",
             "name": "LINE公式アカウント構築",
-            "amount": "30-50",
+            "amount": "10-50",
             "unit": "万円",
             "note": "税別・目安 ／ 初期費用・制作期間2〜4週間",
             "featured": false,
@@ -175,7 +175,7 @@
           {
             "tag": "PLAN 02 ／ 運用支援",
             "name": "LINE運用支援",
-            "amount": "5-15",
+            "amount": "3-15",
             "unit": "万円／月",
             "note": "税別・目安 ／ 月額・構築後の継続支援",
             "featured": true,
@@ -189,6 +189,26 @@
           }
         ],
         "note": "※ 金額は事業規模・配信頻度・構築範囲によって変動します。無料相談で現状を伺ったうえで、内訳を開示した正式なお見積りを提示します。構築のみ・運用のみのご依頼にも対応します。"
+      }
+    },
+    {
+      "id": "b-column-head",
+      "type": "sectionHead",
+      "p": {
+        "en": "COLUMN",
+        "pill": false,
+        "watermark": "",
+        "align": "left",
+        "title_jp": "LINEの現場から。",
+        "lead": "配信・導線・数値の読み方について、実務ベースで発信しています。"
+      }
+    },
+    {
+      "id": "b-column",
+      "type": "postList",
+      "p": {
+        "count": 3,
+        "more_label": "コラム一覧を見る"
       }
     },
     {
@@ -229,26 +249,6 @@
             "a": "設計・構築の期間はおおよそ2〜4週間です。無料相談（オンライン30分）、現状診断・ご提案を経て着手し、構築完了後に運用を開始します。"
           }
         ]
-      }
-    },
-    {
-      "id": "b-column-head",
-      "type": "sectionHead",
-      "p": {
-        "en": "COLUMN",
-        "pill": false,
-        "watermark": "",
-        "align": "left",
-        "title_jp": "LINEの現場から。",
-        "lead": "配信・導線・数値の読み方について、実務ベースで発信しています。"
-      }
-    },
-    {
-      "id": "b-column",
-      "type": "postList",
-      "p": {
-        "count": 3,
-        "more_label": "コラム一覧を見る"
       }
     },
     {
