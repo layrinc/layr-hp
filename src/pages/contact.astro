@@ -8,7 +8,7 @@ import Base from '../layouts/Base.astro';
 import settings from '../data/settings.json';
 
 const title = 'お問い合わせ｜株式会社LAYR';
-const description = '株式会社LAYRへのお問い合わせはこちら。LINEで問い合わせる（友だち追加後トークで相談）か、メールフォームからご連絡ください。通常1営業日以内にご返信します。';
+const description = '株式会社LAYRへのお問い合わせはこちら。LINEのトークで気軽に相談するか、メールフォームからご連絡ください。通常1営業日以内にご返信します。';
 
 const lineHref = settings.line_url?.trim()
   ? settings.line_url
@@ -30,19 +30,19 @@ const breadcrumbJsonLd = {
       <h1 class="ct-title">お問い合わせ</h1>
       <p class="ct-lead">無料相談のご予約も、ざっくりしたご質問も歓迎です。通常1営業日以内にご返信します。この段階での売り込みは行いません。</p>
 
-      <!-- ① LINEで問い合わせる -->
+      <!-- ① LINEで相談する -->
       <div class="ct-card is-line">
-        <span class="ct-badge">おすすめ・最短</span>
-        <h2>LINEで問い合わせる</h2>
-        <p>友だち追加後、トークでそのままご相談いただけます。<br />ご相談内容を送るだけでOKです。</p>
+        <span class="ct-badge">一番かんたん</span>
+        <h2>LINEで相談する</h2>
+        <p>友だち追加のあと、トーク画面にご相談内容をひと言送るだけ。<br />かしこまった文面は不要です。</p>
         <a class="ct-linebtn" href={lineHref}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.2 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5 1.1-.4 5.8-3.4 7.9-5.8 1.4-1.6 2.2-3.2 2.2-5C22 6.6 17.5 3 12 3z"/></svg>
-          LINEで問い合わせる
+          友だち追加して相談する
           <svg class="ct-ar" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h15M11 1l4 4-4 4" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round" /></svg>
         </a>
       </div>
 
-      <p class="ct-divider"><span>LINEアカウントをお持ちではない方は、以下のフォームよりメールでお問い合わせください。</span></p>
+      <p class="ct-divider"><span>LINEを使っていない場合は、下のメールフォームからご連絡ください。</span></p>
 
       <!-- ② メールで問い合わせる -->
       <div class="ct-card is-mail">
