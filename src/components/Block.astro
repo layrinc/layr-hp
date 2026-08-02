@@ -121,7 +121,7 @@ const serviceIcons = [
       </h1>
       {p.sub && <p class="hero2-sub" set:html={rich(p.sub)}></p>}
       <div class="hero2-actions">
-        {p.cta_primary && <a class="btn btn-green btn-lg" href={consult}>{p.cta_primary}</a>}
+        {p.cta_primary && <a class="btn btn-green btn-lg" href={p.cta_primary_url || consult}>{p.cta_primary}</a>}
         {p.cta_secondary && <a class="btn btn-black btn-lg" href={p.cta_secondary_url || '#service'}>{p.cta_secondary}</a>}
       </div>
       {p.iso && ISO[p.iso] && (

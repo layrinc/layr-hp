@@ -2481,3 +2481,28 @@ html.nav-open{overflow:hidden}
   .gnav-cta a::after{content:none}
   .gnav-cta .btn-black{background:var(--black,#0E1A1C);color:#fff;border:none}
 }
+
+/* =====================================================
+   v15 — お問い合わせ動線＋色調整
+   ①.btn-line: ヘッダー/ドロワーの「お問い合わせ」をLINEブランド緑に
+   ②波の色ズレ修正: できること(tint) → FEATURE(tint) の境界で
+     is-tintの上端波が白(paper)前提のため白帯が出る → 直前がtintなら波もtintに
+   ③文字コントラスト: 薄グレー本文を濃色へ（入力欄のplaceholderは対象外）
+   ===================================================== */
+
+/* ① LINE緑のお問い合わせボタン */
+.btn-line{background:#06C755;color:#fff;box-shadow:0 6px 16px rgba(6,199,85,.28)}
+.btn-line:hover{background:#05B34C;color:#fff;transform:translateY(-2px);box-shadow:0 10px 22px rgba(6,199,85,.34)}
+.header-btns .btn-line{box-shadow:none}
+.header-btns .btn-line:hover{transform:none;box-shadow:none}
+
+/* ② 波の色: 直前セクションがtint背景（できること等）の場合はtintで塗って連続させる */
+.reason + .zz.is-tint > .zz-wave:not(.zz-wave--b),
+.problem + .zz.is-tint > .zz-wave:not(.zz-wave--b),
+.promise + .zz.is-tint > .zz-wave:not(.zz-wave--b){color:var(--tint)}
+
+/* ③ 本文の薄グレーを読みやすい濃色へ */
+:root{--muted:color-mix(in srgb, var(--black) 80%, #FFFFFF)}
+.cform-note{color:var(--muted)}
+.gnav-mail{color:var(--muted)}
+.zz-step-d,.zz-d{color:var(--muted)}

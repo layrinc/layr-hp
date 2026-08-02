@@ -5,7 +5,7 @@
       "type": "heroText",
       "p": {
         "iso": "consult",
-        "eyebrow": "LINE MARKETING",
+        "eyebrow": "",
         "line1": "LINEを、",
         "line2": "売上が動く導線に。",
         "marker": false,
@@ -15,11 +15,8 @@
         "cta_secondary": "",
         "cta_secondary_url": "",
         "scene": false,
-        "points": [
-          "対応エリア 全国・オンライン完結",
-          "担当 代表が直接担当",
-          "初回相談 無料・オンライン30分"
-        ]
+        "points": [],
+        "cta_primary_url": "/contact/"
       }
     },
     {
@@ -119,7 +116,7 @@
         "lead": "初回相談はオンラインで30分。この段階での売り込みはしません。LINEより先にやるべきことがある場合は、正直にそうお伝えします。",
         "points": [],
         "btn_label": "無料相談する（オンライン30分）",
-        "btn_url": "consult",
+        "btn_url": "/contact/",
         "steps": [
           {
             "t": "無料相談（オンライン30分）",
