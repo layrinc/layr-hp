@@ -122,6 +122,10 @@ const serviceIcons = [
       {p.sub && <p class="hero2-sub" set:html={rich(p.sub)}></p>}
       <div class="hero2-actions">
         {p.cta_primary && <a class="btn btn-green btn-lg" href={p.cta_primary_url || consult}>{p.cta_primary}</a>}
+        {p.cta_line && <a class="btn btn-line btn-lg hero2-line" href={consult}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.2 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5 1.1-.4 5.8-3.4 7.9-5.8 1.4-1.6 2.2-3.2 2.2-5C22 6.6 17.5 3 12 3z"/></svg>
+          {p.cta_line}
+        </a>}
         {p.cta_secondary && <a class="btn btn-black btn-lg" href={p.cta_secondary_url || '#service'}>{p.cta_secondary}</a>}
       </div>
       {p.iso && ISO[p.iso] && (
@@ -750,6 +754,13 @@ const serviceIcons = [
         {p.en && <p class="zz-eyebrow cform-eyebrow"><i></i><span>{p.en}</span></p>}
         {p.title && <h2 class="cform-title" set:html={rich(p.title)}></h2>}
         {p.lead && <p class="cform-lead" set:html={rich(p.lead)}></p>}
+        <div class="cform-linelane">
+          <a class="btn btn-line cform-linebtn" href={consult}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.2 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5 1.1-.4 5.8-3.4 7.9-5.8 1.4-1.6 2.2-3.2 2.2-5C22 6.6 17.5 3 12 3z"/></svg>
+            LINEで相談する（一番かんたん）
+          </a>
+          <p class="cform-or"><span>LINEを使っていない場合は、メールフォームからどうぞ。</span></p>
+        </div>
       </div>
       <form class="cform-form" id="cfForm" action={`https://formsubmit.co/${settings.email}`} method="POST">
         <input type="hidden" name="_subject" value="【LAYRサイト】お問い合わせ" />

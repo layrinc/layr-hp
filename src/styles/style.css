@@ -2506,3 +2506,14 @@ html.nav-open{overflow:hidden}
 .cform-note{color:var(--muted)}
 .gnav-mail{color:var(--muted)}
 .zz-step-d,.zz-d{color:var(--muted)}
+
+/* =====================================================
+   v16 — TOPのLINE問い合わせ導線
+   ヒーローのLINEボタンと、CONTACTセクションのLINEレーン
+   ===================================================== */
+.hero2-line svg{width:1.2em;height:1.2em}
+.cform-linelane{margin:28px 0 0}
+.cform-linebtn{width:100%;max-width:420px;padding:17px 24px;font-size:calc(15.5px * var(--fs,1))}
+.cform-linebtn svg{width:1.25em;height:1.25em}
+.cform-or{display:flex;align-items:center;gap:14px;margin:20px 0 0;max-width:420px;font-size:calc(12.5px * var(--fs,1));font-weight:600;color:var(--muted);line-height:1.8}
+.cform-or::before,.cform-or::after{content:"";flex:1;height:1px;background:var(--line,#D8E3E5)}

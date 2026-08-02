@@ -16,7 +16,8 @@
         "cta_secondary_url": "",
         "scene": false,
         "points": [],
-        "cta_primary_url": "/contact/"
+        "cta_primary_url": "/contact/",
+        "cta_line": "LINEで相談する"
       }
     },
     {
@@ -272,7 +273,7 @@
       "type": "contact",
       "p": {
         "en": "CONTACT",
-        "title": "まずは30分、\n現状を聞かせてください。",
+        "title": "まずは\n現状を聞かせてください。",
         "lead": "無料相談のご予約も、ざっくりしたご質問も、このフォームからどうぞ。通常1営業日以内にご返信します。この段階での売り込みは行いません。",
         "_fs": "1"
       }
