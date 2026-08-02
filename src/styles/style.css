@@ -2526,3 +2526,14 @@ html.nav-open{overflow:hidden}
 .article-cta-sub a{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
 .service-more{margin-top:26px;text-align:center;font-size:calc(14px * var(--fs,1));font-weight:700}
 .service-more a{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
+
+/* =====================================================
+   v18 — ヒーローコピー「届ける価値を最大化する」を1行で大きく
+   テキスト側カラムを広げ、11文字が折り返さないサイズ上限を設定
+   ===================================================== */
+.hero2-inner:has(.hero2-fig){grid-template-columns:minmax(0,1.28fr) minmax(0,.72fr)}
+.hero2-title{font-size:calc(clamp(32px, 5.3vw, 62px) * var(--fs,1));max-width:none}
+@media (max-width:980px){
+  /* 1カラム時は画面幅いっぱいを使う。8.8vw-4px ≒ 11文字が常に1行に収まる上限 */
+  .hero2-title{font-size:calc(min(8.8vw - 4px, 56px) * var(--fs,1))}
+}
