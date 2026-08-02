@@ -22,7 +22,8 @@ const { pageData } = Astro.props;
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const title = `${pageData.title}｜株式会社LAYR`;
+// タイトルが長いページは社名サフィックスを短縮して検索結果での切れを防ぐ
+const title = pageData.title.length > 24 ? `${pageData.title}｜LAYR` : `${pageData.title}｜株式会社LAYR`;
 const description = pageData.description || `株式会社LAYRの${pageData.title}のページです。`;
 
 const breadcrumbJsonLd = {
@@ -33,9 +34,70 @@ const breadcrumbJsonLd = {
     { '@type': 'ListItem', position: 2, name: pageData.title },
   ],
 };
+
+// ページ内のaccordion（FAQ）ブロックからFAQPageを生成
+const faqItems = pageData.blocks
+  .filter((b: any) => b.type === 'faq' || b.type === 'accordion')
+  .flatMap((b: any) => b.p?.items ?? [])
+  .filter((i: any) => i?.q && i?.a);
+const faqJsonLd = faqItems.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faqItems.map((item: any) => ({
+        '@type': 'Question',
+        name: item.q,
+        acceptedAnswer: { '@type': 'Answer', text: item.a },
+      })),
+    }
+  : null;
+
+// slug固有の追加構造化データ（CMSのJSONに巻き込まれないようコード側に持つ）
+const slugJsonLd: Record<string, object[]> = {
+  'service-line': [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      '@id': 'https://layr.co.jp/#service-line',
+      name: 'LINE公式アカウント構築・運用代行',
+      serviceType: 'LINEマーケティング支援',
+      provider: { '@id': 'https://layr.co.jp/#organization' },
+      areaServed: 'JP',
+      url: 'https://layr.co.jp/service-line/',
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: 'LINEマーケティング支援プラン',
+        itemListElement: [
+          {
+            '@type': 'Offer',
+            name: 'LINE公式アカウント構築',
+            description: 'アカウント設計・リッチメニュー・ステップ配信の初期構築（制作期間2〜4週間）',
+            priceSpecification: { '@type': 'PriceSpecification', minPrice: 150000, maxPrice: 500000, priceCurrency: 'JPY' },
+          },
+          {
+            '@type': 'Offer',
+            name: 'LINE運用支援',
+            description: '月次の配信企画・セグメント配信・効果測定・改善提案',
+            priceSpecification: { '@type': 'UnitPriceSpecification', minPrice: 30000, maxPrice: 150000, priceCurrency: 'JPY', unitText: '月' },
+          },
+        ],
+      },
+    },
+  ],
+};
+const jsonLd = [
+  breadcrumbJsonLd,
+  ...(faqJsonLd ? [faqJsonLd] : []),
+  ...(slugJsonLd[Astro.params.page as string] ?? []),
+];
 ---
-<Base title={title} description={description} jsonLd={[breadcrumbJsonLd]}>
+<Base title={title} description={description} jsonLd={jsonLd}>
   <div class="subpage-pad"></div>
+  {pageData.h1 && (
+    <div class="page-hero container">
+      <h1 class="sec-jp">{pageData.h1}</h1>
+    </div>
+  )}
   {pageData.blocks.map((block: any) => {
     const fs = Number(block.p?._fs) || 1;
     return fs !== 1

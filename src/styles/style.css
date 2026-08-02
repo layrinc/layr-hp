@@ -2517,3 +2517,12 @@ html.nav-open{overflow:hidden}
 .cform-linebtn svg{width:1.25em;height:1.25em}
 .cform-or{display:flex;align-items:center;gap:14px;margin:20px 0 0;max-width:420px;font-size:calc(12.5px * var(--fs,1));font-weight:600;color:var(--muted);line-height:1.8}
 .cform-or::before,.cform-or::after{content:"";flex:1;height:1px;background:var(--line,#D8E3E5)}
+
+/* =====================================================
+   v17 — できることカードの背景ウォーターマーク数字を削除＋記事CTA補助リンク
+   ===================================================== */
+.reason-card::before{content:none}
+.article-cta-sub{margin:14px 0 0;font-size:calc(13.5px * var(--fs,1));font-weight:700}
+.article-cta-sub a{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
+.service-more{margin-top:26px;text-align:center;font-size:calc(14px * var(--fs,1));font-weight:700}
+.service-more a{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}

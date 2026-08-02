@@ -1,0 +1,35 @@
+---
+/**
+ * 404ページ。Astroが dist/404.html を生成し、Vercelが自動で配信する。
+ */
+import Base from '../layouts/Base.astro';
+---
+<Base title="ページが見つかりません｜株式会社LAYR" description="お探しのページは移動または削除された可能性があります。トップページ、サービス、コラムからお探しください。" robots="noindex, follow">
+  <section class="nf">
+    <div class="container nf-inner">
+      <p class="nf-code">404</p>
+      <h1 class="nf-title">ページが見つかりません</h1>
+      <p class="nf-lead">お探しのページは、移動または削除された可能性があります。<br />以下からお探しください。</p>
+      <div class="nf-links">
+        <a class="btn btn-green" href="/">トップページへ</a>
+        <a class="btn btn-black" href="/service-line/">サービス・料金を見る</a>
+      </div>
+      <ul class="nf-list">
+        <li><a href="/blog/">コラム（LINE運用の実務ノウハウ）</a></li>
+        <li><a href="/document/">サービス紹介資料ダウンロード</a></li>
+        <li><a href="/contact/">お問い合わせ</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <style>
+    .nf{padding:170px 0 120px;text-align:center}
+    .nf-code{font-family:var(--font-en);font-weight:800;font-size:clamp(64px,10vw,110px);letter-spacing:.04em;color:var(--green);line-height:1;margin:0 0 10px}
+    .nf-title{font-size:clamp(22px,3.4vw,32px);font-weight:900;color:#0E1A1C;margin:0 0 16px}
+    .nf-lead{font-size:15px;line-height:2.1;color:#1B2A2E;margin:0 0 34px}
+    .nf-links{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:34px}
+    .nf-list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+    .nf-list a{font-size:14px;font-weight:700;color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
+    @media (max-width:640px){.nf{padding:130px 0 90px}}
+  </style>
+</Base>

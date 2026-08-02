@@ -1,6 +1,11 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
-  "framework": "astro",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "trailingSlash": true,
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "www.layr.co.jp" }],
+      "destination": "https://layr.co.jp/:path*",
+      "permanent": true
+    }
+  ]
 }

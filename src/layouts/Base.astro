@@ -39,10 +39,48 @@ const fontHref = `https://fonts.googleapis.com/css2?family=${font.gf}&family=Not
 // theme.json の値でCSS変数を上書きする。
 // :root:root と二重にすることで詳細度を上げ、style.css の既定値より必ず優先させる。
 const themeCss = `:root:root{--green:${theme.accent};--green-dark:${theme.accent_dark};--black:${theme.base_black};--bg:${theme.bg_tint};--radius:${theme.radius}px;--font-en:'${font.family}','Noto Sans JP',sans-serif}`;
-const ogImageUrl = (ogImage || (settings as any).og_image || '') as string;
+// OGP画像: ページ指定 → サイト設定 → 既定の /ogp.png の順で必ず1枚出す
+const ogImageUrl = (ogImage || (settings as any).og_image || '/ogp.png') as string;
+const ogImageAbs = new URL(ogImageUrl, Astro.site).href;
 
 // canonical / OG URL は astro.config.mjs の site を基準に自動生成
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
+
+// 全ページ共通の構造化データ（Organization / WebSite）。
+// ページ固有の jsonLd（FAQ・Service・記事など）はこの後ろに連結して出力する。
+const orgJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': 'https://layr.co.jp/#organization',
+  name: '株式会社LAYR',
+  url: 'https://layr.co.jp/',
+  logo: { '@type': 'ImageObject', url: new URL('/ogp.png', Astro.site).href, width: 1200, height: 630 },
+  email: settings.email,
+  description: 'LINE公式アカウントの構築と運用・改善に特化した、中小企業向けLINEマーケティング専業の会社。',
+  founder: { '@type': 'Person', name: '河出 壱貫' },
+  foundingDate: '2026-08',
+  areaServed: 'JP',
+  contactPoint: { '@type': 'ContactPoint', contactType: 'customer support', email: settings.email, url: 'https://layr.co.jp/contact/', availableLanguage: 'ja' },
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: '道玄坂1丁目10番8号 渋谷道玄坂東急ビル2F-C',
+    addressLocality: '渋谷区',
+    addressRegion: '東京都',
+    addressCountry: 'JP',
+  },
+};
+const webSiteJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': 'https://layr.co.jp/#website',
+  name: '株式会社LAYR',
+  url: 'https://layr.co.jp/',
+  inLanguage: 'ja',
+  publisher: { '@id': 'https://layr.co.jp/#organization' },
+};
+const allJsonLd = [orgJsonLd, webSiteJsonLd, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [])];
+// </script> によるHTML破壊を防ぐ（JSON-LD内の < をエスケープ）
+const jsonLdHtml = JSON.stringify(allJsonLd).replace(/</g, '\\u003c');
 
 // CTAリンク: LINE友だち追加URLが設定されていればそちら、無ければメール
 const consult = settings.line_url?.trim()
@@ -72,18 +110,25 @@ const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
   <meta property="og:url" content={canonical} />
   <meta property="og:locale" content="ja_JP" />
   <meta property="og:site_name" content="株式会社LAYR" />
-  {ogImageUrl && <meta property="og:image" content={new URL(ogImageUrl, Astro.site).href} />}
+  <meta property="og:image" content={ogImageAbs} />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content={title} />
   <meta name="twitter:card" content="summary_large_image" />
-  <link rel="icon" href={favicon} />
+  <meta name="twitter:image" content={ogImageAbs} />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href={favicon} sizes="any" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <link rel="sitemap" href="/sitemap-index.xml" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href={fontHref} rel="stylesheet" />
+  <link href={fontHref} rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href={fontHref} rel="stylesheet" /></noscript>
   <style is:inline set:html={themeCss}></style>
   {typeof (theme as any).custom_css === 'string' && (theme as any).custom_css.trim() !== '' && (
     <style is:inline id="layr-custom-css" set:html={(theme as any).custom_css}></style>
   )}
-  {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  <script type="application/ld+json" set:html={jsonLdHtml} />
 </head>
 <body>
 
@@ -135,9 +180,9 @@ const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
     <div>
       <h4>SERVICE</h4>
       <ul class="footer-nav">
-        <li><a href="/#service">LINE公式アカウント構築</a></li>
-        <li><a href="/#service">LINE運用支援</a></li>
-        <li><a href="/#service">Web広告運用代行</a></li>
+        <li><a href="/service-line/">LINE公式アカウント構築</a></li>
+        <li><a href="/service-line/">LINE運用支援</a></li>
+        <li><a href="/#reason">Web広告運用代行</a></li>
       </ul>
     </div>
     <div>

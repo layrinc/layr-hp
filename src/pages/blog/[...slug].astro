@@ -16,7 +16,7 @@ const fmt = (d: Date) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 
-const title = `${post.data.title}｜株式会社LAYR`;
+const title = `${post.data.title}｜LAYR`;
 const consult = settings.line_url?.trim()
   ? settings.line_url
   : `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
@@ -45,11 +45,16 @@ const articleJsonLd = {
   headline: post.data.title,
   description: post.data.description,
   datePublished: iso(post.data.date),
+  dateModified: iso((post.data as any).updated ?? post.data.date),
   inLanguage: 'ja',
-  author: { '@type': 'Organization', name: '株式会社LAYR' },
-  publisher: { '@type': 'Organization', name: '株式会社LAYR' },
+  author: { '@type': 'Organization', name: '株式会社LAYR', url: 'https://layr.co.jp/' },
+  publisher: {
+    '@type': 'Organization',
+    name: '株式会社LAYR',
+    logo: { '@type': 'ImageObject', url: new URL('/ogp.png', Astro.site).href },
+  },
   mainEntityOfPage: pageUrl,
-  ...(post.data.image ? { image: new URL(post.data.image, Astro.site).href } : {}),
+  image: new URL(post.data.image || '/ogp-blog.png', Astro.site).href,
 };
 
 // パンくずの構造化データ。検索結果に「ホーム > コラム > 記事名」の階層が出る。
@@ -63,7 +68,7 @@ const breadcrumbJsonLd = {
   ],
 };
 ---
-<Base title={title} description={post.data.description} ogType="article" ogImage={post.data.image} jsonLd={[articleJsonLd, breadcrumbJsonLd]}>
+<Base title={title} description={post.data.description} ogType="article" ogImage={post.data.image || '/ogp-blog.png'} jsonLd={[articleJsonLd, breadcrumbJsonLd]}>
   <article class="article is-post">
     <nav class="article-bc" aria-label="パンくず">
       <a href="/">ホーム</a><span>›</span><a href="/blog/">コラム</a><span>›</span><em>{post.data.title}</em>
@@ -96,7 +101,8 @@ const breadcrumbJsonLd = {
 
     <div class="article-cta">
       <p>自社のLINE公式アカウントの現状、無料でご相談いただけます</p>
-      <a class="btn btn-green" href={consult}>無料相談に申し込む</a>
+      <a class="btn btn-green" href="/contact/">無料相談に申し込む</a>
+      <p class="article-cta-sub"><a href="/service-line/">LINE公式アカウント構築・運用代行のサービス詳細と料金を見る ›</a></p>
     </div>
 
     {related.length > 0 && (

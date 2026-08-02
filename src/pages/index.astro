@@ -12,33 +12,43 @@ import { getCollection } from 'astro:content';
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
-const title = '株式会社LAYR｜LINE公式アカウントの構築・運用｜LINEマーケティング専業';
-const description = '株式会社LAYRは、LINE公式アカウントの構築と運用・改善に特化したLINEマーケティング専業の会社です。アカウント設計・リッチメニュー・シナリオ配信の構築から、月次の配信企画・効果測定・改善提案までを一貫して担当し、リピートと紹介が生まれる仕組みを作ります。';
+const title = 'LINE公式アカウント構築・運用代行｜株式会社LAYR';
+const description = 'LINE公式アカウントの構築代行と運用代行をワンストップで。アカウント設計・リッチメニュー・ステップ配信の初期構築は15〜50万円、月次の配信企画・セグメント配信・効果測定まで担う運用支援は月3〜15万円。全国オンライン対応、無料相談は30分から。';
 
-// 構造化データ: 会社情報＋（FAQブロックがあれば）FAQPage
-const companyBlock = page.blocks.find((b) => b.type === 'company');
-const faqBlock = page.blocks.find((b) => b.type === 'faq');
-const jsonLd: object[] = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Organization',
-    name: companyBlock?.p?.name ?? '株式会社LAYR',
-    url: 'https://layr.co.jp',
-    email: 'info@layr.co.jp',
-    description: 'LINE公式アカウントの構築と運用・改善に特化した、中小企業向けLINEマーケティング専業の会社。',
-    founder: { '@type': 'Person', name: companyBlock?.p?.representative ?? '河出 壱貫' },
-    foundingDate: '2026-08',
-    areaServed: 'JP',
-    knowsAbout: ['LINE公式アカウント', 'LINEマーケティング', 'LINE公式アカウント構築', 'ステップ配信', 'リッチメニュー設計', 'セグメント配信'],
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: '道玄坂1丁目10番8号 渋谷道玄坂東急ビル2F-C',
-      addressLocality: '渋谷区',
-      addressRegion: '東京都',
-      addressCountry: 'JP',
-    },
+// 構造化データ: サービス（料金レンジ付き）＋FAQPage。
+// Organization / WebSite は Base.astro が全ページ共通で出力する。
+// 価格は pricing ブロック（page-home.json）の表示と必ず一致させること。
+const serviceJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Service',
+  '@id': 'https://layr.co.jp/#service-line',
+  name: 'LINE公式アカウント構築・運用代行',
+  serviceType: 'LINEマーケティング支援',
+  provider: { '@id': 'https://layr.co.jp/#organization' },
+  areaServed: 'JP',
+  url: 'https://layr.co.jp/service-line/',
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'LINEマーケティング支援プラン',
+    itemListElement: [
+      {
+        '@type': 'Offer',
+        name: 'LINE公式アカウント構築',
+        description: 'アカウント設計・リッチメニュー・ステップ配信の初期構築（制作期間2〜4週間）',
+        priceSpecification: { '@type': 'PriceSpecification', minPrice: 150000, maxPrice: 500000, priceCurrency: 'JPY' },
+      },
+      {
+        '@type': 'Offer',
+        name: 'LINE運用支援',
+        description: '月次の配信企画・セグメント配信・効果測定・改善提案',
+        priceSpecification: { '@type': 'UnitPriceSpecification', minPrice: 30000, maxPrice: 150000, priceCurrency: 'JPY', unitText: '月' },
+      },
+    ],
   },
-];
+};
+// FAQブロック（ブロック型は 'accordion'。旧名 'faq' too）からFAQPageを生成
+const faqBlock = page.blocks.find((b) => b.type === 'faq' || b.type === 'accordion');
+const jsonLd: object[] = [serviceJsonLd];
 if (faqBlock && Array.isArray(faqBlock.p?.items)) {
   jsonLd.push({
     '@context': 'https://schema.org',

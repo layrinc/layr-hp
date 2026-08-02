@@ -9,13 +9,32 @@ const fmt = (d: Date) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 const iso = (d: Date) => d.toISOString().slice(0, 10);
 
-const title = 'コラム一覧｜株式会社LAYR';
-const description = '株式会社LAYRのLINEマーケティングコラム一覧。LINE公式アカウントの構築・運用の現場で得た知見を発信しています。';
+const title = 'LINE公式アカウント運用コラム｜株式会社LAYR';
+const description = 'LINE公式アカウントの構築・運用の現場から、ブロック率の下げ方、ステップ配信の設計、メルマガとの使い分けなど、地方中小企業・スクール・店舗がすぐ使えるLINEマーケティングの実務ノウハウを発信しています。';
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: new URL('/', Astro.site).href },
+      { '@type': 'ListItem', position: 2, name: 'コラム' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: 'LINE公式アカウント運用コラム',
+    url: new URL('/blog/', Astro.site).href,
+    inLanguage: 'ja',
+    isPartOf: { '@id': 'https://layr.co.jp/#website' },
+  },
+];
 ---
-<Base title={title} description={description}>
+<Base title={title} description={description} jsonLd={jsonLd}>
   <div class="page-hero">
-    <h1 class="sec-en">COLUMN</h1>
-    <p class="sec-jp">LINEマーケティングコラム</p>
+    <p class="sec-en">COLUMN</p>
+    <h1 class="sec-jp">LINE公式アカウント運用コラム</h1>
   </div>
 
   <div class="post-list">
