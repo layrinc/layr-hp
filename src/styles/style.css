@@ -2537,3 +2537,10 @@ html.nav-open{overflow:hidden}
   /* 1カラム時は画面幅いっぱいを使う。8.8vw-4px ≒ 11文字が常に1行に収まる上限 */
   .hero2-title{font-size:calc(min(8.8vw - 4px, 56px) * var(--fs,1))}
 }
+
+/* =====================================================
+   v19 — フォーム送信ボタンを中央寄せ（注記は上・ボタンは中央）
+   ===================================================== */
+.cform-foot{flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.cform-note{max-width:none;text-align:center}
+.cform-submit{min-width:min(320px,100%)}
