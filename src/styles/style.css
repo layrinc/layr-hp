@@ -2544,3 +2544,19 @@ html.nav-open{overflow:hidden}
 .cform-foot{flex-direction:column;align-items:center;justify-content:center;gap:16px}
 .cform-note{max-width:none;text-align:center}
 .cform-submit{min-width:min(320px,100%)}
+
+/* =====================================================
+   v20 — ヒーロー2行目「届ける価値を最大化する」(11文字)の収まり修正
+   実測: 容器上限時のテキスト列 ≒ 642px、62pxでは668px必要で溢れていた。
+   テキスト列をさらに広げ(1.34fr)、フォントは列幅に必ず収まる式で頭打ち。
+   ＋ ハンバーガーボタンの白枠を廃止し線だけのシンプル表示に。
+   ===================================================== */
+.hero2-inner:has(.hero2-fig){grid-template-columns:minmax(0,1.34fr) minmax(0,.66fr)}
+.hero2-title{font-size:calc(min(5.8vw - 5px, 60px) * var(--fs,1))}
+@media (max-width:980px){
+  .hero2-title{font-size:calc(min(8.8vw - 4px, 56px) * var(--fs,1))}
+}
+
+/* ハンバーガー: 枠・背景・影なし、線のみ */
+.menu-btn{border:none;background:none;border-radius:0;box-shadow:none;width:44px;height:44px;padding:0;cursor:pointer}
+.menu-btn span{width:24px}
