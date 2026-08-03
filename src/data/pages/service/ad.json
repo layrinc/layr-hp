@@ -190,18 +190,6 @@
       }
     },
     {
-      "id": "ad-cta",
-      "type": "ctaBand",
-      "p": {
-        "title_before": "まずは",
-        "title_em": "無料相談",
-        "title_after": "から。",
-        "desc": "広告を出すべきかどうかの整理だけのご相談も歓迎です。無理な営業はしません。",
-        "btn_primary": "無料相談に申し込む",
-        "btn_secondary": "メールで問い合わせる"
-      }
-    },
-    {
       "id": "ad-space2",
       "type": "spacer",
       "p": {

@@ -23,9 +23,6 @@ interface Props {
 
 const { title, description, ogType = 'website', ogImage, robots, jsonLd = null } = Astro.props;
 
-// 右下の資料ダウンロード誘導ポップアップ（資料ページ自身では出さない）
-const showDocPop = !Astro.url.pathname.startsWith('/document');
-
 // ===== デザイン設定（/admin →「サイト設定 → デザイン設定」） =====
 // 英字見出しフォントの選択肢。追加したい場合はここにマッピングを足す。
 const fontMap: Record<string, { family: string; gf: string }> = {
@@ -200,19 +197,6 @@ const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
   <p class="footer-copy">© 2026 LAYR Inc. All Rights Reserved.</p>
 </footer>
 
-{showDocPop && (
-  <aside class="doc-pop" id="docPop" aria-label="サービス紹介資料のご案内">
-    <button class="doc-pop-toggle" id="docPopToggle" aria-expanded="true" aria-label="資料案内を折りたたむ">∨</button>
-    <a class="doc-pop-body" href="/document/">
-      <p class="doc-pop-head">サービス紹介資料<br />無料ダウンロード</p>
-      <div class="doc-pop-thumbs" aria-hidden="true">
-        <span class="t t1"></span><span class="t t2"></span><span class="t t3"></span>
-      </div>
-      <span class="doc-pop-btn">資料をダウンロード ▶</span>
-    </a>
-  </aside>
-)}
-
 <script is:inline>
   // カスタマイザー（/admin/customize/）のライブプレビュー受信ブリッジ。
   // カスタマイザーのiframe内で表示されている時だけ動く。
@@ -282,25 +266,6 @@ const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
     });
     backdrop?.addEventListener('click', () => setMenu(false));
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
-  }
-
-  // 右下の資料ポップアップ: 折りたたみ状態を記憶する
-  const pop = document.getElementById('docPop');
-  const popToggle = document.getElementById('docPopToggle');
-  if (pop && popToggle) {
-    const KEY = 'layrDocPopCollapsed';
-    const setState = (collapsed: boolean) => {
-      pop.classList.toggle('is-collapsed', collapsed);
-      popToggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
-      popToggle.textContent = collapsed ? '📄 サービス紹介資料' : '∨';
-      popToggle.setAttribute('aria-label', collapsed ? '資料案内を開く' : '資料案内を折りたたむ');
-    };
-    setState(localStorage.getItem(KEY) === '1');
-    popToggle.addEventListener('click', () => {
-      const next = !pop.classList.contains('is-collapsed');
-      localStorage.setItem(KEY, next ? '1' : '0');
-      setState(next);
-    });
   }
 
   // スクロールで要素をフェードイン
