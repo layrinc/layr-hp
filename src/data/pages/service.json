@@ -1,0 +1,105 @@
+{
+  "title": "サービス一覧（LINE構築・運用／Web広告運用代行）",
+  "h1": "サービス",
+  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング（構築15〜50万円／運用月3〜15万円）と、Meta・Google・LINEヤフーのWeb広告運用代行。広告からLINE、販売までの導線を一体で設計します。",
+  "blocks": [
+    {
+      "id": "sv-head",
+      "type": "sectionHead",
+      "p": {
+        "en": "SERVICE",
+        "title_jp": "LAYRのサービス",
+        "lead": "LINE構築・運用を軸に、広告からLINE、販売までの導線をひとつなぎで設計します。どちらか一方だけのご依頼も可能です。",
+        "align": "left"
+      }
+    },
+    {
+      "id": "sv-il",
+      "type": "illust",
+      "p": {
+        "kind": "chat",
+        "size": "m",
+        "align": "center"
+      }
+    },
+    {
+      "id": "sv-cap1",
+      "type": "capBox",
+      "p": {
+        "color": "green",
+        "title": "SERVICE 01｜LINE構築・運用マーケティング",
+        "body": "LINE公式アカウントの<strong>設計・構築から毎月の配信運用・改善まで</strong>を一括で担当します。構築した本人がそのまま運用するため、引き継ぎのロスがありません。\n構築 15〜50万円／運用支援 月3〜15万円（税別・目安）"
+      }
+    },
+    {
+      "id": "sv-btn1",
+      "type": "buttons",
+      "p": {
+        "align": "center",
+        "items": [
+          {
+            "label": "LINE構築・運用の詳細・料金を見る",
+            "url": "/service/line/",
+            "style": "green"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv-sp1",
+      "type": "spacer",
+      "p": {
+        "size": "m"
+      }
+    },
+    {
+      "id": "sv-cap2",
+      "type": "capBox",
+      "p": {
+        "color": "dark",
+        "title": "SERVICE 02｜Web広告運用代行",
+        "body": "Meta広告・Google広告・LINEヤフー広告の<strong>設計から日々の運用、月次レポートまで</strong>を担当します。広告で集めた反応をLINEで売上に変える、広告×LINEの一体設計が強みです。\n料金は広告予算・運用範囲に応じて個別お見積り"
+      }
+    },
+    {
+      "id": "sv-btn2",
+      "type": "buttons",
+      "p": {
+        "align": "center",
+        "items": [
+          {
+            "label": "Web広告運用代行の詳細を見る",
+            "url": "/service/ad/",
+            "style": "dark"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv-sp2",
+      "type": "spacer",
+      "p": {
+        "size": "m"
+      }
+    },
+    {
+      "id": "sv-cta",
+      "type": "ctaBand",
+      "p": {
+        "title_before": "どちらが合うか",
+        "title_em": "無料相談",
+        "title_after": "で整理できます。",
+        "desc": "現状を伺って、必要なサービスだけをご提案します。無理な営業はしません。",
+        "btn_primary": "無料相談に申し込む",
+        "btn_secondary": "メールで問い合わせる"
+      }
+    },
+    {
+      "id": "sv-sp3",
+      "type": "spacer",
+      "p": {
+        "size": "m"
+      }
+    }
+  ]
+}
