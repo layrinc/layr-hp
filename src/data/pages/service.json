@@ -1,7 +1,7 @@
 {
   "title": "サービス一覧（LINE構築・運用／Web広告運用代行）",
   "h1": "サービス",
-  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング（構築15〜50万円／運用月3〜15万円）と、Meta・Google・LINEヤフーのWeb広告運用代行。広告からLINE、販売までの導線を一体で設計します。",
+  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティングと、Meta・Google・LINEヤフーのWeb広告運用代行。広告からLINE、販売までの導線を一体で設計します。",
   "blocks": [
     {
       "id": "sv-head",
@@ -9,17 +9,8 @@
       "p": {
         "en": "SERVICE",
         "title_jp": "LAYRのサービス",
-        "lead": "LINE構築・運用を軸に、広告からLINE、販売までの導線をひとつなぎで設計します。どちらか一方だけのご依頼も可能です。",
+        "lead": "LAYRの支援は、大きく2つです。",
         "align": "left"
-      }
-    },
-    {
-      "id": "sv-il",
-      "type": "illust",
-      "p": {
-        "kind": "chat",
-        "size": "m",
-        "align": "center"
       }
     },
     {
@@ -27,8 +18,8 @@
       "type": "capBox",
       "p": {
         "color": "green",
-        "title": "SERVICE 01｜LINE構築・運用マーケティング",
-        "body": "LINE公式アカウントの<strong>設計・構築から毎月の配信運用・改善まで</strong>を一括で担当します。構築した本人がそのまま運用するため、引き継ぎのロスがありません。\n構築 15〜50万円／運用支援 月3〜15万円（税別・目安）"
+        "title": "LINE構築・運用マーケティング",
+        "body": "LINE公式アカウントの設計・構築から、毎月の配信運用・改善までを一括で担当します。"
       }
     },
     {
@@ -38,7 +29,7 @@
         "align": "center",
         "items": [
           {
-            "label": "LINE構築・運用の詳細・料金を見る",
+            "label": "LINEのサービスを見る",
             "url": "/service/line/",
             "style": "green"
           }
@@ -57,8 +48,8 @@
       "type": "capBox",
       "p": {
         "color": "dark",
-        "title": "SERVICE 02｜Web広告運用代行",
-        "body": "Meta広告・Google広告・LINEヤフー広告の<strong>設計から日々の運用、月次レポートまで</strong>を担当します。広告で集めた反応をLINEで売上に変える、広告×LINEの一体設計が強みです。\n料金は広告予算・運用範囲に応じて個別お見積り"
+        "title": "Web広告運用代行",
+        "body": "Meta・Google・LINEヤフー広告の設計から、日々の運用・月次レポートまでを担当します。"
       }
     },
     {
@@ -68,7 +59,7 @@
         "align": "center",
         "items": [
           {
-            "label": "Web広告運用代行の詳細を見る",
+            "label": "広告のサービスを見る",
             "url": "/service/ad/",
             "style": "dark"
           }
