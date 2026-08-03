@@ -2569,3 +2569,6 @@ html.nav-open{overflow:hidden}
   .gnav-cta .btn-line:hover{color:#fff}
   .gnav-cta .btn-black{background:var(--black,#0E1A1C);color:#fff;border:none}
 }
+
+/* v22 — サービス詳細ページの事業アイソメトリックを特大表示 */
+.blk-illust.is-xl svg{max-width:540px}

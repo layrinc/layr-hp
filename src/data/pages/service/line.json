@@ -17,8 +17,8 @@
       "id": "il-chat",
       "type": "illust",
       "p": {
-        "kind": "chat",
-        "size": "m",
+        "kind": "iso-phone",
+        "size": "xl",
         "align": "center"
       }
     },

@@ -72,25 +72,6 @@
       "p": {
         "size": "m"
       }
-    },
-    {
-      "id": "sv-cta",
-      "type": "ctaBand",
-      "p": {
-        "title_before": "どちらが合うか",
-        "title_em": "無料相談",
-        "title_after": "で整理できます。",
-        "desc": "現状を伺って、必要なサービスだけをご提案します。無理な営業はしません。",
-        "btn_primary": "無料相談に申し込む",
-        "btn_secondary": "メールで問い合わせる"
-      }
-    },
-    {
-      "id": "sv-sp3",
-      "type": "spacer",
-      "p": {
-        "size": "m"
-      }
     }
   ]
 }

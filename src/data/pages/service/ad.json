@@ -17,8 +17,8 @@
       "id": "ad-il-chat",
       "type": "illust",
       "p": {
-        "kind": "chat",
-        "size": "m",
+        "kind": "iso-chart",
+        "size": "xl",
         "align": "center"
       }
     },
