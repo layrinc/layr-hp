@@ -6,6 +6,8 @@
       "has": [{ "type": "host", "value": "www.layr.co.jp" }],
       "destination": "https://layr.co.jp/:path*",
       "permanent": true
-    }
+    },
+    { "source": "/service-line/", "destination": "/service/line/", "permanent": true },
+    { "source": "/service-line", "destination": "/service/line/", "permanent": true }
   ]
 }

@@ -9,9 +9,10 @@ import Block from '../components/Block.astro';
 import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
-  const mods = import.meta.glob('../data/pages/*.json', { eager: true });
+  // サブフォルダ対応: data/pages/service/line.json → /service/line/
+  const mods = import.meta.glob('../data/pages/**/*.json', { eager: true });
   return Object.entries(mods).map(([path, mod]) => {
-    const slug = path.split('/').pop()!.replace('.json', '');
+    const slug = path.replace('../data/pages/', '').replace('.json', '');
     return { params: { page: slug }, props: { pageData: (mod as any).default } };
   });
 }
@@ -54,7 +55,19 @@ const faqJsonLd = faqItems.length
 
 // slug固有の追加構造化データ（CMSのJSONに巻き込まれないようコード側に持つ）
 const slugJsonLd: Record<string, object[]> = {
-  'service-line': [
+  'service/ad': [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      '@id': 'https://layr.co.jp/#service-ad',
+      name: 'Web広告運用代行',
+      serviceType: 'Web広告運用代行（Meta広告・Google広告・LINEヤフー広告）',
+      provider: { '@id': 'https://layr.co.jp/#organization' },
+      areaServed: 'JP',
+      url: 'https://layr.co.jp/service/ad/',
+    },
+  ],
+  'service/line': [
     {
       '@context': 'https://schema.org',
       '@type': 'Service',
@@ -63,7 +76,7 @@ const slugJsonLd: Record<string, object[]> = {
       serviceType: 'LINEマーケティング支援',
       provider: { '@id': 'https://layr.co.jp/#organization' },
       areaServed: 'JP',
-      url: 'https://layr.co.jp/service-line/',
+      url: 'https://layr.co.jp/service/line/',
       hasOfferCatalog: {
         '@type': 'OfferCatalog',
         name: 'LINEマーケティング支援プラン',
