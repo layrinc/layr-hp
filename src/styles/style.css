@@ -2572,3 +2572,16 @@ html.nav-open{overflow:hidden}
 
 /* v22 — サービス詳細ページの事業アイソメトリックを特大表示 */
 .blk-illust.is-xl svg{max-width:540px}
+
+/* =====================================================
+   v23 — スマホの会社概要とドロワー閉じるボタンの修正
+   ①縦積み時はラベル行のティント背景を外し、PC版同様の白いカードに
+   ②ドロワー展開中は×ボタンを画面右上に固定（スクロール位置に関係なく見える）
+   ===================================================== */
+@media (max-width:640px){
+  .company-table th{background:transparent;padding:16px 20px 4px}
+  .company-table td{padding:0 20px 16px}
+}
+@media (max-width:980px){
+  html.nav-open .menu-btn{position:fixed;top:14px;right:16px;z-index:130}
+}
