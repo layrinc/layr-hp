@@ -2585,3 +2585,6 @@ html.nav-open{overflow:hidden}
 @media (max-width:980px){
   html.nav-open .menu-btn{position:fixed;top:14px;right:16px;z-index:130}
 }
+
+/* v24 — 支援実績（#case・白背景）を挟んだため、続くFLOWジグザグの上端波は白で塗る */
+#case + .zz > .zz-wave:not(.zz-wave--b){color:var(--paper)}

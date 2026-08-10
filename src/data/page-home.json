@@ -105,6 +105,53 @@
       }
     },
     {
+      "id": "b-cases",
+      "type": "cases",
+      "p": {
+        "en": "CASE",
+        "title_jp": "支援実績",
+        "show_edit_note": false,
+        "items": [
+          {
+            "tag": "オンラインスクール",
+            "title": "配信設計を見直したら、講座申込が2.4倍になった",
+            "problem": "友だちは集まっている。配信は一斉のみで、反応が取れずブロックが増えていた。",
+            "action": "属性アンケートでセグメントを分け、興味別のシナリオ配信を構築。",
+            "metric_label": "LINE経由の講座申込数（月間・3ヶ月後）",
+            "before": "5件",
+            "after_number": "12",
+            "after_unit": "件",
+            "graph_before": 38,
+            "graph_after": 92
+          },
+          {
+            "tag": "美容サロン",
+            "title": "セグメント配信を入れたら、再来店率が+38%改善した",
+            "problem": "新規は来店する。ただ、2回目につながらず失客していた。",
+            "action": "来店履歴に合わせたステップ配信と、失客前リマインドを設計。",
+            "metric_label": "LINE登録者の90日以内 再来店率",
+            "before": "21%",
+            "after_number": "29",
+            "after_unit": "%",
+            "graph_before": 60,
+            "graph_after": 86
+          },
+          {
+            "tag": "整体院",
+            "title": "登録導線を作り直したら、獲得コストが半分になった",
+            "problem": "いきなり予約を促す導線のみ。離脱が多く、獲得コストが高止まりしていた。",
+            "action": "着地点をLINE友だち追加に変更し、登録後のシナリオ配信で予約まで育成。",
+            "metric_label": "友だち1人あたりの獲得コスト",
+            "before": "12,000円",
+            "after_number": "6,400",
+            "after_unit": "円",
+            "graph_before": 92,
+            "graph_after": 48
+          }
+        ]
+      }
+    },
+    {
       "id": "b-zz-flow",
       "type": "zigzag",
       "p": {
@@ -263,7 +310,7 @@
         "founded": "2026年8月",
         "business": [
           "LINE公式アカウント構築",
-          "LINE運用支援",
+          "LINE運用・マーケティング支援",
           "Web広告運用代行"
         ]
       }
