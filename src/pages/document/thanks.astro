@@ -1,23 +1,58 @@
 ---
-/** 資料請求フォームの送信完了ページ（検索エンジンには載せない） */
+/**
+ * 資料請求フォームの送信完了ページ（検索エンジンには載せない）。
+ * ?d=<資料id> 付きで来た場合は、その場でPDFダウンロードを提供する
+ * （個別資料ページ /document/<id>/ からの送信成功時）。
+ * クエリ無しの場合は従来どおり「メールでお送りします」の文面。
+ */
 import Base from '../../layouts/Base.astro';
+import materials from '../../data/materials.json';
 
 const title = '送信完了｜株式会社LAYR';
-const description = '資料請求ありがとうございました。1営業日以内にメールで資料をお送りします。';
+const description = '資料請求ありがとうございました。資料のダウンロードはこちらから。';
+const matMap = Object.fromEntries(materials.map((m) => [m.id, { title: m.title, file: m.file }]));
 ---
 <Base title={title} description={description} robots="noindex, nofollow">
   <section class="thanks-sec">
     <div class="thanks-card">
       <div class="thanks-ico" aria-hidden="true"></div>
       <h1>送信ありがとうございました</h1>
-      <p>ご入力いただいたメールアドレス宛に、<strong>1営業日以内</strong>にサービス紹介資料をお送りします。<br>届かない場合は迷惑メールフォルダをご確認のうえ、<a href="mailto:info@layr.co.jp">info@layr.co.jp</a> までご連絡ください。</p>
-      <div class="thanks-actions">
-        <a class="btn btn-green" href="/">トップページへ戻る</a>
-        <a class="btn btn-black" href="/blog/">コラムを読む</a>
+
+      <!-- ?d= 付き: その場でダウンロード -->
+      <div id="dlBlock" hidden>
+        <p>下のボタンから資料をダウンロードいただけます。<br>うまく開けない場合は <a href="mailto:info@layr.co.jp">info@layr.co.jp</a> までご連絡ください。</p>
+        <div class="thanks-actions">
+          <a class="btn btn-green btn-lg" id="dlBtn" href="#" download>資料をダウンロード（PDF）</a>
+        </div>
+        <p class="dl-sub"><a href="/document/">他の資料も見る</a></p>
+      </div>
+
+      <!-- クエリ無し: 従来のメール送付文面 -->
+      <div id="mailBlock">
+        <p>ご入力いただいたメールアドレス宛に、<strong>1営業日以内</strong>に資料をお送りします。<br>届かない場合は迷惑メールフォルダをご確認のうえ、<a href="mailto:info@layr.co.jp">info@layr.co.jp</a> までご連絡ください。</p>
+        <div class="thanks-actions">
+          <a class="btn btn-green" href="/">トップページへ戻る</a>
+          <a class="btn btn-black" href="/blog/">コラムを読む</a>
+        </div>
       </div>
     </div>
   </section>
 </Base>
+
+<script is:inline define:vars={{ matMap }}>
+  (function () {
+    const id = new URLSearchParams(location.search).get('d');
+    const m = id && matMap[id];
+    if (!m) return;
+    document.getElementById('mailBlock').hidden = true;
+    const blk = document.getElementById('dlBlock');
+    blk.hidden = false;
+    const btn = document.getElementById('dlBtn');
+    btn.href = m.file;
+    btn.setAttribute('download', '');
+    document.querySelector('.thanks-card h1').textContent = '送信ありがとうございました';
+  })();
+</script>
 
 <style>
   /* 角丸・罫線・リンク色・ウエイトは style.css 側に一本化 */
@@ -28,4 +63,6 @@ const description = '資料請求ありがとうございました。1営業日�
   .thanks-card h1{font-size:calc(clamp(20px,3vw,24px) * var(--fs,1));margin-bottom:16px}
   .thanks-card p{font-size:calc(15px * var(--fs,1));color:var(--muted);margin-bottom:30px}
   .thanks-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .dl-sub{margin-top:22px;font-size:calc(13px * var(--fs,1))!important;font-weight:700}
+  .dl-sub a{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
 </style>

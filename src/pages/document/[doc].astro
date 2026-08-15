@@ -1,0 +1,157 @@
+---
+/**
+ * 資料請求の個別ページ（アンドゼン /material/ 形式）。
+ * 左＝ダウンロードする資料のプレビュー、右＝リード取得フォーム。
+ * 送信成功 → /document/thanks/?d=<id> でPDFダウンロードを提供する。
+ * 資料の追加は src/data/materials.json に1件足すだけ（このルートが自動生成）。
+ */
+import Base from '../../layouts/Base.astro';
+import settings from '../../data/settings.json';
+import materials from '../../data/materials.json';
+
+export function getStaticPaths() {
+  return materials.map((m) => ({ params: { doc: m.id }, props: { m } }));
+}
+
+const { m } = Astro.props;
+const title = `${m.title}｜資料ダウンロード`;
+const description = `${m.desc} フォーム送信後、その場でPDFをダウンロードいただけます。`;
+
+const formAction = `https://formsubmit.co/${settings.email}`;
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: new URL('/', Astro.site).href },
+      { '@type': 'ListItem', position: 2, name: 'お役立ち資料', item: new URL('/document/', Astro.site).href },
+      { '@type': 'ListItem', position: 3, name: m.title },
+    ],
+  },
+];
+---
+<Base title={title} description={description} jsonLd={jsonLd}>
+  <div class="subpage-pad"></div>
+  <div class="page-hero container">
+    <h1 class="sec-jp">{m.title}</h1>
+  </div>
+
+  <section class="dd-sec">
+    <div class="container dd-wrap">
+
+      <!-- 左: 資料プレビュー -->
+      <aside class="dd-doc">
+        <p class="dd-doc-label"><i></i>ダウンロードする資料</p>
+        <img class="dd-thumb" src={m.thumb} alt={m.title} width="1200" height="675" />
+        <p class="dd-desc">{m.desc}</p>
+        <p class="dd-back"><a href="/document/">‹ 資料一覧へ戻る</a></p>
+      </aside>
+
+      <!-- 右: リード取得フォーム -->
+      <div class="dd-form-card">
+        <p class="doc-form-note">下記をご入力ください。送信後、この場でPDFをダウンロードいただけます。</p>
+        <form action={formAction} method="POST" class="doc-form" id="ddForm">
+          <input type="hidden" name="_subject" value={`【資料DL】${m.title}`} />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_captcha" value="false" />
+          <input type="hidden" name="ご希望の資料" value={m.title} />
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+
+          <label><span class="lbl">氏名 <span class="req">必須</span></span>
+            <input type="text" name="お名前" required placeholder="例) 山田太郎" autocomplete="name" />
+          </label>
+          <label><span class="lbl">会社・組織名 <span class="req">必須</span></span>
+            <input type="text" name="会社名" required placeholder="例) 株式会社〇〇〇〇" autocomplete="organization" />
+          </label>
+          <label><span class="lbl">メールアドレス <span class="req">必須</span></span>
+            <input type="email" name="メールアドレス" required placeholder="例) taro@example.com" autocomplete="email" />
+          </label>
+          <label><span class="lbl">電話番号 <span class="opt">任意</span></span>
+            <input type="tel" name="電話番号" placeholder="例) 090-0000-0000" autocomplete="tel" />
+          </label>
+          <label class="doc-consent">
+            <input type="checkbox" required />
+            <span><a href="/privacy/" target="_blank" rel="noopener">プライバシーポリシー</a>に同意のうえ、入力情報を資料送付およびご連絡の目的で利用することに同意します。</span>
+          </label>
+          <button type="submit" class="btn btn-green btn-lg doc-submit" id="ddSubmit">送信して資料をダウンロード</button>
+
+          <div class="doc-fallback" id="ddFallback" hidden>
+            <p><strong>送信システムが混み合っているようです。</strong><br>お手数ですが、下のボタンからメールでご請求ください（入力内容は引き継がれます）。</p>
+            <a class="btn btn-black" id="ddMailto" href={`mailto:${settings.email}`}>メールで資料を請求する</a>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </section>
+</Base>
+
+<script is:inline define:vars={{ docId: m.id, docTitle: m.title }}>
+  // 送信成功 → サンクスページ（ダウンロード提供）へ。失敗時はメール下書きへフォールバック。
+  (function () {
+    const form = document.getElementById('ddForm');
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = '1';
+    const btn = document.getElementById('ddSubmit');
+    const fb = document.getElementById('ddFallback');
+    const ml = document.getElementById('ddMailto');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (form.querySelector('[name="_honey"]').value) return;
+      btn.disabled = true;
+      btn.textContent = '送信中…';
+      const fd = new FormData(form);
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 8000);
+      try {
+        const res = await fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
+          method: 'POST', body: fd, headers: { Accept: 'application/json' }, signal: ctrl.signal,
+        });
+        clearTimeout(timer);
+        if (!res.ok) throw new Error('http ' + res.status);
+        location.href = '/document/thanks/?d=' + encodeURIComponent(docId);
+      } catch (_) {
+        clearTimeout(timer);
+        const v = (k) => String(fd.get(k) || '');
+        const body = ['資料のダウンロードを希望します。', '', 'ご希望の資料: ' + docTitle, '氏名: ' + v('お名前'), '会社・組織名: ' + v('会社名'), 'メールアドレス: ' + v('メールアドレス'), '電話番号: ' + v('電話番号')].join('\n');
+        const base = ml.href.split('?')[0];
+        ml.href = base + '?subject=' + encodeURIComponent('【資料請求】' + docTitle) + '&body=' + encodeURIComponent(body);
+        fb.hidden = false;
+        fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        btn.disabled = false;
+        btn.textContent = '送信して資料をダウンロード';
+      }
+    });
+  })();
+</script>
+
+<style>
+  .dd-sec{padding:36px 0 110px}
+  .dd-wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(28px,4vw,56px);align-items:start}
+  .dd-doc-label{display:flex;align-items:center;gap:10px;font-weight:800;font-size:calc(13px * var(--fs,1));color:var(--black,#0E1A1C);margin:0 0 14px}
+  .dd-doc-label i{display:block;width:5px;height:20px;background:var(--green)}
+  .dd-thumb{width:100%;height:auto;border:1px solid var(--line,#E3ECEC);border-radius:12px;display:block}
+  .dd-desc{font-size:calc(13.5px * var(--fs,1));line-height:1.95;color:var(--muted);margin:16px 0 0}
+  .dd-back{margin:18px 0 0;font-size:calc(13px * var(--fs,1));font-weight:700}
+  .dd-back a{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
+
+  .dd-form-card{background:var(--paper,#F6FAF9);border-radius:calc(var(--radius,18px) * .7);padding:clamp(26px,3.6vw,40px)}
+  .doc-form-note{margin-bottom:22px;font-size:calc(13.5px * var(--fs,1));color:var(--muted);line-height:1.9}
+  .doc-form{display:flex;flex-direction:column;gap:16px}
+  .doc-form label{display:flex;flex-direction:column;gap:7px}
+  .req{color:#fff;padding:1px 8px;margin-left:6px;display:inline-block}
+  .opt{color:var(--muted);padding:1px 8px;margin-left:6px;display:inline-block}
+  .doc-form input[type="text"],.doc-form input[type="email"],.doc-form input[type="tel"]{font-family:var(--font-jp);font-size:calc(15px * var(--fs,1));padding:13px 15px;color:var(--text);outline:none;transition:border-color .2s}
+  .doc-consent{flex-direction:row!important;align-items:flex-start;gap:10px!important;font-weight:400!important;font-size:calc(13px * var(--fs,1))!important;color:var(--muted)}
+  .doc-consent input{margin-top:4px;accent-color:var(--green-cta);width:16px;height:16px}
+  .doc-submit{width:100%;border:none;font-family:var(--font-jp)}
+  .doc-submit:disabled{opacity:.6;cursor:wait}
+  .doc-fallback{padding:20px 22px;text-align:center}
+  .doc-fallback p{font-size:calc(13px * var(--fs,1));color:var(--muted);margin-bottom:14px}
+  .doc-fallback .btn{width:100%}
+  @media (max-width:900px){
+    .dd-wrap{grid-template-columns:1fr;gap:34px}
+    .dd-sec{padding-bottom:84px}
+  }
+</style>

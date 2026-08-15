@@ -2,5 +2,8 @@ User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /dashboard
+Disallow: /docs/
+Disallow: /yorozuya/thanks/
+Disallow: /yorozuya/docs/
 
 Sitemap: https://layr.co.jp/sitemap-index.xml

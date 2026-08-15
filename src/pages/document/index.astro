@@ -2,18 +2,13 @@
 /**
  * お役立ち資料の一覧ページ（リード獲得用・アーカイブ形式）。
  * 資料の追加・編集は src/data/materials.json を編集する。
- * カードの「ダウンロード」→ 下部の共通フォームへスクロールし、資料名を自動選択。
- * フォームは FormSubmit 経由で info@layr.co.jp に着信し、資料はメールで送付する運用。
+ * カードの「ダウンロード」→ 個別ページ /document/<id>/ のフォームへ。送信後その場でPDFを提供。
  */
 import Base from '../../layouts/Base.astro';
-import settings from '../../data/settings.json';
 import materials from '../../data/materials.json';
 
 const title = 'お役立ち資料 無料ダウンロード（LINE運用・広告運用）｜LAYR';
-const description = 'LINE公式アカウントの構築・運用、Web広告運用代行に関する資料を無料配布中。フォーム送信後、メールでPDFをお届けします。サービス紹介資料・料金の目安・進め方をまとめています。';
-
-const formAction = `https://formsubmit.co/${settings.email}`;
-const thanksUrl = new URL('/document/thanks/', Astro.site).href;
+const description = 'LINE公式アカウントの構築・運用、Web広告運用代行に関する資料を無料配布中。フォーム送信後、その場でPDFをダウンロードいただけます。サービス紹介資料・料金の目安・進め方をまとめています。';
 
 const jsonLd = [
   {
@@ -40,18 +35,18 @@ const jsonLd = [
 
   <section class="mat-sec">
     <div class="container">
-      <p class="mat-lead">LINE運用・広告運用の資料を無料配布中です。<br />フォーム送信後、メールでPDFをお届けします。</p>
+      <p class="mat-lead">LINE運用・広告運用の資料を無料配布中です。<br />フォーム送信後、その場でPDFをダウンロードいただけます。</p>
 
       <div class="mat-grid">
         {materials.map((m) => (
           <article class="mat-card">
-            <a class="mat-thumb" href="#request" data-material={m.title} aria-hidden="true" tabindex="-1">
+            <a class="mat-thumb" href={`/document/${m.id}/`} aria-hidden="true" tabindex="-1">
               <img src={m.thumb} alt="" width="1200" height="675" loading="lazy" />
             </a>
             <div class="mat-body">
               <h2 class="mat-title">{m.title}</h2>
               <p class="mat-desc">{m.desc}</p>
-              <a class="btn btn-green mat-dl" href="#request" data-material={m.title}>ダウンロード</a>
+              <a class="btn btn-green mat-dl" href={`/document/${m.id}/`}>ダウンロード</a>
             </div>
           </article>
         ))}
@@ -59,116 +54,8 @@ const jsonLd = [
     </div>
   </section>
 
-  <!-- 共通ダウンロードフォーム -->
-  <section class="mat-form-sec" id="request">
-    <div class="container">
-      <div class="mat-form-card">
-        <h2 class="mat-form-title">資料ダウンロードフォーム</h2>
-        <p class="doc-form-note">下記をご入力のうえ送信してください。1営業日以内に、メールで資料をお送りします。</p>
-        <form action={formAction} method="POST" class="doc-form">
-          <input type="hidden" name="_subject" value="【資料請求】LAYRお役立ち資料" />
-          <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_captcha" value="false" />
-          <input type="hidden" name="_next" value={thanksUrl} />
-          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
-
-          <label><span class="lbl">ご希望の資料 <span class="req">必須</span></span>
-            <select name="ご希望の資料" id="matSelect" required>
-              <option value="">選択してください</option>
-              {materials.map((m) => <option>{m.title}</option>)}
-            </select>
-          </label>
-          <label><span class="lbl">会社名・屋号 <span class="req">必須</span></span>
-            <input type="text" name="会社名" required placeholder="株式会社〇〇" autocomplete="organization" />
-          </label>
-          <label><span class="lbl">お名前 <span class="req">必須</span></span>
-            <input type="text" name="お名前" required placeholder="山田 太郎" autocomplete="name" />
-          </label>
-          <label><span class="lbl">メールアドレス <span class="req">必須</span></span>
-            <input type="email" name="メールアドレス" required placeholder="taro@example.com" autocomplete="email" />
-          </label>
-          <label><span class="lbl">電話番号 <span class="opt">任意</span></span>
-            <input type="tel" name="電話番号" placeholder="090-1234-5678" autocomplete="tel" />
-          </label>
-          <label class="doc-consent">
-            <input type="checkbox" required />
-            <span><a href="/privacy/" target="_blank" rel="noopener">プライバシーポリシー</a>に同意のうえ、入力情報を資料送付およびご連絡の目的で利用することに同意します。</span>
-          </label>
-          <button type="submit" class="btn btn-green btn-lg doc-submit" id="docSubmit">資料をダウンロードする</button>
-
-          <!-- 送信システム障害時の自動フォールバック（通常は非表示） -->
-          <div class="doc-fallback" id="docFallback" hidden>
-            <p><strong>送信システムが混み合っているようです。</strong><br>お手数ですが、下のボタンからメールでご請求ください（入力内容は引き継がれます）。</p>
-            <a class="btn btn-black" id="docMailto" href={`mailto:${settings.email}`}>メールで資料を請求する</a>
-          </div>
-        </form>
-      </div>
-    </div>
-  </section>
 </Base>
 
-<script>
-  // カードの「ダウンロード」→ フォームの資料selectを自動選択してスクロール
-  const sel = document.getElementById('matSelect') as HTMLSelectElement | null;
-  document.querySelectorAll<HTMLAnchorElement>('[data-material]').forEach((a) => {
-    a.addEventListener('click', () => {
-      if (!sel) return;
-      const v = a.dataset.material || '';
-      for (const o of Array.from(sel.options)) { if (o.text === v) { sel.value = o.value || v; break; } }
-      sel.value = v;
-    });
-  });
-
-  // フォーム送信: 通常はFormSubmit(AJAX)へ。障害・タイムアウト時は
-  // 入力内容を引き継いだメール下書きへ自動フォールバックし、リードを取りこぼさない。
-  const form = document.querySelector('.doc-form') as HTMLFormElement | null;
-  const submitBtn = document.getElementById('docSubmit') as HTMLButtonElement | null;
-  const fallback = document.getElementById('docFallback');
-  const mailtoLink = document.getElementById('docMailto') as HTMLAnchorElement | null;
-
-  if (form && submitBtn && fallback && mailtoLink) {
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      submitBtn.disabled = true;
-      submitBtn.textContent = '送信中…';
-
-      const fd = new FormData(form);
-      const ajaxUrl = form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/');
-      const controller = new AbortController();
-      const timer = setTimeout(() => controller.abort(), 8000);
-
-      try {
-        const res = await fetch(ajaxUrl, {
-          method: 'POST',
-          body: fd,
-          headers: { Accept: 'application/json' },
-          signal: controller.signal,
-        });
-        clearTimeout(timer);
-        if (!res.ok) throw new Error('bad status');
-        location.href = '/document/thanks/';
-      } catch {
-        clearTimeout(timer);
-        const v = (k: string) => (fd.get(k) || '').toString();
-        const body = [
-          '資料のダウンロードを希望します。',
-          '',
-          `ご希望の資料: ${v('ご希望の資料')}`,
-          `会社名・屋号: ${v('会社名')}`,
-          `お名前: ${v('お名前')}`,
-          `メールアドレス: ${v('メールアドレス')}`,
-          `電話番号: ${v('電話番号')}`,
-        ].join('\n');
-        const base = mailtoLink.href.split('?')[0];
-        mailtoLink.href = `${base}?subject=${encodeURIComponent('【資料請求】LAYRお役立ち資料')}&body=${encodeURIComponent(body)}`;
-        fallback.hidden = false;
-        fallback.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        submitBtn.disabled = false;
-        submitBtn.textContent = '資料をダウンロードする';
-      }
-    });
-  }
-</script>
 
 <style>
   .mat-sec{padding:44px 0 30px}

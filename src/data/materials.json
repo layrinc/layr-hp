@@ -3,12 +3,14 @@
     "id": "line-service",
     "title": "LAYRサービス紹介資料（LINE構築・運用）",
     "desc": "LINE公式アカウントの構築・運用支援の範囲、料金の目安（構築一律15万円／運用月5万円〜）、進め方をまとめた資料です。導入検討の社内共有にもお使いいただけます。",
-    "thumb": "/materials/line-service.png"
+    "thumb": "/materials/line-service.png",
+    "file": "/docs/layr-line-service.pdf"
   },
   {
     "id": "ad-service",
     "title": "Web広告運用代行 紹介資料",
     "desc": "Meta・Google・LINEヤフー広告の運用代行の支援範囲と進め方、広告×LINEの一体設計の考え方をまとめた資料です。",
-    "thumb": "/materials/ad-service.png"
+    "thumb": "/materials/ad-service.png",
+    "file": "/docs/layr-ad-service.pdf"
   }
 ]
