@@ -13,7 +13,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 
 const title = 'LINE公式アカウント構築・運用代行｜株式会社LAYR';
-const description = 'LINE公式アカウントの構築代行と運用代行をワンストップで。アカウント設計・リッチメニュー・ステップ配信の初期構築は15〜50万円、月次の配信企画・セグメント配信・効果測定まで担う運用支援は月3〜15万円。全国オンライン対応、無料相談は30分から。';
+const description = 'LINE公式アカウントの構築代行と運用代行をワンストップで。アカウント設計・リッチメニュー・ステップ配信の初期構築は一律15万円、月次の配信企画・セグメント配信・効果測定まで担う運用支援は月5万円〜。全国オンライン対応、無料相談は30分から。';
 
 // 構造化データ: サービス（料金レンジ付き）＋FAQPage。
 // Organization / WebSite は Base.astro が全ページ共通で出力する。
@@ -35,13 +35,13 @@ const serviceJsonLd = {
         '@type': 'Offer',
         name: 'LINE公式アカウント構築',
         description: 'アカウント設計・リッチメニュー・ステップ配信の初期構築（制作期間2〜4週間）',
-        priceSpecification: { '@type': 'PriceSpecification', minPrice: 150000, maxPrice: 500000, priceCurrency: 'JPY' },
+        priceSpecification: { '@type': 'PriceSpecification', price: 150000, priceCurrency: 'JPY' },
       },
       {
         '@type': 'Offer',
         name: 'LINE運用支援',
         description: '月次の配信企画・セグメント配信・効果測定・改善提案',
-        priceSpecification: { '@type': 'UnitPriceSpecification', minPrice: 30000, maxPrice: 150000, priceCurrency: 'JPY', unitText: '月' },
+        priceSpecification: { '@type': 'UnitPriceSpecification', minPrice: 50000, priceCurrency: 'JPY', unitText: '月' },
       },
     ],
   },
