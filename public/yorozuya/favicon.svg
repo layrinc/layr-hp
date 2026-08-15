@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <circle cx="32" cy="32" r="32" fill="#1d3a4d"/>
+  <circle cx="32" cy="32" r="21" fill="none" stroke="#f5eeda" stroke-width="3"/>
+  <text x="32" y="41.5" font-family="'Hiragino Mincho ProN','Hiragino Sans','Noto Serif JP',serif" font-size="27" font-weight="700" fill="#f5eeda" text-anchor="middle">萬</text>
+</svg>

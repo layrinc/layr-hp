@@ -1,0 +1,1620 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>よろず屋マーケくん by LAYR｜御社のWebマーケ・AI担当を、月10万円〜で。</title>
+<meta name="description" content="よろず屋マーケくんは、中小企業・店舗の「Webマーケ・AI担当」を月額10万円〜で外から供給するマーケ内製化支援・BPOサービスです。LINE・広告・LPの実務はまるっとお任せ。社内でやれることはAIで内製化します。">
+<meta property="og:title" content="よろず屋マーケくん by LAYR">
+<meta property="og:description" content="御社のWebマーケ・AI担当を、月10万円〜で。Webまわりの実務はまるっとお任せ、社内でやれることはAIで内製化します。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://layr.co.jp/yorozuya/">
+<link rel="canonical" href="https://layr.co.jp/yorozuya/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ai:#1d3a4d;          /* 藍 */
+  --ai-deep:#152936;
+  --washi:#f5eeda;       /* 和紙 */
+  --washi-card:#fbf6e7;
+  --shu:#b23c22;         /* 弁柄朱 */
+  --shu-dark:#93301a;
+  --ink:#332f26;         /* 墨 */
+  --muted:#6d6555;
+  --line:#d9cba4;
+  --line-strong:#c4b184;
+  --kin:#b78a2f;         /* 金茶 */
+  --radius:12px;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;scroll-padding-top:80px;}
+body{
+  font-family:'Noto Sans JP',sans-serif;
+  color:var(--ink);
+  background:#fff;
+  line-height:1.95;
+  font-size:16px;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:900;}
+img{max-width:100%;}
+a{color:inherit;text-decoration:none;}
+.container{max-width:1060px;margin:0 auto;padding:0 20px;}
+section{padding:88px 0;}
+.section-label{
+  display:inline-block;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  color:var(--shu);
+  background:var(--washi-card);
+  border:1.5px solid var(--shu);
+  letter-spacing:.2em;
+  font-size:.9rem;
+  padding:6px 20px 5px;
+  margin-bottom:20px;
+  transform:rotate(-1.2deg);
+  box-shadow:3px 3px 0 rgba(178,60,34,.12);
+}
+.section-title{
+  font-size:clamp(1.7rem,4vw,2.5rem);
+  line-height:1.55;
+  margin-bottom:20px;
+  letter-spacing:.05em;
+}
+.section-lead{color:var(--muted);max-width:680px;margin-bottom:48px;}
+.center{text-align:center;}
+.center .section-lead{margin-left:auto;margin-right:auto;}
+.accent{color:var(--shu);}
+strong{font-weight:700;}
+
+/* 青海波（藍の箱に敷く） */
+.seigaiha{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='36' viewBox='0 0 72 36'%3E%3Cg fill='none' stroke='%23f5eeda' stroke-opacity='.12' stroke-width='2'%3E%3Ccircle cx='36' cy='36' r='16'/%3E%3Ccircle cx='36' cy='36' r='10'/%3E%3Ccircle cx='36' cy='36' r='4'/%3E%3Ccircle cx='0' cy='36' r='16'/%3E%3Ccircle cx='0' cy='36' r='10'/%3E%3Ccircle cx='72' cy='36' r='16'/%3E%3Ccircle cx='72' cy='36' r='10'/%3E%3Ccircle cx='18' cy='18' r='16'/%3E%3Ccircle cx='18' cy='18' r='10'/%3E%3Ccircle cx='18' cy='18' r='4'/%3E%3Ccircle cx='54' cy='18' r='16'/%3E%3Ccircle cx='54' cy='18' r='10'/%3E%3Ccircle cx='54' cy='18' r='4'/%3E%3Ccircle cx='0' cy='18' r='4'/%3E%3Ccircle cx='72' cy='18' r='4'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ===== header ===== */
+header{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  background:rgba(255,255,255,.95);
+  backdrop-filter:blur(8px);
+  border-bottom:2px solid var(--ai);
+}
+.header-inner{
+  max-width:1160px;margin:0 auto;padding:10px 20px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.brand{display:flex;align-items:center;gap:10px;}
+.brand-mark{
+  width:42px;height:42px;border-radius:50%;
+  background:var(--ai);color:var(--washi);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  font-size:1.3rem;flex-shrink:0;
+  box-shadow:inset 0 0 0 2px var(--washi), inset 0 0 0 4px var(--ai);
+}
+.brand-name{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:1.1rem;line-height:1.3;letter-spacing:.05em;}
+.brand-name small{display:block;font-family:'Noto Sans JP',sans-serif;font-size:.62rem;font-weight:600;color:var(--muted);letter-spacing:.12em;}
+nav.gnav{display:flex;gap:24px;font-size:.9rem;font-weight:600;}
+nav.gnav a{position:relative;}
+nav.gnav a:hover{color:var(--shu);}
+.btn{
+  display:inline-block;
+  background:var(--shu);color:var(--washi);
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;letter-spacing:.12em;
+  padding:13px 32px;border-radius:8px;
+  box-shadow:inset 0 0 0 2px rgba(245,238,218,.35), 4px 4px 0 rgba(51,47,38,.22);
+  transition:transform .15s ease, background .15s ease, box-shadow .15s ease;
+  border:none;cursor:pointer;font-size:1.05rem;
+}
+.btn:hover{background:var(--shu-dark);transform:translate(-1px,-1px);box-shadow:inset 0 0 0 2px rgba(245,238,218,.35), 6px 6px 0 rgba(51,47,38,.22);}
+.btn-ghost{
+  display:inline-block;
+  background:var(--washi-card);color:var(--ai);
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;letter-spacing:.12em;
+  padding:13px 32px;border-radius:8px;
+  border:2px solid var(--ai);
+  box-shadow:4px 4px 0 rgba(29,58,77,.15);
+  transition:transform .15s ease, background .15s ease;
+  font-size:1.05rem;
+}
+.btn-ghost:hover{background:#fff;transform:translate(-1px,-1px);}
+.header-cta{padding:9px 20px;font-size:.95rem;}
+
+/* ===== noren ===== */
+.noren{display:flex;height:80px;margin-top:65px;}
+.noren span{
+  flex:1;background:var(--ai);
+  border-radius:0 0 10px 10px;
+  margin:0 3px;position:relative;
+  box-shadow:inset 0 -6px 0 rgba(0,0,0,.12);
+}
+.noren span.mark::after{
+  content:"萬";
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--washi);
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  font-size:1.8rem;
+  border:2px solid var(--washi);
+  border-radius:50%;
+  width:54px;height:54px;margin:auto;
+}
+
+/* ===== hero ===== */
+.hero{padding:64px 0 80px;position:relative;overflow:hidden;}
+.hero::before{
+  content:"萬";position:absolute;right:-50px;top:-60px;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  font-size:400px;line-height:1;
+  color:rgba(29,58,77,.055);
+  pointer-events:none;
+}
+.hero-inner{position:relative;text-align:center;}
+.hero-tag{
+  display:inline-block;background:var(--ai);color:var(--washi);
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  font-size:.85rem;letter-spacing:.22em;
+  padding:10px 30px 9px;border-radius:8px;margin-bottom:28px;
+}
+.hero h1{
+  font-size:clamp(1.9rem,5.4vw,3.4rem);
+  line-height:1.6;letter-spacing:.04em;
+  margin-bottom:24px;
+}
+.hero h1 .u{
+  display:inline-block;
+  background:linear-gradient(transparent 70%,rgba(178,60,34,.25) 70%);
+  padding:0 2px;
+}
+.hero h1 .big{color:var(--shu);font-size:1.18em;}
+.hanko{
+  position:absolute;top:150px;right:3%;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  color:var(--shu);border:3px solid var(--shu);
+  border-radius:8px;
+  padding:12px 10px;
+  font-size:1.05rem;line-height:1.5;letter-spacing:.1em;
+  transform:rotate(7deg);
+  opacity:.85;
+  writing-mode:vertical-rl;
+}
+.hero-sub{color:var(--muted);font-weight:500;max-width:600px;margin:0 auto 40px;}
+.hero-badges{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-bottom:44px;}
+.hero-badge{
+  background:var(--washi-card);
+  border:4px double var(--line-strong);
+  border-radius:var(--radius);
+  padding:16px 26px;min-width:190px;
+  box-shadow:5px 5px 0 rgba(29,58,77,.08);
+}
+.hero-badge .t{font-size:.78rem;font-weight:600;color:var(--muted);letter-spacing:.08em;}
+.hero-badge .v{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:1.35rem;color:var(--ai);line-height:1.5;}
+.hero-badge .v em{font-style:normal;color:var(--shu);font-size:1.35em;}
+.hero-cta{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;}
+.hero-note{margin-top:16px;font-size:.8rem;color:var(--muted);}
+
+/* ===== worries ===== */
+.worries{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.worry-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:0;}
+.worry{
+  background:var(--washi);
+  border:1px solid var(--line-strong);
+  border-radius:8px;
+  padding:20px 22px;
+  font-weight:500;
+  display:flex;gap:12px;align-items:flex-start;
+  font-size:.95rem;
+  box-shadow:3px 3px 0 rgba(29,58,77,.05);
+}
+.worry::before{content:"";flex-shrink:0;width:9px;height:9px;background:var(--shu);border-radius:2px;margin-top:.65em;}
+.worry-answer{
+  margin-top:52px;text-align:center;
+  background:var(--ai);color:var(--washi);
+  border-radius:var(--radius);
+  padding:44px 28px;
+  position:relative;
+  box-shadow:6px 6px 0 rgba(29,58,77,.15);
+}
+.worry-answer::before{
+  content:"";position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  border:14px solid transparent;border-bottom-color:var(--ai);border-top:none;
+}
+.worry-answer p.s{font-size:.95rem;opacity:.85;margin-bottom:10px;}
+.worry-answer p.l{
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  font-size:clamp(1.3rem,3.2vw,1.85rem);line-height:1.8;letter-spacing:.04em;
+}
+.worry-answer .accent{color:#f0b28e;}
+
+/* ===== about ===== */
+.about-box{
+  background:var(--washi-card);border-radius:var(--radius);
+  border:4px double var(--line-strong);
+  padding:44px 40px;
+  display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:center;
+  box-shadow:6px 6px 0 rgba(29,58,77,.07);
+}
+.about-mark{
+  width:150px;height:150px;border-radius:50%;
+  background:var(--ai);color:var(--washi);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  flex-shrink:0;margin:0 auto;
+}
+.about-mark .kanji{font-size:3.6rem;line-height:1;border:3px solid var(--washi);border-radius:50%;width:94px;height:94px;display:flex;align-items:center;justify-content:center;}
+.about-mark .yomi{font-size:.78rem;margin-top:8px;letter-spacing:.3em;}
+.about-box h3{font-size:1.35rem;margin-bottom:14px;line-height:1.7;}
+.about-box p{color:var(--muted);font-size:.95rem;}
+.about-box p + p{margin-top:10px;}
+
+/* ===== reasons ===== */
+.reasons{
+  background:var(--ai);color:var(--washi);
+  border-top:4px solid var(--shu);border-bottom:4px solid var(--shu);
+}
+.reasons .section-label{color:#f0b28e;border-color:#f0b28e;background:transparent;box-shadow:3px 3px 0 rgba(0,0,0,.2);}
+.reasons .section-title{font-size:clamp(1.85rem,4.6vw,2.8rem);}
+.reasons .section-title .accent{color:#f0b28e;}
+.reason-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px;margin-top:16px;}
+.reason{
+  background:var(--washi);color:var(--ink);
+  border:4px double var(--line-strong);
+  border-radius:var(--radius);
+  padding:40px 28px 30px;
+  position:relative;
+  box-shadow:8px 8px 0 rgba(0,0,0,.25);
+}
+.reason .num{
+  position:absolute;top:-24px;left:24px;
+  width:54px;height:54px;border-radius:10px;
+  background:var(--shu);color:var(--washi);
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:1.65rem;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:inset 0 0 0 2px rgba(245,238,218,.4), 4px 4px 0 rgba(0,0,0,.3);
+}
+.reason h3{font-size:1.3rem;line-height:1.65;margin:12px 0 14px;}
+.reason p{font-size:.92rem;color:var(--muted);}
+.reason .punch{
+  margin:20px -40px 0;
+  background:var(--shu);color:var(--washi);
+  padding:13px 32px;
+  font-size:.95rem;font-weight:700;line-height:1.75;
+  text-align:center;letter-spacing:.03em;text-wrap:balance;word-break:keep-all;
+  clip-path:polygon(0 0,100% 0,calc(100% - 13px) 50%,100% 100%,0 100%,13px 50%);
+  filter:drop-shadow(3px 3px 0 rgba(0,0,0,.3));
+}
+
+/* ===== compare ===== */
+.compare-wrap{overflow-x:auto;border:1px solid var(--line-strong);border-radius:var(--radius);box-shadow:6px 6px 0 rgba(29,58,77,.08);}
+table.compare{
+  width:100%;min-width:720px;border-collapse:separate;border-spacing:0;
+  background:var(--washi-card);font-size:.9rem;
+}
+table.compare th,table.compare td{padding:18px 16px;text-align:center;border-bottom:1px solid var(--line);}
+table.compare thead th{
+  background:var(--ai);color:var(--washi);font-weight:400;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;letter-spacing:.06em;
+}
+table.compare thead th:first-child{background:var(--ai-deep);}
+table.compare thead th.you{background:var(--shu);font-size:1.05rem;}
+table.compare td:first-child{background:var(--washi);font-weight:700;text-align:left;}
+table.compare td.you{background:#f6e8dd;font-weight:700;color:var(--shu-dark);}
+table.compare td{color:var(--muted);}
+
+/* ===== menu ===== */
+.menu-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.menu-card{
+  background:var(--washi);
+  border:4px double var(--line-strong);
+  border-radius:var(--radius);
+  padding:30px 26px;
+  box-shadow:5px 5px 0 rgba(29,58,77,.06);
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+.menu-card:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 rgba(29,58,77,.09);}
+.menu-card .icon{
+  width:54px;height:54px;border-radius:8px;
+  background:var(--ai);color:var(--washi);font-size:1.6rem;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:16px;
+  box-shadow:inset 0 0 0 2px rgba(245,238,218,.3);
+}
+.menu-card h3{font-size:1.12rem;margin-bottom:10px;}
+.menu-card ul{list-style:none;font-size:.88rem;color:var(--muted);}
+.menu-card li{padding-left:1.2em;position:relative;margin-bottom:4px;}
+.menu-card li::before{content:"・";position:absolute;left:0;color:var(--shu);font-weight:700;}
+.menu-note{
+  margin-top:28px;font-size:.85rem;color:var(--muted);
+  background:var(--washi);border:1px dashed var(--line-strong);
+  border-radius:8px;padding:16px 22px;
+}
+.menu-card.wide{
+  grid-column:span 2;
+  border:4px double var(--shu);
+  display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap;
+  position:relative;
+}
+.menu-card.wide .badge{
+  position:absolute;top:-14px;left:24px;
+  background:var(--shu);color:var(--washi);font-size:.8rem;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;letter-spacing:.1em;
+  padding:4px 16px;border-radius:6px;
+}
+.menu-card.wide .icon{margin-bottom:0;flex-shrink:0;background:var(--shu);}
+.menu-card.wide .body{flex:1;min-width:260px;}
+.menu-card.wide p.desc{font-size:.9rem;color:var(--muted);margin:8px 0 14px;}
+.ai-chips{display:flex;flex-wrap:wrap;gap:8px;}
+.ai-chip{
+  background:var(--washi-card);border:1px solid var(--line-strong);
+  border-radius:4px;padding:4px 14px;
+  font-size:.78rem;color:var(--muted);font-weight:500;
+}
+
+/* ===== souba (単発外注の相場) ===== */
+.souba-tabs{
+  display:flex;gap:10px;overflow-x:auto;
+  padding:4px;margin-bottom:34px;
+  -webkit-overflow-scrolling:touch;scrollbar-width:none;
+}
+.souba-tabs::-webkit-scrollbar{display:none;}
+.souba-tab{
+  flex-shrink:0;border:1.5px solid var(--ai);background:var(--washi-card);color:var(--ai);
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:.92rem;letter-spacing:.06em;
+  padding:9px 20px 8px;border-radius:8px;cursor:pointer;
+  transition:background .15s ease,color .15s ease;
+}
+.souba-tab.active{background:var(--ai);color:var(--washi);}
+.souba-wrap{position:relative;}
+.souba-track{
+  position:relative;
+  display:flex;gap:20px;overflow-x:auto;
+  scroll-snap-type:x mandatory;
+  padding:10px 4px 18px;
+  scrollbar-width:none;
+}
+.souba-track::-webkit-scrollbar{display:none;}
+.souba-card{
+  flex:0 0 330px;scroll-snap-align:center;
+  background:var(--washi-card);border:4px double var(--line-strong);border-radius:var(--radius);
+  padding:26px 24px;
+  box-shadow:5px 5px 0 rgba(29,58,77,.06);
+}
+.souba-card .icon{
+  width:48px;height:48px;border-radius:8px;
+  background:var(--ai);color:var(--washi);font-size:1.4rem;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 12px;
+  box-shadow:inset 0 0 0 2px rgba(245,238,218,.3);
+}
+.souba-card h3{
+  font-size:1.08rem;text-align:center;
+  color:var(--ai);margin-bottom:14px;
+}
+.souba-card table{width:100%;border-collapse:collapse;font-size:.85rem;}
+.souba-card td{
+  padding:9px 0;border-bottom:1px dashed var(--line-strong);
+  color:var(--ink);line-height:1.6;vertical-align:middle;
+}
+.souba-card td:last-child{
+  text-align:right;white-space:nowrap;
+  font-weight:700;color:var(--ai);padding-left:10px;
+}
+.souba-card tr.total td{border-bottom:none;font-weight:900;color:var(--ink);padding-top:14px;}
+.souba-card tr.total td:last-child{color:var(--shu);font-size:1.1em;}
+.souba-arrow{
+  position:absolute;top:50%;transform:translateY(-50%);
+  width:46px;height:46px;border-radius:8px;
+  background:var(--ai);color:var(--washi);border:none;cursor:pointer;
+  font-size:1rem;z-index:2;
+  box-shadow:3px 3px 0 rgba(51,47,38,.2);
+  transition:background .15s ease;
+}
+.souba-arrow:hover{background:var(--shu);}
+.souba-arrow.prev{left:-12px;}
+.souba-arrow.next{right:-12px;}
+.souba-note{margin-top:6px;font-size:.8rem;color:var(--muted);text-align:center;}
+.souba-punch{
+  margin-top:44px;text-align:center;
+  background:var(--ai);color:var(--washi);
+  border-radius:var(--radius);
+  padding:40px 28px;position:relative;
+  box-shadow:6px 6px 0 rgba(29,58,77,.15);
+}
+.souba-punch::after{
+  content:"";position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);
+  border:14px solid transparent;border-top-color:var(--ai);border-bottom:none;
+}
+.souba-punch p.s{font-size:.92rem;opacity:.85;margin-bottom:10px;}
+.souba-punch p.l{
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  font-size:clamp(1.25rem,3vw,1.7rem);line-height:1.8;letter-spacing:.04em;
+}
+.souba-punch .accent{color:#f0b28e;}
+@media(max-width:600px){
+  .souba-arrow{display:none;}
+  .souba-card{flex-basis:82%;}
+}
+
+/* ===== pricing ===== */
+.pricing{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.price-single{max-width:560px;margin:0 auto;}
+.price-card{
+  background:var(--washi);
+  border:4px double var(--line-strong);
+  border-radius:var(--radius);
+  padding:36px 28px;
+  display:flex;flex-direction:column;
+  position:relative;
+}
+.price-card.featured{border-color:var(--shu);box-shadow:8px 8px 0 rgba(178,60,34,.12);}
+.price-card .osusume{
+  position:absolute;top:-16px;left:50%;transform:translateX(-50%);
+  background:var(--shu);color:var(--washi);font-size:.85rem;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;letter-spacing:.12em;
+  padding:5px 20px 4px;border-radius:6px;white-space:nowrap;
+  box-shadow:2px 2px 0 rgba(51,47,38,.2);
+}
+.price-card .plan-name{
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  font-size:1.4rem;text-align:center;letter-spacing:.08em;
+}
+.price-card .plan-for{font-size:.82rem;color:var(--muted);text-align:center;margin:6px 0 18px;line-height:1.7;}
+.price-card .price{
+  text-align:center;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;
+  color:var(--ai);
+  border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong);
+  padding:18px 0;margin-bottom:18px;
+}
+.price-card .price .yen{font-size:2.1rem;color:var(--shu);}
+.price-card .price .unit{font-family:'Noto Sans JP',sans-serif;font-size:.85rem;font-weight:600;color:var(--muted);}
+.price-card .spec{list-style:none;font-size:.9rem;flex:1;}
+.price-card .spec li{
+  padding:9px 0 9px 1.6em;position:relative;
+  border-bottom:1px dashed var(--line-strong);
+}
+.price-card .spec li::before{
+  content:"✓";position:absolute;left:0;color:var(--shu);font-weight:700;
+}
+.price-card .init{font-size:.82rem;color:var(--muted);text-align:center;margin-top:16px;}
+.price-common{
+  margin-top:40px;background:transparent;
+  border:none;padding:0;
+  font-size:.9rem;
+}
+.price-common h4{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;margin-bottom:12px;font-size:1.1rem;letter-spacing:.05em;}
+.price-common ul{list-style:none;}
+.price-common li{padding-left:1.4em;position:relative;margin-bottom:6px;color:var(--muted);}
+.price-common li::before{content:"※";position:absolute;left:0;color:var(--shu);}
+.betto{margin-top:22px;overflow-x:auto;}
+.betto table{width:100%;border-collapse:collapse;font-size:.88rem;background:var(--washi-card);border:1px solid var(--line-strong);}
+.betto th,.betto td{padding:10px 16px;border-bottom:1px solid var(--line);text-align:left;}
+.betto th{background:var(--ai);color:var(--washi);font-weight:400;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;letter-spacing:.06em;}
+.betto td:last-child{white-space:nowrap;font-weight:700;color:var(--ai);}
+
+/* ===== flow ===== */
+.flow-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+.flow-step{
+  background:var(--washi-card);border:4px double var(--line-strong);
+  border-radius:var(--radius);padding:24px 14px;text-align:center;
+  position:relative;
+  box-shadow:4px 4px 0 rgba(29,58,77,.06);
+}
+.flow-step .no{
+  width:40px;height:40px;border-radius:8px;
+  background:var(--ai);color:var(--washi);
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:1.15rem;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 12px;
+  box-shadow:inset 0 0 0 2px rgba(245,238,218,.3);
+}
+.flow-step h3{font-size:1rem;margin-bottom:8px;line-height:1.6;}
+.flow-step p{font-size:.8rem;color:var(--muted);line-height:1.7;}
+.flow-step .time{
+  display:inline-block;margin-top:10px;
+  background:var(--washi);border:1px solid var(--line-strong);
+  border-radius:4px;padding:2px 12px;
+  font-size:.72rem;color:var(--shu-dark);font-weight:700;
+}
+.flow-step:not(:last-child)::after{
+  content:"▶";position:absolute;right:-13px;top:50%;transform:translateY(-50%);
+  color:var(--shu);font-size:.8rem;z-index:1;
+}
+.flow-note{margin-top:24px;text-align:center;font-size:.9rem;color:var(--muted);}
+.flow-note strong{color:var(--shu);}
+
+/* ===== cases ===== */
+.cases{background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+.case-card{
+  background:var(--washi);border:1px solid var(--line-strong);
+  border-radius:var(--radius);overflow:hidden;
+  box-shadow:5px 5px 0 rgba(29,58,77,.06);
+}
+.case-head{background:var(--ai);color:var(--washi);padding:18px 24px;}
+.case-head .biz{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:1.2rem;letter-spacing:.05em;}
+.case-head .plan{font-size:.78rem;opacity:.85;}
+.case-body{padding:22px 24px;}
+.case-body table{width:100%;font-size:.85rem;border-collapse:collapse;}
+.case-body td{padding:7px 0;border-bottom:1px dashed var(--line-strong);color:var(--muted);}
+.case-body td:last-child{text-align:right;white-space:nowrap;font-weight:700;color:var(--ai);}
+.case-body .total td{border-bottom:none;font-weight:700;color:var(--ink);padding-top:12px;}
+.case-body .total td:last-child{color:var(--shu);}
+.case-ai{
+  margin-top:10px;background:#f6e8dd;border-radius:6px;
+  padding:10px 14px;font-size:.82rem;color:var(--shu-dark);font-weight:700;
+}
+.case-disclaim{margin-top:26px;font-size:.82rem;color:var(--muted);text-align:center;}
+
+/* ===== faq ===== */
+.faq-list{max-width:800px;margin:0 auto;}
+details.faq{
+  background:var(--washi-card);border:1px solid var(--line-strong);
+  border-radius:var(--radius);margin-bottom:14px;overflow:hidden;
+  box-shadow:3px 3px 0 rgba(29,58,77,.05);
+}
+details.faq summary{
+  list-style:none;cursor:pointer;
+  padding:20px 56px 20px 62px;
+  font-weight:600;position:relative;line-height:1.7;
+}
+details.faq summary::-webkit-details-marker{display:none;}
+details.faq summary::before{
+  content:"Q";position:absolute;left:20px;top:19px;
+  width:30px;height:30px;border-radius:6px;
+  background:var(--ai);color:var(--washi);
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:.95rem;
+  display:flex;align-items:center;justify-content:center;
+}
+details.faq summary::after{
+  content:"＋";position:absolute;right:22px;top:50%;transform:translateY(-50%);
+  color:var(--shu);font-weight:700;font-size:1.2rem;transition:transform .2s;
+}
+details.faq[open] summary::after{content:"－";}
+details.faq .a{
+  padding:0 24px 22px 62px;color:var(--muted);font-size:.92rem;position:relative;
+}
+details.faq .a::before{
+  content:"A";position:absolute;left:20px;top:-2px;
+  width:30px;height:30px;border-radius:6px;
+  background:var(--shu);color:var(--washi);
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:.95rem;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* ===== contact ===== */
+.contact{background:var(--ai);color:var(--washi);}
+.contact .section-label{color:#f0b28e;border-color:#f0b28e;background:transparent;box-shadow:3px 3px 0 rgba(0,0,0,.2);}
+.contact .section-lead{color:rgba(245,238,218,.78);}
+.contact-form{
+  max-width:640px;margin:0 auto;
+  background:var(--washi);border-radius:var(--radius);
+  border:4px double var(--line-strong);
+  padding:44px 40px;color:var(--ink);
+  box-shadow:8px 8px 0 rgba(0,0,0,.18);
+}
+.form-row{margin-bottom:20px;}
+.form-row label{display:block;font-weight:700;font-size:.9rem;margin-bottom:6px;}
+.form-row label .req{
+  background:var(--shu);color:var(--washi);font-size:.7rem;
+  padding:2px 8px;border-radius:4px;margin-left:8px;font-weight:700;
+}
+.form-row label .opt{
+  background:#9a9077;color:var(--washi);font-size:.7rem;
+  padding:2px 8px;border-radius:4px;margin-left:8px;font-weight:700;
+}
+.form-row input,.form-row textarea{
+  width:100%;padding:13px 16px;
+  border:1.5px solid var(--line-strong);border-radius:8px;
+  font-size:1rem;font-family:inherit;background:var(--washi-card);
+}
+.form-row input:focus,.form-row textarea:focus{
+  outline:none;border-color:var(--ai);background:#fff;
+}
+.form-submit{text-align:center;margin-top:28px;}
+.form-submit .btn{width:100%;max-width:320px;padding:16px 30px;font-size:1.15rem;}
+.form-privacy{font-size:.78rem;color:var(--muted);text-align:center;margin-top:14px;}
+
+/* ===== footer ===== */
+footer{background:#152936;color:rgba(245,238,218,.7);padding:44px 0 110px;font-size:.85rem;}
+.footer-inner{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;}
+.footer-brand{display:flex;align-items:center;gap:10px;color:var(--washi);}
+.footer-brand .brand-mark{width:36px;height:36px;font-size:1rem;background:rgba(245,238,218,.12);box-shadow:none;}
+.footer-links{display:flex;gap:22px;}
+.footer-links a:hover{color:var(--washi);}
+.copy{width:100%;text-align:center;margin-top:20px;font-size:.75rem;color:rgba(245,238,218,.4);}
+
+/* ===== fixed cta (mobile) ===== */
+.fixed-cta{
+  position:fixed;bottom:0;left:0;right:0;z-index:99;
+  background:rgba(21,41,54,.96);
+  padding:12px 16px;
+  display:none;justify-content:center;
+}
+.fixed-cta .btn{width:100%;max-width:420px;text-align:center;padding:14px;}
+
+/* ===== 書体戻し（可読性優先・デザインは江戸のまま） ===== */
+.btn,.btn-ghost{font-weight:700;font-size:1rem;letter-spacing:.04em;}
+.header-cta{font-size:.9rem;}
+.section-label{font-weight:700;font-size:.85rem;letter-spacing:.12em;}
+.hero-tag{font-weight:700;font-size:clamp(1.05rem,4.1vw,1.6rem);letter-spacing:.12em;}
+.hanko{font-weight:700;font-size:.95rem;}
+.hero h1{font-size:clamp(1.75rem,5vw,3.1rem);line-height:1.55;letter-spacing:.02em;}
+.section-title{font-size:clamp(1.5rem,3.6vw,2.2rem);letter-spacing:.02em;}
+.hero-badge .v{font-weight:900;}
+.brand-name{font-weight:900;font-size:1.05rem;}
+.brand-mark{font-weight:900;font-size:1.25rem;}
+.noren span.mark::after{font-weight:900;font-size:1.7rem;}
+.hero::before{font-weight:900;}
+.about-mark{font-weight:900;}
+.about-box h3{font-size:1.3rem;}
+.reason .num{font-weight:900;font-size:1.25rem;}
+.reason h3{font-size:1.12rem;}
+table.compare thead th{font-weight:700;}
+table.compare thead th.you{font-size:1rem;}
+.menu-card .icon{font-weight:900;font-size:1.4rem;}
+.menu-card h3{font-size:1.05rem;}
+.menu-card.wide .badge{font-weight:700;font-size:.78rem;letter-spacing:.04em;}
+.souba-tab{font-weight:700;font-size:.88rem;letter-spacing:.02em;}
+.souba-card .icon{font-weight:900;font-size:1.2rem;}
+.souba-card h3{font-size:1.02rem;}
+.worry-answer p.l{font-weight:900;font-size:clamp(1.2rem,3vw,1.7rem);letter-spacing:.02em;line-height:1.7;}
+.souba-punch p.l{font-weight:900;font-size:clamp(1.15rem,2.8vw,1.6rem);letter-spacing:.02em;line-height:1.7;}
+.price-card .osusume{font-weight:700;font-size:.8rem;letter-spacing:.04em;}
+.price-card .plan-name{font-weight:900;font-size:1.2rem;letter-spacing:.02em;}
+.price-card .price{font-weight:900;}
+.price-card .price .yen{font-size:2rem;}
+.price-card .price .unit{font-weight:700;}
+.price-common h4{font-weight:900;font-size:1rem;letter-spacing:.02em;}
+.betto th{font-weight:700;letter-spacing:.02em;}
+.flow-step .no{font-weight:900;font-size:1rem;}
+.flow-step h3{font-size:.98rem;}
+.case-head .biz{font-weight:900;font-size:1.1rem;letter-spacing:.02em;}
+details.faq summary::before,details.faq .a::before{font-weight:900;font-size:.9rem;}
+.form-submit .btn{font-size:1.05rem;}
+
+/* ===== 追加UI（拡大・アイコン・ハンバーガー・一気通貫・資料請求） ===== */
+.icon svg{width:30px;height:30px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+.menu-grid{grid-template-columns:repeat(2,1fr);gap:26px;}
+.menu-card{padding:40px 36px;}
+.menu-card .icon{width:66px;height:66px;}
+.menu-card .icon svg{width:34px;height:34px;}
+.menu-card h3{font-size:1.3rem;}
+.menu-card ul{font-size:.95rem;}
+.menu-card li{margin-bottom:7px;}
+.menu-card.wide p.desc{font-size:.95rem;}
+.ai-chip{font-size:.82rem;padding:5px 15px;}
+.souba-card{flex:0 0 385px;padding:32px 28px;}
+.souba-card .icon{width:58px;height:58px;}
+.souba-card .icon svg{width:30px;height:30px;}
+.souba-card h3{font-size:1.18rem;}
+.souba-card table{font-size:.92rem;}
+.souba-card td{padding:11px 0;}
+
+.menu-toggle{display:none;flex-direction:column;justify-content:center;gap:5px;width:44px;height:44px;background:var(--ai);border:none;border-radius:8px;cursor:pointer;padding:0 10px;flex-shrink:0;}
+.menu-toggle span{display:block;height:2.5px;background:var(--washi);border-radius:2px;transition:transform .2s ease,opacity .2s ease;}
+.menu-toggle.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg);}
+.menu-toggle.open span:nth-child(2){opacity:0;}
+.menu-toggle.open span:nth-child(3){transform:translateY(-7.5px) rotate(-45deg);}
+.mobile-nav{position:fixed;top:0;left:0;right:0;z-index:97;background:#fff;border-bottom:2px solid var(--ai);padding:76px 22px 22px;display:none;flex-direction:column;box-shadow:0 14px 30px rgba(29,58,77,.18);}
+.mobile-nav.open{display:flex;}
+.mobile-nav a{padding:13px 6px;font-weight:600;border-bottom:1px dashed var(--line-strong);}
+.mobile-nav .mobile-nav-cta{display:flex;gap:10px;margin-top:16px;}
+.mobile-nav .mobile-nav-cta a{flex:1;text-align:center;border-bottom:none;padding:13px 8px;font-size:.95rem;}
+@media(min-width:901px){.mobile-nav{display:none!important;}}
+@media(max-width:900px){.menu-toggle{display:flex;}}
+
+.fixed-cta{gap:10px;}
+.fixed-cta .btn{flex:1;max-width:none;padding:14px 8px;font-size:.95rem;}
+.fixed-cta .btn.ghost-dark{background:transparent;border:2px solid var(--washi);color:var(--washi);box-shadow:none;}
+
+.radio-row{display:flex;gap:12px;flex-wrap:wrap;}
+label.radio{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.95rem;background:var(--washi-card);border:1.5px solid var(--line-strong);border-radius:8px;padding:11px 18px;cursor:pointer;}
+label.radio input{accent-color:var(--shu);width:18px;height:18px;}
+label.radio:has(input:checked){border-color:var(--shu);background:#f6e8dd;}
+
+.ikki-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:18px;}
+.ikki-node{background:var(--washi-card);border:4px double var(--line-strong);border-radius:var(--radius);padding:28px 14px;text-align:center;position:relative;box-shadow:4px 4px 0 rgba(29,58,77,.06);}
+.ikki-node .icon{width:58px;height:58px;border-radius:8px;background:var(--ai);color:var(--washi);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;box-shadow:inset 0 0 0 2px rgba(245,238,218,.3);}
+.ikki-node h3{font-size:1.08rem;margin-bottom:6px;}
+.ikki-node p{font-size:.8rem;color:var(--muted);line-height:1.7;}
+.ikki-node:not(:last-child)::after{content:"▶";position:absolute;right:-15px;top:50%;transform:translateY(-50%);color:var(--shu);z-index:1;}
+.ikki-band{background:var(--ai);color:var(--washi);border-radius:var(--radius);padding:16px 20px;text-align:center;font-weight:700;margin-bottom:52px;font-size:clamp(1rem,2vw,1.2rem);box-shadow:5px 5px 0 rgba(29,58,77,.12);}
+.ikki-vs{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:60px;}
+.ikki-col{border-radius:var(--radius);padding:32px 30px;}
+.ikki-col.bad{background:#ece4cf;border:1px solid var(--line-strong);}
+.ikki-col.good{background:var(--washi-card);border:4px double var(--shu);box-shadow:6px 6px 0 rgba(178,60,34,.1);}
+.ikki-col h3{font-size:1.2rem;margin-bottom:14px;}
+.ikki-col.bad h3{color:var(--muted);}
+.ikki-col.good h3{color:var(--shu);}
+.ikki-col ul{list-style:none;font-size:.95rem;color:var(--muted);}
+.ikki-col li{padding-left:1.4em;position:relative;margin-bottom:9px;}
+.ikki-col.bad li::before{content:"✕";position:absolute;left:0;color:#a09368;font-weight:700;}
+.ikki-col.good li::before{content:"✓";position:absolute;left:0;color:var(--shu);font-weight:700;}
+.ikki-punch{text-align:center;}
+.ikki-punch .giant{font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:900;font-size:clamp(2.3rem,7vw,4.4rem);line-height:1.45;letter-spacing:.04em;}
+.ikki-punch .giant .accent{color:var(--shu);}
+.ikki-punch p.sub{margin-top:16px;color:var(--muted);font-weight:600;font-size:clamp(1rem,2vw,1.15rem);}
+@media(max-width:900px){
+  .ikki-flow{grid-template-columns:repeat(2,1fr);}
+  .ikki-node:not(:last-child)::after{display:none;}
+  .ikki-vs{grid-template-columns:1fr;}
+}
+
+/* ===== shiryo (資料請求) ===== */
+.shiryo{background:var(--washi-card);border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.shiryo-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:36px;align-items:start;}
+.shiryo-cover{
+  aspect-ratio:297/210;background:var(--ai);color:var(--washi);
+  border-radius:var(--radius);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
+  box-shadow:6px 6px 0 rgba(29,58,77,.15);padding:20px;margin-bottom:20px;
+}
+.shiryo-cover .mk{
+  width:54px;height:54px;border-radius:50%;border:2px solid var(--washi);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:1.4rem;margin-bottom:12px;
+}
+.shiryo-cover .nm{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:1.35rem;letter-spacing:.04em;}
+.shiryo-cover .tg{font-size:.82rem;opacity:.85;margin-top:4px;}
+.shiryo-cover .pg{margin-top:10px;font-size:.72rem;background:var(--shu);border-radius:999px;padding:3px 14px;font-weight:700;}
+.shiryo-cover-img{
+  width:100%;height:auto;display:block;
+  border:1px solid var(--line-strong);border-radius:14px;
+  box-shadow:6px 6px 0 rgba(29,58,77,.15);
+  margin-bottom:10px;
+}
+.shiryo-cap{text-align:center;font-size:.82rem;color:var(--muted);font-weight:700;margin-bottom:18px;}
+.shiryo-toc{list-style:none;font-size:.92rem;}
+.shiryo-toc li{padding:9px 0 9px 1.7em;position:relative;border-bottom:1px dashed var(--line-strong);}
+.shiryo-toc li::before{content:"✓";position:absolute;left:0;color:var(--shu);font-weight:700;}
+.shiryo-form{
+  background:var(--washi);border:4px double var(--line-strong);border-radius:var(--radius);
+  padding:34px 32px;box-shadow:6px 6px 0 rgba(29,58,77,.07);
+}
+.shiryo-form .form-row input{background:var(--washi-card);}
+.checks-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;}
+label.check{
+  display:flex;align-items:center;gap:8px;font-weight:500;font-size:.88rem;
+  background:var(--washi-card);border:1.5px solid var(--line-strong);
+  border-radius:8px;padding:9px 12px;cursor:pointer;
+}
+label.check input{accent-color:var(--shu);width:16px;height:16px;flex-shrink:0;}
+label.check:has(input:checked){border-color:var(--shu);background:#f6e8dd;}
+
+details.opt-acc{background:transparent;border:none;}
+details.opt-acc summary{
+  list-style:none;cursor:pointer;
+  background:var(--ai);color:var(--washi);
+  border-radius:12px;
+  padding:18px 56px 18px 24px;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:900;font-size:1.05rem;
+  position:relative;
+  box-shadow:4px 4px 0 rgba(29,58,77,.15);
+}
+details.opt-acc[open] summary{border-radius:12px 12px 0 0;box-shadow:none;}
+details.opt-acc summary::-webkit-details-marker{display:none;}
+details.opt-acc summary::after{
+  content:"＋";position:absolute;right:24px;top:50%;transform:translateY(-50%);
+  color:var(--washi);font-weight:700;font-size:1.4rem;
+}
+details.opt-acc[open] summary::after{content:"−";}
+details.opt-acc summary .hint{font-size:.78rem;font-weight:500;color:rgba(245,238,218,.75);margin-left:10px;font-family:'Noto Sans JP',sans-serif;}
+.opt-body{
+  background:#fffdf3;
+  border:1.5px solid var(--line-strong);border-top:none;
+  border-radius:0 0 12px 12px;
+  padding:8px 24px 26px;
+}
+.opt-body .betto{margin-top:16px;}
+@media(max-width:900px){
+  .shiryo-grid{grid-template-columns:1fr;}
+  .checks-grid{grid-template-columns:1fr;}
+}
+
+/* ===== reveal ===== */
+.reveal{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.on{opacity:1;transform:none;}
+
+/* ===== responsive ===== */
+@media(max-width:900px){
+  .worry-grid{grid-template-columns:repeat(2,1fr);}
+  .reason-grid,.menu-grid,.price-grid,.case-grid{grid-template-columns:1fr;max-width:520px;margin-left:auto;margin-right:auto;}
+  .menu-card.wide{grid-column:1/-1;}
+  .reason{margin-top:10px;}
+  .flow-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto;}
+  .flow-step:not(:last-child)::after{content:"▼";right:auto;left:50%;top:auto;bottom:-20px;transform:translateX(-50%);}
+  .flow-grid{gap:26px;}
+  .about-box{grid-template-columns:1fr;text-align:center;}
+  nav.gnav{display:none;}
+  .fixed-cta{display:flex;}
+  footer{padding-bottom:130px;}
+  .hanko{display:none;}
+}
+@media(max-width:600px){
+  section{padding:64px 0;}
+  .worry-grid{grid-template-columns:1fr;}
+  .noren{height:58px;margin-top:61px;}
+  .noren span.mark::after{width:42px;height:42px;font-size:1.35rem;}
+  .hero{padding:44px 0 64px;}
+  .hero-badge{min-width:150px;padding:14px 18px;flex:1;}
+  .contact-form{padding:32px 22px;}
+  .header-cta{display:none;}
+}
+
+/* ===== スマホの改行調整 ===== */
+.nb{white-space:nowrap;}
+.sp{display:none;}
+@media(max-width:600px){
+  .sp{display:inline;}
+  .hero h1{font-size:clamp(1.5rem,7vw,1.9rem);}
+  .section-title{font-size:clamp(1.28rem,5.8vw,1.9rem);}
+  .worry-answer p.l{font-size:clamp(1.05rem,4.8vw,1.5rem);}
+  .souba-punch p.l{font-size:clamp(.92rem,4.1vw,1.4rem);}
+  .hero-badges{flex-direction:column;gap:10px;}
+  .hero-badge{padding:12px 16px;min-width:0;flex:none;}
+  .hero-badge .t{font-size:.72rem;}
+  .hero-badge .v{font-size:1.1rem;}
+}
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-monitor" viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M12 17v3.5M7.5 20.5h9"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5c0 4.1-4 7.5-9 7.5-1 0-2-.1-2.9-.4L4 20l1.1-3.1C3.8 15.6 3 13.6 3 11.5 3 7.4 7 4 12 4s9 3.4 9 7.5z"/></symbol>
+  <symbol id="i-mega" viewBox="0 0 24 24"><path d="M3 10v4h4l7 5V5l-7 5H3z"/><path d="M17.5 8.5a5 5 0 0 1 0 7"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 20v-6M12 20V8M17 20v-9"/></symbol>
+  <symbol id="i-ai" viewBox="0 0 24 24"><rect x="4.5" y="9" width="15" height="10" rx="2.5"/><path d="M12 9V5"/><circle cx="12" cy="4" r="1"/><circle cx="9.5" cy="13.5" r="1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="13.5" r="1" fill="currentColor" stroke="none"/><path d="M9.5 16.5h5"/></symbol>
+  <symbol id="i-phone" viewBox="0 0 24 24"><rect x="7.5" y="2.5" width="9" height="19" rx="2"/><path d="M11 18.5h2"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 24 24"><path d="M12 21.5S5.5 15.6 5.5 10.8a6.5 6.5 0 1 1 13 0c0 4.8-6.5 10.7-6.5 10.7z"/><circle cx="12" cy="10.5" r="2.2"/></symbol>
+</svg>
+
+<header>
+  <div class="header-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark">萬</span>
+      <span class="brand-name">よろず屋マーケくん<small>by 株式会社LAYR</small></span>
+    </a>
+    <nav class="gnav">
+      <a href="#about">サービスについて</a>
+      <a href="#menu">できること</a>
+      <a href="#pricing">料金</a>
+      <a href="#flow">導入の流れ</a>
+      <a href="#faq">よくある質問</a>
+      <a href="download/">資料請求</a>
+    </nav>
+    <a href="#contact" class="btn header-cta">無料相談する</a>
+    <button class="menu-toggle" id="menuToggle" aria-label="メニューを開く" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobileNav">
+  <a href="#about">サービスについて</a>
+  <a href="#menu">できること</a>
+  <a href="#pricing">料金</a>
+  <a href="#flow">導入の流れ</a>
+  <a href="#faq">よくある質問</a>
+  <a href="download/">資料請求</a>
+  <div class="mobile-nav-cta">
+    <a href="#contact" class="btn">無料相談する</a>
+    <a href="download/" class="btn-ghost">資料を請求する</a>
+  </div>
+</nav>
+
+<div class="noren" id="top" aria-hidden="true">
+  <span></span><span></span><span class="mark"></span><span></span><span></span>
+</div>
+
+<!-- ================= HERO ================= -->
+<div class="hero">
+  <div class="container hero-inner">
+    <span class="hero-tag">マーケ内製化支援・BPOサービス</span>
+    <h1>御社の<br class="sp"><span class="nb"><span class="u">Webマーケ・AI担当</span>を、</span><br><span class="big accent">月10万円〜</span>で。</h1>
+    <span class="hanko" aria-hidden="true">よろず承り</span>
+    <p class="hero-sub">
+      LINEも、広告も、LPも、AI支援も。<br>
+      御社の「Web便利屋」として、<br class="sp">まるっとお任せ。<br>
+      Webまわりの施策、<strong style="color:var(--shu);">丸投げOK</strong>です。
+    </p>
+    <div class="hero-badges">
+      <div class="hero-badge">
+        <div class="t">月額固定</div>
+        <div class="v"><em>10</em>万円〜</div>
+      </div>
+      <div class="hero-badge">
+        <div class="t">辞めない・教育いらず</div>
+        <div class="v">経験者チームが担当</div>
+      </div>
+      <div class="hero-badge">
+        <div class="t">AI支援も標準</div>
+        <div class="v">AIの仕組みを毎月納品</div>
+      </div>
+    </div>
+    <div class="hero-cta">
+      <a href="#contact" class="btn">無料相談してみる</a>
+      <a href="download/" class="btn-ghost">資料を請求する</a>
+    </div>
+    <p class="hero-note">オンライン相談60分・無料。売り込みはいたしません。（<a href="#pricing" style="text-decoration:underline;">料金を見る</a>）</p>
+  </div>
+</div>
+
+<!-- ================= WORRIES ================= -->
+<section class="worries">
+  <div class="container">
+    <div class="center">
+      <span class="section-label">こんなお悩みありませんか？</span>
+      <h2 class="section-title">Webのこと、<br class="sp"><span class="accent">後回し</span>になっていませんか</h2>
+    </div>
+    <div class="worry-grid reveal">
+      <div class="worry">ホームページが古いまま、何年も直せていない</div>
+      <div class="worry">Instagramの投稿が、いつの間にか止まっている</div>
+      <div class="worry">LINE公式アカウントを作ったけど、放置している</div>
+      <div class="worry">広告をやってみたが、良いのか悪いのか分からない</div>
+      <div class="worry">外注先がバラバラで、頼むたびに見積もり・説明が必要</div>
+      <div class="worry">Web担当を採用したいが、応募が来ない・見極められない</div>
+    </div>
+    <div class="worry-answer seigaiha reveal">
+      <p class="s">その悩み、原因はひとつです。</p>
+      <p class="l">社内に「<span class="accent">Webの担当者</span>」が<br class="sp">いないこと。<br>
+      よろず屋マーケくんが、<br class="sp">御社のWeb担当になります。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about">
+  <div class="container">
+    <div class="center">
+      <span class="section-label">よろず屋マーケくんとは？</span>
+      <h2 class="section-title">施策を売るのではなく、<br>「<span class="accent">担当者</span>」を<br class="sp">まるごとご提供します</h2>
+    </div>
+    <div class="about-box reveal">
+      <div class="about-mark">
+        <span class="kanji">萬</span>
+        <span class="yomi">よろずや</span>
+      </div>
+      <div>
+        <h3>「Webマーケの担当を1人、月10万円で雇う」<br>のと同じ感覚で使えるサービスです。</h3>
+        <p>広告運用だけ、LINEだけ、といった切り売りはしません。LINE・広告・LP、そしてAIの仕込みまで、御社のWebまわりをひとつの窓口で引き受けます。</p>
+        <p>頼む内容は毎月変えてかまいません。「今月はチラシ用のバナー、来月はLINEの配信」——それができるのが"よろず屋"です。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REASONS ================= -->
+<section class="reasons seigaiha">
+  <div class="container">
+    <div class="center">
+      <span class="section-label">選ばれる理由</span>
+      <h2 class="section-title">よろず屋マーケくんの<span class="accent">3つの特徴</span></h2>
+    </div>
+    <div class="reason-grid">
+      <div class="reason reveal">
+        <span class="num">1</span>
+        <h3>パート1人分の費用で、<br>経験者チームがつく</h3>
+        <p>時給1,100円のパートさんを月80時間で約8.8万円。そこに社会保険・採用費・教育の時間が乗ります。よろず屋マーケくんは月10万円で、Webの経験者チームがそのまま御社の担当になります。</p>
+        <div class="punch">しかも、辞めません。教育も要りません。</div>
+      </div>
+      <div class="reason reveal">
+        <span class="num">2</span>
+        <h3>月額固定の「稼働枠」制で、<br>料金が読める</h3>
+        <p>毎月の作業時間を「枠」としてご契約いただきます。枠の中なら何を頼んでも追加費用はありません。余った時間は翌月へ繰り越し（50%まで）。枠を超えそうなときは、必ず事前にご相談します。</p>
+        <div class="punch">「頼むたびに見積もり」から解放されます。</div>
+      </div>
+      <div class="reason reveal">
+        <span class="num">3</span>
+        <h3>社内でやれることは、<br>AIで内製化</h3>
+        <p>外注で終わらせません。クチコミ返信や投稿のネタ出しなど、社内でやった方が速い作業はAIの仕組みにして毎月1件ずつ納品。払った費用が「外注費」で消えず、「社内の仕組み」として残ります。</p>
+        <div class="punch">うちが要らなくなる部分は、正直に言います。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= IKKITSUKAN ================= -->
+<section id="ikkitsukan">
+  <div class="container">
+    <div class="center">
+      <span class="section-label">一気通貫の支援</span>
+      <h2 class="section-title">広告からLP、LINEまで。<br>集客の動線を<span class="accent">一気通貫</span>で見ます</h2>
+      <p class="section-lead" style="margin-left:auto;margin-right:auto;">Webの集客は「広告→LP→LINE」のつながりで決まります。よろず屋マーケくんは、この動線をまるごと設計・改善できるのが強みです。</p>
+    </div>
+    <div class="ikki-flow reveal">
+      <div class="ikki-node">
+        <div class="icon"><svg><use href="#i-mega"/></svg></div>
+        <h3>広告</h3>
+        <p>知ってもらう<br>Google・Meta・LINE広告</p>
+      </div>
+      <div class="ikki-node">
+        <div class="icon"><svg><use href="#i-monitor"/></svg></div>
+        <h3>LP・ホームページ</h3>
+        <p>興味を持ってもらう<br>改修・CVR改善</p>
+      </div>
+      <div class="ikki-node">
+        <div class="icon"><svg><use href="#i-chat"/></svg></div>
+        <h3>LINE</h3>
+        <p>つながる・リピート<br>配信・シナリオ</p>
+      </div>
+      <div class="ikki-node">
+        <div class="icon"><svg><use href="#i-chart"/></svg></div>
+        <h3>数字で改善</h3>
+        <p>詰まりを見つけて直す<br>月次レポート</p>
+      </div>
+    </div>
+    <div class="ikki-band reveal">この動線ぜんぶを、ひとつの窓口がまとめて設計・改善します</div>
+    <div class="ikki-vs">
+      <div class="ikki-col bad reveal">
+        <h3>バラバラに外注すると…</h3>
+        <ul>
+          <li>広告・LP・LINEで、頼む会社がぜんぶ別</li>
+          <li>そのたびに説明・打ち合わせ・見積もりが発生</li>
+          <li>会社ごとの連携が取れず、施策がかみ合わない</li>
+          <li>数字が悪いとき、どこの責任か分からない</li>
+        </ul>
+      </div>
+      <div class="ikki-col good reveal">
+        <h3>よろず屋マーケくんなら</h3>
+        <ul>
+          <li>窓口ひとつ。説明も、契約も、請求も一本化</li>
+          <li>広告→LP→LINEを、同じ担当が通しで設計</li>
+          <li>どこで詰まっているか、すぐ分かる・すぐ直せる</li>
+          <li>丸投げOK。毎月「やること」からご提案します</li>
+        </ul>
+      </div>
+    </div>
+    <div class="ikki-punch reveal">
+      <p class="giant">窓口は、<span class="accent">ひとつ</span>。<br>丸投げ、<span class="accent">OK</span>。</p>
+      <p class="sub">あなたの会社の「Web便利屋」として、Webまわりをまるっと対応します。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMPARE ================= -->
+<section>
+  <div class="container">
+    <div class="center">
+      <span class="section-label">他の選択肢との比較</span>
+      <h2 class="section-title">「雇う・作る・任せる」と、<br>どう違うのか</h2>
+    </div>
+    <div class="compare-wrap reveal">
+      <table class="compare">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="you">よろず屋マーケくん</th>
+            <th>パートを1人雇う</th>
+            <th>制作会社にLPを発注</th>
+            <th>広告代理店に頼む</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>費用</td>
+            <td class="you">月10万円（固定）</td>
+            <td>月約8.8万円＋社会保険・採用費</td>
+            <td>1本 50万円前後</td>
+            <td>手数料 月数万円＋広告費</td>
+          </tr>
+          <tr>
+            <td>中身</td>
+            <td class="you">Web全部＋AI支援</td>
+            <td>未経験。教育が必要</td>
+            <td>作って終わり</td>
+            <td>広告の運用のみ</td>
+          </tr>
+          <tr>
+            <td>その後</td>
+            <td class="you">毎月、改善が回り続ける</td>
+            <td>辞めるリスクが常にある</td>
+            <td>翌月から何も起きない</td>
+            <td>小さめの予算は優先されにくい</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= MENU ================= -->
+<section id="menu" class="worries">
+  <div class="container">
+    <div class="center">
+      <span class="section-label">できること</span>
+      <h2 class="section-title">Webまわりの実務は、<br>この窓口ひとつで<span class="accent">全部</span></h2>
+      <p class="section-lead">毎月の定例で「今月やること」を一緒に決めます。頼む内容は毎月変えてかまいません。何から頼めばいいか分からなくても、<strong style="color:var(--shu);">丸投げで大丈夫</strong>です。</p>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-card reveal">
+        <div class="icon"><svg><use href="#i-monitor"/></svg></div>
+        <h3>ホームページ・LPの改修</h3>
+        <ul>
+          <li>文言・画像・バナーの更新</li>
+          <li>問い合わせに繋がる率（CVR）の改善</li>
+          <li>サーバー・ドメイン・バックアップの保守</li>
+        </ul>
+      </div>
+      <div class="menu-card reveal">
+        <div class="icon"><svg><use href="#i-chat"/></svg></div>
+        <h3>LINE公式アカウント</h3>
+        <ul>
+          <li>配信の作成・配信代行</li>
+          <li>リッチメニュー・シナリオの改修</li>
+          <li>友だちを増やす導線の調整</li>
+        </ul>
+      </div>
+      <div class="menu-card reveal">
+        <div class="icon"><svg><use href="#i-mega"/></svg></div>
+        <h3>広告運用</h3>
+        <ul>
+          <li>Google・Instagram/Facebook・LINE広告</li>
+          <li>初期設定から日々の調整・改善まで</li>
+          <li>広告用バナーの制作・差し替え</li>
+        </ul>
+      </div>
+      <div class="menu-card reveal">
+        <div class="icon"><svg><use href="#i-chart"/></svg></div>
+        <h3>毎月の数字レポート</h3>
+        <ul>
+          <li>A4一枚のわかりやすいレポート</li>
+          <li>訪問数・問い合わせ数・LINE登録率</li>
+          <li>「どこで詰まっているか」を毎月1つ名指し</li>
+        </ul>
+      </div>
+      <div class="menu-card wide reveal">
+        <span class="badge">月額に標準で含まれます</span>
+        <div class="icon"><svg><use href="#i-ai"/></svg></div>
+        <div class="body">
+          <h3>AI支援（仕込み・内製化）</h3>
+          <p class="desc">御社の業務に合わせたAIの仕組みを毎月1件、作って・渡して・使い方を教えるまでワンセットで納品します。初月に業務の棚卸しを行い、社内でやった方が速い作業からAIに置き換えていきます。</p>
+          <div class="ai-chips">
+            <span class="ai-chip">クチコミ返信の自動下書き</span>
+            <span class="ai-chip">問い合わせ一次返信テンプレ</span>
+            <span class="ai-chip">SNS投稿ネタの自動生成</span>
+            <span class="ai-chip">音声メモ→議事録・日報化</span>
+            <span class="ai-chip">売上データの自動集計</span>
+            <span class="ai-chip">求人票・募集文の生成</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="menu-note">
+      ※基本の月額に含まれるのは、LINE・広告・LP改修・AI支援の実務です。SNS運用、MEO対策（Googleマップ）、新規のホームページ・LP・LINE構築などのゼロからの制作は、オプションとして追加できます（<a href="#pricing" style="text-decoration:underline;">料金の項目へ</a>）。
+    </p>
+  </div>
+</section>
+
+<!-- ================= SOUBA ================= -->
+<section id="souba">
+  <div class="container">
+    <div class="center">
+      <span class="section-label">単発で頼むと、いくら？</span>
+      <h2 class="section-title">通常、Webまわりの業務を<br class="sp">依頼すると、<br>これくらい<span class="accent">費用</span>がかかります</h2>
+      <p class="section-lead" style="margin-left:auto;margin-right:auto;">一般的な外注相場の目安です。1件ずつ別々の会社へ頼むと、そのたびに「見積もり・説明・発注」のやりとりも発生します。</p>
+    </div>
+    <div class="souba-tabs reveal" role="tablist">
+      <button class="souba-tab active" type="button">HP・LP改修</button>
+      <button class="souba-tab" type="button">LINE</button>
+      <button class="souba-tab" type="button">SNS運用</button>
+      <button class="souba-tab" type="button">広告運用</button>
+      <button class="souba-tab" type="button">MEO対策</button>
+      <button class="souba-tab" type="button">分析・レポート</button>
+      <button class="souba-tab" type="button">AI支援</button>
+    </div>
+    <div class="souba-wrap reveal">
+      <button class="souba-arrow prev" type="button" aria-label="前へ">◀</button>
+      <div class="souba-track" id="soubaTrack">
+        <div class="souba-card">
+          <div class="icon"><svg><use href="#i-monitor"/></svg></div>
+          <h3>ホームページ・LPの改修</h3>
+          <table>
+            <tr><td>テキスト・画像の修正（1箇所）</td><td>5,000〜1万円</td></tr>
+            <tr><td>バナー制作（1枚）</td><td>1〜3万円</td></tr>
+            <tr><td>ファーストビュー改修</td><td>5万円〜</td></tr>
+            <tr><td>お問い合わせフォーム改善</td><td>3万円〜</td></tr>
+            <tr><td>サイト保守・管理</td><td>月1〜3万円</td></tr>
+            <tr class="total"><td>ぜんぶ頼むと 合計</td><td>10.5万円〜</td></tr>
+          </table>
+        </div>
+        <div class="souba-card">
+          <div class="icon"><svg><use href="#i-chat"/></svg></div>
+          <h3>LINE公式アカウント</h3>
+          <table>
+            <tr><td>配信の作成・設定（1通）</td><td>1〜3万円</td></tr>
+            <tr><td>リッチメニュー制作</td><td>3〜5万円</td></tr>
+            <tr><td>シナリオ配信の構築・改修</td><td>5万円〜</td></tr>
+            <tr><td>友だち獲得導線の設計</td><td>3万円〜</td></tr>
+            <tr><td>運用代行</td><td>月5万円〜</td></tr>
+            <tr class="total"><td>ぜんぶ頼むと 合計</td><td>17万円〜</td></tr>
+          </table>
+        </div>
+        <div class="souba-card">
+          <div class="icon"><svg><use href="#i-phone"/></svg></div>
+          <h3>SNS運用</h3>
+          <table>
+            <tr><td>運用代行</td><td>月5〜15万円</td></tr>
+            <tr><td>投稿の制作（1本）</td><td>5,000〜1.5万円</td></tr>
+            <tr><td>プロフィール・ハイライト整備</td><td>2万円〜</td></tr>
+            <tr><td>返信テンプレ・運用ルール作成</td><td>3万円〜</td></tr>
+            <tr class="total"><td>ぜんぶ頼むと 合計</td><td>10.5万円〜</td></tr>
+          </table>
+        </div>
+        <div class="souba-card">
+          <div class="icon"><svg><use href="#i-mega"/></svg></div>
+          <h3>広告運用</h3>
+          <table>
+            <tr><td>運用代行</td><td>月5万円〜<br>＋広告費の20%</td></tr>
+            <tr><td>アカウント開設・初期設定</td><td>3〜5万円</td></tr>
+            <tr><td>広告バナー制作（1枚）</td><td>1〜3万円</td></tr>
+            <tr><td>月次レポート（1回）</td><td>1〜3万円</td></tr>
+            <tr class="total"><td>ぜんぶ頼むと 合計</td><td>10万円〜</td></tr>
+          </table>
+        </div>
+        <div class="souba-card">
+          <div class="icon"><svg><use href="#i-pin"/></svg></div>
+          <h3>MEO対策（Googleマップ）</h3>
+          <table>
+            <tr><td>MEO運用代行</td><td>月2〜5万円</td></tr>
+            <tr><td>ビジネスプロフィール整備</td><td>3万円〜</td></tr>
+            <tr><td>投稿代行（1本）</td><td>5,000円〜</td></tr>
+            <tr><td>クチコミ返信代行</td><td>月1万円〜</td></tr>
+            <tr class="total"><td>ぜんぶ頼むと 合計</td><td>6.5万円〜</td></tr>
+          </table>
+        </div>
+        <div class="souba-card">
+          <div class="icon"><svg><use href="#i-chart"/></svg></div>
+          <h3>分析・レポート</h3>
+          <table>
+            <tr><td>アクセス解析レポート（1回）</td><td>1〜3万円</td></tr>
+            <tr><td>GA・計測タグの設定</td><td>3〜5万円</td></tr>
+            <tr><td>ヒートマップ導入・分析</td><td>3万円〜</td></tr>
+            <tr><td>改善提案・コンサル</td><td>月3万円〜</td></tr>
+            <tr class="total"><td>ぜんぶ頼むと 合計</td><td>10万円〜</td></tr>
+          </table>
+        </div>
+        <div class="souba-card">
+          <div class="icon"><svg><use href="#i-ai"/></svg></div>
+          <h3>AI導入・活用支援</h3>
+          <table>
+            <tr><td>AI導入コンサルティング</td><td>月10万円〜</td></tr>
+            <tr><td>業務自動化の仕組みづくり（1件）</td><td>10万円〜</td></tr>
+            <tr><td>AI活用研修・レクチャー（1回）</td><td>5〜10万円</td></tr>
+            <tr><td>プロンプト・テンプレ整備</td><td>3万円〜</td></tr>
+            <tr class="total"><td>ぜんぶ頼むと 合計</td><td>28万円〜</td></tr>
+          </table>
+        </div>
+      </div>
+      <button class="souba-arrow next" type="button" aria-label="次へ">▶</button>
+    </div>
+    <p class="souba-note">※一般的な外注相場をもとにした目安です（当社調べ）。依頼先や内容により変動します。合計は各項目の下限額を足した金額です。</p>
+    <div class="souba-punch seigaiha reveal">
+      <p class="s">1件ずつ頼めば、費用も、見積もり・発注のやりとりも、毎回かかります。</p>
+      <p class="l">よろず屋マーケくんなら、<br class="sp">LINEも、広告も、LPも、AI支援も。<br><span class="accent">月額10万円〜の稼働枠に、<br class="sp">ぜんぶ込み</span>です。</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="pricing" class="pricing">
+  <div class="container">
+    <div class="center">
+      <span class="section-label">料金プラン</span>
+      <h2 class="section-title">料金は、<br class="sp"><span class="accent">月額10万円</span>のひとつだけ</h2>
+      <p class="section-lead" style="margin-left:auto;margin-right:auto;">複雑なプラン表はありません。迷わせないために、料金はひとつにしました。窓口もご請求も、ひとつでシンプルです。足りない部分は、必要なときだけオプションで追加できます。（価格はすべて税別）</p>
+    </div>
+    <div class="price-single">
+      <div class="price-card featured reveal">
+        <span class="osusume">料金はこれだけ</span>
+        <div class="plan-name">よろず屋マーケくん</div>
+        <p class="plan-for">御社のWebマーケ担当を、<br>まるごと1人ぶん</p>
+        <div class="price">
+          <span class="yen">月額 100,000円</span><br>
+          <span class="unit">稼働枠 10時間／月（余りは翌月へ50%繰越）</span>
+        </div>
+        <ul class="spec">
+          <li>LINE・広告・LP改修の実務を、まるごと対応</li>
+          <li>広告運用込み（Google・Meta・LINE／広告費別）</li>
+          <li>AI仕込み 月1件（作って・渡して・教えるまで）</li>
+          <li>定例ミーティング 月1回（60分）＋チャット相談 無制限</li>
+          <li>月次レポート1枚（詰まっている所を毎月1つ名指し）</li>
+        </ul>
+        <p class="init">初期費用 100,000円（現状診断・アカウント整備・初期設計・AI業務棚卸し）<br>最低契約 3ヶ月／以降は1ヶ月前のご連絡でいつでも解約できます</p>
+      </div>
+    </div>
+    <div class="price-common reveal">
+      <details class="opt-acc">
+        <summary>オプション（必要なときだけ、追加できます）<span class="hint">クリックで料金とお約束を開く</span></summary>
+        <div class="opt-body">
+        <div class="betto">
+          <table>
+            <tr><th>内容</th><th>料金の目安</th></tr>
+            <tr><td>SNS運用代行（Instagram・X・TikTokの企画〜投稿まで）</td><td>月5万円〜</td></tr>
+            <tr><td>MEO対策・Googleマップ対策（プロフィール整備・投稿・クチコミ返信）</td><td>月3万円〜</td></tr>
+            <tr><td>新規LP制作（1本）</td><td>15万円〜</td></tr>
+            <tr><td>新規ホームページ制作</td><td>30万円〜</td></tr>
+            <tr><td>AI活用ホームページ制作</td><td>10万円〜</td></tr>
+            <tr><td>LINE公式アカウント・Lステップの新規構築</td><td>15万円〜</td></tr>
+          </table>
+        </div>
+        <h4 style="margin-top:24px;">お約束（先にぜんぶお伝えします）</h4>
+        <ul>
+          <li>余った稼働枠は、翌月へ50%まで繰り越しできます（翌々月への持ち越しは不可）。</li>
+          <li>枠を超えそうな場合は必ず事前にご相談します。黙って追加請求することはありません。</li>
+          <li>広告費・ツール利用料などの実費は別となります。</li>
+          <li>オプションはすべて「ご提案→ご承諾後」にのみ発生します。勝手に追加しません。</li>
+        </ul>
+        </div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FLOW ================= -->
+<section id="flow">
+  <div class="container">
+    <div class="center">
+      <span class="section-label">サービス導入の流れ</span>
+      <h2 class="section-title">お問い合わせから、<br><span class="accent">約1週間</span>で<br class="sp">現状診断をお渡しします</h2>
+    </div>
+    <div class="flow-grid">
+      <div class="flow-step reveal">
+        <div class="no">1</div>
+        <h3>お問い合わせ</h3>
+        <p>フォームからご連絡ください。1営業日以内にお返事します。</p>
+        <span class="time">最短 即日</span>
+      </div>
+      <div class="flow-step reveal">
+        <div class="no">2</div>
+        <h3>無料相談<br>（60分）</h3>
+        <p>現状とお悩みを伺います。売り込みはしません。</p>
+        <span class="time">最短 翌営業日</span>
+      </div>
+      <div class="flow-step reveal">
+        <div class="no">3</div>
+        <h3>ご契約・<br>アカウント整備</h3>
+        <p>ホームページ・広告・LINEなどの権限をお預かりします。</p>
+        <span class="time">最短 3営業日</span>
+      </div>
+      <div class="flow-step reveal">
+        <div class="no">4</div>
+        <h3>現状診断＋<br>AI業務棚卸し</h3>
+        <p>「今どこで詰まっているか」を1枚のレポートに。</p>
+        <span class="time">契約から約1週間</span>
+      </div>
+      <div class="flow-step reveal">
+        <div class="no">5</div>
+        <h3>90日計画→<br>運用スタート</h3>
+        <p>何を・いつ・どの順でやるかを決め、毎月の改善サイクルへ。</p>
+        <span class="time">契約から約2週間</span>
+      </div>
+    </div>
+    <p class="flow-note">契約から<strong>1週間以内に最初のレポート</strong>が届きます。「早い」を大事にしています。</p>
+  </div>
+</section>
+
+<!-- ================= CASES ================= -->
+<section class="cases">
+  <div class="container">
+    <div class="center">
+      <span class="section-label">ご利用イメージ</span>
+      <h2 class="section-title">稼働枠は、<br>こんなふうに使えます</h2>
+      <p class="section-lead">業種別のモデルケースです。毎月の定例で、御社の状況に合わせて中身を自由に組み替えます。</p>
+    </div>
+    <div class="case-grid">
+      <div class="case-card reveal">
+        <div class="case-head">
+          <div class="biz">整体院・接骨院</div>
+          <div class="plan">月10時間の使い方（例）</div>
+        </div>
+        <div class="case-body">
+          <table>
+            <tr><td>LINE配信の作成・配信（月2通）</td><td>2h</td></tr>
+            <tr><td>Google広告の運用・調整</td><td>2h</td></tr>
+            <tr><td>ホームページの料金・メニュー更新</td><td>3h</td></tr>
+            <tr><td>広告バナーの差し替え</td><td>2h</td></tr>
+            <tr><td>月次レポート・定例</td><td>1h</td></tr>
+            <tr class="total"><td>合計</td><td>10h</td></tr>
+          </table>
+          <div class="case-ai">＋AI仕込み：クチコミ返信の自動下書き</div>
+        </div>
+      </div>
+      <div class="case-card reveal">
+        <div class="case-head">
+          <div class="biz">美容室・サロン</div>
+          <div class="plan">月10時間の使い方（例）</div>
+        </div>
+        <div class="case-body">
+          <table>
+            <tr><td>Instagram/Facebook広告の運用</td><td>4h</td></tr>
+            <tr><td>LINE配信・シナリオ改修</td><td>3h</td></tr>
+            <tr><td>ホームページのキャンペーン更新</td><td>2h</td></tr>
+            <tr><td>月次レポート・定例</td><td>1h</td></tr>
+            <tr class="total"><td>合計</td><td>10h</td></tr>
+          </table>
+          <div class="case-ai">＋AI仕込み：投稿ネタ月30本の自動生成 ほか</div>
+        </div>
+      </div>
+      <div class="case-card reveal">
+        <div class="case-head">
+          <div class="biz">学習塾・スクール</div>
+          <div class="plan">月10時間の使い方（例）</div>
+        </div>
+        <div class="case-body">
+          <table>
+            <tr><td>季節講習LPの改修・フォーム改善</td><td>3h</td></tr>
+            <tr><td>Google広告の運用</td><td>3h</td></tr>
+            <tr><td>保護者向けLINE配信（月2通）</td><td>2h</td></tr>
+            <tr><td>講習用バナーの制作</td><td>1h</td></tr>
+            <tr><td>月次レポート・定例</td><td>1h</td></tr>
+            <tr class="total"><td>合計</td><td>10h</td></tr>
+          </table>
+          <div class="case-ai">＋AI仕込み：問い合わせ一次返信テンプレ ほか</div>
+        </div>
+      </div>
+    </div>
+    <p class="case-disclaim">※作業時間はあくまで目安です。実際の配分は、初月の現状診断をふまえてご提案します。</p>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section id="faq">
+  <div class="container">
+    <div class="center">
+      <span class="section-label">よくあるご質問</span>
+      <h2 class="section-title">気になることは、<br>先にぜんぶお答えします</h2>
+    </div>
+    <div class="faq-list">
+      <details class="faq reveal">
+        <summary>月10万円は、正直高く感じます。</summary>
+        <div class="a">パートさんを1人雇うと月約8.8万円、そこに社会保険・採用費・教育の時間がかかります。しかも未経験からのスタートで、辞めてしまうリスクもあります。よろず屋マーケくんは同じくらいの費用で、経験者チームがすぐに動き出します。合わなければ最低契約期間（3ヶ月）で見直していただいて構いません。</div>
+      </details>
+      <details class="faq reveal">
+        <summary>何を頼めばいいか、自分では分かりません。</summary>
+        <div class="a">それを決めるのが、私たちの仕事です。契約後1週間ほどで「今どこで詰まっているか」を1枚の現状診断レポートにしてお渡しし、やるべきことの順番からご提案します。丸投げで大丈夫です。ただし、社内に窓口となる方を1名だけ決めていただくことをお願いしています。</div>
+      </details>
+      <details class="faq reveal">
+        <summary>AIがあるなら、自分たちでできるのでは？</summary>
+        <div class="a">できます。実際、私たちもAIを使い倒しています。だからこの価格でご提供できています。ただ「AIに何をやらせるか決めて、業務に組み込む」ところが一番大変で、多くの会社がそこで止まります。その仕組み作りを毎月1件ずつ代わりに行うのが、このサービスの中身です。</div>
+      </details>
+      <details class="faq reveal">
+        <summary>稼働枠が余ったら？ 足りなかったら？</summary>
+        <div class="a">余った分は翌月へ50%まで繰り越せます。足りない場合は、必ず事前にご相談したうえで超過分12,000円／時間で対応します。毎月足りない状態が続くようなら、稼働枠の追加やオプションのご利用をご提案します。黙って追加請求することは絶対にありません。</div>
+      </details>
+      <details class="faq reveal">
+        <summary>広告費は月額に含まれますか？</summary>
+        <div class="a">広告費そのもの（GoogleやMetaに支払う費用）と、ツールの利用料は実費として別になります。月額に含まれるのは、広告を設計・運用・改善する「人の作業」の部分です。</div>
+      </details>
+      <details class="faq reveal">
+        <summary>契約期間の縛りはありますか？</summary>
+        <div class="a">最低契約期間は3ヶ月です。初月に現状診断や初期設計を行うため、成果の判断に最低限この期間をいただいています。それ以降は、1ヶ月前のご連絡でいつでも解約できます。囲い込みはしません。</div>
+      </details>
+      <details class="faq reveal">
+        <summary>地方の会社ですが、対応できますか？</summary>
+        <div class="a">全国対応です。やり取りはチャットとオンラインの定例ミーティングが中心なので、場所は問いません。地方の中小企業・店舗の皆さまにこそ使っていただきたいサービスです。</div>
+      </details>
+      <details class="faq reveal">
+        <summary>新しいホームページやLPも作ってもらえますか？</summary>
+        <div class="a">はい、承ります。ただし月額の稼働枠で対応するのは「既存の改修・更新・運用」までで、ゼロからの新規制作はオプション（LP制作 15万円〜、ホームページ制作 30万円〜など）として承ります。ご契約中のお客様には優先的に対応します。</div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact" class="contact seigaiha">
+  <div class="container">
+    <div class="center">
+      <span class="section-label">お問い合わせ</span>
+      <h2 class="section-title" style="color:#f5eeda;">まずは、無料相談から</h2>
+      <p class="section-lead" style="margin-left:auto;margin-right:auto;">60分のオンライン相談で、現状とお悩みをお聞かせください。<br>その場で契約を迫ることはありません。1営業日以内にお返事します。<br>資料だけ見たい方は、<a href="download/" style="text-decoration:underline;">資料請求フォーム</a>からどうぞ。</p>
+    </div>
+    <!-- TODO(公開前): FormSubmitは初回送信時に届く認証メールの承認が必要。運用開始後はメール直書きをやめ、FormSubmitのエイリアス文字列へ差し替えること -->
+    <form class="contact-form reveal" action="https://formsubmit.co/biz.oneservice@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="【よろず屋マーケくん】無料相談の申込み">
+      <input type="text" name="_honey" style="display:none">
+      <div class="form-row">
+        <label>お名前<span class="req">必須</span></label>
+        <input type="text" name="お名前" required placeholder="例）山田 太郎">
+      </div>
+      <div class="form-row">
+        <label>会社名・店舗名<span class="req">必須</span></label>
+        <input type="text" name="会社名" required placeholder="例）株式会社〇〇／〇〇整骨院">
+      </div>
+      <div class="form-row">
+        <label>メールアドレス<span class="req">必須</span></label>
+        <input type="email" name="email" required placeholder="例）info@example.com">
+      </div>
+      <div class="form-row">
+        <label>電話番号<span class="opt">任意</span></label>
+        <input type="tel" name="電話番号" placeholder="例）090-0000-0000">
+      </div>
+      <div class="form-row">
+        <label>ご相談内容<span class="opt">任意</span></label>
+        <textarea name="ご相談内容" rows="4" placeholder="例）ホームページが古いまま更新できていない。InstagramとLINEも止まっている。何から手をつければいいか相談したい。"></textarea>
+      </div>
+      <div class="form-submit">
+        <button type="submit" class="btn">無料相談を申し込む</button>
+        <p class="form-privacy">いただいた情報は、お問い合わせへの対応以外には使用しません。</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer class="seigaiha">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="brand-mark">萬</span>
+      <span class="brand-name" style="font-size:.95rem;">よろず屋マーケくん<small style="color:rgba(245,238,218,.5);">by 株式会社LAYR</small></span>
+    </div>
+    <div class="footer-links">
+      <a href="https://layr.co.jp" target="_blank" rel="noopener">運営会社</a>
+      <a href="#pricing">料金</a>
+      <a href="#faq">よくある質問</a>
+      <a href="#contact">お問い合わせ</a>
+    </div>
+    <p class="copy">© 2026 LAYR Inc. All rights reserved.</p>
+  </div>
+</footer>
+
+<div class="fixed-cta">
+  <a href="#contact" class="btn">無料相談する</a>
+  <a href="download/" class="btn ghost-dark">資料を請求する</a>
+</div>
+
+<script>
+const io=new IntersectionObserver(es=>{
+  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);}});
+},{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+const track=document.getElementById('soubaTrack');
+if(track){
+  const cards=[...track.children];
+  const tabs=[...document.querySelectorAll('.souba-tab')];
+  const go=i=>{
+    const c=cards[i];
+    track.scrollTo({left:c.offsetLeft-(track.clientWidth-c.clientWidth)/2,behavior:'smooth'});
+  };
+  tabs.forEach((t,i)=>t.addEventListener('click',()=>go(i)));
+  document.querySelector('.souba-arrow.prev').addEventListener('click',()=>track.scrollBy({left:-405,behavior:'smooth'}));
+  document.querySelector('.souba-arrow.next').addEventListener('click',()=>track.scrollBy({left:405,behavior:'smooth'}));
+  const sync=()=>{
+    const max=track.scrollWidth-track.clientWidth;
+    let best;
+    if(track.scrollLeft<=10){best=0;}
+    else if(track.scrollLeft>=max-10){best=cards.length-1;}
+    else{
+      const center=track.scrollLeft+track.clientWidth/2;
+      best=0;let bd=Infinity;
+      cards.forEach((c,i)=>{
+        const d=Math.abs(c.offsetLeft+c.clientWidth/2-center);
+        if(d<bd){bd=d;best=i;}
+      });
+    }
+    tabs.forEach((t,i)=>t.classList.toggle('active',i===best));
+  };
+  track.addEventListener('scroll',()=>requestAnimationFrame(sync));
+  sync();
+}
+
+const mt=document.getElementById('menuToggle'),mn=document.getElementById('mobileNav');
+if(mt&&mn){
+  mt.addEventListener('click',()=>{
+    const o=mn.classList.toggle('open');
+    mt.classList.toggle('open',o);
+    mt.setAttribute('aria-expanded',o);
+  });
+  mn.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{
+    mn.classList.remove('open');mt.classList.remove('open');mt.setAttribute('aria-expanded','false');
+  }));
+}
+</script>
+</body>
+</html>
