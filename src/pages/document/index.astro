@@ -1,13 +1,13 @@
 ---
 /**
- * お役立ち資料の一覧ページ（リード獲得用・アーカイブ形式）。
+ * サービス紹介資料の一覧ページ（リード獲得用・アーカイブ形式）。
  * 資料の追加・編集は src/data/materials.json を編集する。
  * カードの「ダウンロード」→ 個別ページ /document/<id>/ のフォームへ。送信後その場でPDFを提供。
  */
 import Base from '../../layouts/Base.astro';
 import materials from '../../data/materials.json';
 
-const title = 'お役立ち資料 無料ダウンロード（LINE運用・広告運用）｜LAYR';
+const title = 'サービス紹介資料 無料ダウンロード｜株式会社LAYR';
 const description = 'LINE公式アカウントの構築・運用、Web広告運用代行に関する資料を無料配布中。フォーム送信後、その場でPDFをダウンロードいただけます。サービス紹介資料・料金の目安・進め方をまとめています。';
 
 const jsonLd = [
@@ -16,13 +16,13 @@ const jsonLd = [
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'ホーム', item: new URL('/', Astro.site).href },
-      { '@type': 'ListItem', position: 2, name: 'お役立ち資料' },
+      { '@type': 'ListItem', position: 2, name: 'サービス紹介資料' },
     ],
   },
   {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'LAYRお役立ち資料',
+    name: 'LAYRサービス紹介資料',
     itemListElement: materials.map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.title })),
   },
 ];
@@ -30,12 +30,12 @@ const jsonLd = [
 <Base title={title} description={description} jsonLd={jsonLd}>
   <div class="subpage-pad"></div>
   <div class="page-hero container">
-    <h1 class="sec-jp">お役立ち資料</h1>
+    <h1 class="sec-jp">サービス紹介資料</h1>
   </div>
 
   <section class="mat-sec">
     <div class="container">
-      <p class="mat-lead">LINE運用・広告運用の資料を無料配布中です。<br />フォーム送信後、その場でPDFをダウンロードいただけます。</p>
+      <p class="mat-lead">LAYRの各サービスの紹介資料を無料配布中です。<br />フォーム送信後、その場でPDFをダウンロードいただけます。</p>
 
       <div class="mat-grid">
         {materials.map((m) => (

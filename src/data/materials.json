@@ -12,5 +12,12 @@
     "desc": "Meta・Google・LINEヤフー広告の運用代行の支援範囲と進め方、広告×LINEの一体設計の考え方をまとめた資料です。",
     "thumb": "/materials/ad-service.png",
     "file": "/docs/layr-ad-service.pdf"
+  },
+  {
+    "id": "yorozuya-bpo",
+    "title": "よろず屋マーケくん 紹介資料（WebマーケティングBPO）",
+    "desc": "月10万円で、LINE・広告・LP・サイト改善までWebマーケティングの実務をまるっと担当する月額BPOサービスの紹介資料です。",
+    "thumb": "/materials/yorozuya-bpo.png",
+    "file": "/yorozuya/docs/yorozuya-marke-kun-service.pdf"
   }
 ]
