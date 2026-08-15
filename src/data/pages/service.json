@@ -1,7 +1,7 @@
 {
   "title": "サービス一覧（LINE構築・運用／広告運用／WebマーケBPO）",
   "h1": "サービス",
-  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング、Meta・Google・LINEヤフーのWeb広告運用代行、月10万円のWebマーケティングBPO「よろずやマーケくん」。広告からLINE、販売までの導線を一体で設計します。",
+  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング、Meta・Google・LINEヤフーのWeb広告運用代行、月10万円のWebマーケティングBPO「よろず屋マーケくん」。広告からLINE、販売までの導線を一体で設計します。",
   "blocks": [
     {
       "id": "sv-head",
@@ -105,7 +105,7 @@
       "type": "capBox",
       "p": {
         "color": "green",
-        "title": "WebマーケティングBPO「よろずやマーケくん」",
+        "title": "WebマーケティングBPO「よろず屋マーケくん」",
         "body": "月10万円で、LINE・広告・LP・サイト改善まで、Webマーケティングの実務をまるっと担当する月額BPOサービスです。"
       }
     },
@@ -116,7 +116,7 @@
         "align": "center",
         "items": [
           {
-            "label": "よろずやマーケくんを見る",
+            "label": "よろず屋マーケくんを見る",
             "url": "/yorozuya/",
             "style": "green"
           }
