@@ -1,9 +1,17 @@
 ---
+/**
+ * コラム記事ページ — WordPress風ブログ記事レイアウト。
+ * 2カラム（本文＋サイドバー: 目次・新着記事・資料CTA）。
+ * 本文はマークダウンのまま装飾が乗る:
+ *   **太字** → 黄色マーカー付き太字 ／ *斜体* → 赤文字強調
+ *   > 引用 → ポイントボックス（💡=緑 ／ ⚠=オレンジ ／ ✅=チェック）
+ *   h2=帯見出し・h3=左ボーダー・h4=ドット・表/リスト/hrも装飾
+ */
 import Base from '../../layouts/Base.astro';
 import { getCollection, render } from 'astro:content';
 import settings from '../../data/settings.json';
+import { ISO } from '../../lib/iso-illusts.mjs';
 
-// 全記事のURLを生成（下書きは除外）
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
   return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
@@ -21,10 +29,8 @@ const consult = settings.line_url?.trim()
   ? settings.line_url
   : `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
 
-// 目次（h2・h3を自動収集。2本以上あるときだけ表示）
 const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
-// 関連記事: 同カテゴリの新しい順→足りなければ他カテゴリで補完（自分は除外・最大3本）
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .filter((p) => p.id !== post.id)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -32,13 +38,19 @@ const related = [
   ...allPosts.filter((p) => p.data.category === post.data.category),
   ...allPosts.filter((p) => p.data.category !== post.data.category),
 ].slice(0, 3);
+const recent = allPosts.slice(0, 4);
 
-// シェアURL
+const CAT_ISO: Record<string, string> = {
+  'LINEマーケティング': ISO.phone,
+  'LINE運用': ISO.chart,
+  '事例': ISO.report,
+};
+const thumbOf = (c: string) => CAT_ISO[c] || ISO.build;
+
 const pageUrl = new URL(`/blog/${post.id}/`, Astro.site).href;
 const shareX = `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=${encodeURIComponent(pageUrl)}`;
 const shareLine = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(pageUrl)}`;
 
-// 記事の構造化データ(JSON-LD)。検索結果でリッチに表示されやすくする。
 const articleJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BlogPosting',
@@ -56,8 +68,6 @@ const articleJsonLd = {
   mainEntityOfPage: pageUrl,
   image: new URL(post.data.image || '/ogp-blog.png', Astro.site).href,
 };
-
-// パンくずの構造化データ。検索結果に「ホーム > コラム > 記事名」の階層が出る。
 const breadcrumbJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'BreadcrumbList',
@@ -69,64 +79,119 @@ const breadcrumbJsonLd = {
 };
 ---
 <Base title={title} description={post.data.description} ogType="article" ogImage={post.data.image || '/ogp-blog.png'} jsonLd={[articleJsonLd, breadcrumbJsonLd]}>
-  <article class="article is-post">
-    <nav class="article-bc" aria-label="パンくず">
+  <div class="wp-wrap container">
+    <nav class="wp-bc" aria-label="パンくず">
       <a href="/">ホーム</a><span>›</span><a href="/blog/">コラム</a><span>›</span><em>{post.data.title}</em>
     </nav>
-    <div class="article-meta">
-      <time datetime={iso(post.data.date)}>{fmt(post.data.date)}</time>
-      <span class="column-cat">{post.data.category}</span>
-    </div>
-    <h1>{post.data.title}</h1>
 
-    {toc.length >= 2 && (
-      <nav class="article-toc" aria-label="目次">
-        <p class="article-toc-title">📑 目次</p>
-        <ol>
-          {toc.map((h) => (
-            <li class={h.depth === 3 ? 'is-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
-          ))}
-        </ol>
-      </nav>
-    )}
+    <div class="wp-layout">
+      <!-- 本文 -->
+      <article class="wp-article">
+        <header class="wp-head">
+          <div class="wp-meta">
+            <span class="wp-cat">{post.data.category}</span>
+            <time datetime={iso(post.data.date)}>{fmt(post.data.date)} 公開</time>
+          </div>
+          <h1>{post.data.title}</h1>
+          <div class="wp-hero" aria-hidden="true"><span set:html={thumbOf(post.data.category)} /></div>
+        </header>
 
-    <Content />
+        {toc.length >= 2 && (
+          <nav class="wp-toc is-inline" aria-label="目次">
+            <p class="wp-toc-t">目次</p>
+            <ol>
+              {toc.map((h) => (
+                <li class={h.depth === 3 ? 'is-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
+              ))}
+            </ol>
+          </nav>
+        )}
 
-    <div class="article-share" aria-label="この記事をシェア">
-      <span class="article-share-label">SHARE</span>
-      <a class="article-share-btn is-x" href={shareX} target="_blank" rel="noopener">𝕏 ポスト</a>
-      <a class="article-share-btn is-line" href={shareLine} target="_blank" rel="noopener">LINEで送る</a>
-      <button class="article-share-btn is-copy" type="button" data-url={pageUrl}>🔗 リンクをコピー</button>
-    </div>
-
-    <div class="article-cta">
-      <p>自社のLINE公式アカウントの現状、無料でご相談いただけます</p>
-      <a class="btn btn-green" href="/contact/">無料相談に申し込む</a>
-      <p class="article-cta-sub"><a href="/service/line/">LINE公式アカウント構築・運用代行のサービス詳細と料金を見る ›</a></p>
-    </div>
-
-    {related.length > 0 && (
-      <section class="article-related">
-        <h2 class="article-related-title">あわせて読みたい</h2>
-        <div class="column-grid">
-          {related.map((p) => (
-            <a class="column-card" href={`/blog/${p.id}/`}>
-              <div class="column-meta"><time datetime={iso(p.data.date)}>{fmt(p.data.date)}</time><span class="column-cat">{p.data.category}</span></div>
-              <h3>{p.data.title}</h3><p>{p.data.description}</p>
-              <span class="more">READ MORE ›</span>
-            </a>
-          ))}
+        <div class="wp-body" id="wpBody">
+          <Content />
         </div>
-      </section>
-    )}
 
-    <div class="article-back">
-      <a href="/blog/">‹ コラム一覧へ戻る</a>
+        <div class="wp-share" aria-label="この記事をシェア">
+          <span class="wp-share-l">SHARE</span>
+          <a class="wp-share-b is-x" href={shareX} target="_blank" rel="noopener">𝕏 ポスト</a>
+          <a class="wp-share-b is-line" href={shareLine} target="_blank" rel="noopener">LINEで送る</a>
+          <button class="wp-share-b is-copy" type="button" data-url={pageUrl}>🔗 リンクをコピー</button>
+        </div>
+
+        <div class="wp-cta">
+          <p class="t">自社のLINE公式アカウントの現状、無料でご相談いただけます</p>
+          <div class="row">
+            <a class="btn btn-green" href="/contact/">無料相談に申し込む</a>
+            <a class="btn btn-black" href="/document/line-service/">サービス資料をダウンロード</a>
+          </div>
+          <p class="s"><a href="/service/line/">LINE構築・運用代行のサービス詳細と料金を見る ›</a></p>
+        </div>
+
+        {related.length > 0 && (
+          <section class="wp-related">
+            <h2 class="wp-related-t">あわせて読みたい</h2>
+            <div class="wp-rel-grid">
+              {related.map((p) => (
+                <a class="wp-rel-card" href={`/blog/${p.id}/`}>
+                  <div class="th"><span set:html={thumbOf(p.data.category)} /></div>
+                  <div class="bd">
+                    <span class="c">{p.data.category}</span>
+                    <h3>{p.data.title}</h3>
+                    <time datetime={iso(p.data.date)}>{fmt(p.data.date)}</time>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <div class="wp-back"><a href="/blog/">‹ コラム一覧へ戻る</a></div>
+      </article>
+
+      <!-- サイドバー -->
+      <aside class="wp-side">
+        {toc.length >= 2 && (
+          <div class="wp-side-box is-sticky-toc">
+            <p class="wp-side-t">目次</p>
+            <ol class="wp-side-toc">
+              {toc.map((h) => (
+                <li class={h.depth === 3 ? 'is-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
+              ))}
+            </ol>
+          </div>
+        )}
+        {recent.length > 0 && (
+          <div class="wp-side-box">
+            <p class="wp-side-t">新着記事</p>
+            <div class="wp-side-list">
+              {recent.map((p) => (
+                <a href={`/blog/${p.id}/`}>
+                  <span class="th" set:html={thumbOf(p.data.category)} />
+                  <span class="tt">{p.data.title}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        <div class="wp-side-box is-cta">
+          <p class="wp-side-t" style="color:#fff">サービス紹介資料</p>
+          <p class="d">LINE構築・運用の料金と事例をまとめた資料を無料配布中です。</p>
+          <a class="btn btn-green" href="/document/line-service/">資料をダウンロード</a>
+        </div>
+      </aside>
     </div>
-  </article>
+  </div>
 
   <script is:inline>
-    document.querySelector('.article-share-btn.is-copy')?.addEventListener('click', async (e) => {
+    // 引用ボックスの種別付け（先頭文字で判定: ⚠→注意 / ✅→チェック / それ以外→ポイント）
+    document.querySelectorAll('#wpBody blockquote').forEach(function (bq) {
+      var t = (bq.textContent || '').trim();
+      if (/^[⚠️!！注]/.test(t)) bq.classList.add('is-warn');
+      else if (/^[✅☑]/.test(t)) bq.classList.add('is-check');
+      else bq.classList.add('is-point');
+    });
+    // リンクコピー
+    document.querySelector('.wp-share-b.is-copy')?.addEventListener('click', async (e) => {
       const btn = e.currentTarget;
       try {
         await navigator.clipboard.writeText(btn.dataset.url);
@@ -137,3 +202,130 @@ const breadcrumbJsonLd = {
     });
   </script>
 </Base>
+
+<style>
+  .wp-wrap{padding:clamp(24px,3.4vw,44px) var(--gutter) clamp(60px,8vw,100px)}
+  .wp-bc{font-size:12px;color:var(--muted);margin-bottom:24px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .wp-bc a{color:var(--green-dark);font-weight:700;text-decoration:none}
+  .wp-bc span{opacity:.4;margin:0 7px}
+  .wp-bc em{font-style:normal;opacity:.75}
+  .wp-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:clamp(28px,3.6vw,52px);align-items:start}
+
+  /* 記事ヘッダ */
+  .wp-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .wp-cat{background:var(--green-dark);color:#fff;font-size:11.5px;font-weight:800;border-radius:999px;padding:5px 16px}
+  .wp-meta time{font-family:var(--font-en);font-weight:700;font-size:12.5px;color:var(--muted)}
+  .wp-head h1{font-size:clamp(23px,3.4vw,32px);font-weight:900;line-height:1.6;letter-spacing:-.01em;color:var(--black);margin-bottom:22px}
+  .wp-hero{aspect-ratio:21/9;background:linear-gradient(135deg,#EAF6F1 0%,#F6FAF9 55%,#DFF1E9 100%);border-radius:16px;display:grid;place-items:center;margin-bottom:28px}
+  .wp-hero span{width:32%;max-width:220px;display:block}
+  .wp-hero span :global(svg){width:100%;height:auto}
+
+  /* 目次 */
+  .wp-toc{background:#F6FAF9;border:1.5px solid var(--line);border-radius:14px;padding:22px 26px;margin-bottom:34px}
+  .wp-toc-t{font-weight:900;font-size:14px;color:var(--black);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .wp-toc-t::before{content:"";width:4px;height:16px;background:var(--green);border-radius:2px}
+  .wp-toc ol{list-style:none;margin:0;padding:0;counter-reset:toc}
+  .wp-toc li{counter-increment:toc;padding:5px 0;font-size:13.5px;font-weight:700}
+  .wp-toc li::before{content:counter(toc,decimal-leading-zero);font-family:var(--font-en);font-weight:800;color:var(--green);margin-right:10px;font-size:12px}
+  .wp-toc li.is-sub{padding-left:26px;font-weight:500;font-size:12.5px}
+  .wp-toc li.is-sub::before{content:"—";color:var(--green)}
+  .wp-toc a{color:var(--black);text-decoration:none}
+  .wp-toc a:hover{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
+  .is-inline{display:none}
+
+  /* ===== WordPress風 本文装飾 ===== */
+  .wp-body{font-size:15.5px;line-height:2.1;color:#1B2A2E}
+  .wp-body :global(p){margin:0 0 1.6em}
+  .wp-body :global(h2){font-size:clamp(19px,2.6vw,23px);font-weight:900;line-height:1.6;color:var(--black);background:linear-gradient(90deg,#EDF7F2,#F8FBFA);border-left:6px solid var(--green);border-bottom:2px solid color-mix(in srgb,var(--green) 30%,#fff);border-radius:6px 6px 0 0;padding:14px 18px;margin:2.4em 0 1.1em}
+  .wp-body :global(h3){font-size:clamp(16.5px,2.2vw,19px);font-weight:900;color:var(--black);border-left:4px solid var(--green);padding:2px 0 2px 14px;margin:2em 0 .9em}
+  .wp-body :global(h4){font-size:15.5px;font-weight:900;color:var(--green-dark);margin:1.8em 0 .7em;display:flex;align-items:center;gap:8px}
+  .wp-body :global(h4::before){content:"";width:9px;height:9px;border-radius:50%;background:var(--green);flex:none}
+  /* 太字＝黄色マーカー */
+  .wp-body :global(strong){font-weight:900;background:linear-gradient(transparent 62%,#FFE58A 62%)}
+  /* 斜体＝赤文字強調（伊語体は使わない） */
+  .wp-body :global(em){font-style:normal;font-weight:900;color:#D63031}
+  .wp-body :global(a){color:var(--green-dark);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+  /* 引用＝ボックス */
+  .wp-body :global(blockquote){margin:1.8em 0;padding:18px 22px;border-radius:12px;font-size:14px}
+  .wp-body :global(blockquote p){margin:0}
+  .wp-body :global(blockquote.is-point){background:#EDF7F2;border:1.5px solid color-mix(in srgb,var(--green) 30%,#fff);border-left:6px solid var(--green)}
+  .wp-body :global(blockquote.is-point::before){content:"💡 POINT";display:block;font-family:var(--font-en);font-weight:800;font-size:11.5px;letter-spacing:.08em;color:var(--green-dark);margin-bottom:6px}
+  .wp-body :global(blockquote.is-warn){background:#FFF7ED;border:1.5px solid #FEDBB8;border-left:6px solid #F59E0B}
+  .wp-body :global(blockquote.is-warn::before){content:"⚠ 注意";display:block;font-weight:900;font-size:12px;color:#B45309;margin-bottom:6px}
+  .wp-body :global(blockquote.is-check){background:#F0F9FF;border:1.5px solid #BAE3FD;border-left:6px solid #0EA5E9}
+  .wp-body :global(blockquote.is-check::before){content:"✅ CHECK";display:block;font-family:var(--font-en);font-weight:800;font-size:11.5px;letter-spacing:.08em;color:#0369A1;margin-bottom:6px}
+  /* リスト */
+  .wp-body :global(ul){margin:0 0 1.6em;padding:16px 22px 16px 40px;background:#FAFCFB;border:1px solid var(--line);border-radius:12px;list-style:none}
+  .wp-body :global(ul li){position:relative;padding:4px 0}
+  .wp-body :global(ul li::before){content:"✓";position:absolute;left:-24px;color:var(--green);font-weight:900}
+  .wp-body :global(ol){list-style:decimal;margin:0 0 1.6em;padding-left:1.8em}
+  .wp-body :global(ol li){padding:4px 0}
+  .wp-body :global(ol li::marker){font-weight:900;color:var(--green-dark)}
+  /* 表 */
+  .wp-body :global(table){width:100%;border-collapse:collapse;margin:0 0 1.8em;font-size:13.5px;border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+  .wp-body :global(th){background:var(--green-dark);color:#fff;font-weight:800;padding:12px 14px;text-align:left}
+  .wp-body :global(td){padding:11px 14px;border-bottom:1px solid var(--line);background:#fff}
+  .wp-body :global(tr:nth-child(even) td){background:#F8FBFA}
+  /* 罫線・画像・コード */
+  .wp-body :global(hr){border:none;border-top:2px dashed var(--line);margin:2.4em 0}
+  .wp-body :global(img){max-width:100%;border-radius:12px;box-shadow:0 6px 24px rgba(14,26,28,.08)}
+  .wp-body :global(code){background:#F1F5F4;border-radius:5px;padding:2px 7px;font-size:.88em;color:#0F766E}
+  .wp-body :global(pre){background:#0E1A1C;color:#E6EDEC;border-radius:12px;padding:18px 20px;overflow-x:auto;font-size:13px;line-height:1.8;margin:0 0 1.8em}
+  .wp-body :global(pre code){background:none;color:inherit;padding:0}
+
+  /* share / cta / related */
+  .wp-share{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:44px 0 0;padding-top:26px;border-top:1px solid var(--line)}
+  .wp-share-l{font-family:var(--font-en);font-weight:800;font-size:12px;letter-spacing:.1em;color:var(--muted)}
+  .wp-share-b{font-family:var(--font-jp);font-size:12.5px;font-weight:700;border-radius:999px;padding:9px 18px;cursor:pointer;text-decoration:none;border:1.5px solid var(--line);background:#fff;color:var(--black)}
+  .wp-share-b.is-x:hover{border-color:#000}
+  .wp-share-b.is-line{background:#06C755;border-color:#06C755;color:#fff}
+  .wp-share-b.is-copy:hover{border-color:var(--green)}
+  .wp-cta{background:#EDF7F2;border-radius:16px;text-align:center;padding:34px 26px;margin:34px 0 0}
+  .wp-cta .t{font-weight:900;font-size:16.5px;color:var(--black);margin-bottom:18px}
+  .wp-cta .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+  .wp-cta .s{font-size:13px}
+  .wp-cta .s a{color:var(--green-dark);font-weight:700}
+  .wp-related{margin-top:52px}
+  .wp-related-t{font-size:19px;font-weight:900;color:var(--black);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+  .wp-related-t::before{content:"";width:5px;height:19px;background:var(--green);border-radius:2px}
+  .wp-rel-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .wp-rel-card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .16s,box-shadow .16s}
+  .wp-rel-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(14,26,28,.08)}
+  .wp-rel-card .th{aspect-ratio:16/9;background:linear-gradient(135deg,#EAF6F1,#DFF1E9);display:grid;place-items:center}
+  .wp-rel-card .th span{width:44%;display:block}
+  .wp-rel-card .th span :global(svg){width:100%;height:auto}
+  .wp-rel-card .bd{padding:14px 16px 16px}
+  .wp-rel-card .c{font-size:10.5px;font-weight:800;color:var(--green-dark)}
+  .wp-rel-card h3{font-size:13.5px;font-weight:900;line-height:1.6;margin:6px 0 8px;color:var(--black)}
+  .wp-rel-card time{font-family:var(--font-en);font-size:11.5px;color:var(--muted);font-weight:700}
+  .wp-back{margin-top:38px;font-size:13.5px;font-weight:700}
+  .wp-back a{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
+
+  /* サイドバー */
+  .wp-side{display:flex;flex-direction:column;gap:18px;position:sticky;top:90px}
+  .wp-side-box{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:20px 22px}
+  .wp-side-t{font-weight:900;font-size:14px;color:var(--black);margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid var(--green)}
+  .wp-side-toc{list-style:none;margin:0;padding:0}
+  .wp-side-toc li{padding:4px 0;font-size:12.5px;font-weight:700}
+  .wp-side-toc li.is-sub{padding-left:16px;font-weight:500}
+  .wp-side-toc a{color:var(--black);text-decoration:none}
+  .wp-side-toc a:hover{color:var(--green-dark)}
+  .wp-side-list{display:flex;flex-direction:column;gap:12px}
+  .wp-side-list a{display:grid;grid-template-columns:74px 1fr;gap:12px;align-items:center;text-decoration:none}
+  .wp-side-list .th{aspect-ratio:16/10;background:linear-gradient(135deg,#EAF6F1,#DFF1E9);border-radius:8px;display:grid;place-items:center;overflow:hidden}
+  .wp-side-list .th :global(svg){width:56%;height:auto}
+  .wp-side-list .tt{font-size:12px;font-weight:700;line-height:1.6;color:var(--black);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .wp-side-list a:hover .tt{color:var(--green-dark)}
+  .wp-side-box.is-cta{background:var(--green-dark);border-color:var(--green-dark);text-align:center}
+  .wp-side-box.is-cta .wp-side-t{border-color:rgba(255,255,255,.3)}
+  .wp-side-box.is-cta .d{font-size:12px;color:rgba(255,255,255,.85);line-height:1.9;margin-bottom:14px;text-align:left}
+  .wp-side-box.is-cta .btn{width:100%}
+
+  @media (max-width: 980px){
+    .wp-layout{grid-template-columns:1fr}
+    .wp-side{position:static}
+    .is-inline{display:block}
+    .wp-side-box.is-sticky-toc{display:none}
+    .wp-rel-grid{grid-template-columns:1fr}
+  }
+</style>
