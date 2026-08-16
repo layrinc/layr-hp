@@ -126,6 +126,12 @@ const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
     <style is:inline id="layr-custom-css" set:html={(theme as any).custom_css}></style>
   )}
   <script type="application/ld+json" set:html={jsonLdHtml} />
+  {(settings as any).ga_id && (
+    <Fragment>
+      <script async src={`https://www.googletagmanager.com/gtag/js?id=${(settings as any).ga_id}`}></script>
+      <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','${(settings as any).ga_id}');`}></script>
+    </Fragment>
+  )}
 </head>
 <body>
 

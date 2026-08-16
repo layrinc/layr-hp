@@ -111,6 +111,7 @@ const breadcrumbJsonLd = {
           clearTimeout(timer);
           if (!res.ok) throw new Error('http ' + res.status);
           form.querySelectorAll('input:not([type="hidden"]), textarea').forEach((el) => { el.value = ''; });
+          if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'contact_form' });
           ok.hidden = false; fb.hidden = true;
           ok.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         } catch (_) {

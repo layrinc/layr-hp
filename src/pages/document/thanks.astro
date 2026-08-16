@@ -41,6 +41,7 @@ const matMap = Object.fromEntries(materials.map((m) => [m.id, { title: m.title, 
 
 <script is:inline define:vars={{ matMap }}>
   (function () {
+    if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'document_download' });
     const id = new URLSearchParams(location.search).get('d');
     const m = id && matMap[id];
     if (!m) return;
