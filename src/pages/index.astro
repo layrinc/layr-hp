@@ -5,8 +5,14 @@
  */
 import Base from '../layouts/Base.astro';
 import Block from '../components/Block.astro';
+import PriceSimulator from '../components/PriceSimulator.astro';
+import settings from '../data/settings.json';
 import page from '../data/page-home.json';
 import { getCollection } from 'astro:content';
+
+// 料金シミュレーターは pricing ブロックの直後に差し込む（ブロックCMS外の固定要素）
+const pricingIdx = page.blocks.findIndex((b) => b.type === 'pricing');
+const simConsult = settings.line_url?.trim() || `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
 
 // コラムブロック用に最新記事を取得（下書き除外・日付降順）
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -62,11 +68,33 @@ if (faqBlock && Array.isArray(faqBlock.p?.items)) {
 }
 ---
 <Base title={title} description={description} jsonLd={jsonLd}>
-  {page.blocks.map((block) => {
+  {page.blocks.map((block, i) => {
     // _fs = ブロック単位の文字サイズ倍率（CSSの font-size:calc(... * var(--fs,1)) が拾う）
     const fs = Number((block.p as any)?._fs) || 1;
-    return fs !== 1
+    const rendered = fs !== 1
       ? <div style={`--fs:${fs}`}><Block block={block} posts={posts} /></div>
       : <Block block={block} posts={posts} />;
+    // pricingブロックの直後に料金シミュレーターを固定挿入
+    if (i === pricingIdx) {
+      return (
+        <>
+          {rendered}
+          <section class="sim-sec" id="sim">
+            <div class="container">
+              <div class="sec-head">
+                <p class="sec-en">PRICE SIMULATOR</p>
+                <h2 class="sec-jp">30秒 料金シミュレーション</h2>
+                <p class="sec-lead">選択式4問で、貴社に合うプランと料金の目安がその場で分かります。</p>
+              </div>
+              <PriceSimulator docHref="/document/" consult={simConsult} />
+            </div>
+          </section>
+        </>
+      );
+    }
+    return rendered;
   })}
+  <style>
+    .sim-sec{padding:clamp(56px,7vw,96px) 0;background:#fff}
+  </style>
 </Base>
