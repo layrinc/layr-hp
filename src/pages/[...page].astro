@@ -11,10 +11,14 @@ import { getCollection } from 'astro:content';
 export async function getStaticPaths() {
   // サブフォルダ対応: data/pages/service/line.json → /service/line/
   const mods = import.meta.glob('../data/pages/**/*.json', { eager: true });
-  return Object.entries(mods).map(([path, mod]) => {
-    const slug = path.replace('../data/pages/', '').replace('.json', '');
-    return { params: { page: slug }, props: { pageData: (mod as any).default } };
-  });
+  // service/line は専用LP（src/pages/service/line.astro）で描画するため動的ルートから除外
+  const OWN_PAGES = new Set(['service/line']);
+  return Object.entries(mods)
+    .map(([path, mod]) => {
+      const slug = path.replace('../data/pages/', '').replace('.json', '');
+      return { params: { page: slug }, props: { pageData: (mod as any).default } };
+    })
+    .filter((r) => !OWN_PAGES.has(r.params.page));
 }
 
 const { pageData } = Astro.props;
