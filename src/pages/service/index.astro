@@ -32,7 +32,7 @@ for (let i = 0; i < blocks.length; i++) {
 const META = [
   { en: 'LINE MARKETING', iso: ISO.phone, chips: ['アカウント設計・構築', 'リッチメニュー', 'ステップ配信', '毎月の配信運用・改善'], price: '構築10万円〜／運用 月3万円〜' },
   { en: 'AD OPERATION', iso: ISO.chart, chips: ['Meta広告', 'Google広告', 'LINEヤフー広告', '日々の運用・月次レポート'], price: 'お見積もり（無料）' },
-  { en: 'MARKETING BPO', iso: ISO.consult, chips: ['LINE', '広告', 'LP改善', 'AI業務効率化'], price: '月10万円' },
+  { en: 'MARKETING BPO', iso: ISO.consult, shot: '/service/yorozuya-fv.png', chips: ['LINE', '広告', 'LP改善', 'AI業務効率化'], price: '月10万円' },
 ];
 
 const jsonLd = [
@@ -83,11 +83,15 @@ const jsonLd = [
   <!-- サービス3つ（ジグザグ大判） -->
   <div class="sv-list">
     {services.map((s, i) => (
-      <section class={`sv-item ${i % 2 === 1 ? 'is-rev' : ''} ${i === 1 ? 'is-tint' : ''}`}>
+      <section class={`sv-item ${i % 2 === 1 ? 'is-rev' : ''}`}>
         <div class="container sv-item-in">
           <div class="sv-fig" aria-hidden="true">
             <span class="sv-fig-num">{String(i + 1).padStart(2, '0')}</span>
-            <span class="sv-fig-iso" set:html={META[i].iso} />
+            {(META[i] as any).shot ? (
+              <span class="sv-shot"><i><b></b><b></b><b></b></i><img src={(META[i] as any).shot} alt="" width="1200" height="750" loading="lazy" /></span>
+            ) : (
+              <span class="sv-fig-iso" set:html={META[i].iso} />
+            )}
           </div>
           <div class="sv-txt">
             <p class="sv-item-en"><i></i>{META[i].en}</p>
@@ -146,6 +150,10 @@ const jsonLd = [
   .sv-fig-num{position:absolute;top:18px;left:26px;font-family:var(--font-en);font-weight:800;font-size:clamp(44px,4.6vw,64px);color:var(--green-dark);opacity:.14;line-height:1}
   .sv-fig-iso{width:58%;max-width:300px;display:block}
   .sv-fig-iso :global(svg){width:100%;height:auto;display:block}
+  .sv-shot{display:block;width:82%;max-width:420px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 18px 44px rgba(14,26,28,.16);border:1px solid var(--line)}
+  .sv-shot i{display:flex;gap:5px;padding:8px 12px;background:#F1F5F4;border-bottom:1px solid var(--line)}
+  .sv-shot i b{width:8px;height:8px;border-radius:50%;background:#D7E0DE}
+  .sv-shot img{width:100%;height:auto;display:block}
   .sv-item-en{display:flex;align-items:center;gap:12px;font-family:var(--font-en);font-weight:800;font-size:12.5px;letter-spacing:.18em;color:var(--green-dark);margin-bottom:16px}
   .sv-item-en i{width:30px;height:2px;background:var(--green-dark);border-radius:2px}
   .sv-txt h2{font-size:clamp(22px,3.2vw,31px);font-weight:900;line-height:1.5;letter-spacing:-.01em;color:var(--black);margin-bottom:18px}
