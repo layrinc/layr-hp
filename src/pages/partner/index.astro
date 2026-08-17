@@ -1,114 +1,159 @@
 ---
 /**
- * 完全成果報酬型LINE運用（審査制・同時5社）LP — /partner/
- * 意図的に低露出: ヘッダー非掲載・noindex・sitemap除外。入口はフッターの小リンクのみ。
+ * 完全成果報酬LINEマーケティング支援 LP — /partner/
+ * デザイン: re-v.co.jp/lpro/ を模倣（明るいLINEグリーン大面積・黄マーカー見出し・
+ * バッジ円・オレンジCTA・吹き出し・フロー円のポップ販促LP調）。
+ * 低露出運用: noindex・sitemap除外・入口はフッター小リンクのみ。
  * 数字・条件の正本: 02_LINEマーケティング事業/成果物/20260817_成果報酬プラン設計_v2.md
  */
 import Base from '../../layouts/Base.astro';
 import settings from '../../data/settings.json';
 
-const title = '完全成果報酬型LINE運用（審査制）｜株式会社LAYR';
+const title = '完全成果報酬のLINEマーケティング支援（審査制）｜株式会社LAYR';
 const description = '完全成果報酬のLINEマーケティング支援。初期費用0円・月額0円、いただくのはLINE経由で新たに生まれた売上の10%だけ。審査制・同時5社限定です。';
 const formAction = `https://formsubmit.co/${settings.email}`;
 
 const criteria = [
-  { t: '商品力があること', d: '口コミ評価が高い、リピート・紹介が実際にある。良い商品を持つ会社の売上を伸ばすのが本サービスの前提です。' },
-  { t: 'お客様の母数があること', d: '月間来店300人以上、顧客リスト1,000件以上、または広告・SNSからの新規流入がある。' },
-  { t: '計測できる業態であること', d: '予約制・クーポン利用・ECなど、LINE経由の成果を数字で計測できること。' },
-  { t: '決裁者と直接話せること', d: '経営者・院長・オーナーご本人と進められること。' },
-  { t: '成果を事例として公開できること', d: '結果が出た際、事例として公開にご協力いただけること（社名の扱いは応相談）。' },
+  { icon: '⭐', t: '商品力がある', d: '口コミ評価が高い、リピート・紹介が実際にある。良い商品を持つ会社の売上を伸ばすのが本サービスの前提です。' },
+  { icon: '👥', t: 'お客様の母数がある', d: '月間来店300人以上、顧客リスト1,000件以上、または広告・SNSからの新規流入がある。' },
+  { icon: '📊', t: '計測できる業態', d: '予約制・クーポン利用・ECなど、LINE経由の成果を数字で計測できること。' },
+  { icon: '🤝', t: '決裁者と直接話せる', d: '経営者・院長・オーナーご本人と進められること。' },
+  { icon: '📣', t: '事例として公開できる', d: '結果が出た際、事例として公開にご協力いただけること（社名の扱いは応相談）。' },
 ];
 
 const steps = [
-  ['審査申込', '下のフォームから1分で完了'],
-  ['審査', '公開情報を拝見し、3営業日以内にご連絡'],
-  ['面談', 'オンライン60分。数字と条件をすり合わせ'],
-  ['構築', '費用0円でLINE公式・Lステップを構築'],
-  ['運用開始', '成果に応じた報酬のみ。毎月レポート'],
+  ['📝', '審査申込', 'フォームから1分で完了'],
+  ['🔎', '審査', '3営業日以内にご連絡'],
+  ['💬', '面談', 'オンライン60分ですり合わせ'],
+  ['🛠️', '構築', '費用0円でLINE公式を構築'],
+  ['🚀', '運用開始', '成果報酬のみ・毎月レポート'],
 ];
 ---
 <Base title={title} description={description} robots="noindex, nofollow">
   <div class="subpage-pad"></div>
 
   <!-- HERO -->
-  <section class="pt-hero">
-    <div class="container">
-      <p class="pt-badge">審査制 ／ 同時5社まで</p>
-      <h1>完全成果報酬の、<br />LINEマーケティング支援。</h1>
-      <p class="pt-catch">成果が出るまで、<em>0円</em>。伸びた売上の<em>10%</em>だけ。</p>
-      <p class="pt-lead">初期費用0円・月額0円でLINE公式アカウントを構築し、運用します。いただくのは、LINE経由で<b>新たに生まれた売上の10%だけ</b>。弊社が結果を出せなければ、報酬はゼロです。</p>
-      <a class="btn pt-btn-w btn-lg" href="#apply">審査に申し込む</a>
-      <p class="pt-note-s">※ どの会社さまでもお受けできる内容ではないため、審査制とさせていただいています。</p>
-    </div>
-  </section>
-
-  <!-- 仕組み -->
-  <section class="pt-sec">
-    <div class="container pt-narrow">
-      <h2 class="pt-h2">仕組みは、シンプルです。</h2>
-      <div class="pt-scheme">
-        <div class="pt-sc"><p class="n">初期構築</p><p class="v">0<small>円</small></p><p class="s">通常10〜40万円の構築費を免除</p></div>
-        <div class="pt-sc"><p class="n">月額費用</p><p class="v">0<small>円</small></p><p class="s">固定の運用費はいただきません</p></div>
-        <div class="pt-sc is-hl"><p class="n">成果報酬</p><p class="v">10<small>%</small></p><p class="s">LINE経由で新たに生まれた売上の10%のみ</p></div>
+  <section class="lo-hero">
+    <div class="container lo-hero-in">
+      <div class="lo-hero-txt">
+        <p class="lo-hero-l1"><em>完全成果報酬</em>の</p>
+        <p class="lo-hero-l2">LINEマーケティング支援</p>
+        <p class="lo-hero-l3">成果が出るまで<b>0円</b>、伸びた売上の<b>10%</b>だけ</p>
+        <a class="lo-cta" href="#apply"><small>＼ 1分で完了 ／</small>審査に申し込む<i>›</i></a>
       </div>
-      <p class="pt-body">対象になるのは「LINEをきっかけに実際に来店・購入された売上」だけです。計測は弊社のツールで行い、<b>毎月レポートで数字を開示</b>します。感覚や自己申告ではなく、記録で精算する仕組みです。</p>
+      <div class="lo-hero-badges" aria-hidden="true">
+        <span class="lo-bd is-1">初期費用<br /><b>0円</b></span>
+        <span class="lo-bd is-2">月額費用<br /><b>0円</b></span>
+        <span class="lo-bd is-3">審査制<br /><b>5社限定</b></span>
+      </div>
     </div>
   </section>
 
-  <!-- なぜ無料か -->
-  <section class="pt-sec pt-tint">
-    <div class="container pt-narrow">
-      <h2 class="pt-h2">なぜ、無料で構築できるのか。</h2>
-      <p class="pt-body">理由は3つあります。<b>①成果を出せる会社さまだけを審査で選ばせていただくから。②報酬が成果に連動するため、弊社は本気で売上を伸ばすことにだけ集中できるから。③結果を事例として公開させていただくことが、弊社にとっての報酬の一部だから。</b></p>
-      <p class="pt-body">貴社のリスクはゼロ。弊社のリスクは時間。だからこそ、勝てる相手としか組めません。</p>
+  <!-- 数字帯 -->
+  <section class="lo-nums">
+    <div class="container">
+      <p class="lo-nums-t">結果が出なければ、<span class="mk">報酬はゼロ</span>。だから本気で伸ばします</p>
+      <div class="lo-nums-row">
+        <div class="lo-num"><p class="l">初期構築</p><p class="v">0<small>円</small></p><p class="s">通常10〜40万円を免除</p></div>
+        <div class="lo-num"><p class="l">月額費用</p><p class="v">0<small>円</small></p><p class="s">固定費はいただきません</p></div>
+        <div class="lo-num is-hl"><p class="l">成果報酬</p><p class="v">10<small>%</small></p><p class="s">LINE経由で新たに生まれた売上のみ</p></div>
+      </div>
     </div>
   </section>
 
-  <!-- 審査基準 -->
-  <section class="pt-sec">
-    <div class="container pt-narrow">
-      <h2 class="pt-h2">審査基準（すべて満たす会社さまのみ）</h2>
-      <ol class="pt-crit">
-        {criteria.map((c, i) => (
-          <li><span class="num">{String(i + 1).padStart(2, '0')}</span><div><b>{c.t}</b><p>{c.d}</p></div></li>
+  <!-- 仕組み（緑帯） -->
+  <section class="lo-green">
+    <div class="container lo-narrow">
+      <p class="lo-en">Scheme</p>
+      <h2 class="lo-h2w">仕組みは<span class="mk-y">超シンプル</span>です！</h2>
+      <div class="lo-scheme">
+        <div class="lo-sc-step"><span class="n">1</span><p><b>無料でLINEを構築・運用</b><br />設計・リッチメニュー・配信まで、弊社が全部やります</p></div>
+        <span class="lo-sc-arw">▼</span>
+        <div class="lo-sc-step"><span class="n">2</span><p><b>LINE経由の売上を計測</b><br />弊社ツールで記録し、毎月レポートで開示します</p></div>
+        <span class="lo-sc-arw">▼</span>
+        <div class="lo-sc-step is-last"><span class="n">3</span><p><b>伸びた分の10%だけお支払い</b><br />成果が出なければ、お支払いはありません</p></div>
+      </div>
+      <p class="lo-green-note">※ 対象は「LINEをきっかけに実際に来店・購入された売上」だけ。感覚や自己申告ではなく、記録で精算します。</p>
+    </div>
+  </section>
+
+  <!-- なぜ無料か（吹き出し） -->
+  <section class="lo-sec">
+    <div class="container lo-narrow">
+      <p class="lo-en-g">Reason</p>
+      <h2 class="lo-h2">なぜ、<span class="mk">無料</span>で構築できるのか？</h2>
+      <div class="lo-reasons">
+        <div class="lo-rs"><span class="num">01</span><b>審査で選ぶから</b><p>成果を出せる会社さまだけをお受けします。勝てる相手としか組みません。</p></div>
+        <div class="lo-rs"><span class="num">02</span><b>報酬が成果に連動するから</b><p>売上を伸ばすことにだけ集中できます。利害が完全に一致します。</p></div>
+        <div class="lo-rs"><span class="num">03</span><b>事例が欲しいから</b><p>結果を事例として公開させていただくことが、弊社の報酬の一部です。</p></div>
+      </div>
+      <div class="lo-bubble"><p>貴社のリスクは<b>ゼロ</b>。弊社のリスクは<b>時間</b>。<br />だからこそ、本気でやります。</p></div>
+    </div>
+  </section>
+
+  <!-- 審査基準（緑帯・白カード） -->
+  <section class="lo-green">
+    <div class="container">
+      <p class="lo-en">Criteria</p>
+      <h2 class="lo-h2w">こんな会社さまを<span class="mk-y">お待ちしています</span>！</h2>
+      <p class="lo-green-lead">審査制のため、次の5つをすべて満たす会社さまのみお受けしています。</p>
+      <div class="lo-crit">
+        {criteria.map((c) => (
+          <div class="lo-cr"><span class="ic">{c.icon}</span><b>{c.t}</b><p>{c.d}</p></div>
         ))}
-      </ol>
+      </div>
     </div>
   </section>
 
   <!-- 条件 -->
-  <section class="pt-sec pt-tint">
-    <div class="container pt-narrow">
-      <h2 class="pt-h2">お約束いただく条件</h2>
-      <ul class="pt-terms">
-        <li>最低契約期間は6ヶ月です（成果が立ち上がるまでの伴走期間）</li>
+  <section class="lo-sec">
+    <div class="container lo-narrow">
+      <p class="lo-en-g">Terms</p>
+      <h2 class="lo-h2">お約束いただく<span class="mk">条件</span></h2>
+      <ul class="lo-terms">
+        <li>最低契約期間は<b>6ヶ月</b>です（成果が立ち上がるまでの伴走期間）</li>
         <li>LINE公式アカウント・Lステップの利用料（実費）は貴社負担です</li>
         <li>4ヶ月目以降は、最低報酬（月3万円）と成果報酬のいずれか高い方をいただきます</li>
         <li>店頭・既存のお客様への告知など、友だち集めにご協力ください</li>
         <li>成果の事例公開にご同意ください（社名の扱いは契約時に取り決めます）</li>
       </ul>
-      <p class="pt-note-s">※ 詳細条件は契約書に明記のうえ、面談時にすべてご説明します。</p>
+      <p class="lo-note">※ 詳細条件は契約書に明記のうえ、面談時にすべてご説明します。</p>
     </div>
   </section>
 
-  <!-- 流れ -->
-  <section class="pt-sec">
-    <div class="container pt-narrow">
-      <h2 class="pt-h2">審査から運用開始まで</h2>
-      <div class="pt-steps">
+  <!-- 流れ（円フロー） -->
+  <section class="lo-flow">
+    <div class="container">
+      <p class="lo-en-g">Flow</p>
+      <h2 class="lo-h2">審査から運用開始までの<span class="mk">5ステップ</span></h2>
+      <div class="lo-flow-row">
         {steps.map((s, i) => (
-          <div class="pt-step"><span class="num">{i + 1}</span><b>{s[0]}</b><p>{s[1]}</p></div>
+          <>
+            <div class="lo-fl"><span class="ic">{s[0]}</span><b>{s[1]}</b><p>{s[2]}</p></div>
+            {i < steps.length - 1 && <span class="lo-fl-arw">▶</span>}
+          </>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- 申込フォーム -->
-  <section class="pt-apply" id="apply">
-    <div class="container pt-narrow">
-      <h2 class="pt-h2" style="color:#fff">審査申込（1分）</h2>
-      <p class="pt-apply-s">現在の募集枠: <b>5社</b>。審査結果は3営業日以内にメールでご連絡します。</p>
-      <form class="pt-form" id="ptForm" action={formAction} method="POST">
+  <!-- 中間CTA -->
+  <section class="lo-midcta">
+    <div class="container lo-narrow">
+      <div class="lo-midcta-in">
+        <p class="t">成果につながるLINE運用を、<br class="sp" />リスクゼロで始めませんか？</p>
+        <a class="lo-cta" href="#apply"><small>＼ 募集は5社まで ／</small>審査に申し込む<i>›</i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 申込フォーム（緑帯） -->
+  <section class="lo-green" id="apply">
+    <div class="container lo-narrow">
+      <p class="lo-en">Entry</p>
+      <h2 class="lo-h2w">審査申込フォーム<span class="mk-y">（1分）</span></h2>
+      <p class="lo-green-lead">現在の募集枠: <b>5社</b>。審査結果は3営業日以内にメールでご連絡します。</p>
+      <form class="lo-form" id="ptForm" action={formAction} method="POST">
         <input type="hidden" name="_subject" value="【成果報酬・審査申込】" />
         <input type="hidden" name="_template" value="table" />
         <input type="hidden" name="_captcha" value="false" />
@@ -128,10 +173,10 @@ const steps = [
           </select>
         </label>
         <label>ひとこと（任意）<textarea name="ひとこと" rows="3" placeholder="現状の課題や、LINEでやりたいことがあればお書きください"></textarea></label>
-        <button type="submit" class="btn btn-green btn-lg" id="ptSubmit">審査に申し込む</button>
-        <div class="pt-fallback" id="ptFallback" hidden>
+        <button type="submit" class="lo-cta is-submit" id="ptSubmit"><small>＼ 費用は成果が出てから ／</small>審査に申し込む<i>›</i></button>
+        <div class="lo-fallback" id="ptFallback" hidden>
           <p>送信システムが混み合っているようです。お手数ですが下のボタンからメールでお申し込みください（入力内容は引き継がれます）。</p>
-          <a class="btn pt-btn-w" id="ptMailto" href={`mailto:${settings.email}`}>メールで申し込む</a>
+          <a class="lo-cta is-mail" id="ptMailto" href={`mailto:${settings.email}`}>メールで申し込む</a>
         </div>
       </form>
     </div>
@@ -149,7 +194,7 @@ const steps = [
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       if (form.querySelector('[name="_honey"]').value) return;
-      btn.disabled = true; btn.textContent = '送信中…';
+      btn.disabled = true; btn.querySelector('small').textContent = '送信中…';
       const fd = new FormData(form);
       const ctrl = new AbortController();
       const timer = setTimeout(() => ctrl.abort(), 8000);
@@ -158,70 +203,117 @@ const steps = [
         clearTimeout(timer);
         if (!res.ok) throw new Error('http ' + res.status);
         if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'partner_apply' });
-        form.innerHTML = '<p style="color:#fff;font-weight:700;font-size:16px;text-align:center;padding:30px 0">お申し込みを受け付けました。3営業日以内にご連絡します。</p>';
+        form.innerHTML = '<p style="color:#fff;font-weight:900;font-size:17px;text-align:center;padding:30px 0">お申し込みを受け付けました。<br>3営業日以内にご連絡します。</p>';
       } catch (_) {
         clearTimeout(timer);
         const v = (k) => String(fd.get(k) || '');
         const body = ['成果報酬型LINE運用の審査を申し込みます。', '', '会社名: ' + v('会社名'), 'お名前: ' + v('お名前'), 'メール: ' + v('メールアドレス'), 'URL: ' + v('サイトURL'), '規模: ' + v('月間規模'), 'ひとこと: ' + v('ひとこと')].join('\n');
         ml.href = ml.href.split('?')[0] + '?subject=' + encodeURIComponent('【成果報酬・審査申込】' + v('会社名')) + '&body=' + encodeURIComponent(body);
         fb.hidden = false;
-        btn.disabled = false; btn.textContent = '審査に申し込む';
+        btn.disabled = false; btn.querySelector('small').textContent = '＼ 費用は成果が出てから ／';
       }
     });
   })();
 </script>
 
 <style>
-  .pt-hero{background:linear-gradient(150deg,#0B2E28 0%,#0E4F44 60%,#0F5C4C 100%);color:#fff;text-align:center;padding:clamp(64px,9vw,110px) 0}
-  .pt-badge{display:inline-block;border:1.5px solid rgba(255,255,255,.4);border-radius:999px;padding:8px 22px;font-size:12.5px;font-weight:800;letter-spacing:.08em;margin-bottom:26px}
-  .pt-hero h1{font-size:clamp(30px,5.6vw,52px);font-weight:900;line-height:1.45;letter-spacing:-.01em}
-  .pt-catch{font-size:clamp(17px,2.8vw,24px);font-weight:900;margin-top:22px;letter-spacing:.01em}
-  .pt-catch em{font-style:normal;color:#8FE3C9;font-family:var(--font-en);font-size:1.35em;letter-spacing:-.01em}
-  .pt-lead{font-size:15px;line-height:2.1;opacity:.92;max-width:38em;margin:22px auto 32px}
-  .pt-lead b{color:#8FE3C9}
-  .pt-btn-w{background:#fff;color:var(--green-dark);border:none}
-  .pt-btn-w:hover{background:#fff}
-  .pt-note-s{font-size:11.5px;opacity:.6;margin-top:16px}
-  .pt-sec{padding:clamp(52px,7vw,84px) 0}
-  .pt-tint{background:#F4FAF8}
-  .pt-narrow{max-width:800px}
-  .pt-h2{font-size:clamp(21px,3vw,28px);font-weight:900;letter-spacing:-.01em;color:var(--black);margin-bottom:24px;text-align:center}
-  .pt-body{font-size:14.5px;line-height:2.2;color:#1B2A2E;margin-bottom:1.2em}
-  .pt-body b{background:linear-gradient(transparent 64%,#CDEFE2 64%)}
-  .pt-scheme{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:14px;margin-bottom:26px}
-  .pt-sc{background:#F4FAF8;border-radius:16px;padding:24px 20px;text-align:center}
-  .pt-sc.is-hl{background:var(--green-dark);color:#fff}
-  .pt-sc .n{font-size:12px;font-weight:800;opacity:.75}
-  .pt-sc .v{font-family:var(--font-en);font-weight:800;font-size:44px;line-height:1.2;margin:6px 0}
-  .pt-sc .v small{font-size:16px;font-family:var(--font-jp);font-weight:800}
-  .pt-sc .s{font-size:11.5px;line-height:1.8;opacity:.8}
-  .pt-crit{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
-  .pt-crit li{display:flex;gap:18px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:20px 22px}
-  .pt-crit .num{font-family:var(--font-en);font-weight:800;font-size:22px;color:var(--green);flex:none;line-height:1.4}
-  .pt-crit b{font-size:15px;color:var(--black)}
-  .pt-crit p{font-size:13px;color:var(--muted);line-height:1.9;margin-top:4px}
-  .pt-terms{list-style:none;margin:0 0 14px;padding:24px 26px;background:#fff;border-radius:14px;border:1.5px solid var(--line);display:flex;flex-direction:column;gap:10px}
-  .pt-terms li{position:relative;padding-left:26px;font-size:13.5px;line-height:1.9;color:#1B2A2E}
-  .pt-terms li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:900}
-  .pt-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
-  .pt-step{background:#F4FAF8;border-radius:12px;padding:18px 14px;text-align:center}
-  .pt-step .num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--green-dark);color:#fff;font-family:var(--font-en);font-weight:800;font-size:13px;margin-bottom:8px}
-  .pt-step b{display:block;font-size:13px;color:var(--black)}
-  .pt-step p{font-size:11px;color:var(--muted);line-height:1.7;margin-top:4px}
-  .pt-apply{background:var(--green-dark);padding:clamp(52px,7vw,84px) 0}
-  .pt-apply-s{color:rgba(255,255,255,.85);text-align:center;font-size:13.5px;margin-bottom:26px}
-  .pt-apply-s b{color:#8FE3C9}
-  .pt-form{display:flex;flex-direction:column;gap:14px;background:#fff;border-radius:18px;padding:clamp(24px,4vw,38px)}
-  .pt-form label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:800;color:var(--black)}
-  .pt-form label span{display:inline;color:#fff;background:var(--green);font-size:10px;border-radius:4px;padding:1px 8px;margin-left:6px;align-self:flex-start}
-  .pt-form input,.pt-form select,.pt-form textarea{font-family:var(--font-jp);font-size:15px;padding:12px 14px;border:1.5px solid #D5E2DE;border-radius:10px;outline:none;background:#fff;font-weight:500}
-  .pt-form input:focus,.pt-form select:focus,.pt-form textarea:focus{border-color:var(--green)}
-  .pt-form button{border:none;font-family:var(--font-jp);margin-top:6px}
-  .pt-fallback{text-align:center;padding:14px}
-  .pt-fallback p{font-size:12.5px;color:var(--muted);margin-bottom:12px}
-  @media(max-width:760px){
-    .pt-scheme{grid-template-columns:1fr}
-    .pt-steps{grid-template-columns:1fr 1fr;gap:8px}
-    .pt-steps .pt-step:last-child{grid-column:1/-1}
+  /* ===== LPRO風トンマナ: 明るいLINEグリーン・黄マーカー・オレンジCTA・太枠白カード ===== */
+  .lo-hero{background:linear-gradient(120deg,#EFF8EC 0%,#F7FBF5 45%,#E4F5DC 100%);padding:clamp(40px,6vw,72px) 0 clamp(44px,6vw,72px);overflow:hidden}
+  .lo-hero-in{display:grid;grid-template-columns:1.25fr .75fr;gap:clamp(20px,4vw,50px);align-items:center}
+  .lo-hero-l1{font-size:clamp(30px,5.4vw,52px);font-weight:900;line-height:1.3;color:#111}
+  .lo-hero-l1 em{font-style:normal;color:#fff;background:#22B814;padding:2px 14px;border-radius:8px;box-decoration-break:clone}
+  .lo-hero-l2{font-size:clamp(27px,4.8vw,46px);font-weight:900;line-height:1.4;color:#111;background:linear-gradient(transparent 68%,#FFE600 68%);display:inline-block;margin-top:6px}
+  .lo-hero-l3{font-size:clamp(15px,2.4vw,21px);font-weight:900;color:#222;margin:18px 0 28px}
+  .lo-hero-l3 b{color:#16A00A;font-size:1.25em}
+  .lo-cta{display:inline-flex;flex-direction:column;align-items:center;gap:1px;background:linear-gradient(180deg,#FFA033,#FF7A00);color:#fff;font-weight:900;font-size:18px;border-radius:14px;padding:14px 46px;text-decoration:none;box-shadow:0 6px 0 #D95F00,0 10px 22px rgba(255,122,0,.35);position:relative;transition:transform .12s,box-shadow .12s;border:none;cursor:pointer;font-family:var(--font-jp)}
+  .lo-cta small{font-size:11px;font-weight:800;letter-spacing:.04em}
+  .lo-cta i{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-style:normal;font-size:20px}
+  .lo-cta:hover{transform:translateY(2px);box-shadow:0 4px 0 #D95F00,0 6px 14px rgba(255,122,0,.35)}
+  .lo-hero-badges{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-content:center}
+  .lo-bd{width:110px;height:110px;border-radius:50%;background:#22B814;color:#fff;display:grid;place-items:center;text-align:center;font-size:12px;font-weight:900;line-height:1.5;box-shadow:0 6px 16px rgba(34,184,20,.3);padding:8px}
+  .lo-bd b{font-size:20px}
+  .lo-bd.is-2{background:#16A00A}
+  .lo-bd.is-3{background:#fff;color:#16A00A;border:3px solid #22B814;box-shadow:0 6px 16px rgba(34,184,20,.18)}
+  /* 数字帯 */
+  .lo-nums{background:#fff;padding:clamp(44px,6vw,70px) 0;text-align:center}
+  .lo-nums-t{font-size:clamp(19px,3vw,28px);font-weight:900;color:#111;margin-bottom:30px}
+  .mk{background:linear-gradient(transparent 66%,#FFE600 66%);padding:0 2px}
+  .lo-nums-row{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:860px;margin:0 auto}
+  .lo-num{background:#fff;border:3px solid #DDEBD8;border-radius:18px;padding:24px 18px}
+  .lo-num.is-hl{border-color:#22B814;background:#F2FBEF;position:relative}
+  .lo-num.is-hl::before{content:"ここだけ！";position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#FF7A00;color:#fff;font-size:11px;font-weight:900;border-radius:999px;padding:3px 16px}
+  .lo-num .l{font-size:13px;font-weight:900;color:#555}
+  .lo-num .v{font-family:var(--font-en);font-weight:800;font-size:52px;color:#16A00A;line-height:1.15}
+  .lo-num .v small{font-family:var(--font-jp);font-size:18px;font-weight:900}
+  .lo-num .s{font-size:11.5px;color:#777;font-weight:700;line-height:1.7}
+  /* 緑帯 */
+  .lo-green{background:linear-gradient(160deg,#27C316 0%,#1FA80F 100%);padding:clamp(48px,7vw,80px) 0;color:#fff}
+  .lo-en{font-family:var(--font-en);font-weight:800;font-size:13px;letter-spacing:.14em;color:#D9F7CE;margin-bottom:8px;text-align:center}
+  .lo-h2w{font-size:clamp(22px,3.6vw,32px);font-weight:900;text-align:center;line-height:1.5;margin-bottom:10px}
+  .mk-y{background:linear-gradient(transparent 66%,#FFE600 66%);color:#fff;padding:0 2px}
+  .lo-green-lead{text-align:center;font-size:14px;font-weight:700;opacity:.95;margin-bottom:30px}
+  .lo-green-lead b{color:#FFE600;font-size:1.2em}
+  .lo-green-note{text-align:center;font-size:12px;opacity:.85;margin-top:22px;font-weight:700}
+  .lo-narrow{max-width:820px}
+  .lo-scheme{display:flex;flex-direction:column;gap:8px;margin-top:26px}
+  .lo-sc-step{display:flex;align-items:center;gap:18px;background:#fff;color:#111;border-radius:16px;padding:18px 24px;box-shadow:0 5px 0 rgba(0,0,0,.12)}
+  .lo-sc-step.is-last{outline:4px solid #FFE600;outline-offset:-4px}
+  .lo-sc-step .n{flex:none;width:40px;height:40px;border-radius:50%;background:#22B814;color:#fff;display:grid;place-items:center;font-family:var(--font-en);font-weight:800;font-size:19px}
+  .lo-sc-step p{font-size:13.5px;line-height:1.8;color:#444;font-weight:700}
+  .lo-sc-step b{font-size:16px;color:#111}
+  .lo-sc-arw{text-align:center;color:#FFE600;font-size:18px;line-height:1}
+  /* 白セクション */
+  .lo-sec{background:#F6F6F2;padding:clamp(48px,7vw,80px) 0}
+  .lo-en-g{font-family:var(--font-en);font-weight:800;font-size:13px;letter-spacing:.14em;color:#22B814;margin-bottom:8px;text-align:center}
+  .lo-h2{font-size:clamp(22px,3.6vw,32px);font-weight:900;text-align:center;line-height:1.5;color:#111;margin-bottom:30px}
+  .lo-reasons{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .lo-rs{background:#fff;border-radius:16px;padding:26px 22px;box-shadow:0 4px 0 #E3E3DC;text-align:center}
+  .lo-rs .num{font-family:var(--font-en);font-weight:800;font-size:26px;color:#22B814;display:block;margin-bottom:8px}
+  .lo-rs b{font-size:15.5px;color:#111;display:block;margin-bottom:8px}
+  .lo-rs p{font-size:12.5px;color:#666;line-height:1.9;font-weight:500;text-align:left}
+  .lo-bubble{position:relative;background:#fff;border:3px solid #22B814;border-radius:20px;padding:24px 28px;margin-top:34px;text-align:center}
+  .lo-bubble::before{content:"";position:absolute;top:-16px;left:50%;transform:translateX(-50%);border:10px solid transparent;border-bottom-color:#22B814}
+  .lo-bubble p{font-size:clamp(15px,2.4vw,19px);font-weight:900;color:#111;line-height:1.9}
+  .lo-bubble b{color:#16A00A}
+  /* 審査基準カード */
+  .lo-crit{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;max-width:1000px;margin:0 auto}
+  .lo-cr{background:#fff;color:#111;border-radius:16px;padding:24px 20px;box-shadow:0 5px 0 rgba(0,0,0,.14);text-align:center}
+  .lo-cr .ic{font-size:30px;display:block;margin-bottom:8px}
+  .lo-cr b{font-size:14.5px;display:block;margin-bottom:8px}
+  .lo-cr p{font-size:12px;color:#666;line-height:1.85;font-weight:500;text-align:left}
+  /* 条件 */
+  .lo-terms{list-style:none;margin:0 auto 14px;padding:26px 30px;background:#fff;border-radius:16px;box-shadow:0 4px 0 #E3E3DC;display:flex;flex-direction:column;gap:12px;max-width:720px}
+  .lo-terms li{position:relative;padding-left:30px;font-size:14px;line-height:1.9;color:#333;font-weight:700}
+  .lo-terms li::before{content:"✅";position:absolute;left:0}
+  .lo-terms b{color:#16A00A}
+  .lo-note{font-size:11.5px;color:#888;text-align:center;font-weight:700}
+  /* フロー */
+  .lo-flow{background:#fff;padding:clamp(48px,7vw,80px) 0}
+  .lo-flow-row{display:flex;align-items:center;justify-content:center;gap:6px;flex-wrap:wrap}
+  .lo-fl{width:150px;height:150px;border-radius:50%;background:#fff;border:3px solid #DDEBD8;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px;gap:2px}
+  .lo-fl .ic{font-size:26px}
+  .lo-fl b{font-size:13.5px;color:#111}
+  .lo-fl p{font-size:10.5px;color:#777;font-weight:700;line-height:1.6}
+  .lo-fl-arw{color:#22B814;font-size:16px}
+  /* 中間CTA */
+  .lo-midcta{background:#F6F6F2;padding:0 0 clamp(48px,7vw,80px)}
+  .lo-midcta-in{background:#fff;border:3px solid #22B814;border-radius:20px;padding:clamp(28px,4vw,44px);text-align:center;box-shadow:0 6px 0 rgba(34,184,20,.25)}
+  .lo-midcta-in .t{font-size:clamp(17px,2.8vw,24px);font-weight:900;color:#111;margin-bottom:22px;line-height:1.7}
+  /* フォーム */
+  .lo-form{display:flex;flex-direction:column;gap:14px;background:#fff;border-radius:20px;padding:clamp(24px,4vw,40px);color:#111;box-shadow:0 6px 0 rgba(0,0,0,.15)}
+  .lo-form label{display:flex;flex-direction:column;gap:6px;font-size:13.5px;font-weight:900}
+  .lo-form label span{display:inline;color:#fff;background:#FF7A00;font-size:10px;border-radius:4px;padding:1px 8px;margin-left:6px;align-self:flex-start}
+  .lo-form input,.lo-form select,.lo-form textarea{font-family:var(--font-jp);font-size:15px;padding:13px 15px;border:2px solid #DDEBD8;border-radius:12px;outline:none;background:#FBFDFA;font-weight:600}
+  .lo-form input:focus,.lo-form select:focus,.lo-form textarea:focus{border-color:#22B814;background:#fff}
+  .lo-form .lo-cta.is-submit{margin-top:8px;width:100%}
+  .lo-fallback{text-align:center;padding:12px}
+  .lo-fallback p{font-size:12.5px;color:#666;margin-bottom:12px;font-weight:700}
+  .lo-cta.is-mail{background:linear-gradient(180deg,#3BC72E,#22B814);box-shadow:0 6px 0 #178F0C,0 10px 22px rgba(34,184,20,.3)}
+  @media(max-width:820px){
+    .lo-hero-in{grid-template-columns:1fr}
+    .lo-hero-badges{justify-content:flex-start}
+    .lo-nums-row,.lo-reasons{grid-template-columns:1fr}
+    .lo-fl{width:132px;height:132px}
+    .lo-hero-l3 .sp{display:block}
   }
 </style>
