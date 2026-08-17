@@ -8,7 +8,7 @@ import Base from '../../layouts/Base.astro';
 import settings from '../../data/settings.json';
 
 const title = '完全成果報酬型LINE運用（審査制）｜株式会社LAYR';
-const description = '初期費用0円・月額0円。成果が出なければ費用はかかりません。LINE経由で新たに生まれた売上の一部だけをいただく、審査制・同時5社限定のLINE構築・運用サービスです。';
+const description = '完全成果報酬のLINEマーケティング支援。初期費用0円・月額0円、いただくのはLINE経由で新たに生まれた売上の10%だけ。審査制・同時5社限定です。';
 const formAction = `https://formsubmit.co/${settings.email}`;
 
 const criteria = [
@@ -33,9 +33,10 @@ const steps = [
   <!-- HERO -->
   <section class="pt-hero">
     <div class="container">
-      <p class="pt-badge">審査制 ／ 同時5社まで ／ 完全成果報酬</p>
-      <h1>成果が出なければ、<br />費用はいただきません。</h1>
-      <p class="pt-lead">初期費用0円・月額0円でLINE公式アカウントを構築し、運用します。いただくのは、LINE経由で<b>新たに生まれた売上の一部だけ</b>。弊社が結果を出せなければ、報酬はゼロです。</p>
+      <p class="pt-badge">審査制 ／ 同時5社まで</p>
+      <h1>完全成果報酬の、<br />LINEマーケティング支援。</h1>
+      <p class="pt-catch">成果が出るまで、<em>0円</em>。伸びた売上の<em>10%</em>だけ。</p>
+      <p class="pt-lead">初期費用0円・月額0円でLINE公式アカウントを構築し、運用します。いただくのは、LINE経由で<b>新たに生まれた売上の10%だけ</b>。弊社が結果を出せなければ、報酬はゼロです。</p>
       <a class="btn pt-btn-w btn-lg" href="#apply">審査に申し込む</a>
       <p class="pt-note-s">※ どの会社さまでもお受けできる内容ではないため、審査制とさせていただいています。</p>
     </div>
@@ -48,7 +49,7 @@ const steps = [
       <div class="pt-scheme">
         <div class="pt-sc"><p class="n">初期構築</p><p class="v">0<small>円</small></p><p class="s">通常10〜40万円の構築費を免除</p></div>
         <div class="pt-sc"><p class="n">月額費用</p><p class="v">0<small>円</small></p><p class="s">固定の運用費はいただきません</p></div>
-        <div class="pt-sc is-hl"><p class="n">成果報酬</p><p class="v">8〜15<small>%</small></p><p class="s">LINE経由売上のみ・業種により設定<br />（売上が伸びるほど料率は下がる逓減制）</p></div>
+        <div class="pt-sc is-hl"><p class="n">成果報酬</p><p class="v">10<small>%</small></p><p class="s">LINE経由で新たに生まれた売上の10%のみ</p></div>
       </div>
       <p class="pt-body">対象になるのは「LINEをきっかけに実際に来店・購入された売上」だけです。計測は弊社のツールで行い、<b>毎月レポートで数字を開示</b>します。感覚や自己申告ではなく、記録で精算する仕組みです。</p>
     </div>
@@ -174,6 +175,8 @@ const steps = [
   .pt-hero{background:linear-gradient(150deg,#0B2E28 0%,#0E4F44 60%,#0F5C4C 100%);color:#fff;text-align:center;padding:clamp(64px,9vw,110px) 0}
   .pt-badge{display:inline-block;border:1.5px solid rgba(255,255,255,.4);border-radius:999px;padding:8px 22px;font-size:12.5px;font-weight:800;letter-spacing:.08em;margin-bottom:26px}
   .pt-hero h1{font-size:clamp(30px,5.6vw,52px);font-weight:900;line-height:1.45;letter-spacing:-.01em}
+  .pt-catch{font-size:clamp(17px,2.8vw,24px);font-weight:900;margin-top:22px;letter-spacing:.01em}
+  .pt-catch em{font-style:normal;color:#8FE3C9;font-family:var(--font-en);font-size:1.35em;letter-spacing:-.01em}
   .pt-lead{font-size:15px;line-height:2.1;opacity:.92;max-width:38em;margin:22px auto 32px}
   .pt-lead b{color:#8FE3C9}
   .pt-btn-w{background:#fff;color:var(--green-dark);border:none}
