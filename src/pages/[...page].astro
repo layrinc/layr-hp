@@ -12,7 +12,7 @@ export async function getStaticPaths() {
   // サブフォルダ対応: data/pages/service/line.json → /service/line/
   const mods = import.meta.glob('../data/pages/**/*.json', { eager: true });
   // service/line は専用LP（src/pages/service/line.astro）で描画するため動的ルートから除外
-  const OWN_PAGES = new Set(['service/line']);
+  const OWN_PAGES = new Set(['service/line', 'service']);
   return Object.entries(mods)
     .map(([path, mod]) => {
       const slug = path.replace('../data/pages/', '').replace('.json', '');
