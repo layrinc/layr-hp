@@ -47,7 +47,7 @@ const { docHref = '/document/', consult = '/contact/' } = Astro.props;
       <a class="btn btn-line sim-line" href={consult}>LINEで相談する</a>
     </div>
   </div>
-  <button class="sim-back" id="simBack" hidden>← ひとつ戻る</button>
+  <button class="sim-back" id="simBack" hidden>← 最初にもどる</button>
 </div>
 
 <style>
@@ -113,6 +113,6 @@ const { docHref = '/document/', consult = '/contact/' } = Astro.props;
         show(s + 1);
       });
     });
-    document.getElementById('simBack').addEventListener('click', function () { if (step > 1) show(step - 1); });
+    document.getElementById('simBack').addEventListener('click', function () { ans = {}; show(1); });
   })();
 </script>
