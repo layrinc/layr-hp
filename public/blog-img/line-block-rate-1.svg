@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <rect width="1200" height="480" rx="20" fill="#F6FAF9"/>
+  <text x="600" y="52" text-anchor="middle" font-size="24" font-weight="800" fill="#0E1A1C">ブロックの主因は「頻度」ではなく「関係のなさ」</text>
+  <g>
+    <rect x="60" y="95" width="520" height="330" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="320" y="145" text-anchor="middle" font-size="17" font-weight="800" fill="#5A6B6D">よくある状態：全員に同じ一斉配信</text>
+    <rect x="100" y="175" width="440" height="52" rx="12" fill="#F6FAF9" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="320" y="207" text-anchor="middle" font-size="13" fill="#0E1A1C">「お知らせ」と「売り込み」だけが届く</text>
+    <rect x="100" y="243" width="440" height="52" rx="12" fill="#F6FAF9" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="320" y="275" text-anchor="middle" font-size="13" fill="#0E1A1C">自分に関係のない配信が続く</text>
+    <rect x="190" y="320" width="260" height="34" rx="17" fill="#FDECEC"/>
+    <text x="320" y="342" text-anchor="middle" font-size="12.5" font-weight="800" fill="#C63A3A">関係のない受け手から順にブロック</text>
+  </g>
+  <g>
+    <rect x="620" y="95" width="520" height="330" rx="16" fill="#fff" stroke="#17A673" stroke-width="2.5"/>
+    <text x="880" y="145" text-anchor="middle" font-size="17" font-weight="800" fill="#0E4F44">解決策：受け手ごとに配信を分ける</text>
+    <rect x="660" y="175" width="440" height="52" rx="12" fill="#F6FAF9" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="880" y="207" text-anchor="middle" font-size="13" fill="#0E1A1C">属性で友だちをセグメントに分ける</text>
+    <rect x="660" y="243" width="440" height="52" rx="12" fill="#F6FAF9" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="880" y="275" text-anchor="middle" font-size="13" fill="#0E1A1C">受け手ごとに関係のある内容を配信</text>
+    <rect x="735" y="320" width="290" height="34" rx="17" fill="#EDF7F2"/>
+    <text x="880" y="342" text-anchor="middle" font-size="12.5" font-weight="800" fill="#0E4F44">頻度を落とさなくてもブロック率が下がる</text>
+  </g>
+  <text x="600" y="458" text-anchor="middle" font-size="13" fill="#5A6B6D">必要なのは配信を「止める」ことではなく「分ける」こと</text>
+</svg>

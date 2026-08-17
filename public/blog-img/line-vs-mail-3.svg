@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 450" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <rect width="1200" height="450" rx="20" fill="#F6FAF9"/>
+  <text x="600" y="52" text-anchor="middle" font-size="24" font-weight="800" fill="#0E1A1C">業種別・どちらを主軸にすべきかの判断基準</text>
+  <!-- store card -->
+  <g>
+    <rect x="60" y="95" width="340" height="260" rx="16" fill="#fff" stroke="#17A673" stroke-width="2.5"/>
+    <text x="230" y="152" text-anchor="middle" font-size="30">🏪</text>
+    <text x="230" y="198" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">店舗ビジネス</text>
+    <text x="230" y="222" text-anchor="middle" font-size="11.5" fill="#5A6B6D">美容・飲食・治療院など</text>
+    <text x="230" y="264" text-anchor="middle" font-size="13" fill="#5A6B6D">主軸は <tspan font-size="14" font-weight="800" fill="#0E4F44">LINE一択</tspan></text>
+    <text x="230" y="294" text-anchor="middle" font-size="12.5" fill="#5A6B6D">再来店リマインドとクーポンが得意分野</text>
+  </g>
+  <!-- school card -->
+  <g>
+    <rect x="430" y="95" width="340" height="260" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="600" y="152" text-anchor="middle" font-size="30">🎓</text>
+    <text x="600" y="198" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">スクール・講座ビジネス</text>
+    <text x="600" y="264" text-anchor="middle" font-size="13" fill="#5A6B6D">集客〜販売 <tspan font-weight="800" fill="#17A673">›</tspan> <tspan font-weight="800" fill="#0E4F44">LINE</tspan></text>
+    <text x="600" y="294" text-anchor="middle" font-size="13" fill="#5A6B6D">教材配布・事務連絡 <tspan font-weight="800" fill="#17A673">›</tspan> <tspan font-weight="700" fill="#0E1A1C">メール併用</tspan></text>
+  </g>
+  <!-- BtoB card -->
+  <g>
+    <rect x="800" y="95" width="340" height="260" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="970" y="152" text-anchor="middle" font-size="30">🏢</text>
+    <text x="970" y="198" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">BtoBサービス</text>
+    <text x="970" y="264" text-anchor="middle" font-size="13" fill="#5A6B6D">商談 <tspan font-weight="800" fill="#17A673">›</tspan> <tspan font-weight="700" fill="#0E1A1C">メール</tspan></text>
+    <text x="970" y="294" text-anchor="middle" font-size="13" fill="#5A6B6D">セミナー集客・ナーチャリング <tspan font-weight="800" fill="#17A673">›</tspan> <tspan font-weight="800" fill="#0E4F44">LINE</tspan></text>
+  </g>
+  <text x="600" y="412" text-anchor="middle" font-size="14" font-weight="700" fill="#0E4F44">売上に直結する接点（オファー・リマインド）は、開封される媒体＝LINEに置くのが原則</text>
+</svg>

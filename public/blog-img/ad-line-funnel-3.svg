@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <rect width="1200" height="460" rx="20" fill="#F6FAF9"/>
+  <text x="600" y="52" text-anchor="middle" font-size="24" font-weight="800" fill="#0E1A1C">受け皿として機能させる、設計の4手順</text>
+  <!-- step cards -->
+  <g>
+    <rect x="40" y="90" width="255" height="240" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <circle cx="167" cy="140" r="26" fill="#0E4F44"/><text x="167" y="149" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">1</text>
+    <text x="167" y="200" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">訴求とあいさつを揃える</text>
+    <text x="167" y="232" text-anchor="middle" font-size="12.5" fill="#5A6B6D">流入元で期待させたものを</text>
+    <text x="167" y="254" text-anchor="middle" font-size="12.5" fill="#5A6B6D">追加直後にすぐ渡す</text>
+    <text x="167" y="300" text-anchor="middle" font-size="30">🎯</text>
+  </g>
+  <g>
+    <rect x="335" y="90" width="255" height="240" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <circle cx="462" cy="140" r="26" fill="#0E4F44"/><text x="462" y="149" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">2</text>
+    <text x="462" y="200" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">追加直後の特典を用意</text>
+    <text x="462" y="232" text-anchor="middle" font-size="12.5" fill="#5A6B6D">初回クーポン・無料診断など</text>
+    <text x="462" y="254" text-anchor="middle" font-size="12.5" fill="#5A6B6D">すぐ使えるオファー</text>
+    <text x="462" y="300" text-anchor="middle" font-size="30">🎁</text>
+  </g>
+  <g>
+    <rect x="630" y="90" width="255" height="240" rx="16" fill="#fff" stroke="#17A673" stroke-width="2.5"/>
+    <circle cx="757" cy="140" r="26" fill="#17A673"/><text x="757" y="149" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">3</text>
+    <text x="757" y="200" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">ステップ配信を組む</text>
+    <text x="757" y="232" text-anchor="middle" font-size="12.5" fill="#5A6B6D">即決しない層に数日かけて</text>
+    <text x="757" y="254" text-anchor="middle" font-size="12.5" font-weight="700" fill="#0E4F44">信頼を積み上げる</text>
+    <text x="757" y="300" text-anchor="middle" font-size="30">💬</text>
+  </g>
+  <g>
+    <rect x="925" y="90" width="235" height="240" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <circle cx="1042" cy="140" r="26" fill="#0E4F44"/><text x="1042" y="149" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">4</text>
+    <text x="1042" y="200" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">数値をセットで見る</text>
+    <text x="1042" y="232" text-anchor="middle" font-size="12" fill="#5A6B6D">友だち追加単価・配信経由の成約率</text>
+    <text x="1042" y="254" text-anchor="middle" font-size="12" fill="#5A6B6D">顧客単価×リピート回数を毎月</text>
+    <text x="1042" y="300" text-anchor="middle" font-size="30">📊</text>
+  </g>
+  <!-- arrows -->
+  <text x="315" y="218" text-anchor="middle" font-size="26" font-weight="800" fill="#17A673">›</text>
+  <text x="610" y="218" text-anchor="middle" font-size="26" font-weight="800" fill="#17A673">›</text>
+  <text x="905" y="218" text-anchor="middle" font-size="26" font-weight="800" fill="#17A673">›</text>
+  <text x="600" y="410" text-anchor="middle" font-size="14" font-weight="700" fill="#0E4F44">友だちを増やして終わりにせず、追加の「あと」までを一続きで設計する</text>
+</svg>
