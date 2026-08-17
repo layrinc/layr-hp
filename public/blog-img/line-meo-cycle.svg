@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 640" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <rect width="1200" height="640" rx="20" fill="#F6FAF9"/>
+  <text x="600" y="56" text-anchor="middle" font-size="24" font-weight="800" fill="#0E1A1C">「集客の循環」が完成する</text>
+  <ellipse cx="600" cy="370" rx="430" ry="205" fill="none" stroke="#17A673" stroke-width="2.5" stroke-dasharray="6 8"/>
+  <g><rect x="480" y="110" width="240" height="76" rx="14" fill="#17A673"/>
+    <text x="600" y="141" text-anchor="middle" font-size="16" font-weight="800" fill="#fff">口コミが増える</text>
+    <text x="600" y="166" text-anchor="middle" font-size="12" fill="#DFF3EA">評価と件数が積み上がる</text></g>
+  <g><rect x="880" y="230" width="250" height="76" rx="14" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="1005" y="261" text-anchor="middle" font-size="15.5" font-weight="800" fill="#0E1A1C">Googleマップから新規来店</text>
+    <text x="1005" y="286" text-anchor="middle" font-size="12" fill="#5A6B6D">選ばれる判断材料になる</text></g>
+  <g><rect x="880" y="430" width="250" height="76" rx="14" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="1005" y="461" text-anchor="middle" font-size="15.5" font-weight="800" fill="#0E1A1C">来店客がアンケート回答</text>
+    <text x="1005" y="486" text-anchor="middle" font-size="12" fill="#5A6B6D">テーブルQRから参加</text></g>
+  <g><rect x="480" y="530" width="240" height="76" rx="14" fill="#EDF7F2" stroke="#17A673" stroke-width="2"/>
+    <text x="600" y="561" text-anchor="middle" font-size="15.5" font-weight="800" fill="#0E4F44">口コミ ＋ LINE登録</text>
+    <text x="600" y="586" text-anchor="middle" font-size="12" fill="#5A6B6D">2つの資産が同時に増える</text></g>
+  <g><rect x="70" y="430" width="250" height="76" rx="14" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="195" y="461" text-anchor="middle" font-size="15.5" font-weight="800" fill="#0E1A1C">LINEから再来店</text>
+    <text x="195" y="486" text-anchor="middle" font-size="12" fill="#5A6B6D">クーポン・限定メニュー配信</text></g>
+  <g><rect x="70" y="230" width="250" height="76" rx="14" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="195" y="261" text-anchor="middle" font-size="15.5" font-weight="800" fill="#0E1A1C">満足した客がまた口コミ</text>
+    <text x="195" y="286" text-anchor="middle" font-size="12" fill="#5A6B6D">循環の起点に戻る</text></g>
+  <g fill="#17A673" font-size="26" font-weight="800">
+    <text x="825" y="205" transform="rotate(35 825 205)">›</text>
+    <text x="1010" y="390" transform="rotate(90 1010 390)">›</text>
+    <text x="800" y="545" transform="rotate(145 800 545)">›</text>
+    <text x="385" y="560" transform="rotate(215 385 560)">›</text>
+    <text x="185" y="390" transform="rotate(270 185 390)">›</text>
+    <text x="370" y="185" transform="rotate(325 370 185)">›</text>
+  </g>
+</svg>
