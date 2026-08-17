@@ -2588,3 +2588,6 @@ html.nav-open{overflow:hidden}
 
 /* v24 — 支援実績（#case・白背景）を挟んだため、続くFLOWジグザグの上端波は白で塗る */
 #case + .zz > .zz-wave:not(.zz-wave--b){color:var(--paper)}
+
+/* v25: フッターの低露出リンク（成果報酬・審査制） */
+.footer .ft-small a{font-size:11px;opacity:.7}

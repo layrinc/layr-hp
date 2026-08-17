@@ -1,0 +1,224 @@
+---
+/**
+ * 完全成果報酬型LINE運用（審査制・同時5社）LP — /partner/
+ * 意図的に低露出: ヘッダー非掲載・noindex・sitemap除外。入口はフッターの小リンクのみ。
+ * 数字・条件の正本: 02_LINEマーケティング事業/成果物/20260817_成果報酬プラン設計_v2.md
+ */
+import Base from '../../layouts/Base.astro';
+import settings from '../../data/settings.json';
+
+const title = '完全成果報酬型LINE運用（審査制）｜株式会社LAYR';
+const description = '初期費用0円・月額0円。成果が出なければ費用はかかりません。LINE経由で新たに生まれた売上の一部だけをいただく、審査制・同時5社限定のLINE構築・運用サービスです。';
+const formAction = `https://formsubmit.co/${settings.email}`;
+
+const criteria = [
+  { t: '商品力があること', d: '口コミ評価が高い、リピート・紹介が実際にある。良い商品を持つ会社の売上を伸ばすのが本サービスの前提です。' },
+  { t: 'お客様の母数があること', d: '月間来店300人以上、顧客リスト1,000件以上、または広告・SNSからの新規流入がある。' },
+  { t: '計測できる業態であること', d: '予約制・クーポン利用・ECなど、LINE経由の成果を数字で計測できること。' },
+  { t: '決裁者と直接話せること', d: '経営者・院長・オーナーご本人と進められること。' },
+  { t: '成果を事例として公開できること', d: '結果が出た際、事例として公開にご協力いただけること（社名の扱いは応相談）。' },
+];
+
+const steps = [
+  ['審査申込', '下のフォームから1分で完了'],
+  ['審査', '公開情報を拝見し、3営業日以内にご連絡'],
+  ['面談', 'オンライン60分。数字と条件をすり合わせ'],
+  ['構築', '費用0円でLINE公式・Lステップを構築'],
+  ['運用開始', '成果に応じた報酬のみ。毎月レポート'],
+];
+---
+<Base title={title} description={description} robots="noindex, nofollow">
+  <div class="subpage-pad"></div>
+
+  <!-- HERO -->
+  <section class="pt-hero">
+    <div class="container">
+      <p class="pt-badge">審査制 ／ 同時5社まで ／ 完全成果報酬</p>
+      <h1>成果が出なければ、<br />費用はいただきません。</h1>
+      <p class="pt-lead">初期費用0円・月額0円でLINE公式アカウントを構築し、運用します。いただくのは、LINE経由で<b>新たに生まれた売上の一部だけ</b>。弊社が結果を出せなければ、報酬はゼロです。</p>
+      <a class="btn pt-btn-w btn-lg" href="#apply">審査に申し込む</a>
+      <p class="pt-note-s">※ どの会社さまでもお受けできる内容ではないため、審査制とさせていただいています。</p>
+    </div>
+  </section>
+
+  <!-- 仕組み -->
+  <section class="pt-sec">
+    <div class="container pt-narrow">
+      <h2 class="pt-h2">仕組みは、シンプルです。</h2>
+      <div class="pt-scheme">
+        <div class="pt-sc"><p class="n">初期構築</p><p class="v">0<small>円</small></p><p class="s">通常10〜40万円の構築費を免除</p></div>
+        <div class="pt-sc"><p class="n">月額費用</p><p class="v">0<small>円</small></p><p class="s">固定の運用費はいただきません</p></div>
+        <div class="pt-sc is-hl"><p class="n">成果報酬</p><p class="v">8〜15<small>%</small></p><p class="s">LINE経由売上のみ・業種により設定<br />（売上が伸びるほど料率は下がる逓減制）</p></div>
+      </div>
+      <p class="pt-body">対象になるのは「LINEをきっかけに実際に来店・購入された売上」だけです。計測は弊社のツールで行い、<b>毎月レポートで数字を開示</b>します。感覚や自己申告ではなく、記録で精算する仕組みです。</p>
+    </div>
+  </section>
+
+  <!-- なぜ無料か -->
+  <section class="pt-sec pt-tint">
+    <div class="container pt-narrow">
+      <h2 class="pt-h2">なぜ、無料で構築できるのか。</h2>
+      <p class="pt-body">理由は3つあります。<b>①成果を出せる会社さまだけを審査で選ばせていただくから。②報酬が成果に連動するため、弊社は本気で売上を伸ばすことにだけ集中できるから。③結果を事例として公開させていただくことが、弊社にとっての報酬の一部だから。</b></p>
+      <p class="pt-body">貴社のリスクはゼロ。弊社のリスクは時間。だからこそ、勝てる相手としか組めません。</p>
+    </div>
+  </section>
+
+  <!-- 審査基準 -->
+  <section class="pt-sec">
+    <div class="container pt-narrow">
+      <h2 class="pt-h2">審査基準（すべて満たす会社さまのみ）</h2>
+      <ol class="pt-crit">
+        {criteria.map((c, i) => (
+          <li><span class="num">{String(i + 1).padStart(2, '0')}</span><div><b>{c.t}</b><p>{c.d}</p></div></li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- 条件 -->
+  <section class="pt-sec pt-tint">
+    <div class="container pt-narrow">
+      <h2 class="pt-h2">お約束いただく条件</h2>
+      <ul class="pt-terms">
+        <li>最低契約期間は6ヶ月です（成果が立ち上がるまでの伴走期間）</li>
+        <li>LINE公式アカウント・Lステップの利用料（実費）は貴社負担です</li>
+        <li>4ヶ月目以降は、最低報酬（月3万円）と成果報酬のいずれか高い方をいただきます</li>
+        <li>店頭・既存のお客様への告知など、友だち集めにご協力ください</li>
+        <li>成果の事例公開にご同意ください（社名の扱いは契約時に取り決めます）</li>
+      </ul>
+      <p class="pt-note-s">※ 詳細条件は契約書に明記のうえ、面談時にすべてご説明します。</p>
+    </div>
+  </section>
+
+  <!-- 流れ -->
+  <section class="pt-sec">
+    <div class="container pt-narrow">
+      <h2 class="pt-h2">審査から運用開始まで</h2>
+      <div class="pt-steps">
+        {steps.map((s, i) => (
+          <div class="pt-step"><span class="num">{i + 1}</span><b>{s[0]}</b><p>{s[1]}</p></div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 申込フォーム -->
+  <section class="pt-apply" id="apply">
+    <div class="container pt-narrow">
+      <h2 class="pt-h2" style="color:#fff">審査申込（1分）</h2>
+      <p class="pt-apply-s">現在の募集枠: <b>5社</b>。審査結果は3営業日以内にメールでご連絡します。</p>
+      <form class="pt-form" id="ptForm" action={formAction} method="POST">
+        <input type="hidden" name="_subject" value="【成果報酬・審査申込】" />
+        <input type="hidden" name="_template" value="table" />
+        <input type="hidden" name="_captcha" value="false" />
+        <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
+        <label>会社名・店舗名 <span>必須</span><input type="text" name="会社名" required placeholder="例) 株式会社〇〇 / 〇〇クリニック" /></label>
+        <label>お名前 <span>必須</span><input type="text" name="お名前" required placeholder="例) 山田太郎" autocomplete="name" /></label>
+        <label>メールアドレス <span>必須</span><input type="email" name="メールアドレス" required placeholder="例) taro@example.com" autocomplete="email" /></label>
+        <label>サイト・SNSのURL <span>必須</span><input type="text" name="サイトURL" required placeholder="例) https://example.com" /></label>
+        <label>月間のお客様の規模 <span>必須</span>
+          <select name="月間規模" required>
+            <option value="">選択してください</option>
+            <option>月間来店 300人未満</option>
+            <option>月間来店 300〜1,000人</option>
+            <option>月間来店 1,000人以上</option>
+            <option>顧客リスト 1,000件以上</option>
+            <option>EC・オンライン中心</option>
+          </select>
+        </label>
+        <label>ひとこと（任意）<textarea name="ひとこと" rows="3" placeholder="現状の課題や、LINEでやりたいことがあればお書きください"></textarea></label>
+        <button type="submit" class="btn btn-green btn-lg" id="ptSubmit">審査に申し込む</button>
+        <div class="pt-fallback" id="ptFallback" hidden>
+          <p>送信システムが混み合っているようです。お手数ですが下のボタンからメールでお申し込みください（入力内容は引き継がれます）。</p>
+          <a class="btn pt-btn-w" id="ptMailto" href={`mailto:${settings.email}`}>メールで申し込む</a>
+        </div>
+      </form>
+    </div>
+  </section>
+</Base>
+
+<script is:inline>
+  (function () {
+    const form = document.getElementById('ptForm');
+    if (!form || form.dataset.bound) return;
+    form.dataset.bound = '1';
+    const btn = document.getElementById('ptSubmit');
+    const fb = document.getElementById('ptFallback');
+    const ml = document.getElementById('ptMailto');
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (form.querySelector('[name="_honey"]').value) return;
+      btn.disabled = true; btn.textContent = '送信中…';
+      const fd = new FormData(form);
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 8000);
+      try {
+        const res = await fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), { method: 'POST', body: fd, headers: { Accept: 'application/json' }, signal: ctrl.signal });
+        clearTimeout(timer);
+        if (!res.ok) throw new Error('http ' + res.status);
+        if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'partner_apply' });
+        form.innerHTML = '<p style="color:#fff;font-weight:700;font-size:16px;text-align:center;padding:30px 0">お申し込みを受け付けました。3営業日以内にご連絡します。</p>';
+      } catch (_) {
+        clearTimeout(timer);
+        const v = (k) => String(fd.get(k) || '');
+        const body = ['成果報酬型LINE運用の審査を申し込みます。', '', '会社名: ' + v('会社名'), 'お名前: ' + v('お名前'), 'メール: ' + v('メールアドレス'), 'URL: ' + v('サイトURL'), '規模: ' + v('月間規模'), 'ひとこと: ' + v('ひとこと')].join('\n');
+        ml.href = ml.href.split('?')[0] + '?subject=' + encodeURIComponent('【成果報酬・審査申込】' + v('会社名')) + '&body=' + encodeURIComponent(body);
+        fb.hidden = false;
+        btn.disabled = false; btn.textContent = '審査に申し込む';
+      }
+    });
+  })();
+</script>
+
+<style>
+  .pt-hero{background:linear-gradient(150deg,#0B2E28 0%,#0E4F44 60%,#0F5C4C 100%);color:#fff;text-align:center;padding:clamp(64px,9vw,110px) 0}
+  .pt-badge{display:inline-block;border:1.5px solid rgba(255,255,255,.4);border-radius:999px;padding:8px 22px;font-size:12.5px;font-weight:800;letter-spacing:.08em;margin-bottom:26px}
+  .pt-hero h1{font-size:clamp(30px,5.6vw,52px);font-weight:900;line-height:1.45;letter-spacing:-.01em}
+  .pt-lead{font-size:15px;line-height:2.1;opacity:.92;max-width:38em;margin:22px auto 32px}
+  .pt-lead b{color:#8FE3C9}
+  .pt-btn-w{background:#fff;color:var(--green-dark);border:none}
+  .pt-btn-w:hover{background:#fff}
+  .pt-note-s{font-size:11.5px;opacity:.6;margin-top:16px}
+  .pt-sec{padding:clamp(52px,7vw,84px) 0}
+  .pt-tint{background:#F4FAF8}
+  .pt-narrow{max-width:800px}
+  .pt-h2{font-size:clamp(21px,3vw,28px);font-weight:900;letter-spacing:-.01em;color:var(--black);margin-bottom:24px;text-align:center}
+  .pt-body{font-size:14.5px;line-height:2.2;color:#1B2A2E;margin-bottom:1.2em}
+  .pt-body b{background:linear-gradient(transparent 64%,#CDEFE2 64%)}
+  .pt-scheme{display:grid;grid-template-columns:1fr 1fr 1.2fr;gap:14px;margin-bottom:26px}
+  .pt-sc{background:#F4FAF8;border-radius:16px;padding:24px 20px;text-align:center}
+  .pt-sc.is-hl{background:var(--green-dark);color:#fff}
+  .pt-sc .n{font-size:12px;font-weight:800;opacity:.75}
+  .pt-sc .v{font-family:var(--font-en);font-weight:800;font-size:44px;line-height:1.2;margin:6px 0}
+  .pt-sc .v small{font-size:16px;font-family:var(--font-jp);font-weight:800}
+  .pt-sc .s{font-size:11.5px;line-height:1.8;opacity:.8}
+  .pt-crit{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+  .pt-crit li{display:flex;gap:18px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:20px 22px}
+  .pt-crit .num{font-family:var(--font-en);font-weight:800;font-size:22px;color:var(--green);flex:none;line-height:1.4}
+  .pt-crit b{font-size:15px;color:var(--black)}
+  .pt-crit p{font-size:13px;color:var(--muted);line-height:1.9;margin-top:4px}
+  .pt-terms{list-style:none;margin:0 0 14px;padding:24px 26px;background:#fff;border-radius:14px;border:1.5px solid var(--line);display:flex;flex-direction:column;gap:10px}
+  .pt-terms li{position:relative;padding-left:26px;font-size:13.5px;line-height:1.9;color:#1B2A2E}
+  .pt-terms li::before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:900}
+  .pt-steps{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .pt-step{background:#F4FAF8;border-radius:12px;padding:18px 14px;text-align:center}
+  .pt-step .num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--green-dark);color:#fff;font-family:var(--font-en);font-weight:800;font-size:13px;margin-bottom:8px}
+  .pt-step b{display:block;font-size:13px;color:var(--black)}
+  .pt-step p{font-size:11px;color:var(--muted);line-height:1.7;margin-top:4px}
+  .pt-apply{background:var(--green-dark);padding:clamp(52px,7vw,84px) 0}
+  .pt-apply-s{color:rgba(255,255,255,.85);text-align:center;font-size:13.5px;margin-bottom:26px}
+  .pt-apply-s b{color:#8FE3C9}
+  .pt-form{display:flex;flex-direction:column;gap:14px;background:#fff;border-radius:18px;padding:clamp(24px,4vw,38px)}
+  .pt-form label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:800;color:var(--black)}
+  .pt-form label span{display:inline;color:#fff;background:var(--green);font-size:10px;border-radius:4px;padding:1px 8px;margin-left:6px;align-self:flex-start}
+  .pt-form input,.pt-form select,.pt-form textarea{font-family:var(--font-jp);font-size:15px;padding:12px 14px;border:1.5px solid #D5E2DE;border-radius:10px;outline:none;background:#fff;font-weight:500}
+  .pt-form input:focus,.pt-form select:focus,.pt-form textarea:focus{border-color:var(--green)}
+  .pt-form button{border:none;font-family:var(--font-jp);margin-top:6px}
+  .pt-fallback{text-align:center;padding:14px}
+  .pt-fallback p{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+  @media(max-width:760px){
+    .pt-scheme{grid-template-columns:1fr}
+    .pt-steps{grid-template-columns:1fr 1fr;gap:8px}
+    .pt-steps .pt-step:last-child{grid-column:1/-1}
+  }
+</style>
