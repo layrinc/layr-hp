@@ -1,7 +1,7 @@
 {
-  "title": "サービス一覧（LINE構築・運用／広告運用／WebマーケBPO）",
+  "title": "サービス一覧（LINE構築・運用／広告運用／WebマーケBPO／AI導入支援）",
   "h1": "サービス",
-  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング、Meta・Google・LINEヤフーのWeb広告運用代行、月10万円のWebマーケティングBPO「よろず屋マーケくん」。広告からLINE、販売までの導線を一体で設計します。",
+  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング、Web広告運用代行、月10万円のWebマーケティングBPO「よろず屋マーケくん」、法人向けAI導入・業務実装支援。",
   "blocks": [
     {
       "id": "sv-head",
@@ -128,6 +128,29 @@
       "type": "spacer",
       "p": {
         "size": "m"
+      }
+    },
+    {
+      "id": "sv-cap4",
+      "type": "capBox",
+      "p": {
+        "color": "green",
+        "title": "AI導入・業務実装支援",
+        "body": "予約・請求・問い合わせ対応などの業務アプリ開発から、AI業務効率化の仕組みづくり、社内定着まで。発注前にプロトタイプを確認できる松竹梅方式で、御社の業務にAIを実装します。"
+      }
+    },
+    {
+      "id": "sv-btn4",
+      "type": "buttons",
+      "p": {
+        "align": "center",
+        "items": [
+          {
+            "label": "AI導入支援を見る",
+            "url": "/service/ai/",
+            "style": "green"
+          }
+        ]
       }
     }
   ]

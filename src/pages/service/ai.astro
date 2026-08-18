@@ -1,0 +1,278 @@
+---
+/**
+ * 法人向けAI導入・業務実装サービス LP（/service/ai/）— 仮公開版
+ * トンマナ: 白×青のAIモダン系（このページ専用。サイト共通の緑は使わない）
+ * 思想: FDE型＝ツール紹介でなく現場に入り込んで業務ごと実装する伴走
+ * 型: プロトタイプ先出し → 松竹梅見積もり（AI導入支援事業/のメモ参照）
+ */
+import Base from '../../layouts/Base.astro';
+import settings from '../../data/settings.json';
+
+const title = '法人向けAI導入・業務実装支援｜株式会社LAYR';
+const description = 'AIを「紹介」ではなく「実装」する法人向け支援。予約・シフト・請求書などの業務アプリ開発、AI業務効率化の仕組みづくり、社内定着まで伴走します。プロトタイプを確認してから発注判断できる松竹梅方式。';
+const consult = `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】AI導入・業務実装について')}`;
+
+const pains = [
+  ['📅', '予約・スケジュール管理', '電話とホワイトボードで管理していて、ダブルブッキングが怖い'],
+  ['👥', 'スタッフの割り振り', 'シフトと案件のマッチングを毎週、手で組んでいる'],
+  ['🧾', '請求書の発行', '月末に1件ずつ作って送っている。ミスも起きる'],
+  ['💬', '問い合わせ対応', '同じ質問への返信に、毎日時間が溶けている'],
+  ['⌨️', '転記・入力作業', '紙やExcelからの転記が誰かの仕事になっている'],
+  ['📊', 'レポート作成', '数字を集めて資料にするだけで半日かかる'],
+];
+
+const services = [
+  { n: '01', t: '業務Webアプリ開発', d: '予約受付からカレンダー表示、スタッフ割り振り、LINE連携、請求書のダウンロードまで——バラバラだった業務をひとつのアプリに束ねます。既製SaaSに業務を合わせるのではなく、御社の業務に合わせて作ります。', chips: ['予約・カレンダー', 'スタッフ管理', 'LINE連携', '請求書発行'] },
+  { n: '02', t: 'AI業務効率化の実装', d: '文書作成・問い合わせ一次対応・データ整理・レポート生成など、繰り返し業務にAIを組み込みます。「ChatGPTを契約して終わり」ではなく、御社の業務フローの中で毎日動く仕組みとして納品します。', chips: ['文書・資料の自動作成', '問い合わせ自動化', 'データ整理', '定型レポート'] },
+  { n: '03', t: 'AI導入コンサル・社内定着', d: 'どの業務からAI化すべきかの診断、ツール選定、運用ルールづくり、社内向けの使い方レクチャーまで。導入して終わりにせず、現場で使われ続ける状態まで伴走します。', chips: ['AI化診断', 'ツール選定', '運用ルール', '社内レクチャー'] },
+];
+
+const steps = [
+  ['ヒアリング', '現状の業務と困りごとを伺います（無料・オンライン60分）'],
+  ['プロトタイプ提示', '発注前に、動くプロトタイプを実際にご覧いただきます'],
+  ['松竹梅お見積もり', '機能範囲の異なる3案から選べる見積もりをご提示'],
+  ['開発・実装', 'AI開発で高速に構築。週次で進捗を共有します'],
+  ['運用伴走', '納品後の修正・改善・使い方サポートまで続きます'],
+];
+
+const faqs = [
+  { q: '費用の目安を教えてください。', a: 'プロトタイプご確認後に、機能範囲の異なる松竹梅の3案でお見積もりします。参考レンジは、単機能の業務ツールで30万円〜、予約・請求まで束ねた業務アプリ一式で80万円〜が目安です（税抜）。' },
+  { q: 'ITに詳しい担当者がいなくても大丈夫ですか？', a: '問題ありません。専門用語を使わずに進めますし、納品後の使い方レクチャーと運用サポートまで含めて設計します。' },
+  { q: '発注前に完成イメージを確認できますか？', a: 'はい、ここが弊社の特徴です。ご発注の前に動くプロトタイプをご覧いただき、確認してから金額と範囲を決めていただけます。' },
+  { q: 'なぜ低コストで作れるのですか？', a: 'AIを活用した開発体制のためです。弊社自身、社内の業務ツール30本以上をAIで内製しており、その開発体制をそのままお客様に提供しています。' },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://layr.co.jp/' },
+      { '@type': 'ListItem', position: 2, name: 'サービス', item: 'https://layr.co.jp/service/' },
+      { '@type': 'ListItem', position: 3, name: 'AI導入・業務実装支援' },
+    ],
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'Service', '@id': 'https://layr.co.jp/#service-ai',
+    name: '法人向けAI導入・業務実装支援', serviceType: 'AI導入支援・業務システム開発',
+    provider: { '@id': 'https://layr.co.jp/#organization' }, areaServed: 'JP', url: 'https://layr.co.jp/service/ai/',
+  },
+  {
+    '@context': 'https://schema.org', '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+];
+---
+<Base title={title} description={description} jsonLd={jsonLd}>
+  <div class="subpage-pad"></div>
+
+  <!-- HERO（深青・グロー） -->
+  <section class="ai-hero">
+    <span class="ai-orb is-1" aria-hidden="true"></span>
+    <span class="ai-orb is-2" aria-hidden="true"></span>
+    <div class="container ai-hero-in">
+      <p class="ai-badge">法人向け ／ AI導入・業務実装支援</p>
+      <h1>AIを「紹介」ではなく、<br /><em>「実装」</em>する。</h1>
+      <p class="ai-lead">ツールの提案で終わる支援は、現場を変えません。LAYRは御社の業務に入り込み、予約・請求・問い合わせ対応までを<b>毎日動く仕組み</b>として作り上げます。</p>
+      <div class="ai-cta-row">
+        <a class="ai-btn" href={consult}>無料相談する<i>›</i></a>
+        <a class="ai-btn is-ghost" href="#flow">進め方を見る</a>
+      </div>
+      <div class="ai-hero-stats">
+        <div><b>30本+</b><span>自社でAI内製した業務ツール</span></div>
+        <div><b>0円</b><span>発注前のプロトタイプ提示</span></div>
+        <div><b>3案</b><span>松竹梅から選べる見積もり</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 課題 -->
+  <section class="ai-sec">
+    <div class="container">
+      <p class="ai-en">ISSUES</p>
+      <h2 class="ai-h2">こんな「手作業」、まだ残っていませんか？</h2>
+      <div class="ai-pains">
+        {pains.map((p) => (
+          <div class="ai-pain"><span class="ic">{p[0]}</span><b>{p[1]}</b><p>{p[2]}</p></div>
+        ))}
+      </div>
+      <p class="ai-arrow">その業務、<b>AIと仕組みで手放せます。</b></p>
+    </div>
+  </section>
+
+  <!-- できること -->
+  <section class="ai-sec is-tint">
+    <div class="container">
+      <p class="ai-en">SERVICE</p>
+      <h2 class="ai-h2">LAYRのAI実装支援は、3つ。</h2>
+      <div class="ai-svcs">
+        {services.map((s) => (
+          <div class="ai-svc">
+            <span class="num">{s.n}</span>
+            <h3>{s.t}</h3>
+            <p>{s.d}</p>
+            <div class="chips">{s.chips.map((c) => <span>{c}</span>)}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 特徴（FDE型） -->
+  <section class="ai-sec">
+    <div class="container ai-narrow">
+      <p class="ai-en">WHY LAYR</p>
+      <h2 class="ai-h2">選ばれる理由</h2>
+      <div class="ai-whys">
+        <div class="ai-why"><b>現場に入り込む「実装型」</b><p>AI業界で最も求められているのは、モデルの知識ではなく現場でAIを動かす実装力です。LAYRは業務ヒアリングから運用定着まで、現場に入り込んで伴走します。</p></div>
+        <div class="ai-why"><b>発注前に、動くものを見せます</b><p>「完成してみないと分からない」開発はしません。契約前にプロトタイプをご覧いただき、納得してから範囲と金額を決められます。</p></div>
+        <div class="ai-why"><b>自社で毎日やっていることを、そのまま提供</b><p>LAYR自身が30本以上の業務ツールをAIで内製し、一人分以上の業務を自動化して経営しています。売るためのAIではなく、使うためのAIを知っています。</p></div>
+        <div class="ai-why"><b>LINE連携が得意</b><p>LINEマーケティング専業の知見をそのまま接続。予約通知・顧客対応・配信まで、LINEと業務システムを一体で設計できます。</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 進め方 -->
+  <section class="ai-sec is-deep" id="flow">
+    <div class="container">
+      <p class="ai-en is-w">FLOW</p>
+      <h2 class="ai-h2 is-w">進め方は、5ステップ。</h2>
+      <div class="ai-flow">
+        {steps.map((s, i) => (
+          <div class="ai-step"><span class="n">{i + 1}</span><b>{s[0]}</b><p>{s[1]}</p></div>
+        ))}
+      </div>
+      <p class="ai-deep-note">※ プロトタイプ提示までは無料です。ご発注は内容を確認してからで構いません。</p>
+    </div>
+  </section>
+
+  <!-- 料金 -->
+  <section class="ai-sec">
+    <div class="container ai-narrow">
+      <p class="ai-en">PRICE</p>
+      <h2 class="ai-h2">料金の考え方</h2>
+      <div class="ai-price">
+        <p class="t">プロトタイプ確認後、<b>松竹梅の3案</b>でお見積もりします。</p>
+        <div class="rows">
+          <div><b>単機能の業務ツール</b><span>30万円〜</span></div>
+          <div><b>業務アプリ一式（予約〜請求まで）</b><span>80万円〜</span></div>
+          <div><b>大規模・基幹連携・LINE連携込み</b><span>150万円〜</span></div>
+        </div>
+        <p class="s">※ 税抜・目安。月額の保守・AI顧問は内容に応じてご提案します。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="ai-sec is-tint">
+    <div class="container ai-narrow">
+      <p class="ai-en">FAQ</p>
+      <h2 class="ai-h2">よくあるご質問</h2>
+      <div class="ai-faq">
+        {faqs.map((f) => (
+          <details class="ai-q"><summary><span>Q</span>{f.q}</summary><p>{f.a}</p></details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="ai-final">
+    <span class="ai-orb is-3" aria-hidden="true"></span>
+    <div class="container">
+      <p class="t">まずは、御社の「手作業」を教えてください。</p>
+      <p class="s">無料相談（オンライン60分）で現状を伺い、AI化できる業務とできない業務を正直にお伝えします。</p>
+      <a class="ai-btn is-white" href={consult}>無料相談する<i>›</i></a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ===== 白×青 AIモダン（このページ専用トークン） ===== */
+  .ai-hero{position:relative;background:linear-gradient(155deg,#0A1B45 0%,#0D2A6B 55%,#1140A0 100%);color:#fff;padding:clamp(64px,9vw,110px) 0;overflow:hidden}
+  .ai-hero::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.09) 1px,transparent 1px);background-size:26px 26px;mask-image:linear-gradient(180deg,transparent,#000 30%,#000 70%,transparent)}
+  .ai-orb{position:absolute;border-radius:50%;filter:blur(70px);pointer-events:none}
+  .ai-orb.is-1{width:420px;height:420px;background:rgba(56,132,255,.4);top:-120px;right:-80px}
+  .ai-orb.is-2{width:340px;height:340px;background:rgba(94,210,255,.22);bottom:-140px;left:-60px}
+  .ai-orb.is-3{width:360px;height:360px;background:rgba(56,132,255,.35);top:-120px;right:10%}
+  .ai-hero-in{position:relative;max-width:860px}
+  .ai-badge{display:inline-block;border:1.5px solid rgba(255,255,255,.35);border-radius:999px;padding:7px 20px;font-size:12.5px;font-weight:800;letter-spacing:.08em;margin-bottom:26px;background:rgba(255,255,255,.06);backdrop-filter:blur(6px)}
+  .ai-hero h1{font-size:clamp(30px,5.6vw,52px);font-weight:900;line-height:1.45;letter-spacing:-.01em}
+  .ai-hero h1 em{font-style:normal;background:linear-gradient(90deg,#7FD8FF,#B0C8FF);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .ai-lead{font-size:15px;line-height:2.1;color:rgba(255,255,255,.85);max-width:38em;margin:22px 0 30px}
+  .ai-lead b{color:#9FE0FF;font-weight:800}
+  .ai-cta-row{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:40px}
+  .ai-btn{position:relative;display:inline-flex;align-items:center;gap:10px;background:linear-gradient(90deg,#3B82F6,#2563EB);color:#fff;font-weight:800;font-size:15px;border-radius:999px;padding:15px 40px;text-decoration:none;box-shadow:0 8px 26px rgba(37,99,235,.45);transition:transform .15s,box-shadow .15s}
+  .ai-btn:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(37,99,235,.55)}
+  .ai-btn i{font-style:normal;font-weight:900}
+  .ai-btn.is-ghost{background:transparent;border:2px solid rgba(255,255,255,.4);box-shadow:none}
+  .ai-btn.is-white{background:#fff;color:#0D2A6B;box-shadow:0 8px 26px rgba(0,0,0,.25)}
+  .ai-hero-stats{display:flex;gap:clamp(20px,4vw,54px);flex-wrap:wrap;border-top:1px solid rgba(255,255,255,.18);padding-top:26px}
+  .ai-hero-stats b{display:block;font-family:var(--font-en);font-weight:800;font-size:30px;color:#9FE0FF;line-height:1.2}
+  .ai-hero-stats span{font-size:11.5px;color:rgba(255,255,255,.7);font-weight:700}
+  /* sections */
+  .ai-sec{padding:clamp(56px,7vw,92px) 0;background:#fff}
+  .ai-sec.is-tint{background:#F2F6FF}
+  .ai-sec.is-deep{position:relative;background:linear-gradient(155deg,#0A1B45,#0D2A6B);color:#fff;overflow:hidden}
+  .ai-en{font-family:var(--font-en);font-weight:800;font-size:12.5px;letter-spacing:.22em;color:#2563EB;text-align:center;margin-bottom:10px}
+  .ai-en.is-w{color:#7FD8FF}
+  .ai-h2{font-size:clamp(22px,3.4vw,32px);font-weight:900;letter-spacing:-.01em;line-height:1.5;color:#0F1B3D;text-align:center;margin-bottom:34px}
+  .ai-h2.is-w{color:#fff}
+  .ai-narrow{max-width:860px}
+  /* pains */
+  .ai-pains{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:1000px;margin:0 auto}
+  .ai-pain{background:#fff;border:1.5px solid #E2EAFB;border-radius:16px;padding:22px 20px;transition:transform .16s,box-shadow .16s,border-color .16s}
+  .ai-pain:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(37,99,235,.1);border-color:#B9CFF9}
+  .ai-pain .ic{font-size:24px;display:block;margin-bottom:8px}
+  .ai-pain b{font-size:14.5px;color:#0F1B3D;display:block;margin-bottom:6px}
+  .ai-pain p{font-size:12.5px;color:#5A6B8C;line-height:1.85}
+  .ai-arrow{text-align:center;margin-top:30px;font-size:clamp(16px,2.6vw,22px);font-weight:900;color:#0F1B3D}
+  .ai-arrow b{color:#2563EB}
+  /* services */
+  .ai-svcs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .ai-svc{background:#fff;border-radius:18px;padding:28px 24px;box-shadow:0 2px 14px rgba(15,27,61,.06);border-top:4px solid #2563EB}
+  .ai-svc .num{font-family:var(--font-en);font-weight:800;font-size:13px;color:#2563EB;letter-spacing:.1em}
+  .ai-svc h3{font-size:17px;font-weight:900;color:#0F1B3D;margin:8px 0 12px;line-height:1.5}
+  .ai-svc p{font-size:13px;color:#5A6B8C;line-height:1.95;margin-bottom:16px}
+  .ai-svc .chips{display:flex;gap:7px;flex-wrap:wrap}
+  .ai-svc .chips span{font-size:11px;font-weight:700;color:#1D4ED8;background:#EAF1FF;border-radius:999px;padding:4px 12px}
+  /* whys */
+  .ai-whys{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .ai-why{background:#fff;border:1.5px solid #E2EAFB;border-left:5px solid #2563EB;border-radius:14px;padding:24px 24px}
+  .ai-why b{font-size:15.5px;color:#0F1B3D;display:block;margin-bottom:8px}
+  .ai-why p{font-size:13px;color:#5A6B8C;line-height:1.95}
+  /* flow */
+  .ai-flow{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;position:relative}
+  .ai-step{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);border-radius:14px;padding:20px 16px;text-align:center;backdrop-filter:blur(4px)}
+  .ai-step .n{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:linear-gradient(90deg,#3B82F6,#60A5FA);font-family:var(--font-en);font-weight:800;font-size:14px;margin-bottom:10px}
+  .ai-step b{display:block;font-size:13.5px;margin-bottom:6px}
+  .ai-step p{font-size:11px;color:rgba(255,255,255,.75);line-height:1.75}
+  .ai-deep-note{text-align:center;font-size:12px;color:rgba(255,255,255,.75);margin-top:22px;font-weight:700}
+  /* price */
+  .ai-price{background:#F2F6FF;border-radius:18px;padding:clamp(26px,4vw,38px)}
+  .ai-price .t{text-align:center;font-size:16.5px;font-weight:900;color:#0F1B3D;margin-bottom:22px}
+  .ai-price .t b{color:#2563EB}
+  .ai-price .rows{display:flex;flex-direction:column;gap:10px;max-width:560px;margin:0 auto 16px}
+  .ai-price .rows div{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:12px;padding:14px 20px;gap:14px}
+  .ai-price .rows b{font-size:13.5px;color:#0F1B3D}
+  .ai-price .rows span{font-family:var(--font-en);font-weight:800;font-size:17px;color:#2563EB;white-space:nowrap}
+  .ai-price .s{text-align:center;font-size:11.5px;color:#5A6B8C}
+  /* faq */
+  .ai-faq{display:flex;flex-direction:column;gap:12px}
+  .ai-q{background:#fff;border:1.5px solid #E2EAFB;border-radius:12px;padding:2px 20px}
+  .ai-q summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 0;font-weight:800;font-size:14.5px;color:#0F1B3D}
+  .ai-q summary::-webkit-details-marker{display:none}
+  .ai-q summary span{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#2563EB;color:#fff;font-family:var(--font-en);font-weight:800;font-size:13px;flex:none}
+  .ai-q p{padding:0 0 18px 38px;font-size:13.5px;line-height:1.95;color:#5A6B8C}
+  /* final */
+  .ai-final{position:relative;background:linear-gradient(155deg,#0A1B45,#0D2A6B);color:#fff;text-align:center;padding:clamp(56px,7vw,88px) 0;overflow:hidden}
+  .ai-final .t{font-size:clamp(20px,3.2vw,28px);font-weight:900;margin-bottom:10px;position:relative}
+  .ai-final .s{font-size:14px;opacity:.85;line-height:1.9;max-width:36em;margin:0 auto 28px;position:relative}
+  @media(max-width:900px){
+    .ai-pains{grid-template-columns:1fr 1fr}
+    .ai-svcs{grid-template-columns:1fr}
+    .ai-whys{grid-template-columns:1fr}
+    .ai-flow{grid-template-columns:1fr 1fr}
+    .ai-flow .ai-step:last-child{grid-column:1/-1}
+  }
+  @media(max-width:560px){.ai-pains{grid-template-columns:1fr}}
+</style>
