@@ -190,11 +190,11 @@ const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' vi
       <h4>SERVICE</h4>
       <ul class="footer-nav">
         <li><a href="/service/">サービス一覧</a></li>
-        <li><a href="/service/line/">LINE構築・運用マーケティング</a></li>
-        <li><a href="/service/ad/">Web広告運用代行</a></li>
-        <li><a href="/yorozuya/">WebマーケティングBPO</a></li>
-        <li><a href="/service/ai/">AI導入・業務実装支援</a></li>
-        <li class="ft-small"><a href="/partner/">成果報酬型LINE運用（審査制）</a></li>
+        <!-- 各サービスは「サービス一覧」の下位。段差（インデント）で階層を示す -->
+        <li class="ft-child"><a href="/service/line/">LINE構築・運用マーケティング</a></li>
+        <li class="ft-child"><a href="/service/ad/">広告運用代行</a></li>
+        <li class="ft-child"><a href="/yorozuya/">WebマーケティングBPO</a></li>
+        <li class="ft-child"><a href="/service/ai/">AI導入・業務実装支援</a></li>
       </ul>
     </div>
     <div>

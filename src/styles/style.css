@@ -2589,5 +2589,8 @@ html.nav-open{overflow:hidden}
 /* v24 — 支援実績（#case・白背景）を挟んだため、続くFLOWジグザグの上端波は白で塗る */
 #case + .zz > .zz-wave:not(.zz-wave--b){color:var(--paper)}
 
-/* v25: フッターの低露出リンク（成果報酬・審査制） */
-.footer .ft-small a{font-size:11px;opacity:.7}
+/* v26: フッターSERVICE — 各サービスは「サービス一覧」の下位。段差で階層を示す */
+.footer-nav .ft-child{padding-left:14px}
+.footer-nav .ft-child a{font-size:calc(12.5px * var(--fs,1));opacity:.7}
+.footer-nav .ft-child a::before{content:"–";font-weight:400}
+.footer-nav .ft-child a:hover{opacity:1}
