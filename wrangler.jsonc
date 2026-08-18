@@ -1,0 +1,11 @@
+{
+  // layr.co.jp コーポレートサイト（Astro静的ビルドをWorkers Assetsで配信）
+  "name": "layr-hp",
+  "account_id": "970414d67575a1afb2eb889748741af7",
+  "compatibility_date": "2026-08-01",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}
