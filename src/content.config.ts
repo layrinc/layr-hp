@@ -17,4 +17,21 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { blog };
+// 支援実績のコレクション定義。1実績 = src/content/cases/ 配下の 1つの .md ファイル。
+const cases = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/cases' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    industry: z.string(),
+    date: z.coerce.date(),
+    problem: z.string(),
+    action: z.string(),
+    metric_label: z.string(),
+    before: z.string(),
+    after: z.string(),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { blog, cases };

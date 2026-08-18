@@ -1,0 +1,193 @@
+---
+/**
+ * 支援実績の個別ページ — コラム記事と同じWordPress風レイアウト。
+ * 冒頭に成果サマリーカード（課題/施策/Before→After）、本文はmd装飾がそのまま乗る。
+ */
+import Base from '../../layouts/Base.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const cases = await getCollection('cases', ({ data }) => !data.draft);
+  return cases.map((c) => ({ params: { slug: c.id }, props: { c } }));
+}
+
+const { c } = Astro.props;
+const { Content } = await render(c);
+
+const fmt = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+
+const title = `${c.data.title}｜支援実績｜LAYR`;
+
+const others = (await getCollection('cases', ({ data }) => !data.draft))
+  .filter((x) => x.id !== c.id)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+const pageUrl = new URL(`/case/${c.id}/`, Astro.site).href;
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Article',
+    headline: c.data.title,
+    description: c.data.description,
+    datePublished: iso(c.data.date),
+    inLanguage: 'ja',
+    author: { '@type': 'Organization', name: '株式会社LAYR', url: 'https://layr.co.jp/' },
+    publisher: { '@id': 'https://layr.co.jp/#organization' },
+    mainEntityOfPage: pageUrl,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: new URL('/', Astro.site).href },
+      { '@type': 'ListItem', position: 2, name: '支援実績', item: new URL('/case/', Astro.site).href },
+      { '@type': 'ListItem', position: 3, name: c.data.title },
+    ],
+  },
+];
+---
+<Base title={title} description={c.data.description} ogType="article" jsonLd={jsonLd}>
+  <div class="ca-wrap container">
+    <nav class="ca-bc" aria-label="パンくず">
+      <a href="/">ホーム</a><span>›</span><a href="/case/">支援実績</a><span>›</span><em>{c.data.title}</em>
+    </nav>
+
+    <div class="ca-layout">
+      <article class="ca-article">
+        <header class="ca-head">
+          <div class="ca-meta">
+            <span class="ca-cat">{c.data.industry}</span>
+            <time datetime={iso(c.data.date)}>{fmt(c.data.date)} 公開</time>
+          </div>
+          <h1>{c.data.title}</h1>
+        </header>
+
+        <!-- 成果サマリーカード -->
+        <div class="ca-sum">
+          <div class="ca-sum-metric">
+            <p class="l">{c.data.metric_label}</p>
+            <p class="v"><span class="b">{c.data.before}</span><span class="arw">→</span><span class="a">{c.data.after}</span></p>
+          </div>
+          <dl class="ca-sum-rows">
+            <div><dt>課題</dt><dd>{c.data.problem}</dd></div>
+            <div><dt>施策</dt><dd>{c.data.action}</dd></div>
+          </dl>
+        </div>
+
+        <div class="wp-body" id="wpBody">
+          <Content />
+        </div>
+
+        <div class="ca-cta">
+          <p class="t">同じような課題をお持ちの方へ</p>
+          <div class="row">
+            <a class="btn btn-green" href="/contact/">無料相談に申し込む</a>
+            <a class="btn btn-black" href="/document/line-service/">サービス資料をダウンロード</a>
+          </div>
+          <p class="s"><a href="/service/line/">LINE構築・運用代行のサービス詳細と料金を見る ›</a></p>
+        </div>
+
+        {others.length > 0 && (
+          <section class="ca-others">
+            <h2 class="ca-others-t">他の支援実績</h2>
+            <div class="ca-others-grid">
+              {others.map((o) => (
+                <a class="ca-oc" href={`/case/${o.id}/`}>
+                  <span class="th"><span class="b">{o.data.before}</span><span class="arw">→</span><span class="a">{o.data.after}</span></span>
+                  <span class="bd"><span class="c">{o.data.industry}</span><h3>{o.data.title}</h3></span>
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
+
+        <div class="ca-back"><a href="/case/">‹ 支援実績一覧へ戻る</a></div>
+      </article>
+    </div>
+  </div>
+
+  <script is:inline>
+    // 引用ボックスの種別付け（コラムと同じ規約: ⚠→注意 / ✅→チェック / それ以外→ポイント）
+    document.querySelectorAll('#wpBody blockquote').forEach(function (bq) {
+      var t = (bq.textContent || '').trim();
+      if (/^[⚠️!！注]/.test(t)) bq.classList.add('is-warn');
+      else if (/^[✅☑]/.test(t)) bq.classList.add('is-check');
+      else bq.classList.add('is-point');
+    });
+  </script>
+</Base>
+
+<style>
+  .ca-wrap{padding:clamp(24px,3.4vw,44px) var(--gutter) clamp(60px,8vw,100px);max-width:900px}
+  .ca-bc{font-size:12px;color:var(--muted);margin-bottom:24px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .ca-bc a{color:var(--green-dark);font-weight:700;text-decoration:none}
+  .ca-bc span{opacity:.4;margin:0 7px}
+  .ca-bc em{font-style:normal;opacity:.75}
+  .ca-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .ca-cat{background:var(--green-dark);color:#fff;font-size:11.5px;font-weight:800;border-radius:999px;padding:5px 16px}
+  .ca-meta time{font-family:var(--font-en);font-weight:700;font-size:12.5px;color:var(--muted)}
+  .ca-head h1{font-size:clamp(23px,3.4vw,32px);font-weight:900;line-height:1.6;letter-spacing:-.01em;color:var(--black);margin-bottom:24px}
+  /* 成果サマリー */
+  .ca-sum{background:linear-gradient(135deg,#0E4F44,#17604F);border-radius:18px;padding:clamp(22px,3.4vw,32px);color:#fff;margin-bottom:34px}
+  .ca-sum-metric{text-align:center;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,.2);margin-bottom:18px}
+  .ca-sum-metric .l{font-size:12px;font-weight:700;color:rgba(255,255,255,.8);margin-bottom:6px}
+  .ca-sum-metric .v{display:flex;align-items:baseline;justify-content:center;gap:14px}
+  .ca-sum-metric .b{font-family:var(--font-en);font-weight:700;font-size:26px;opacity:.65;text-decoration:line-through}
+  .ca-sum-metric .arw{color:#8FE3C9;font-weight:900;font-size:22px}
+  .ca-sum-metric .a{font-family:var(--font-en);font-weight:800;font-size:52px;color:#8FE3C9;letter-spacing:-.02em;line-height:1}
+  .ca-sum-rows{display:flex;flex-direction:column;gap:10px;margin:0}
+  .ca-sum-rows div{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:start}
+  .ca-sum-rows dt{background:rgba(255,255,255,.14);border-radius:8px;text-align:center;font-size:12px;font-weight:800;padding:4px 0}
+  .ca-sum-rows dd{margin:0;font-size:13.5px;line-height:1.9;color:rgba(255,255,255,.95)}
+  /* 本文（コラムと同じWP装飾のサブセット） */
+  .wp-body{font-size:15.5px;line-height:2.1;color:#1B2A2E}
+  .wp-body :global(p){margin:0 0 1.6em}
+  .wp-body :global(h2){font-size:clamp(19px,2.6vw,23px);font-weight:900;line-height:1.6;color:var(--black);background:linear-gradient(90deg,#EDF7F2,#F8FBFA);border-left:6px solid var(--green);border-bottom:2px solid color-mix(in srgb,var(--green) 30%,#fff);border-radius:6px 6px 0 0;padding:14px 18px;margin:2.4em 0 1.1em}
+  .wp-body :global(h3){font-size:clamp(16.5px,2.2vw,19px);font-weight:900;color:var(--black);border-left:4px solid var(--green);padding:2px 0 2px 14px;margin:2em 0 .9em}
+  .wp-body :global(strong){font-weight:900;background:linear-gradient(transparent 62%,#FFE58A 62%)}
+  .wp-body :global(em){font-style:normal;font-weight:900;color:#D63031}
+  .wp-body :global(a){color:var(--green-dark);font-weight:700;text-decoration:underline;text-underline-offset:3px}
+  .wp-body :global(blockquote){margin:1.8em 0;padding:18px 22px;border-radius:12px;font-size:14px}
+  .wp-body :global(blockquote p){margin:0}
+  .wp-body :global(blockquote.is-point){background:#EDF7F2;border:1.5px solid color-mix(in srgb,var(--green) 30%,#fff);border-left:6px solid var(--green)}
+  .wp-body :global(blockquote.is-point::before){content:"💡 POINT";display:block;font-family:var(--font-en);font-weight:800;font-size:11.5px;letter-spacing:.08em;color:var(--green-dark);margin-bottom:6px}
+  .wp-body :global(blockquote.is-warn){background:#FFF7ED;border:1.5px solid #FEDBB8;border-left:6px solid #F59E0B}
+  .wp-body :global(blockquote.is-warn::before){content:"⚠ 注意";display:block;font-weight:900;font-size:12px;color:#B45309;margin-bottom:6px}
+  .wp-body :global(blockquote.is-check){background:#F0F9FF;border:1.5px solid #BAE3FD;border-left:6px solid #0EA5E9}
+  .wp-body :global(blockquote.is-check::before){content:"✅ CHECK";display:block;font-family:var(--font-en);font-weight:800;font-size:11.5px;letter-spacing:.08em;color:#0369A1;margin-bottom:6px}
+  .wp-body :global(ul){margin:0 0 1.6em;padding:16px 22px 16px 40px;background:#FAFCFB;border:1px solid var(--line);border-radius:12px;list-style:none}
+  .wp-body :global(ul li){position:relative;padding:4px 0}
+  .wp-body :global(ul li::before){content:"✓";position:absolute;left:-24px;color:var(--green);font-weight:900}
+  .wp-body :global(ol){list-style:decimal;margin:0 0 1.6em;padding-left:1.8em}
+  .wp-body :global(ol li){padding:4px 0}
+  .wp-body :global(ol li::marker){font-weight:900;color:var(--green-dark)}
+  .wp-body :global(table){width:100%;border-collapse:collapse;margin:0 0 1.8em;font-size:13.5px;border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px var(--line)}
+  .wp-body :global(th){background:var(--green-dark);color:#fff;font-weight:800;padding:12px 14px;text-align:left}
+  .wp-body :global(td){padding:11px 14px;border-bottom:1px solid var(--line);background:#fff}
+  .wp-body :global(tr:nth-child(even) td){background:#F8FBFA}
+  /* CTA・他の実績 */
+  .ca-cta{background:#EDF7F2;border-radius:16px;text-align:center;padding:34px 26px;margin:40px 0 0}
+  .ca-cta .t{font-weight:900;font-size:16.5px;color:var(--black);margin-bottom:18px}
+  .ca-cta .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
+  .ca-cta .s{font-size:13px}
+  .ca-cta .s a{color:var(--green-dark);font-weight:700}
+  .ca-others{margin-top:52px}
+  .ca-others-t{font-size:19px;font-weight:900;color:var(--black);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+  .ca-others-t::before{content:"";width:5px;height:19px;background:var(--green);border-radius:2px}
+  .ca-others-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .ca-oc{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;text-decoration:none;color:inherit;transition:transform .16s,box-shadow .16s}
+  .ca-oc:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(14,26,28,.08)}
+  .ca-oc .th{aspect-ratio:16/8;background:linear-gradient(135deg,#0E4F44,#1E6E56);display:flex;align-items:baseline;justify-content:center;gap:8px;padding-top:8%}
+  .ca-oc .th .b{font-family:var(--font-en);font-weight:700;font-size:15px;color:rgba(255,255,255,.6);text-decoration:line-through}
+  .ca-oc .th .arw{color:#8FE3C9;font-weight:900;font-size:13px}
+  .ca-oc .th .a{font-family:var(--font-en);font-weight:800;font-size:26px;color:#8FE3C9}
+  .ca-oc .bd{padding:14px 16px 16px}
+  .ca-oc .c{font-size:10.5px;font-weight:800;color:var(--green-dark)}
+  .ca-oc h3{font-size:13.5px;font-weight:900;line-height:1.6;margin:6px 0 0;color:var(--black)}
+  .ca-back{margin-top:38px;font-size:13.5px;font-weight:700}
+  .ca-back a{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
+  @media (max-width: 760px){.ca-others-grid{grid-template-columns:1fr}}
+</style>
