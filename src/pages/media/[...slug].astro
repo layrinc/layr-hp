@@ -47,7 +47,7 @@ const CAT_ISO: Record<string, string> = {
 };
 const thumbOf = (c: string) => CAT_ISO[c] || ISO.build;
 
-const pageUrl = new URL(`/blog/${post.id}/`, Astro.site).href;
+const pageUrl = new URL(`/media/${post.id}/`, Astro.site).href;
 const shareX = `https://twitter.com/intent/tweet?text=${encodeURIComponent(post.data.title)}&url=${encodeURIComponent(pageUrl)}`;
 const shareLine = `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(pageUrl)}`;
 
@@ -73,7 +73,7 @@ const breadcrumbJsonLd = {
   '@type': 'BreadcrumbList',
   itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'ホーム', item: new URL('/', Astro.site).href },
-    { '@type': 'ListItem', position: 2, name: 'コラム', item: new URL('/blog/', Astro.site).href },
+    { '@type': 'ListItem', position: 2, name: 'コラム', item: new URL('/media/', Astro.site).href },
     { '@type': 'ListItem', position: 3, name: post.data.title },
   ],
 };
@@ -81,7 +81,7 @@ const breadcrumbJsonLd = {
 <Base title={title} description={post.data.description} ogType="article" ogImage={post.data.image || '/ogp-blog.png'} jsonLd={[articleJsonLd, breadcrumbJsonLd]}>
   <div class="wp-wrap container">
     <nav class="wp-bc" aria-label="パンくず">
-      <a href="/">ホーム</a><span>›</span><a href="/blog/">コラム</a><span>›</span><em>{post.data.title}</em>
+      <a href="/">ホーム</a><span>›</span><a href="/media/">コラム</a><span>›</span><em>{post.data.title}</em>
     </nav>
 
     <div class="wp-layout">
@@ -132,7 +132,7 @@ const breadcrumbJsonLd = {
             <h2 class="wp-related-t">あわせて読みたい</h2>
             <div class="wp-rel-grid">
               {related.map((p) => (
-                <a class="wp-rel-card" href={`/blog/${p.id}/`}>
+                <a class="wp-rel-card" href={`/media/${p.id}/`}>
                   <div class="th"><span set:html={thumbOf(p.data.category)} /></div>
                   <div class="bd">
                     <span class="c">{p.data.category}</span>
@@ -145,7 +145,7 @@ const breadcrumbJsonLd = {
           </section>
         )}
 
-        <div class="wp-back"><a href="/blog/">‹ コラム一覧へ戻る</a></div>
+        <div class="wp-back"><a href="/media/">‹ コラム一覧へ戻る</a></div>
       </article>
 
       <!-- サイドバー -->
@@ -165,7 +165,7 @@ const breadcrumbJsonLd = {
             <p class="wp-side-t">新着記事</p>
             <div class="wp-side-list">
               {recent.map((p) => (
-                <a href={`/blog/${p.id}/`}>
+                <a href={`/media/${p.id}/`}>
                   <span class="th" set:html={thumbOf(p.data.category)} />
                   <span class="tt">{p.data.title}</span>
                 </a>

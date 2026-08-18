@@ -319,14 +319,14 @@ const serviceIcons = [
       <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2><p class="sec-lead">{p.lead}</p></div>
       <div class="column-grid">
         {posts.slice(0, 3).map((post: any) => (
-          <a class="column-card reveal" href={`/blog/${post.id}/`}>
+          <a class="column-card reveal" href={`/media/${post.id}/`}>
             <div class="column-meta"><time datetime={iso(post.data.date)}>{fmt(post.data.date)}</time><span class="column-cat">{post.data.category}</span></div>
             <h3>{post.data.title}</h3><p>{post.data.description}</p>
             <span class="more">READ MORE ›</span>
           </a>
         ))}
       </div>
-      <div class="column-more reveal"><a class="btn btn-black" href="/blog/">コラム一覧を見る</a></div>
+      <div class="column-more reveal"><a class="btn btn-black" href="/media/">コラム一覧を見る</a></div>
     </div>
   </section>
 )}
@@ -643,14 +643,14 @@ const serviceIcons = [
     <div class="container">
       <div class="column-grid">
         {posts.slice(0, Number(p.count) || 3).map((post: any) => (
-          <a class="column-card" href={`/blog/${post.id}/`}>
+          <a class="column-card" href={`/media/${post.id}/`}>
             <div class="column-meta"><time datetime={iso(post.data.date)}>{fmt(post.data.date)}</time><span class="column-cat">{post.data.category}</span></div>
             <h3>{post.data.title}</h3><p>{post.data.description}</p>
             <span class="more">READ MORE ›</span>
           </a>
         ))}
       </div>
-      {p.more_label && <div class="column-more"><a class="btn btn-black" href="/blog/">{p.more_label}</a></div>}
+      {p.more_label && <div class="column-more"><a class="btn btn-black" href="/media/">{p.more_label}</a></div>}
     </div>
   </section>
 )}

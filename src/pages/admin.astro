@@ -173,7 +173,7 @@ const subPageList = Object.entries(subMods).map(([path, mod]) => {
               <td>{p.data.draft ? <span class="st draft">下書き</span> : <span class="st live">公開中</span>}</td>
               <td class="acts">
                 <a href={`/admin/cms/#/collections/blog/entries/${p.id}`}>編集</a>
-                {!p.data.draft && <a href={`/blog/${p.id}/`} target="_blank">表示 ↗</a>}
+                {!p.data.draft && <a href={`/media/${p.id}/`} target="_blank">表示 ↗</a>}
               </td>
             </tr>
           ))}

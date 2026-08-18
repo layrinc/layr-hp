@@ -172,7 +172,7 @@ const initial = { page, theme, settings, subPages };
     pages[slug] = { title: pg.title || slug, description: pg.description || '', blocks: pg.blocks || [] };
   });
   const deletedPages = new Set();
-  const RESERVED = ['home', 'index', 'blog', 'admin', 'document', 'privacy', 'dashboard', 'uploads', 'api', 'assets'];
+  const RESERVED = ['home', 'index', 'blog', 'media', 'admin', 'document', 'privacy', 'dashboard', 'uploads', 'api', 'assets'];
   let cur = 'home';
   const qp = new URLSearchParams(location.search).get('page');
   if (qp && pages[qp]) cur = qp;
@@ -561,7 +561,7 @@ const initial = { page, theme, settings, subPages };
     btn('<span class="tc-g">A</span>', '緑文字', () => wrapSel(ed, 'span', 'tc-g'));
     btn('<span class="tc-r">A</span>', '赤文字', () => wrapSel(ed, 'span', 'tc-r'));
     btn('🔗', 'リンク', () => {
-      const u = prompt('リンク先URL（https://… / /blog/ / #service / mailto:）');
+      const u = prompt('リンク先URL（https://… / /media/ / #service / mailto:）');
       if (u && /^(https?:\/\/|\/|#|mailto:)/.test(u.trim())) wrapSel(ed, 'a', null, u.trim());
       else if (u) alert('URLは https:// か / か # か mailto: で始めてください');
     });

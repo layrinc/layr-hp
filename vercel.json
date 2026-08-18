@@ -3,11 +3,44 @@
   "redirects": [
     {
       "source": "/:path*",
-      "has": [{ "type": "host", "value": "www.layr.co.jp" }],
+      "has": [
+        {
+          "type": "host",
+          "value": "www.layr.co.jp"
+        }
+      ],
       "destination": "https://layr.co.jp/:path*",
       "permanent": true
     },
-    { "source": "/service-line/", "destination": "/service/line/", "permanent": true },
-    { "source": "/service-line", "destination": "/service/line/", "permanent": true }
+    {
+      "source": "/service-line/",
+      "destination": "/service/line/",
+      "permanent": true
+    },
+    {
+      "source": "/service-line",
+      "destination": "/service/line/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/",
+      "destination": "/media/",
+      "permanent": true
+    },
+    {
+      "source": "/blog",
+      "destination": "/media/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:slug/",
+      "destination": "/media/:slug/",
+      "permanent": true
+    },
+    {
+      "source": "/blog/:slug",
+      "destination": "/media/:slug/",
+      "permanent": true
+    }
   ]
 }
