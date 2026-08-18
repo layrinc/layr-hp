@@ -12,7 +12,8 @@ export async function getStaticPaths() {
 }
 
 const { c } = Astro.props;
-const { Content } = await render(c);
+const { Content, headings } = await render(c);
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
 const fmt = (d: Date) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
@@ -22,6 +23,9 @@ const title = `${c.data.title}｜支援実績｜LAYR`;
 
 const others = (await getCollection('cases', ({ data }) => !data.draft))
   .filter((x) => x.id !== c.id)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
 
@@ -77,6 +81,17 @@ const jsonLd = [
           </dl>
         </div>
 
+        {toc.length >= 2 && (
+          <nav class="ca-toc is-inline" aria-label="目次">
+            <p class="ca-toc-t">目次</p>
+            <ol>
+              {toc.map((h) => (
+                <li class={h.depth === 3 ? 'is-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
+              ))}
+            </ol>
+          </nav>
+        )}
+
         <div class="wp-body" id="wpBody">
           <Content />
         </div>
@@ -106,6 +121,52 @@ const jsonLd = [
 
         <div class="ca-back"><a href="/case/">‹ 支援実績一覧へ戻る</a></div>
       </article>
+
+      <!-- サイドバー（コラムと同構成: 目次・新着・資料） -->
+      <aside class="ca-side">
+        {toc.length >= 2 && (
+          <div class="ca-side-box is-sticky-toc">
+            <p class="ca-side-t">目次</p>
+            <ol class="ca-side-toc">
+              {toc.map((h) => (
+                <li class={h.depth === 3 ? 'is-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
+              ))}
+            </ol>
+          </div>
+        )}
+        {others.length > 0 && (
+          <div class="ca-side-box">
+            <p class="ca-side-t">新着の支援実績</p>
+            <div class="ca-side-list">
+              {others.map((o) => (
+                <a href={`/case/${o.id}/`}>
+                  <span class="th"><span class="a">{o.data.after}</span></span>
+                  <span class="tt">{o.data.title}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        {recentPosts.length > 0 && (
+          <div class="ca-side-box">
+            <p class="ca-side-t">新着コラム</p>
+            <div class="ca-side-list">
+              {recentPosts.map((p) => (
+                <a href={`/blog/${p.id}/`}>
+                  <span class="th is-blog">✍️</span>
+                  <span class="tt">{p.data.title}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        <div class="ca-side-box is-cta">
+          <p class="ca-side-t" style="color:#fff">サービス紹介資料</p>
+          <a href="/document/line-service/"><img class="ca-side-doc" src="/materials/line-service.png" alt="LINE構築・運用支援サービス資料の表紙" width="1200" height="675" loading="lazy" /></a>
+          <p class="d">LINE構築・運用の料金と事例をまとめた資料を無料配布中です。</p>
+          <a class="btn btn-green" href="/document/line-service/">資料をダウンロード</a>
+        </div>
+      </aside>
     </div>
   </div>
 
@@ -121,7 +182,8 @@ const jsonLd = [
 </Base>
 
 <style>
-  .ca-wrap{padding:clamp(24px,3.4vw,44px) var(--gutter) clamp(60px,8vw,100px);max-width:900px}
+  .ca-wrap{padding:clamp(24px,3.4vw,44px) var(--gutter) clamp(60px,8vw,100px)}
+  .ca-layout{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:clamp(28px,3.6vw,52px);align-items:start}
   .ca-bc{font-size:12px;color:var(--muted);margin-bottom:24px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .ca-bc a{color:var(--green-dark);font-weight:700;text-decoration:none}
   .ca-bc span{opacity:.4;margin:0 7px}
@@ -189,5 +251,43 @@ const jsonLd = [
   .ca-oc h3{font-size:13.5px;font-weight:900;line-height:1.6;margin:6px 0 0;color:var(--black)}
   .ca-back{margin-top:38px;font-size:13.5px;font-weight:700}
   .ca-back a{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
+  /* 目次 */
+  .ca-toc{background:#F6FAF9;border:1.5px solid var(--line);border-radius:14px;padding:22px 26px;margin-bottom:34px}
+  .ca-toc-t{font-weight:900;font-size:14px;color:var(--black);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .ca-toc-t::before{content:"";width:4px;height:16px;background:var(--green);border-radius:2px}
+  .ca-toc ol{list-style:none;margin:0;padding:0;counter-reset:toc}
+  .ca-toc li{counter-increment:toc;padding:5px 0;font-size:13.5px;font-weight:700}
+  .ca-toc li::before{content:counter(toc,decimal-leading-zero);font-family:var(--font-en);font-weight:800;color:var(--green);margin-right:10px;font-size:12px}
+  .ca-toc li.is-sub{padding-left:26px;font-weight:500;font-size:12.5px}
+  .ca-toc a{color:var(--black);text-decoration:none}
+  .ca-toc a:hover{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
+  .is-inline{display:none}
+  /* サイドバー */
+  .ca-side{display:flex;flex-direction:column;gap:18px;position:sticky;top:90px}
+  .ca-side-box{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:20px 22px}
+  .ca-side-t{font-weight:900;font-size:14px;color:var(--black);margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid var(--green)}
+  .ca-side-toc{list-style:none;margin:0;padding:0}
+  .ca-side-toc li{padding:4px 0;font-size:12.5px;font-weight:700}
+  .ca-side-toc li.is-sub{padding-left:16px;font-weight:500}
+  .ca-side-toc a{color:var(--black);text-decoration:none}
+  .ca-side-toc a:hover{color:var(--green-dark)}
+  .ca-side-list{display:flex;flex-direction:column;gap:12px}
+  .ca-side-list a{display:grid;grid-template-columns:74px 1fr;gap:12px;align-items:center;text-decoration:none}
+  .ca-side-list .th{aspect-ratio:16/10;background:linear-gradient(135deg,#0E4F44,#1E6E56);border-radius:8px;display:grid;place-items:center;overflow:hidden}
+  .ca-side-list .th .a{font-family:var(--font-en);font-weight:800;font-size:16px;color:#8FE3C9}
+  .ca-side-list .th.is-blog{background:linear-gradient(135deg,#EAF6F1,#DFF1E9);font-size:20px}
+  .ca-side-list .tt{font-size:12px;font-weight:700;line-height:1.6;color:var(--black);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+  .ca-side-list a:hover .tt{color:var(--green-dark)}
+  .ca-side-box.is-cta{background:var(--green-dark);border-color:var(--green-dark);text-align:center}
+  .ca-side-box.is-cta .ca-side-t{border-color:rgba(255,255,255,.3)}
+  .ca-side-doc{width:100%;height:auto;border-radius:10px;display:block;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,.25)}
+  .ca-side-box.is-cta .d{font-size:12px;color:rgba(255,255,255,.85);line-height:1.9;margin-bottom:14px;text-align:left}
+  .ca-side-box.is-cta .btn{width:100%}
+  @media (max-width: 980px){
+    .ca-layout{grid-template-columns:1fr}
+    .ca-side{position:static}
+    .is-inline{display:block}
+    .ca-side-box.is-sticky-toc{display:none}
+  }
   @media (max-width: 760px){.ca-others-grid{grid-template-columns:1fr}}
 </style>
