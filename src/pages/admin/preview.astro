@@ -106,7 +106,7 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
       b: 'M0,18 C150,58 300,100 528,90 C752,80 884,18 1084,26 C1244,32 1352,70 1440,94',
     };
     const zzWave = (tint) => (tint ? ZZ_WAVE.a : ZZ_WAVE.b);
-    const zzCheck = '<svg viewBox="0 0 17 17" aria-hidden="true"><circle cx="8.5" cy="8.5" r="8.5" fill="rgba(15,158,150,.12)"/><path d="M4.6 8.7l2.6 2.6 5.2-5.6" stroke="#0F9E96" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    const zzCheck = '<svg viewBox="0 0 17 17" aria-hidden="true"><circle cx="8.5" cy="8.5" r="8.5" fill="rgba(0,191,99,.12)"/><path d="M4.6 8.7l2.6 2.6 5.2-5.6" stroke="#00BF63" stroke-width="1.7" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     const zzArrow = '<svg class="zz-ar" viewBox="0 0 18 10" aria-hidden="true"><path d="M0 5h15M11 1l4 4-4 4" stroke="currentColor" stroke-width="1.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
     const R = {
@@ -270,7 +270,7 @@ const previewSettings = { email: settings.email, line_url: settings.line_url || 
       zigzag(p) {
         const d = zzWave(p.tint);
         const wave = p.wave
-          ? `<div class="zz-wave" aria-hidden="true"><svg viewBox="0 0 1440 120" preserveAspectRatio="none" focusable="false"><path d="${d} L1440,0 L0,0 Z" fill="currentColor"/><path d="${d}" fill="none" stroke="rgba(15,158,150,.30)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></div>`
+          ? `<div class="zz-wave" aria-hidden="true"><svg viewBox="0 0 1440 120" preserveAspectRatio="none" focusable="false"><path d="${d} L1440,0 L0,0 Z" fill="currentColor"/><path d="${d}" fill="none" stroke="rgba(0,191,99,.30)" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg></div>`
           : '';
         const eyebrow = p.eyebrow ? `<p class="zz-eyebrow"><i></i><span>${esc(p.eyebrow)}</span></p>` : '';
         const title = p.title ? `<h2 class="zz-title">${rich(p.title)}</h2>` : '';

@@ -16,21 +16,21 @@
 
 :root{
   /* ---- テーマ連動（管理画面が上書きする） ----
-     既定値は theme.json と同じティール系にそろえる。
+     既定値は theme.json と同値にそろえる（正本はサービス概要資料のブランドグリーン）。
      ここを旧LINE緑(#06C755)に戻すと、テーマ未適用時だけ色相が変わる事故になる。 */
-  --green:#0F9E96;
-  --green-dark:#0A736D;
-  --black:#0E1A1C;
-  --bg:#F2F6F6;
+  --green:#00BF63;
+  --green-dark:#008516;
+  --black:#1A1A1A;
+  --bg:#F7F8F8;
   --radius:8px;
   --font-en:"Poppins","Noto Sans JP",sans-serif;
 
   /* ---- アイソメトリック3Dイラストと共通のパレット ----
      イラスト側(src/lib/iso/*.mjs)はCSS変数を使えないため直値を持つ。
      数値を変える時は必ず両方そろえる。 */
-  --iso-teal:#0F9E96;
-  --iso-teal-dark:#0A736D;
-  --iso-teal-light:#3FBDB4;
+  --iso-teal:#00BF63;
+  --iso-teal-dark:#008516;
+  --iso-teal-light:#4FD48D;
   --iso-green:#22C55E;
   --iso-green-dark:#16A34A;
   --iso-green-light:#4ADE80;
