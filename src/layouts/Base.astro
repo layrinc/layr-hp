@@ -27,14 +27,17 @@ const { title, description, ogType = 'website', ogImage, robots, jsonLd = null, 
 
 // ===== デザイン設定（/admin →「サイト設定 → デザイン設定」） =====
 // 英字見出しフォントの選択肢。追加したい場合はここにマッピングを足す。
+// 英数字書体。既定は和文と同じ Noto Sans JP（和欧の骨格を揃え、書体の種類を1本に絞る）。
+// 幾何学サンセリフ(Poppins等)はNoto Sans JPと骨格が合わず英数字だけ浮くため既定から外した。
 const fontMap: Record<string, { family: string; gf: string }> = {
-  Montserrat: { family: 'Montserrat', gf: 'Montserrat:wght@700;800' },
-  Archivo: { family: 'Archivo', gf: 'Archivo:wght@700;800' },
-  Poppins: { family: 'Poppins', gf: 'Poppins:wght@500;700;800' },
+  NotoSansJP: { family: 'Noto Sans JP', gf: '' },
+  Montserrat: { family: 'Montserrat', gf: 'Montserrat:wght@500;700' },
+  Archivo: { family: 'Archivo', gf: 'Archivo:wght@500;700' },
+  Poppins: { family: 'Poppins', gf: 'Poppins:wght@500;700' },
 };
-const font = fontMap[theme.font_en] ?? fontMap.Montserrat;
+const font = fontMap[theme.font_en] ?? fontMap.NotoSansJP;
 // 和文は 400 / 500 / 700 の3ウエイトのみ使う（900は公開ページで未使用のため読まない）
-const fontHref = `https://fonts.googleapis.com/css2?family=${font.gf}&family=Noto+Sans+JP:wght@400;500;700&display=swap`;
+const fontHref = `https://fonts.googleapis.com/css2?${font.gf ? `family=${font.gf}&` : ''}family=Noto+Sans+JP:wght@400;500;700&display=swap`;
 // theme.json の値でCSS変数を上書きする。
 // :root:root と二重にすることで詳細度を上げ、style.css の既定値より必ず優先させる。
 const themeCss = `:root:root{--green:${theme.accent};--green-dark:${theme.accent_dark};--black:${theme.base_black};--bg:${theme.bg_tint};--radius:${theme.radius}px;--font-en:'${font.family}','Noto Sans JP',sans-serif}`;

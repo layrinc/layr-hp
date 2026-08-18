@@ -3,8 +3,8 @@
   "accent_dark": "#0A736D",
   "base_black": "#0E1A1C",
   "bg_tint": "#F2F6F6",
-  "radius": 28,
-  "font_en": "Poppins",
+  "radius": 8,
+  "font_en": "NotoSansJP",
   "show_watermark": false,
   "marquee_items": [],
   "custom_css": ""
