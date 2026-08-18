@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 460" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <rect width="1200" height="460" rx="20" fill="#F6FAF9"/>
+  <text x="600" y="52" text-anchor="middle" font-size="24" font-weight="800" fill="#0E1A1C">LINE運用代行の費用は「3つの形態」に分けて比べる</text>
+
+  <!-- 1. 初期構築費 -->
+  <g>
+    <rect x="60" y="86" width="340" height="234" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="366" y="120" text-anchor="middle" font-size="24">🏗️</text>
+    <circle cx="230" cy="136" r="26" fill="#0E4F44"/><text x="230" y="145" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">1</text>
+    <text x="230" y="192" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">初期構築費（一度きり）</text>
+    <text x="230" y="222" text-anchor="middle" font-size="12.5" fill="#5A6B6D">アカウント開設・リッチメニュー</text>
+    <text x="230" y="244" text-anchor="middle" font-size="12.5" fill="#5A6B6D">あいさつ・ステップ配信の設計</text>
+    <rect x="120" y="266" width="220" height="36" rx="18" fill="#EAF6F1"/>
+    <text x="230" y="290" text-anchor="middle" font-size="15" font-weight="800" fill="#0E4F44">10万〜50万円が中心</text>
+  </g>
+
+  <!-- 2. 月額運用費 -->
+  <g>
+    <rect x="430" y="86" width="340" height="234" rx="16" fill="#fff" stroke="#17A673" stroke-width="2.5"/>
+    <text x="736" y="120" text-anchor="middle" font-size="24">🔁</text>
+    <circle cx="600" cy="136" r="26" fill="#17A673"/><text x="600" y="145" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">2</text>
+    <text x="600" y="192" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">月額運用費（毎月）</text>
+    <text x="600" y="222" text-anchor="middle" font-size="12.5" fill="#5A6B6D">配信の企画・制作・配信・分析</text>
+    <text x="600" y="244" text-anchor="middle" font-size="12.5" fill="#0E4F44" font-weight="700">総額を決めるのはここ</text>
+    <rect x="490" y="266" width="220" height="36" rx="18" fill="#EAF6F1"/>
+    <text x="600" y="290" text-anchor="middle" font-size="15" font-weight="800" fill="#0E4F44">月3万〜30万円が中心</text>
+  </g>
+
+  <!-- 3. 成果報酬 -->
+  <g>
+    <rect x="800" y="86" width="340" height="234" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <text x="1106" y="120" text-anchor="middle" font-size="24">📈</text>
+    <circle cx="970" cy="136" r="26" fill="#0E4F44"/><text x="970" y="145" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">3</text>
+    <text x="970" y="192" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">成果報酬（変動分）</text>
+    <text x="970" y="222" text-anchor="middle" font-size="12.5" fill="#5A6B6D">友だち追加数・予約数などに応じて</text>
+    <text x="970" y="244" text-anchor="middle" font-size="12.5" fill="#5A6B6D">追加で発生。単価と定義しだい</text>
+    <rect x="860" y="266" width="220" height="36" rx="18" fill="#EAF6F1"/>
+    <text x="970" y="290" text-anchor="middle" font-size="15" font-weight="800" fill="#0E4F44">月額＋αの併用型が多い</text>
+  </g>
+
+  <!-- plus -->
+  <text x="415" y="212" text-anchor="middle" font-size="26" font-weight="800" fill="#17A673">＋</text>
+  <text x="785" y="212" text-anchor="middle" font-size="26" font-weight="800" fill="#17A673">＋</text>
+
+  <!-- footer bar -->
+  <rect x="60" y="348" width="1080" height="76" rx="14" fill="#fff" stroke="#E3ECEA" stroke-width="2" stroke-dasharray="7 6"/>
+  <text x="600" y="380" text-anchor="middle" font-size="15" font-weight="800" fill="#0E1A1C">さらに「代行費用の外側」に、毎月かかる固定費がある</text>
+  <text x="600" y="404" text-anchor="middle" font-size="13" fill="#5A6B6D">LINE公式アカウントのプラン料金（0円／月5,000円／月15,000円・税別）＋ Lステップなど外部ツールの利用料</text>
+</svg>

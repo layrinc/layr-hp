@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 540" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <rect width="1200" height="540" rx="20" fill="#F6FAF9"/>
+  <text x="600" y="52" text-anchor="middle" font-size="24" font-weight="800" fill="#0E1A1C">自社運用か外注かを決める、3つの判断チェック</text>
+
+  <!-- question cards -->
+  <g>
+    <rect x="40" y="85" width="340" height="165" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <circle cx="210" cy="122" r="24" fill="#0E4F44"/><text x="210" y="130" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">1</text>
+    <text x="210" y="180" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">担当者の「時間」</text>
+    <text x="210" y="208" text-anchor="middle" font-size="12.5" fill="#5A6B6D">月4回の配信を、半年以上</text>
+    <text x="210" y="229" text-anchor="middle" font-size="12.5" fill="#5A6B6D">止めずに続けられる人がいるか</text>
+  </g>
+  <g>
+    <rect x="430" y="85" width="340" height="165" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <circle cx="600" cy="122" r="24" fill="#0E4F44"/><text x="600" y="130" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">2</text>
+    <text x="600" y="180" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">運用の「型」</text>
+    <text x="600" y="208" text-anchor="middle" font-size="12.5" fill="#5A6B6D">タグ設計・セグメント配信・</text>
+    <text x="600" y="229" text-anchor="middle" font-size="12.5" fill="#5A6B6D">数値改善を自力で組めるか</text>
+  </g>
+  <g>
+    <rect x="820" y="85" width="340" height="165" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <circle cx="990" cy="122" r="24" fill="#0E4F44"/><text x="990" y="130" text-anchor="middle" font-size="20" font-weight="800" fill="#fff">3</text>
+    <text x="990" y="180" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">求める「速度」</text>
+    <text x="990" y="208" text-anchor="middle" font-size="12.5" fill="#5A6B6D">半年かけて覚える余裕があるか</text>
+    <text x="990" y="229" text-anchor="middle" font-size="12.5" fill="#5A6B6D">（今期の数字が要るならNO）</text>
+  </g>
+  <text x="405" y="175" text-anchor="middle" font-size="26" font-weight="800" fill="#17A673">›</text>
+  <text x="795" y="175" text-anchor="middle" font-size="26" font-weight="800" fill="#17A673">›</text>
+
+  <!-- divider -->
+  <line x1="40" y1="273" x2="1160" y2="273" stroke="#E3ECEA" stroke-width="2"/>
+  <rect x="510" y="257" width="180" height="32" rx="16" fill="#0E4F44"/>
+  <text x="600" y="278" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">YES の数で決める</text>
+
+  <!-- verdict cards -->
+  <g>
+    <rect x="40" y="312" width="340" height="180" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <rect x="145" y="332" width="130" height="28" rx="14" fill="#0E4F44"/>
+    <text x="210" y="351" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">YES が 3つ</text>
+    <text x="210" y="398" text-anchor="middle" font-size="28">🏠</text>
+    <text x="210" y="432" text-anchor="middle" font-size="18" font-weight="800" fill="#0E1A1C">自社運用</text>
+    <text x="210" y="459" text-anchor="middle" font-size="12.5" fill="#5A6B6D">外部費用ゼロ。ただし担当者が</text>
+    <text x="210" y="479" text-anchor="middle" font-size="12.5" fill="#5A6B6D">抜けると運用ごと止まる</text>
+  </g>
+  <g>
+    <rect x="430" y="312" width="340" height="180" rx="16" fill="#fff" stroke="#17A673" stroke-width="2.5"/>
+    <rect x="535" y="332" width="130" height="28" rx="14" fill="#17A673"/>
+    <text x="600" y="351" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">YES が 1〜2つ</text>
+    <text x="600" y="398" text-anchor="middle" font-size="28">🤝</text>
+    <text x="600" y="432" text-anchor="middle" font-size="18" font-weight="800" fill="#0E1A1C">ハイブリッド</text>
+    <text x="600" y="459" text-anchor="middle" font-size="12.5" fill="#0E4F44" font-weight="700">構築＝外注／配信＝自社</text>
+    <text x="600" y="479" text-anchor="middle" font-size="12.5" fill="#5A6B6D">型を受け取ってから内製に寄せる</text>
+  </g>
+  <g>
+    <rect x="820" y="312" width="340" height="180" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <rect x="925" y="332" width="130" height="28" rx="14" fill="#0E4F44"/>
+    <text x="990" y="351" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">YES が 0</text>
+    <text x="990" y="398" text-anchor="middle" font-size="28">🚀</text>
+    <text x="990" y="432" text-anchor="middle" font-size="18" font-weight="800" fill="#0E1A1C">全面外注</text>
+    <text x="990" y="459" text-anchor="middle" font-size="12.5" fill="#5A6B6D">月額はかかるが、速度と</text>
+    <text x="990" y="479" text-anchor="middle" font-size="12.5" fill="#5A6B6D">運用ノウハウをまとめて買える</text>
+  </g>
+
+  <text x="600" y="522" text-anchor="middle" font-size="14" font-weight="700" fill="#0E4F44">迷ったら「構築だけ外注」から。型を受け取ってから、自社運用へ移すか決められる</text>
+</svg>

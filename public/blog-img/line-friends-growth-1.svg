@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <rect width="1200" height="500" rx="20" fill="#F6FAF9"/>
+  <text x="600" y="52" text-anchor="middle" font-size="24" font-weight="800" fill="#0E1A1C">友だちの増やし方は、この4つを上から順に</text>
+  <!-- step cards -->
+  <g>
+    <rect x="40" y="90" width="255" height="250" rx="16" fill="#fff" stroke="#17A673" stroke-width="2.5"/>
+    <circle cx="167" cy="140" r="26" fill="#17A673"/><text x="167" y="149" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">1</text>
+    <text x="167" y="200" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">店頭・既存の接点</text>
+    <text x="167" y="232" text-anchor="middle" font-size="12.5" fill="#5A6B6D">会計まわり・レシート・名刺</text>
+    <text x="167" y="254" text-anchor="middle" font-size="12.5" fill="#0E4F44" font-weight="700">いちばん安く早く増える</text>
+    <text x="167" y="305" text-anchor="middle" font-size="30">🏪</text>
+  </g>
+  <g>
+    <rect x="335" y="90" width="255" height="250" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <circle cx="462" cy="140" r="26" fill="#0E4F44"/><text x="462" y="149" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">2</text>
+    <text x="462" y="200" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">自社サイト・LP</text>
+    <text x="462" y="232" text-anchor="middle" font-size="12.5" fill="#5A6B6D">フッター・記事下・完了画面</text>
+    <text x="462" y="254" text-anchor="middle" font-size="12.5" fill="#5A6B6D">一度置けば24時間働く</text>
+    <text x="462" y="305" text-anchor="middle" font-size="30">🖥️</text>
+  </g>
+  <g>
+    <rect x="630" y="90" width="255" height="250" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <circle cx="757" cy="140" r="26" fill="#0E4F44"/><text x="757" y="149" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">3</text>
+    <text x="757" y="200" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">SNSプロフィール</text>
+    <text x="757" y="232" text-anchor="middle" font-size="12.5" fill="#5A6B6D">既存フォロワーを</text>
+    <text x="757" y="254" text-anchor="middle" font-size="12.5" fill="#5A6B6D">自社のリストへ移す</text>
+    <text x="757" y="305" text-anchor="middle" font-size="30">📣</text>
+  </g>
+  <g>
+    <rect x="925" y="90" width="235" height="250" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+    <circle cx="1042" cy="140" r="26" fill="#0E4F44"/><text x="1042" y="149" text-anchor="middle" font-size="22" font-weight="800" fill="#fff">4</text>
+    <text x="1042" y="200" text-anchor="middle" font-size="17" font-weight="800" fill="#0E1A1C">友だち追加広告</text>
+    <text x="1042" y="232" text-anchor="middle" font-size="12.5" fill="#5A6B6D">1〜3を埋め切ってから</text>
+    <text x="1042" y="254" text-anchor="middle" font-size="12.5" fill="#5A6B6D">費用をかけて量を積む</text>
+    <text x="1042" y="305" text-anchor="middle" font-size="30">💴</text>
+  </g>
+  <!-- arrows -->
+  <text x="315" y="222" text-anchor="middle" font-size="26" font-weight="800" fill="#17A673">›</text>
+  <text x="610" y="222" text-anchor="middle" font-size="26" font-weight="800" fill="#17A673">›</text>
+  <text x="905" y="222" text-anchor="middle" font-size="26" font-weight="800" fill="#17A673">›</text>
+  <!-- bottom band -->
+  <rect x="40" y="372" width="1120" height="88" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+  <text x="600" y="408" text-anchor="middle" font-size="15" font-weight="800" fill="#0E4F44">共通の前提：どの導線も「追加する理由（特典）」とセットでなければ動かない</text>
+  <text x="600" y="436" text-anchor="middle" font-size="13" fill="#5A6B6D">増やす前に、あいさつメッセージと最初の1か月の配信まで決めておく</text>
+</svg>
