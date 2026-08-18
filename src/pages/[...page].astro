@@ -126,9 +126,17 @@ const jsonLd = [
 <Base title={title} description={description} jsonLd={jsonLd}>
   <div class="subpage-pad"></div>
   {pageData.h1 && (
-    <div class="page-hero container">
-      <h1 class="sec-jp">{pageData.h1}</h1>
-    </div>
+    <header class="page-hero is-child">
+      <div class="container">
+        {/* 下層＝子ページであることを示すパンくず。サービス配下は親「サービス」を挟む */}
+        <nav class="ph-bc" aria-label="パンくず">
+          <a href="/">トップ</a><span>／</span>
+          {isServiceChild && <><a href="/service/">サービス</a><span>／</span></>}
+          <em>{pageData.title.split('｜')[0]}</em>
+        </nav>
+        <h1 class="sec-jp">{pageData.h1}</h1>
+      </div>
+    </header>
   )}
   {pageData.blocks.map((block: any) => {
     const fs = Number(block.p?._fs) || 1;

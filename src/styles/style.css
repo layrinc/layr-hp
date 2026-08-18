@@ -2590,6 +2590,25 @@ html.nav-open{overflow:hidden}
 #case + .zz > .zz-wave:not(.zz-wave--b){color:var(--paper)}
 
 /* v26: フッターSERVICE — 各サービスは「サービス一覧」の下位。段差で階層を示す */
+/* v26: 下層ページのヒーロー＝「子ページ」の佇まい。
+   一覧ページ(.sv-hero: h1最大58px・透かし文字あり)に対し、
+   子は左寄せ・パンくず付き・h1を一段小さくして階層の段差を出す。 */
+.page-hero.is-child{
+  text-align:left;
+  padding:clamp(30px,3.6vw,46px) 0 clamp(32px,3.8vw,50px);
+  background:linear-gradient(180deg,#F7FBFA 0%,#fff 100%);
+}
+.page-hero.is-child .ph-bc{font-size:12px;color:var(--muted);margin-bottom:16px}
+.page-hero.is-child .ph-bc a{color:var(--green-dark);font-weight:700;text-decoration:none}
+.page-hero.is-child .ph-bc a:hover{text-decoration:underline;text-underline-offset:3px}
+.page-hero.is-child .ph-bc span{opacity:.4;margin:0 6px}
+.page-hero.is-child .ph-bc em{font-style:normal;color:var(--muted)}
+.page-hero.is-child .sec-jp{
+  display:block;padding-bottom:14px;
+  font-size:calc(clamp(21px,2.7vw,34px) * var(--fs,1));line-height:1.4;
+}
+.page-hero.is-child .sec-jp::after{left:0;transform:none;width:40px;height:3px}
+
 .footer-nav .ft-child{padding-left:14px}
 .footer-nav .ft-child a{font-size:calc(12.5px * var(--fs,1));opacity:.7}
 .footer-nav .ft-child a::before{content:"–";font-weight:400}

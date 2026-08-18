@@ -56,6 +56,10 @@ const jsonLd = [
 ---
 <Base title={title} description={description} jsonLd={jsonLd}>
   <div class="subpage-pad"></div>
+  {/* サービス配下の子ページであることを示すパンくず（一覧ページへ戻れる導線） */}
+  <nav class="lp-bc container" aria-label="パンくず">
+    <a href="/">トップ</a><span>／</span><a href="/service/">サービス</a><span>／</span><em>LINE構築・運用マーケティング</em>
+  </nav>
 
   <!-- HERO -->
   <section class="lp-hero">
@@ -269,6 +273,11 @@ const jsonLd = [
   .lp-eyebrow i{width:30px;height:2px;background:var(--green-dark);border-radius:2px}
   .mk{color:var(--green)}
   /* hero */
+  .lp-bc{font-size:12px;color:var(--muted);padding-top:22px;margin-bottom:-6px}
+  .lp-bc a{color:var(--green-dark);font-weight:700;text-decoration:none}
+  .lp-bc a:hover{text-decoration:underline;text-underline-offset:3px}
+  .lp-bc span{opacity:.4;margin:0 6px}
+  .lp-bc em{font-style:normal}
   .lp-hero{padding:20px 0 70px;overflow:hidden}
   .lp-hero-in{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(24px,4vw,56px);align-items:center}
   .lp-hero-txt h1{font-size:clamp(30px,5vw,50px);font-weight:900;line-height:1.32;letter-spacing:-.01em;color:var(--black)}
