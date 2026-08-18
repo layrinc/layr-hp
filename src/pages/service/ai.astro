@@ -63,17 +63,14 @@ const showcase = [
     ],
   },
   {
-    key: 'metro', name: 'LAYR METROPOLIS', label: '経営メトリクス3D都市',
-    desc: '事業の数字を「育つ街」として3Dで眺められる経営ダッシュボード。数字が苦手でも、会社の状態が直感で分かります。',
+    key: 'lscope', name: 'L SCOPE', label: 'LINE配信の分析ツール',
+    desc: '広告→LP→LINEの流れを1本のタイムラインに並べて見比べる分析ツール。トーク履歴を取り込むと配信の流れが時系列で可視化され、AIがシナリオの初稿づくりまで支援します。',
     slides: [
-      { img: '/service/ai/shots/metro-1.jpg', cap: '売上や継続月数が、建物の高さや灯りになって現れる' },
+      // 実データに他社情報が含まれるため、この1枚のみ機能図（figure）で掲載する
+      { img: '/service/ai/shots/lscope-1.svg', cap: '広告→LP→LINE配信を1本の時間軸に並べて見比べる（機能図）', figure: true },
     ],
   },
 ];
-
-// マーキー帯に流す社内ツール名（実在するもののみ）
-const marqueeA = ['経理まとめ君', '提案書つくる君', 'バナラボ', '口コミあつめ君', '経営管理ダッシュボード', 'LINE配信作成ツール', 'LINEスコア診断', 'L SCOPE'];
-const marqueeB = ['LAYR B2B DB', 'LAYR METROPOLIS', 'LP開発ツール', 'SEO記事ツール', '請求書作成ツール', '漫画LPビルダー', 'LINE Harness', '週次レポート自動化'];
 
 const services = [
   { n: '01', t: 'AI顧問（毎月の伴走）', d: '月1回の定例とチャット相談で、御社の業務を一緒に見ながら「AIで手放せる作業」から順番に片づけます。毎月ひとつ、小さな自動化を作って納品します。', chips: ['月1回の定例MTG', 'チャット相談 無制限', '毎月1つの自動化', '使い方レクチャー'] },
@@ -82,7 +79,7 @@ const services = [
 ];
 
 const faqs = [
-  { q: '費用の目安を教えてください。', a: 'AI顧問は初期10万円＋月額5万円からです。業務アプリの開発が必要になった場合は別途、単機能の業務ツールで30万円〜、予約・請求まで束ねた一式で80万円〜、大規模・基幹連携込みで150万円〜が目安です(税抜)。' },
+  { q: '費用の目安を教えてください。', a: 'AI顧問は初期10万円＋月額5万円からです。業務アプリの開発が必要になった場合は別途、単機能の業務ツールで10万円〜、予約・請求まで束ねた一式で30万円〜、大規模・基幹連携込みで50万円〜が目安です(税抜)。' },
   { q: '本当に何も分かっていないのですが、大丈夫ですか？', a: 'それが普通です。「ChatGPTを開いたことがない」状態からのご相談がいちばん多い前提で設計しています。専門用語は使いません。' },
   { q: '月5万円で、具体的に何をしてもらえますか？', a: '月1回の定例ミーティング(オンライン60〜90分)、チャットでの相談(回数無制限)、毎月ひとつの小さな自動化の納品、ツール選定と社内向けの使い方レクチャーです。' },
   { q: '途中でやめられますか？', a: '最低3ヶ月で、4ヶ月目以降は月単位でいつでも停止できます。違約金もありません。' },
@@ -109,7 +106,7 @@ const jsonLd = [
       '@type': 'OfferCatalog', name: 'AI導入支援プラン',
       itemListElement: [
         { '@type': 'Offer', name: 'AI顧問', priceSpecification: { '@type': 'UnitPriceSpecification', price: 50000, priceCurrency: 'JPY', unitText: '月' } },
-        { '@type': 'Offer', name: '業務アプリ開発', priceSpecification: { '@type': 'PriceSpecification', minPrice: 300000, priceCurrency: 'JPY' } },
+        { '@type': 'Offer', name: '業務アプリ開発', priceSpecification: { '@type': 'PriceSpecification', minPrice: 100000, priceCurrency: 'JPY' } },
       ],
     },
   },
@@ -162,7 +159,7 @@ const jsonLd = [
           <div class="hv-frames">
             <img src="/service/ai/shots/b2b-1.jpg" alt="" loading="eager" />
             <img src="/service/ai/shots/banlabo-1.jpg" alt="" loading="lazy" />
-            <img src="/service/ai/shots/metro-1.jpg" alt="" loading="lazy" />
+            <img src="/service/ai/shots/lscope-1.svg" alt="" loading="lazy" />
             <img src="/service/ai/shots/check-1.jpg" alt="" loading="lazy" />
           </div>
         </div>
@@ -175,21 +172,6 @@ const jsonLd = [
       <div><b><span class="cnt" data-to="30">30</span><small>本+</small></b><span>自社でAI内製した業務ツール</span></div>
     </div>
   </section>
-
-  <!-- ツール名マーキー -->
-  <div class="mq" aria-hidden="true">
-    <div class="mq-row">
-      <div class="mq-track">
-        {/* 前半2コピー＝-50%で流す1周期分。広い画面でも空白が出ないよう2コピーで1周期を作る */}
-        {[...marqueeA, ...marqueeA, ...marqueeA, ...marqueeA].map((t) => <span>{t}</span>)}
-      </div>
-    </div>
-    <div class="mq-row is-rev">
-      <div class="mq-track">
-        {[...marqueeB, ...marqueeB, ...marqueeB, ...marqueeB].map((t) => <span>{t}</span>)}
-      </div>
-    </div>
-  </div>
 
   <!-- スタート地点 -->
   <section class="sec">
@@ -272,10 +254,16 @@ const jsonLd = [
                 <div class="sw-strip">
                   {t.slides.map((s) => (
                     <figure class="sw-slide">
-                      <div class="sw-browser">
-                        <div class="sw-bar"><i></i><i></i><i></i></div>
-                        <img src={s.img} alt={`${t.name}の画面 — ${s.cap}`} loading="lazy" width="1600" height="900" />
-                      </div>
+                      {(s as any).figure ? (
+                        <div class="sw-figure">
+                          <img src={s.img} alt={`${t.name}の機能図 — ${s.cap}`} loading="lazy" width="1200" height="620" />
+                        </div>
+                      ) : (
+                        <div class="sw-browser">
+                          <div class="sw-bar"><i></i><i></i><i></i></div>
+                          <img src={s.img} alt={`${t.name}の画面 — ${s.cap}`} loading="lazy" width="1600" height="900" />
+                        </div>
+                      )}
                       <figcaption>{s.cap}</figcaption>
                     </figure>
                   ))}
@@ -379,9 +367,9 @@ const jsonLd = [
       <div class="pr-sub reveal">
         <p class="pr-label"><span class="pr-ichi">②</span> 本格的に作るなら「業務アプリ開発」</p>
         <div class="pr-rows">
-          <div><b>単機能の業務ツール</b><span class="pr-dots"></span><em>30万円〜</em></div>
-          <div><b>業務アプリ一式（予約〜請求まで）</b><span class="pr-dots"></span><em>80万円〜</em></div>
-          <div><b>大規模・基幹連携・LINE連携込み</b><span class="pr-dots"></span><em>150万円〜</em></div>
+          <div><b>単機能の業務ツール</b><span class="pr-dots"></span><em>10万円〜</em></div>
+          <div><b>業務アプリ一式（予約〜請求まで）</b><span class="pr-dots"></span><em>30万円〜</em></div>
+          <div><b>大規模・基幹連携・LINE連携込み</b><span class="pr-dots"></span><em>50万円〜</em></div>
         </div>
         <p class="pr-note">※ 顧問契約とは別のお見積もりです。必要になったタイミングで、動くプロトタイプをご確認いただいてから決めていただけます。※ 税抜・目安</p>
       </div>
@@ -485,14 +473,6 @@ const jsonLd = [
   @keyframes frameCycle{0%{opacity:0}3%{opacity:1}25%{opacity:1}31%{opacity:0}100%{opacity:0}}
   @keyframes frameCycleFirst{0%{opacity:1}25%{opacity:1}31%{opacity:0}97%{opacity:0}100%{opacity:1}}
 
-  /* ---------- marquee ---------- */
-  .mq{background:#23272E;padding:18px 0;overflow:hidden;display:flex;flex-direction:column;gap:12px}
-  .mq-row{display:flex;overflow:hidden}
-  .mq-track{display:flex;gap:14px;flex:none;animation:mq 36s linear infinite;padding-right:14px}
-  .mq-row.is-rev .mq-track{animation-direction:reverse}
-  .mq-track span{flex:none;font-size:12.5px;font-weight:700;color:#D8D2C4;border:1px solid #4A4F58;border-radius:999px;padding:7px 18px;letter-spacing:.03em}
-  @keyframes mq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-
   /* ---------- 共通セクション ---------- */
   .sec{padding:clamp(60px,7.5vw,104px) 0;background:#fff;scroll-margin-top:60px}
   .sec.is-paper{background:#F8F5EE}
@@ -556,6 +536,9 @@ const jsonLd = [
   .sw-bar{display:flex;gap:6px;background:#E9E5D8;padding:9px 14px}
   .sw-bar i{width:10px;height:10px;border-radius:50%;background:#C9C2B0}
   .sw-browser img{display:block;width:100%;height:auto}
+  /* 機能図はブラウザ枠を付けず、スクリーンショットと見分けがつくようにする */
+  .sw-figure{background:#F8F5EE;border:1px solid rgba(255,255,255,.3);border-radius:8px;overflow:hidden;box-shadow:0 18px 44px rgba(0,0,0,.35)}
+  .sw-figure img{display:block;width:100%;height:auto}
   .sw-slide figcaption{font-size:12px;font-weight:700;color:rgba(255,255,255,.75);margin-top:12px;text-align:center}
   .sw-arrow{position:absolute;top:42%;z-index:2;appearance:none;width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(255,255,255,.5);background:rgba(32,52,78,.7);color:#fff;font-size:24px;line-height:1;cursor:pointer;backdrop-filter:blur(4px);transition:background .15s,opacity .15s}
   .sw-arrow:hover{background:#C94F35;border-color:#C94F35}
@@ -673,7 +656,6 @@ const jsonLd = [
     .hv-line path{animation:none;stroke-dashoffset:0}
     .hv-frames img{animation:none}
     .hv-frames img:first-child{opacity:1}
-    .mq-track{animation:none}
     .reveal{opacity:1;transform:none;transition:none}
     .td-check::after,.td-strike::after,.td-done{transition:none}
     .sw-panel.is-on{animation:none}

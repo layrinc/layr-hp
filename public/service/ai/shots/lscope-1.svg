@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620" role="img" aria-label="L SCOPE の機能図: 広告からLP、LINE配信までを1本の時間軸に並べて見比べる">
+  <defs>
+    <style>
+      .bg{fill:#F8F5EE}
+      .card{fill:#fff;stroke:#E2DCCE;stroke-width:1.5}
+      .ink{fill:#24466E}
+      .sumi{fill:#23272E}
+      .mut{fill:#5D6672}
+      .red{fill:#C94F35}
+      .t-lg{font:700 21px "Hiragino Sans","Noto Sans JP",sans-serif}
+      .t-md{font:700 14px "Hiragino Sans","Noto Sans JP",sans-serif}
+      .t-sm{font:700 12px "Hiragino Sans","Noto Sans JP",sans-serif}
+      .t-xs{font:600 10.5px "Hiragino Sans","Noto Sans JP",sans-serif}
+      .bub{fill:#DCE9F7;stroke:#B9C9DD;stroke-width:1}
+      .bub-g{fill:#DFF3E4;stroke:#A9D8B8;stroke-width:1}
+      .line{stroke:#E2DCCE;stroke-width:1.5}
+    </style>
+  </defs>
+
+  <rect class="bg" width="1200" height="620"/>
+
+  <!-- 左: 案件リスト -->
+  <rect class="card" x="24" y="24" width="216" height="572" rx="10"/>
+  <text class="t-sm ink" x="46" y="58">案件リスト</text>
+  <g>
+    <rect x="44" y="76" width="176" height="46" rx="7" fill="#EAF1F8" stroke="#B9C9DD" stroke-width="1.2"/>
+    <text class="t-xs sumi" x="58" y="96">オンラインスクールA</text>
+    <text class="t-xs mut" x="58" y="112">10通 ・ 広告2 ・ LP1</text>
+  </g>
+  <g>
+    <rect x="44" y="132" width="176" height="46" rx="7" fill="#fff" stroke="#E2DCCE" stroke-width="1.2"/>
+    <text class="t-xs sumi" x="58" y="152">マーケ講座B</text>
+    <text class="t-xs mut" x="58" y="168">16通 ・ 広告0 ・ LP0</text>
+  </g>
+  <g>
+    <rect x="44" y="188" width="176" height="46" rx="7" fill="#fff" stroke="#E2DCCE" stroke-width="1.2"/>
+    <text class="t-xs sumi" x="58" y="208">スクールC</text>
+    <text class="t-xs mut" x="58" y="224">8通 ・ 広告2 ・ LP1</text>
+  </g>
+  <g>
+    <rect x="44" y="244" width="176" height="46" rx="7" fill="#fff" stroke="#E2DCCE" stroke-width="1.2"/>
+    <text class="t-xs sumi" x="58" y="264">講座D</text>
+    <text class="t-xs mut" x="58" y="280">12通 ・ 広告1 ・ LP1</text>
+  </g>
+  <line class="line" x1="44" y1="312" x2="220" y2="312"/>
+  <text class="t-xs mut" x="46" y="336">トーク履歴のtxtを入れるだけで</text>
+  <text class="t-xs mut" x="46" y="354">配信の流れが並びます</text>
+
+  <!-- 右: 3ステップの流れ -->
+  <text class="t-lg sumi" x="272" y="56">広告 → LP → LINE を、1本の時間軸に。</text>
+
+  <!-- 流れのバッジ -->
+  <g>
+    <rect x="272" y="80" width="96" height="30" rx="15" fill="#23272E"/>
+    <text class="t-sm" x="304" y="100" fill="#fff">広告</text>
+    <path d="M376 95 L392 95" stroke="#5D6672" stroke-width="2"/>
+    <path d="M388 90 L394 95 L388 100" fill="none" stroke="#5D6672" stroke-width="2"/>
+
+    <rect x="400" y="80" width="96" height="30" rx="15" fill="#24466E"/>
+    <text class="t-sm" x="440" y="100" fill="#fff">LP</text>
+    <path d="M504 95 L520 95" stroke="#5D6672" stroke-width="2"/>
+    <path d="M516 90 L522 95 L516 100" fill="none" stroke="#5D6672" stroke-width="2"/>
+
+    <rect x="528" y="80" width="118" height="30" rx="15" fill="#2FA55E"/>
+    <text class="t-sm" x="562" y="100" fill="#fff">LINE配信</text>
+  </g>
+
+  <!-- タイムライン本体 -->
+  <rect class="card" x="272" y="132" width="904" height="464" rx="10"/>
+
+  <!-- 時間軸 -->
+  <line x1="300" y1="180" x2="1148" y2="180" stroke="#E2DCCE" stroke-width="2"/>
+  <g class="t-xs mut">
+    <text x="300" y="168">登録直後</text>
+    <text x="474" y="168">1日目</text>
+    <text x="648" y="168">2日目</text>
+    <text x="822" y="168">3日目</text>
+    <text x="996" y="168">締切前</text>
+  </g>
+  <g fill="#C94F35">
+    <circle cx="304" cy="180" r="4"/><circle cx="478" cy="180" r="4"/><circle cx="652" cy="180" r="4"/>
+    <circle cx="826" cy="180" r="4"/><circle cx="1000" cy="180" r="4"/>
+  </g>
+
+  <!-- 配信カード（吹き出し） -->
+  <g>
+    <rect class="bub-g" x="300" y="200" width="146" height="96" rx="9"/>
+    <rect x="312" y="214" width="88" height="7" rx="3.5" fill="#7FBF95"/>
+    <rect x="312" y="230" width="118" height="6" rx="3" fill="#BBDCC6"/>
+    <rect x="312" y="244" width="104" height="6" rx="3" fill="#BBDCC6"/>
+    <rect x="312" y="258" width="112" height="6" rx="3" fill="#BBDCC6"/>
+    <rect x="312" y="274" width="62" height="12" rx="6" fill="#2FA55E"/>
+  </g>
+  <g>
+    <rect class="bub" x="474" y="200" width="146" height="128" rx="9"/>
+    <rect x="486" y="214" width="76" height="7" rx="3.5" fill="#7FA3CC"/>
+    <rect x="486" y="230" width="118" height="6" rx="3" fill="#C3D5E9"/>
+    <rect x="486" y="244" width="110" height="6" rx="3" fill="#C3D5E9"/>
+    <rect x="486" y="258" width="118" height="6" rx="3" fill="#C3D5E9"/>
+    <rect x="486" y="272" width="92" height="6" rx="3" fill="#C3D5E9"/>
+    <rect x="486" y="292" width="76" height="20" rx="10" fill="#24466E"/>
+  </g>
+  <g>
+    <rect class="bub-g" x="648" y="200" width="146" height="84" rx="9"/>
+    <rect x="660" y="214" width="94" height="7" rx="3.5" fill="#7FBF95"/>
+    <rect x="660" y="230" width="118" height="6" rx="3" fill="#BBDCC6"/>
+    <rect x="660" y="244" width="86" height="6" rx="3" fill="#BBDCC6"/>
+    <rect x="660" y="260" width="58" height="12" rx="6" fill="#2FA55E"/>
+  </g>
+  <g>
+    <rect class="bub" x="822" y="200" width="146" height="112" rx="9"/>
+    <rect x="834" y="214" width="82" height="7" rx="3.5" fill="#7FA3CC"/>
+    <rect x="834" y="230" width="118" height="6" rx="3" fill="#C3D5E9"/>
+    <rect x="834" y="244" width="102" height="6" rx="3" fill="#C3D5E9"/>
+    <rect x="834" y="258" width="114" height="6" rx="3" fill="#C3D5E9"/>
+    <rect x="834" y="276" width="76" height="20" rx="10" fill="#24466E"/>
+  </g>
+  <g>
+    <rect x="996" y="200" width="152" height="104" rx="9" fill="#FDECE7" stroke="#E8B4A5" stroke-width="1.2"/>
+    <rect x="1008" y="214" width="70" height="16" rx="8" fill="#C94F35"/>
+    <text class="t-xs" x="1016" y="226" fill="#fff">締切訴求</text>
+    <rect x="1008" y="240" width="124" height="6" rx="3" fill="#EBC6B9"/>
+    <rect x="1008" y="254" width="108" height="6" rx="3" fill="#EBC6B9"/>
+    <rect x="1008" y="270" width="80" height="20" rx="10" fill="#C94F35"/>
+  </g>
+
+  <line class="line" x1="300" y1="360" x2="1148" y2="360"/>
+
+  <!-- 下段: 分析パネル -->
+  <g>
+    <rect x="300" y="386" width="268" height="182" rx="9" fill="#F8F5EE" stroke="#E2DCCE" stroke-width="1.2"/>
+    <text class="t-md sumi" x="320" y="418">配信の設計が見える</text>
+    <text class="t-xs mut" x="320" y="444">何日目に、どんな順番で、</text>
+    <text class="t-xs mut" x="320" y="464">どこで申込を促しているか</text>
+    <rect x="320" y="484" width="228" height="8" rx="4" fill="#D9E3EF"/>
+    <rect x="320" y="484" width="164" height="8" rx="4" fill="#24466E"/>
+    <rect x="320" y="506" width="228" height="8" rx="4" fill="#D9E3EF"/>
+    <rect x="320" y="506" width="112" height="8" rx="4" fill="#2FA55E"/>
+    <rect x="320" y="528" width="228" height="8" rx="4" fill="#D9E3EF"/>
+    <rect x="320" y="528" width="196" height="8" rx="4" fill="#C94F35"/>
+  </g>
+  <g>
+    <rect x="590" y="386" width="268" height="182" rx="9" fill="#F8F5EE" stroke="#E2DCCE" stroke-width="1.2"/>
+    <text class="t-md sumi" x="610" y="418">並べて見比べられる</text>
+    <text class="t-xs mut" x="610" y="444">複数の配信を同じ時間軸で</text>
+    <text class="t-xs mut" x="610" y="464">重ねて比較</text>
+    <g>
+      <rect x="610" y="486" width="52" height="46" rx="6" fill="#DCE9F7" stroke="#B9C9DD"/>
+      <rect x="670" y="486" width="52" height="46" rx="6" fill="#DFF3E4" stroke="#A9D8B8"/>
+      <rect x="730" y="486" width="52" height="46" rx="6" fill="#DCE9F7" stroke="#B9C9DD"/>
+      <rect x="790" y="486" width="48" height="46" rx="6" fill="#FDECE7" stroke="#E8B4A5"/>
+    </g>
+  </g>
+  <g>
+    <rect x="880" y="386" width="268" height="182" rx="9" fill="#24466E"/>
+    <rect x="900" y="408" width="96" height="22" rx="11" fill="#C94F35"/>
+    <text class="t-xs" x="912" y="423" fill="#fff">AIで初稿</text>
+    <text class="t-md" x="900" y="458" fill="#fff">次の配信の下書きへ</text>
+    <text class="t-xs" x="900" y="484" fill="#B9C9DD">見比べた結果をもとに、</text>
+    <text class="t-xs" x="900" y="504" fill="#B9C9DD">自社のシナリオ初稿をAIが作成</text>
+    <rect x="900" y="520" width="200" height="7" rx="3.5" fill="#3D5F87"/>
+    <rect x="900" y="534" width="168" height="7" rx="3.5" fill="#3D5F87"/>
+    <rect x="900" y="548" width="184" height="7" rx="3.5" fill="#3D5F87"/>
+  </g>
+</svg>
