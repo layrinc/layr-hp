@@ -84,6 +84,29 @@ const slugJsonLd: Record<string, object[]> = {
       provider: { '@id': 'https://layr.co.jp/#organization' },
       areaServed: 'JP',
       url: 'https://layr.co.jp/service/ad/',
+      hasOfferCatalog: {
+        '@type': 'OfferCatalog',
+        name: '広告運用代行の料金',
+        itemListElement: [
+          {
+            '@type': 'Offer',
+            name: '初期設定',
+            description: '広告アカウント開設・ターゲット/配信エリア設定・広告文作成・画像クリエイティブ制作・計測タグ設置（ご契約時1回）',
+            priceSpecification: { '@type': 'PriceSpecification', price: 55000, priceCurrency: 'JPY', valueAddedTaxIncluded: true },
+          },
+          {
+            '@type': 'Offer',
+            name: '運用代行（広告費 月25万円未満）',
+            description: '日々の運用・毎週の数値共有・月1回の定例・LP改善提案',
+            priceSpecification: { '@type': 'UnitPriceSpecification', price: 55000, priceCurrency: 'JPY', unitText: '月', valueAddedTaxIncluded: true },
+          },
+          {
+            '@type': 'Offer',
+            name: '運用代行（広告費 月25万円以上）',
+            description: '広告費の20%＋消費税',
+          },
+        ],
+      },
     },
   ],
   'service/line': [
