@@ -1,14 +1,29 @@
 ---
 /**
- * サービス紹介資料の一覧ページ（リード獲得用・アーカイブ形式）。
- * 資料の追加・編集は src/data/materials.json を編集する。
- * カードの「ダウンロード」→ 個別ページ /document/<id>/ のフォームへ。送信後その場でPDFを提供。
+ * 資料ダウンロードの一覧ページ（リード獲得用）。
+ * 「サービス資料」と「お役立ち資料」をタブで切り替える。
+ * 資料の追加・編集は src/data/materials.json を編集する（category: 'service' | 'useful'）。
+ * file が空の資料は「準備中」として出し、リンクを踏ませない。
  */
 import Base from '../../layouts/Base.astro';
 import materials from '../../data/materials.json';
+import { ISO } from '../../lib/iso-illusts.mjs';
 
-const title = 'サービス紹介資料 無料ダウンロード｜株式会社LAYR';
-const description = 'LINE公式アカウントの構築・運用、広告運用代行に関する資料を無料配布中。フォーム送信後、その場でPDFをダウンロードいただけます。サービス紹介資料・料金の目安・進め方をまとめています。';
+type Material = { id: string; title: string; desc: string; thumb?: string; file?: string; category?: string };
+const all = materials as Material[];
+const service = all.filter((m) => (m.category ?? 'service') === 'service');
+const useful = all.filter((m) => m.category === 'useful');
+
+const TABS = [
+  { key: 'service', label: 'サービス資料', note: '各サービスの内容・料金・進め方をまとめた資料です。', items: service },
+  { key: 'useful', label: 'お役立ち資料', note: 'LINEマーケティングの実務で使えるガイドやチェックリストです。', items: useful },
+];
+
+// サムネイル未設定の資料は、カテゴリに応じたアイソメトリック図で代用する
+const isoFor = (m: Material) => (m.category === 'useful' ? ISO.report : ISO.phone);
+
+const title = 'サービス資料＆お役立ち資料 無料ダウンロード｜株式会社LAYR';
+const description = 'LINE公式アカウントの構築・運用、広告運用代行のサービス資料と、LINEマーケティングの実務で使えるお役立ち資料を無料配布中。フォーム送信後、その場でPDFをダウンロードいただけます。';
 
 const jsonLd = [
   {
@@ -16,82 +31,181 @@ const jsonLd = [
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'ホーム', item: new URL('/', Astro.site).href },
-      { '@type': 'ListItem', position: 2, name: 'サービス紹介資料' },
+      { '@type': 'ListItem', position: 2, name: 'サービス資料＆お役立ち資料' },
     ],
   },
   {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
-    name: 'LAYRサービス紹介資料',
-    itemListElement: materials.map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.title })),
+    name: 'LAYRの配布資料',
+    itemListElement: all
+      .filter((m) => m.file)
+      .map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.title })),
   },
 ];
 ---
 <Base title={title} description={description} jsonLd={jsonLd}>
   <div class="subpage-pad"></div>
   <div class="page-hero container">
-    <h1 class="sec-jp">サービス紹介資料</h1>
+    <h1 class="sec-jp">サービス資料＆お役立ち資料</h1>
   </div>
 
   <section class="mat-sec">
     <div class="container">
-      <p class="mat-lead">LAYRの各サービスの紹介資料を無料配布中です。<br />フォーム送信後、その場でPDFをダウンロードいただけます。</p>
+      <p class="mat-lead">フォーム送信後、その場でPDFをダウンロードいただけます。</p>
 
-      <div class="mat-grid">
-        {materials.map((m) => (
-          <article class="mat-card">
-            <a class="mat-thumb" href={`/document/${m.id}/`} aria-hidden="true" tabindex="-1">
-              <img src={m.thumb} alt="" width="1200" height="675" loading="lazy" />
-            </a>
-            <div class="mat-body">
-              <h2 class="mat-title">{m.title}</h2>
-              <p class="mat-desc">{m.desc}</p>
-              <a class="btn btn-green mat-dl" href={`/document/${m.id}/`}>ダウンロード</a>
-            </div>
-          </article>
+      <div class="mat-tabs" role="tablist" aria-label="資料の種類">
+        {TABS.map((t, i) => (
+          <button
+            class={`mat-tab${i === 0 ? ' is-on' : ''}`}
+            role="tab"
+            id={`mattab-${t.key}`}
+            aria-controls={`matpanel-${t.key}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            data-tab={t.key}
+          >
+            {t.label}<span class="mat-tab-n">{t.items.length}</span>
+          </button>
         ))}
       </div>
+
+      {TABS.map((t, i) => (
+        <div
+          class={`mat-panel${i === 0 ? ' is-on' : ''}`}
+          role="tabpanel"
+          id={`matpanel-${t.key}`}
+          aria-labelledby={`mattab-${t.key}`}
+          data-panel={t.key}
+          tabindex="0"
+        >
+          <p class="mat-note">{t.note}</p>
+          <div class="mat-grid">
+            {t.items.map((m) => (
+              m.file ? (
+                <article class="mat-card">
+                  <a class="mat-thumb" href={`/document/${m.id}/`} aria-hidden="true" tabindex="-1">
+                    {m.thumb
+                      ? <img src={m.thumb} alt="" width="1200" height="675" loading="lazy" />
+                      : <span class="mat-iso"><Fragment set:html={isoFor(m)} /></span>}
+                  </a>
+                  <div class="mat-body">
+                    <h2 class="mat-title">{m.title}</h2>
+                    <p class="mat-desc">{m.desc}</p>
+                    <a class="btn btn-green mat-dl" href={`/document/${m.id}/`}>ダウンロード</a>
+                  </div>
+                </article>
+              ) : (
+                <article class="mat-card is-soon">
+                  <span class="mat-thumb" aria-hidden="true">
+                    {m.thumb
+                      ? <img src={m.thumb} alt="" width="1200" height="675" loading="lazy" />
+                      : <span class="mat-iso"><Fragment set:html={isoFor(m)} /></span>}
+                  </span>
+                  <div class="mat-body">
+                    <h2 class="mat-title">{m.title}</h2>
+                    <p class="mat-desc">{m.desc}</p>
+                    <span class="mat-soon">準備中</span>
+                  </div>
+                </article>
+              )
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   </section>
-
 </Base>
-
 
 <style>
   .mat-sec{padding:44px 0 30px}
-  .mat-lead{font-size:calc(15px * var(--fs,1));line-height:2;color:var(--text,#1B2A2E);margin:0 0 38px}
+  .mat-lead{font-size:calc(15px * var(--fs,1));line-height:2;color:var(--text);margin:0 0 26px}
+
+  /* ---- タブ（サービス資料 / お役立ち資料） ---- */
+  .mat-tabs{display:flex;gap:6px;border-bottom:1px solid var(--line);margin-bottom:26px;flex-wrap:wrap}
+  .mat-tab{
+    appearance:none;background:transparent;border:none;border-bottom:3px solid transparent;
+    font-family:var(--font-jp);font-size:calc(15px * var(--fs,1));font-weight:700;
+    color:var(--muted);padding:12px 18px 13px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:color .18s cubic-bezier(.4,0,.2,1), border-color .18s cubic-bezier(.4,0,.2,1);
+  }
+  .mat-tab:hover{color:var(--text)}
+  .mat-tab.is-on{color:var(--green-dark);border-bottom-color:var(--green)}
+  .mat-tab-n{
+    font-size:calc(11.5px * var(--fs,1));font-weight:700;color:var(--muted);
+    background:var(--tint);border-radius:var(--r-pill);padding:2px 9px;
+  }
+  .mat-tab.is-on .mat-tab-n{color:#fff;background:var(--green)}
+
+  .mat-panel{display:none}
+  .mat-panel.is-on{display:block}
+  .mat-note{font-size:calc(13.5px * var(--fs,1));color:var(--muted);line-height:1.9;margin:0 0 22px}
+
+  /* ---- カード ---- */
   .mat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,2.6vw,32px)}
-  .mat-card{background:#fff;border:1px solid var(--line,#E3ECEC);border-radius:calc(var(--radius,18px) * .7);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s, box-shadow .2s}
-  .mat-card:hover{transform:translateY(-4px);box-shadow:var(--sd-lg,0 14px 34px rgba(14,26,28,.1))}
+  .mat-card{
+    background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;
+    display:flex;flex-direction:column;
+    transition:transform .2s cubic-bezier(.4,0,.2,1), box-shadow .2s cubic-bezier(.4,0,.2,1);
+  }
+  .mat-card:not(.is-soon):hover{transform:translateY(-4px);box-shadow:var(--sd-lg)}
   .mat-thumb{display:block}
   .mat-thumb img{width:100%;height:auto;display:block}
+  .mat-iso{display:block;background:var(--tint);padding:14px}
+  .mat-iso :global(svg){display:block;width:100%;height:auto}
   .mat-body{display:flex;flex-direction:column;gap:10px;padding:20px 22px 24px;flex:1}
-  .mat-title{font-size:calc(16.5px * var(--fs,1));font-weight:700;line-height:1.6;color:var(--black,#0E1A1C);margin:0}
+  .mat-title{font-size:calc(16.5px * var(--fs,1));font-weight:700;line-height:1.6;color:var(--black);margin:0}
   .mat-desc{font-size:calc(13.5px * var(--fs,1));line-height:1.9;color:var(--muted);margin:0;flex:1}
   .mat-dl{width:100%;margin-top:6px}
 
-  .mat-form-sec{padding:50px 0 110px}
-  .mat-form-card{max-width:640px;margin:0 auto;background:var(--paper,#F6FAF9);border-radius:calc(var(--radius,18px) * .7);padding:clamp(28px,4vw,44px)}
-  .mat-form-title{font-size:calc(21px * var(--fs,1));font-weight:700;margin:0 0 10px;color:var(--black,#0E1A1C)}
-  .doc-form-note{margin-bottom:22px;font-size:calc(13.5px * var(--fs,1));color:var(--muted);line-height:1.9}
-  .doc-form{display:flex;flex-direction:column;gap:16px}
-  .doc-form label{display:flex;flex-direction:column;gap:7px}
-  .req{color:#fff;padding:1px 8px;margin-left:6px;display:inline-block}
-  .opt{color:var(--muted);padding:1px 8px;margin-left:6px;display:inline-block}
-  .doc-form input[type="text"],.doc-form input[type="email"],.doc-form input[type="tel"],.doc-form select{font-family:var(--font-jp);font-size:calc(15px * var(--fs,1));padding:13px 15px;color:var(--text);outline:none;transition:border-color .2s}
-  .doc-consent{flex-direction:row!important;align-items:flex-start;gap:10px!important;font-weight:400!important;font-size:calc(13px * var(--fs,1))!important;color:var(--muted)}
-  .doc-consent input{margin-top:4px;accent-color:var(--green-cta);width:16px;height:16px}
-  .doc-submit{width:100%;border:none;font-family:var(--font-jp)}
-  .doc-submit:disabled{opacity:.6;cursor:wait}
-  .doc-fallback{padding:20px 22px;text-align:center}
-  .doc-fallback p{font-size:calc(13px * var(--fs,1));color:var(--muted);margin-bottom:14px}
-  .doc-fallback .btn{width:100%}
-
-  @media (max-width:980px){
-    .mat-grid{grid-template-columns:repeat(2,1fr)}
+  /* ---- 準備中 ---- */
+  .mat-card.is-soon{opacity:.72}
+  .mat-card.is-soon .mat-thumb{filter:grayscale(.35)}
+  .mat-soon{
+    display:block;text-align:center;margin-top:6px;padding:12px 0;
+    font-size:calc(13.5px * var(--fs,1));font-weight:700;color:var(--muted);
+    background:var(--tint);border-radius:var(--radius);
   }
+
+  @media (max-width:980px){ .mat-grid{grid-template-columns:repeat(2,1fr)} }
   @media (max-width:640px){
     .mat-grid{grid-template-columns:1fr}
-    .mat-form-sec{padding:40px 0 84px}
+    .mat-tab{padding:11px 14px 12px;font-size:calc(14px * var(--fs,1))}
   }
 </style>
+
+<script>
+  // タブ切替（ARIA tabs パターン: 矢印キー移動＋roving tabindex）
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('.mat-tab')];
+  const activate = (tab: HTMLButtonElement, focus = false) => {
+    const key = tab.dataset.tab;
+    tabs.forEach((t) => {
+      const on = t === tab;
+      t.classList.toggle('is-on', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+    });
+    document.querySelectorAll<HTMLElement>('.mat-panel').forEach((p) => {
+      p.classList.toggle('is-on', p.dataset.panel === key);
+    });
+    if (focus) tab.focus();
+    if (key) history.replaceState(null, '', key === 'service' ? location.pathname : `#${key}`);
+  };
+  tabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => activate(tab));
+    tab.addEventListener('keydown', (e) => {
+      const map: Record<string, number> = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };
+      const to = map[e.key];
+      if (to === undefined) return;
+      e.preventDefault();
+      activate(tabs[(to + tabs.length) % tabs.length], true);
+    });
+  });
+  // /document/#useful で直接お役立ち資料を開けるようにする
+  const hash = location.hash.replace('#', '');
+  if (hash) {
+    const t = tabs.find((x) => x.dataset.tab === hash);
+    if (t) activate(t);
+  }
+</script>

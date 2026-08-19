@@ -4,20 +4,47 @@
     "title": "LAYRサービス紹介資料（LINE構築・運用）",
     "desc": "LINE公式アカウントの構築・運用支援の全体像、料金プラン（構築10万円〜／運用月3万円〜）、活用事例、進め方をまとめた正式版サービス概要資料です。",
     "thumb": "/materials/line-service.png",
-    "file": "/docs/layr-line-service.pdf"
+    "file": "/docs/layr-line-service.pdf",
+    "category": "service"
   },
   {
     "id": "ad-service",
-    "title": "広告運用代行 紹介資料",
-    "desc": "Meta・Google・LINEヤフー広告の運用代行の支援範囲と進め方、広告×LINEの一体設計の考え方をまとめた資料です。",
+    "title": "広告運用代行 サービス資料",
+    "desc": "Meta・Google・LINEヤフー広告の3媒体の使い分け、初期設定と日々の運用業務、LP改善、料金（初期55,000円＋月額55,000円〜・税込）までをまとめた15ページの資料です。",
     "thumb": "/materials/ad-service.png",
-    "file": "/docs/layr-ad-service.pdf"
+    "file": "/docs/layr-ad-service.pdf",
+    "category": "service"
   },
   {
     "id": "yorozuya-bpo",
     "title": "よろず屋マーケくん 紹介資料（WebマーケティングBPO）",
     "desc": "月10万円で、LINE・広告・LP改善・AI業務効率化までWebマーケティングの実務をまるっと担当する月額BPOサービスの紹介資料です。",
     "thumb": "/materials/yorozuya-bpo.png",
-    "file": "/yorozuya/docs/yorozuya-marke-kun-service.pdf"
+    "file": "/yorozuya/docs/yorozuya-marke-kun-service.pdf",
+    "category": "service"
+  },
+  {
+    "id": "line-start-guide",
+    "category": "useful",
+    "title": "LINE公式アカウント 開設・初期設定ガイド",
+    "desc": "アカウントの開設から、あいさつメッセージ・リッチメニュー・応答設定まで、最初に決めるべき項目を手順どおりに並べたチェックリストです。",
+    "thumb": "",
+    "file": ""
+  },
+  {
+    "id": "line-block-checklist",
+    "category": "useful",
+    "title": "ブロック率を下げる配信チェックリスト",
+    "desc": "配信の頻度・時間帯・文面・セグメントの分け方を、配信前に確認できる形にまとめました。ブロックが増える典型パターンと回避策つきです。",
+    "thumb": "",
+    "file": ""
+  },
+  {
+    "id": "step-scenario-template",
+    "category": "useful",
+    "title": "業種別 ステップ配信シナリオ雛形",
+    "desc": "飲食・美容・スクール・クリニックなど業種別に、登録直後から予約・購入までの配信の並べ方を雛形にしました。文面の骨格つきです。",
+    "thumb": "",
+    "file": ""
   }
 ]
