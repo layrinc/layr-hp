@@ -152,6 +152,19 @@
       }
     },
     {
+      "type": "ctaBand",
+      "p": {
+        "title_before": "あなたの業種では、",
+        "title_em": "どう使える",
+        "title_after": "のか。",
+        "desc": "業種ごとに、おすすめの使い方と実際のLINE画面をご覧いただけます。",
+        "btn_primary": "業種別のおすすめの使い方を見てみる",
+        "href_primary": "/case/#industry",
+        "btn_secondary": "支援実績をすべて見る",
+        "href_secondary": "/case/"
+      }
+    },
+    {
       "id": "b-zz-flow",
       "type": "zigzag",
       "p": {

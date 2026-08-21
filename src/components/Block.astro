@@ -234,8 +234,11 @@ const serviceIcons = [
         <p>{p.desc}</p>
       </div>
       <div class="cta-band-btns">
-        <a class="btn btn-green" href={consult}>{p.btn_primary}</a>
-        <a class="btn btn-white" href={contact}>{p.btn_secondary}</a>
+        {/* href_primary / href_secondary が指定されていればそちらへ。未指定なら従来どおり相談・問い合わせ */}
+        <a class="btn btn-white" href={p.href_primary || consult}>{p.btn_primary}</a>
+        {p.btn_secondary && (
+          <a class="btn btn-ghost-w" href={p.href_secondary || contact}>{p.btn_secondary}</a>
+        )}
       </div>
     </div>
   </div>

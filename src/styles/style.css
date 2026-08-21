@@ -522,6 +522,9 @@ mark.mk-y{background:linear-gradient(transparent 58%, var(--mark-y) 0);color:inh
   background:linear-gradient(100deg, var(--green-dark) 0%, var(--green) 100%);
   color:#fff;padding:clamp(30px,4vw,46px) 0;
 }
+/* 濃色帯の上の副ボタン。緑ボタンは背景に沈むため使わない */
+.btn-ghost-w{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.7)}
+.btn-ghost-w:hover{background:rgba(255,255,255,.14);color:#fff}
 .cta-band-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .cta-band h2{font-size:calc(clamp(20px,2.6vw,29px) * var(--fs,1));font-weight:700;line-height:1.55}
 .cta-band h2 span{

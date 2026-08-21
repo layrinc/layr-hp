@@ -8,6 +8,7 @@ import { getCollection } from 'astro:content';
 import industries from '../../data/industries.json';
 import settings from '../../data/settings.json';
 import { ISO } from '../../lib/iso-illusts.mjs';
+import { USE_ICONS } from '../../lib/use-icons.mjs';
 
 const cases = (await getCollection('cases', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
@@ -108,17 +109,30 @@ const jsonLd = [
               <p class="iv-pain-l">よくあるお困りごと</p>
               <p class="iv-pain">{iv.pain}</p>
 
-              <ol class="iv-uses">
+              <div class="iv-uses">
                 {iv.uses.map((u, ui) => (
-                  <li class="iv-use">
+                  <div class="iv-use">
+                    <span class="iv-fig" aria-hidden="true"><Fragment set:html={USE_ICONS[u.icon] ?? USE_ICONS.doc} /></span>
                     <span class="iv-n">{String(ui + 1).padStart(2, '0')}</span>
-                    <div>
-                      <b>{u.t}</b>
-                      <p>{u.d}</p>
-                    </div>
-                  </li>
+                    <b>{u.t}</b>
+                    <p>{u.d}</p>
+                  </div>
                 ))}
-              </ol>
+              </div>
+
+              {iv.flow && (
+                <div class="iv-flow">
+                  <p class="iv-flow-t">お客様の動き</p>
+                  <ol class="iv-flow-list">
+                    {iv.flow.map((f) => (
+                      <li class="iv-step">
+                        <b>{f.t}</b>
+                        <span>{f.s}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
 
               <p class="iv-effect"><span>期待できる変化</span>{iv.effect}</p>
             </div>
@@ -215,15 +229,6 @@ const jsonLd = [
   .iv-pain-l{font-size:11.5px;font-weight:700;color:var(--green-dark);letter-spacing:var(--track-label);margin-bottom:7px}
   .iv-pain{font-size:14.5px;line-height:1.95;color:var(--text);font-weight:700;margin-bottom:24px;padding-bottom:22px;border-bottom:1px dashed var(--line)}
 
-  .iv-uses{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:18px}
-  .iv-use{display:flex;gap:14px;align-items:flex-start}
-  .iv-n{
-    flex:none;font-family:var(--font-en);font-size:13px;font-weight:700;color:#fff;
-    background:linear-gradient(135deg,#0499AF,#77D55C);border-radius:var(--r-sm);
-    width:26px;height:26px;display:grid;place-items:center;margin-top:2px;
-  }
-  .iv-use b{display:block;font-size:15px;color:var(--black);margin-bottom:5px;line-height:1.6}
-  .iv-use p{font-size:13px;line-height:1.95;color:var(--muted);margin:0}
 
   .iv-effect{
     font-size:13.5px;line-height:1.95;color:var(--text);margin:0;
@@ -250,6 +255,40 @@ const jsonLd = [
     .iv-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:calc(var(--gutter) * -1);padding-inline:var(--gutter)}
     .iv-tabs::-webkit-scrollbar{display:none}
     .iv-tab{flex:none}
+  }
+
+  /* 使い方カード（図解つき3列） */
+  .iv-uses{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:0 0 22px}
+  .iv-use{position:relative;background:var(--tint);border:1px solid var(--line);border-radius:var(--r-lg);padding:14px 15px 16px}
+  .iv-fig{display:block;background:#fff;border-radius:var(--radius);padding:8px;margin-bottom:10px}
+  .iv-fig :global(svg){display:block;width:100%;height:auto}
+  .iv-n{
+    position:absolute;top:10px;right:10px;
+    font-family:var(--font-en);font-size:11px;font-weight:700;color:#fff;
+    background:linear-gradient(135deg,#0499AF,#77D55C);border-radius:var(--r-sm);
+    width:24px;height:20px;display:grid;place-items:center;
+  }
+  .iv-use b{display:block;font-size:14px;color:var(--black);line-height:1.55;margin-bottom:6px}
+  .iv-use p{font-size:12.5px;line-height:1.85;color:var(--muted);margin:0}
+
+  /* お客様の動き（4ステップ） */
+  .iv-flow{border-top:1px dashed var(--line);padding-top:18px;margin-bottom:20px}
+  .iv-flow-t{font-size:11.5px;font-weight:700;color:var(--green-dark);letter-spacing:var(--track-label);margin-bottom:12px}
+  .iv-flow-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+  .iv-step{position:relative;background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:11px 12px}
+  .iv-step::after{
+    content:"";position:absolute;right:-8px;top:50%;transform:translateY(-50%);
+    width:0;height:0;border-left:7px solid var(--green);
+    border-top:5px solid transparent;border-bottom:5px solid transparent;z-index:1;
+  }
+  .iv-step:last-child::after{display:none}
+  .iv-step b{display:block;font-size:13px;color:var(--black);margin-bottom:3px;line-height:1.5}
+  .iv-step span{display:block;font-size:11.5px;color:var(--muted);line-height:1.65}
+
+  @media (max-width:1080px){ .iv-uses{grid-template-columns:1fr} }
+  @media (max-width:700px){
+    .iv-flow-list{grid-template-columns:1fr 1fr}
+    .iv-step:nth-child(2)::after{display:none}
   }
 </style>
 
