@@ -5,9 +5,16 @@
  */
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import industries from '../../data/industries.json';
+import settings from '../../data/settings.json';
+import { ISO } from '../../lib/iso-illusts.mjs';
 
 const cases = (await getCollection('cases', ({ data }) => !data.draft))
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// 業種別のおすすめ活用 → LINEサンプルへの導線。line_url が未設定なら相談導線へ落とす
+const lineUrl = settings.line_url?.trim() || '';
+const mailFallback = `mailto:${settings.email}?subject=${encodeURIComponent('【ご相談】LINE活用について')}`;
 
 const title = '支援実績｜株式会社LAYR';
 const description = 'LINEマーケティング支援の実績一覧。講座申込2.4倍、再来店率+38%、獲得コスト半減など、LINE構築・運用による事業改善の事例を課題・施策・成果つきで紹介します。';
@@ -66,13 +73,80 @@ const jsonLd = [
     <p class="cs-note">※ 掲載の成果は一例です。業種・条件により結果は異なります。</p>
   </div>
 
+  <!-- 業種別のおすすめ活用 → LINEサンプルへ誘導 -->
+  <section class="iv-sec" id="industry">
+    <div class="container">
+      <p class="iv-en">BY INDUSTRY</p>
+      <h2 class="iv-h2">業種別の、おすすめの使い方</h2>
+      <p class="iv-lead">同じLINEでも、業種によって効く使い方は違います。<br class="sp" />近い業種を選んで、実際の画面をご覧ください。</p>
+
+      <div class="iv-tabs" role="tablist" aria-label="業種を選ぶ">
+        {industries.map((iv, i) => (
+          <button
+            class={`iv-tab${i === 0 ? ' is-on' : ''}`}
+            role="tab"
+            id={`ivtab-${iv.key}`}
+            aria-controls={`ivpanel-${iv.key}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            data-tab={iv.key}
+          >{iv.label}</button>
+        ))}
+      </div>
+
+      {industries.map((iv, i) => (
+        <div
+          class={`iv-panel${i === 0 ? ' is-on' : ''}`}
+          role="tabpanel"
+          id={`ivpanel-${iv.key}`}
+          aria-labelledby={`ivtab-${iv.key}`}
+          data-panel={iv.key}
+          tabindex="0"
+        >
+          <div class="iv-grid">
+            <div class="iv-main">
+              <p class="iv-pain-l">よくあるお困りごと</p>
+              <p class="iv-pain">{iv.pain}</p>
+
+              <ol class="iv-uses">
+                {iv.uses.map((u, ui) => (
+                  <li class="iv-use">
+                    <span class="iv-n">{String(ui + 1).padStart(2, '0')}</span>
+                    <div>
+                      <b>{u.t}</b>
+                      <p>{u.d}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+
+              <p class="iv-effect"><span>期待できる変化</span>{iv.effect}</p>
+            </div>
+
+            <aside class="iv-side">
+              <span class="iv-iso" aria-hidden="true"><Fragment set:html={ISO[iv.iso] ?? ISO.phone} /></span>
+              <p class="iv-sample-t">LINEサンプルで見られるもの</p>
+              <p class="iv-sample">{iv.sample}</p>
+              <a
+                class="btn btn-green iv-cta"
+                href={lineUrl || mailFallback}
+                data-industry={iv.key}
+              >{lineUrl ? 'この使い方のLINEサンプルを見る' : 'この使い方について相談する'}</a>
+              <p class="iv-note">友だち追加後、予約画面の作り方や運用の実例をお送りします。<br />営業のご連絡はしません。ブロックはいつでも可能です。</p>
+            </aside>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
   <section class="cs-cta">
     <div class="container">
       <p class="t">同じような課題を、貴社でも。</p>
       <p class="s">現状のお困りごとを伺う無料相談（オンライン30分）と、料金・事例をまとめた資料をご用意しています。</p>
       <div class="row">
-        <a class="btn btn-green btn-lg" href="/contact/">無料相談に申し込む</a>
-        <a class="btn cs-btn-w btn-lg" href="/document/line-service/">サービス資料をダウンロード</a>
+        <a class="btn cs-btn-w btn-lg" href="/contact/">無料相談に申し込む</a>
+        <a class="btn cs-btn-ghost btn-lg" href="/document/">資料をダウンロード</a>
       </div>
     </div>
   </section>
@@ -109,7 +183,115 @@ const jsonLd = [
   .cs-cta .t{font-size:clamp(19px,3vw,26px);font-weight:700;margin-bottom:8px}
   .cs-cta .s{font-size:13.5px;opacity:.88;max-width:36em;margin:0 auto 24px;line-height:1.9}
   .cs-cta .row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-  .cs-btn-w{background:#fff;color:var(--green-dark)}
+  /* 濃緑帯の上。主CTAは白ベタ、副CTAは白枠で階層をつける（緑ボタンは背景に沈むため使わない） */
+  .cs-btn-w{background:#fff;color:var(--green-dark);box-shadow:0 8px 22px rgba(0,0,0,.16)}
+  .cs-btn-w:hover{background:#fff;color:var(--green-dark);opacity:.92}
+  .cs-btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.7)}
+  .cs-btn-ghost:hover{background:rgba(255,255,255,.14);color:#fff}
   @media (max-width: 900px){.cs-grid{grid-template-columns:1fr 1fr}}
   @media (max-width: 600px){.cs-grid{grid-template-columns:1fr}}
+
+  /* ===== 業種別のおすすめ活用 ===== */
+  .iv-sec{background:var(--tint);padding:clamp(52px,6.5vw,88px) 0 clamp(56px,7vw,96px);border-top:1px solid var(--line)}
+  .iv-en{font-family:var(--font-en);font-size:11.5px;font-weight:700;letter-spacing:var(--track-wide);color:var(--green-dark);margin-bottom:10px}
+  .iv-h2{font-size:clamp(21px,3.2vw,30px);font-weight:700;line-height:1.5;color:var(--black);margin-bottom:12px}
+  .iv-lead{font-size:14px;line-height:1.95;color:var(--muted);margin-bottom:28px}
+
+  .iv-tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .iv-tab{
+    appearance:none;font-family:var(--font-jp);font-size:13.5px;font-weight:700;
+    background:#fff;border:1px solid var(--line);border-radius:var(--r-pill);
+    color:var(--muted);padding:9px 18px;cursor:pointer;
+    transition:color .18s cubic-bezier(.4,0,.2,1), border-color .18s cubic-bezier(.4,0,.2,1), background .18s cubic-bezier(.4,0,.2,1);
+  }
+  .iv-tab:hover{color:var(--text);border-color:var(--green)}
+  .iv-tab.is-on{background:var(--green);border-color:var(--green);color:#fff}
+
+  .iv-panel{display:none}
+  .iv-panel.is-on{display:block}
+  .iv-grid{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:clamp(20px,3vw,36px);align-items:start}
+
+  .iv-main{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:clamp(22px,3vw,32px)}
+  .iv-pain-l{font-size:11.5px;font-weight:700;color:var(--green-dark);letter-spacing:var(--track-label);margin-bottom:7px}
+  .iv-pain{font-size:14.5px;line-height:1.95;color:var(--text);font-weight:700;margin-bottom:24px;padding-bottom:22px;border-bottom:1px dashed var(--line)}
+
+  .iv-uses{list-style:none;margin:0 0 22px;padding:0;display:grid;gap:18px}
+  .iv-use{display:flex;gap:14px;align-items:flex-start}
+  .iv-n{
+    flex:none;font-family:var(--font-en);font-size:13px;font-weight:700;color:#fff;
+    background:linear-gradient(135deg,#0499AF,#77D55C);border-radius:var(--r-sm);
+    width:26px;height:26px;display:grid;place-items:center;margin-top:2px;
+  }
+  .iv-use b{display:block;font-size:15px;color:var(--black);margin-bottom:5px;line-height:1.6}
+  .iv-use p{font-size:13px;line-height:1.95;color:var(--muted);margin:0}
+
+  .iv-effect{
+    font-size:13.5px;line-height:1.95;color:var(--text);margin:0;
+    background:var(--tint);border-radius:var(--radius);padding:16px 18px;
+  }
+  .iv-effect span{
+    display:block;font-size:11.5px;font-weight:700;color:var(--green-dark);
+    letter-spacing:var(--track-label);margin-bottom:5px;
+  }
+
+  .iv-side{background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);padding:clamp(20px,2.6vw,26px);position:sticky;top:92px}
+  .iv-iso{display:block;background:var(--tint);border-radius:var(--radius);padding:12px;margin-bottom:16px}
+  .iv-iso :global(svg){display:block;width:100%;height:auto}
+  .iv-sample-t{font-size:11.5px;font-weight:700;color:var(--green-dark);letter-spacing:var(--track-label);margin-bottom:6px}
+  .iv-sample{font-size:13px;line-height:1.95;color:var(--muted);margin:0 0 16px}
+  .iv-cta{width:100%}
+  .iv-note{font-size:11.5px;line-height:1.85;color:var(--muted);margin:12px 0 0}
+
+  @media (max-width:900px){
+    .iv-grid{grid-template-columns:1fr}
+    .iv-side{position:static}
+  }
+  @media (max-width:600px){
+    .iv-tabs{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-inline:calc(var(--gutter) * -1);padding-inline:var(--gutter)}
+    .iv-tabs::-webkit-scrollbar{display:none}
+    .iv-tab{flex:none}
+  }
 </style>
+
+<script>
+  // 業種タブ（ARIA tabs: 矢印キー移動＋roving tabindex）
+  const ivTabs = [...document.querySelectorAll<HTMLButtonElement>('.iv-tab')];
+  const ivActivate = (tab: HTMLButtonElement, focus = false) => {
+    const key = tab.dataset.tab;
+    ivTabs.forEach((t) => {
+      const on = t === tab;
+      t.classList.toggle('is-on', on);
+      t.setAttribute('aria-selected', on ? 'true' : 'false');
+      t.tabIndex = on ? 0 : -1;
+    });
+    document.querySelectorAll<HTMLElement>('.iv-panel').forEach((p) => {
+      p.classList.toggle('is-on', p.dataset.panel === key);
+    });
+    if (focus) tab.focus();
+    tab.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  };
+  ivTabs.forEach((tab, i) => {
+    tab.addEventListener('click', () => ivActivate(tab));
+    tab.addEventListener('keydown', (e) => {
+      const map: Record<string, number> = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: ivTabs.length - 1 };
+      const to = map[e.key];
+      if (to === undefined) return;
+      e.preventDefault();
+      ivActivate(ivTabs[(to + ivTabs.length) % ivTabs.length], true);
+    });
+  });
+  // /case/#beauty のように業種を直接開けるようにする
+  const ivHash = location.hash.replace('#', '');
+  if (ivHash) {
+    const t = ivTabs.find((x) => x.dataset.tab === ivHash);
+    if (t) { ivActivate(t); document.getElementById('industry')?.scrollIntoView(); }
+  }
+  // どの業種からLINEへ進んだかを計測する
+  document.querySelectorAll<HTMLAnchorElement>('.iv-cta').forEach((a) => {
+    a.addEventListener('click', () => {
+      if (typeof (window as any).gtag === 'function') {
+        (window as any).gtag('event', 'generate_lead', { method: 'line_sample', industry: a.dataset.industry });
+      }
+    });
+  });
+</script>
