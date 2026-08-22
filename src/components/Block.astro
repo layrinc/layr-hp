@@ -1,4 +1,5 @@
 ---
+import members from '../data/members.json';
 /**
  * ブロック描画ディスパッチャ。page-home.json の1ブロックを受け取り、該当セクションを描画する。
  * 種類: hero / stats / problem / ctaBand / service / reason / cases / column / promise /
@@ -383,6 +384,33 @@ const serviceIcons = [
             <summary><span class="q">Q.</span>{item.q}</summary>
             <div class="a"><span class="mark">A.</span><p>{item.a}</p></div>
           </details>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+{t === 'members' && (
+  <section id="members" class="mb-sec">
+    <div class="container">
+      <div class="sec-head reveal"><p class="sec-en">{p.en || 'MEMBER'}</p><h2 class="sec-jp">{p.title_jp || 'メンバー'}</h2></div>
+      {p.lead && <p class="mb-lead reveal">{p.lead}</p>}
+      <div class="mb-grid">
+        {members.map((m: any) => (
+          <article class="mb-card reveal">
+            <div class="mb-photo">
+              {m.photo
+                ? <img src={m.photo} alt={`${m.name}（${m.role}）`} width="640" height="640" loading="lazy" />
+                : <span class="mb-initial" aria-hidden="true">{m.name.slice(0, 1)}</span>}
+            </div>
+            <div class="mb-body">
+              <p class="mb-role"><span>{m.role_en}</span>{m.role}</p>
+              <h3 class="mb-name">{m.name}<small>{m.yomi}</small></h3>
+              <p class="mb-catch">{m.lead}</p>
+              <p class="mb-text">{m.body}</p>
+              {m.tags && <div class="mb-tags">{m.tags.map((tg: string) => <span>{tg}</span>)}</div>}
+            </div>
+          </article>
         ))}
       </div>
     </div>

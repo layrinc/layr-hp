@@ -312,6 +312,14 @@
       }
     },
     {
+      "type": "members",
+      "p": {
+        "en": "MEMBER",
+        "title_jp": "メンバー",
+        "lead": "ご相談から運用まで、担当する人間の顔が見える体制でお受けしています。"
+      }
+    },
+    {
       "id": "b-company",
       "type": "company",
       "p": {
