@@ -20,14 +20,13 @@
     "yomi": "よこはま けんた",
     "role": "マーケティング担当",
     "role_en": "MARKETING",
-    "photo": "",
+    "photo": "/members/kenta-yokohama.jpg",
     "lead": "配信の企画と数字の分析を担当します。",
     "body": "LINE配信の企画・原稿づくりと、配信後の数値分析を担当します。開封やタップの数字を毎月見ながら、次に何を送るかを組み立てます。",
     "tags": [
       "配信企画",
       "数値分析",
       "ライティング"
-    ],
-    "photo_pending": "/members/kenta-yokohama.jpg"
+    ]
   }
 ]
