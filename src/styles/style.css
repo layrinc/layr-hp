@@ -2674,3 +2674,43 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   background:var(--tint);border-radius:var(--r-pill);padding:4px 12px;
 }
 @media (max-width:720px){ .mb-grid{grid-template-columns:1fr;max-width:460px} }
+
+/* ===== 自社メディア（発信チャネル一覧） ===== */
+.ch-sec{padding:var(--sec-pad) 0;background:var(--tint)}
+.ch-lead{
+  font-size:calc(14.5px * var(--fs,1));line-height:1.95;color:var(--muted);
+  max-width:38em;margin:0 auto clamp(26px,3.2vw,38px);text-align:center;
+}
+.ch-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(14px,1.8vw,20px)}
+.ch-card{
+  display:flex;flex-direction:column;gap:7px;text-decoration:none;color:inherit;
+  background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);
+  padding:clamp(18px,2.2vw,24px);
+  transition:border-color .2s cubic-bezier(.4,0,.2,1), transform .2s cubic-bezier(.4,0,.2,1);
+}
+.ch-card:hover{border-color:var(--green);transform:translateY(-3px)}
+.ch-ico{display:grid;place-items:center;width:42px;height:42px;border-radius:var(--radius);margin-bottom:4px}
+.ch-ico svg{width:22px;height:22px;display:block}
+.ch-card.is-youtube .ch-ico{background:#FDECEC;color:#E23A2E}
+.ch-card.is-instagram .ch-ico{background:#FCEDF3;color:#C13584}
+.ch-card.is-line .ch-ico{background:#E6F7EC;color:#06C755}
+.ch-card.is-media .ch-ico{background:var(--tint);color:var(--green-dark)}
+.ch-name{font-size:calc(15.5px * var(--fs,1));font-weight:700;color:var(--black);line-height:1.5}
+.ch-handle{font-size:calc(11.5px * var(--fs,1));font-weight:700;color:var(--green-dark);line-height:1.6}
+.ch-desc{font-size:calc(12.5px * var(--fs,1));line-height:1.9;color:var(--muted);flex:1;margin-top:2px}
+.ch-more{display:inline-flex;align-items:center;gap:5px;font-size:calc(12.5px * var(--fs,1));font-weight:700;color:var(--green-dark);margin-top:4px}
+.ch-more i{font-style:normal;font-weight:700}
+.ch-card:hover .ch-more{text-decoration:underline;text-underline-offset:4px}
+
+/* フッターのSNSアイコン */
+.footer-sns{display:flex;gap:10px;list-style:none;margin:18px 0 0;padding:0}
+.footer-sns a{
+  display:grid;place-items:center;width:38px;height:38px;border-radius:50%;
+  color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  transition:background .2s cubic-bezier(.4,0,.2,1), border-color .2s cubic-bezier(.4,0,.2,1);
+}
+.footer-sns a:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.45)}
+.footer-sns svg{width:19px;height:19px;display:block}
+
+@media (max-width:900px){ .ch-grid{grid-template-columns:1fr 1fr} }
+@media (max-width:560px){ .ch-grid{grid-template-columns:1fr} }

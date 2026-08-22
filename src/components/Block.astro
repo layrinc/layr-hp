@@ -390,6 +390,26 @@ const serviceIcons = [
   </section>
 )}
 
+{t === 'channels' && (
+  <section id="channels" class="ch-sec">
+    <div class="container">
+      <div class="sec-head reveal"><p class="sec-en">{p.en || 'MEDIA'}</p><h2 class="sec-jp">{p.title_jp || '自社メディア'}</h2></div>
+      {p.lead && <p class="ch-lead reveal">{p.lead}</p>}
+      <div class="ch-grid">
+        {(p.items ?? []).filter((c: any) => c.url).map((c: any) => (
+          <a class={`ch-card is-${c.key} reveal`} href={c.url} target={c.url.startsWith('/') ? undefined : '_blank'} rel={c.url.startsWith('/') ? undefined : 'noopener'}>
+            <span class="ch-ico" aria-hidden="true" set:html={c.icon} />
+            <span class="ch-name">{c.name}</span>
+            <span class="ch-handle">{c.handle}</span>
+            <span class="ch-desc">{c.desc}</span>
+            <span class="ch-more">{c.cta}<i>›</i></span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
 {t === 'members' && (
   <section id="members" class="mb-sec">
     <div class="container">
