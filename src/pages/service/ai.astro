@@ -12,7 +12,7 @@
 import Base from '../../layouts/Base.astro';
 import settings from '../../data/settings.json';
 
-const title = 'よろず屋AI｜法人向けAI導入・業務実装支援（株式会社LAYR）';
+const title = 'AI導入・業務実装支援「よろず屋AI」｜株式会社LAYR';
 const description = 'AIを何から始めればいいか分からない中小企業向け。初期10万円・月額5万円のAI顧問から、業務アプリ開発まで。専門知識は不要です。';
 const mail = `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】AI導入について')}`;
 const lineUrl = settings.line_url?.trim() || '';
@@ -100,7 +100,7 @@ const jsonLd = [
   },
   {
     '@context': 'https://schema.org', '@type': 'Service', '@id': 'https://layr.co.jp/#service-ai',
-    name: 'よろず屋AI｜法人向けAI導入・業務実装支援', serviceType: 'AI導入支援・AI顧問・業務システム開発',
+    name: 'AI導入・業務実装支援「よろず屋AI」', serviceType: 'AI導入支援・AI顧問・業務システム開発',
     provider: { '@id': 'https://layr.co.jp/#organization' }, areaServed: 'JP', url: 'https://layr.co.jp/service/ai/',
     hasOfferCatalog: {
       '@type': 'OfferCatalog', name: 'AI導入支援プラン',
