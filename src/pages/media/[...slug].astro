@@ -34,10 +34,20 @@ const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const allPosts = (await getCollection('blog', ({ data }) => !data.draft))
   .filter((p) => p.id !== post.id)
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const related = [
+// 関連記事: ピラー↔クラスターの内部リンク設計を最優先し、同カテゴリ→他カテゴリで埋める
+const pillarParent = post.data.cluster_of ? allPosts.filter((p) => p.id === post.data.cluster_of) : [];
+const clusterChildren = post.data.pillar ? allPosts.filter((p) => p.data.cluster_of === post.id) : [];
+const clusterSiblings = post.data.cluster_of
+  ? allPosts.filter((p) => p.data.cluster_of === post.data.cluster_of)
+  : [];
+const relatedPool = [
+  ...pillarParent,
+  ...clusterChildren,
+  ...clusterSiblings,
   ...allPosts.filter((p) => p.data.category === post.data.category),
   ...allPosts.filter((p) => p.data.category !== post.data.category),
-].slice(0, 3);
+];
+const related = relatedPool.filter((p, i) => relatedPool.findIndex((q) => q.id === p.id) === i).slice(0, 3);
 const recent = allPosts.slice(0, 4);
 
 const CAT_ISO: Record<string, string> = {
@@ -57,9 +67,12 @@ const articleJsonLd = {
   headline: post.data.title,
   description: post.data.description,
   datePublished: iso(post.data.date),
-  dateModified: iso((post.data as any).updated ?? post.data.date),
+  dateModified: iso(post.data.updated ?? post.data.date),
   inLanguage: 'ja',
-  author: { '@type': 'Organization', name: '株式会社LAYR', url: 'https://layr.co.jp/' },
+  // 監修者があればPerson著者（E-E-A-T）、なければ従来どおり組織著者
+  author: post.data.supervisor
+    ? { '@type': 'Person', name: post.data.supervisor, worksFor: { '@type': 'Organization', name: '株式会社LAYR', url: 'https://layr.co.jp/' } }
+    : { '@type': 'Organization', name: '株式会社LAYR', url: 'https://layr.co.jp/' },
   publisher: {
     '@type': 'Organization',
     name: '株式会社LAYR',
@@ -77,8 +90,22 @@ const breadcrumbJsonLd = {
     { '@type': 'ListItem', position: 3, name: post.data.title },
   ],
 };
+// FAQ（frontmatterのfaq）→ FAQPage構造化データ（LLMO対応・品質ゲート項目8）
+const faq = post.data.faq ?? [];
+const faqJsonLd = faq.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: faq.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    }
+  : null;
+const jsonLdAll = faqJsonLd ? [articleJsonLd, breadcrumbJsonLd, faqJsonLd] : [articleJsonLd, breadcrumbJsonLd];
 ---
-<Base title={title} description={post.data.description} ogType="article" ogImage={post.data.image || '/ogp-blog.png'} jsonLd={[articleJsonLd, breadcrumbJsonLd]}>
+<Base title={title} description={post.data.description} ogType="article" ogImage={post.data.image || '/ogp-blog.png'} jsonLd={jsonLdAll}>
   <div class="wp-wrap container">
     <nav class="wp-bc" aria-label="パンくず">
       <a href="/">ホーム</a><span>›</span><a href="/media/">コラム</a><span>›</span><em>{post.data.title}</em>
@@ -91,8 +118,10 @@ const breadcrumbJsonLd = {
           <div class="wp-meta">
             <span class="wp-cat">{post.data.category}</span>
             <time datetime={iso(post.data.date)}>{fmt(post.data.date)} 公開</time>
+            {post.data.updated && <time datetime={iso(post.data.updated)}>{fmt(post.data.updated)} 更新</time>}
           </div>
           <h1>{post.data.title}</h1>
+          {post.data.supervisor && <p class="wp-author">執筆・監修：{post.data.supervisor}</p>}
           <div class="wp-hero" aria-hidden="true"><span set:html={thumbOf(post.data.category)} /></div>
         </header>
 
@@ -110,6 +139,20 @@ const breadcrumbJsonLd = {
         <div class="wp-body" id="wpBody">
           <Content />
         </div>
+
+        {faq.length > 0 && (
+          <section class="wp-faq" id="faq">
+            <h2 class="wp-faq-t">よくある質問</h2>
+            <div class="wp-faq-list">
+              {faq.map((f) => (
+                <details class="wp-faq-item">
+                  <summary>{f.q}</summary>
+                  <p>{f.a}</p>
+                </details>
+              ))}
+            </div>
+          </section>
+        )}
 
         <div class="wp-share" aria-label="この記事をシェア">
           <span class="wp-share-l">SHARE</span>
@@ -191,6 +234,12 @@ const breadcrumbJsonLd = {
       else if (/^[✅☑]/.test(t)) bq.classList.add('is-check');
       else bq.classList.add('is-point');
     });
+    // CTAクリック計測（GA4: cta_click）。記事KPI「CTA反応率」の分子になる
+    document.querySelectorAll('.wp-cta a, .wp-side-box.is-cta a').forEach(function (a) {
+      a.addEventListener('click', function () {
+        if (typeof gtag === 'function') gtag('event', 'cta_click', { destination: a.getAttribute('href') || '', article: location.pathname });
+      });
+    });
     // リンクコピー
     document.querySelector('.wp-share-b.is-copy')?.addEventListener('click', async (e) => {
       const btn = e.currentTarget;
@@ -217,6 +266,7 @@ const breadcrumbJsonLd = {
   .wp-cat{background:var(--green-dark);color:#fff;font-size:11.5px;font-weight:700;border-radius:999px;padding:5px 16px}
   .wp-meta time{font-family:var(--font-en);font-weight:700;font-size:12.5px;color:var(--muted)}
   .wp-head h1{font-size:clamp(23px,3.4vw,32px);font-weight:700;line-height:1.6;letter-spacing:-.01em;color:var(--black);margin-bottom:22px}
+  .wp-author{font-size:12.5px;color:var(--muted);font-weight:500;margin:-12px 0 20px}
   .wp-hero{aspect-ratio:21/9;background:linear-gradient(135deg,#EAF6F1 0%,#F6FAF9 55%,#DFF1E9 100%);border-radius:16px;display:grid;place-items:center;margin-bottom:28px}
   .wp-hero span{width:32%;max-width:220px;display:block}
   .wp-hero span :global(svg){width:100%;height:auto}
@@ -286,6 +336,17 @@ const breadcrumbJsonLd = {
   .wp-cta .row{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:14px}
   .wp-cta .s{font-size:13px}
   .wp-cta .s a{color:var(--green-dark);font-weight:700}
+  /* FAQ（frontmatter faq → アコーディオン表示） */
+  .wp-faq{margin-top:44px}
+  .wp-faq-t{font-size:19px;font-weight:700;color:var(--black);margin-bottom:16px;display:flex;align-items:center;gap:10px}
+  .wp-faq-t::before{content:"";width:5px;height:19px;background:var(--green);border-radius:2px}
+  .wp-faq-item{background:#fff;border:1.5px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+  .wp-faq-item summary{cursor:pointer;font-weight:700;font-size:14.5px;line-height:1.8;padding:15px 44px 15px 20px;list-style:none;position:relative;color:var(--black)}
+  .wp-faq-item summary::-webkit-details-marker{display:none}
+  .wp-faq-item summary::before{content:"Q.";font-family:var(--font-en);font-weight:700;color:var(--green-dark);margin-right:8px}
+  .wp-faq-item summary::after{content:"＋";position:absolute;right:16px;top:14px;color:var(--green);font-size:16px;font-weight:700}
+  .wp-faq-item[open] summary::after{content:"−"}
+  .wp-faq-item p{font-size:13.5px;line-height:2;padding:0 20px 16px;color:#1B2A2E;margin:0}
   .wp-related{margin-top:52px}
   .wp-related-t{font-size:19px;font-weight:700;color:var(--black);margin-bottom:18px;display:flex;align-items:center;gap:10px}
   .wp-related-t::before{content:"";width:5px;height:19px;background:var(--green);border-radius:2px}
