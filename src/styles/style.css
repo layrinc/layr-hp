@@ -523,12 +523,14 @@ mark.mk-y{background:linear-gradient(transparent 58%, var(--mark-y) 0);color:inh
   color:#fff;padding:clamp(30px,4vw,46px) 0;
 }
 /* 濃色帯の上の副ボタン。緑ボタンは背景に沈むため使わない */
-.btn-ghost-w{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.7)}
-.btn-ghost-w:hover{background:rgba(255,255,255,.14);color:#fff}
+.btn-ghost-w{background:rgba(255,255,255,.14);color:#fff;border:1.5px solid #fff}
+.btn-ghost-w:hover{background:rgba(255,255,255,.26);color:#fff}
 .cta-band-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
 .cta-band h2{font-size:calc(clamp(20px,2.6vw,29px) * var(--fs,1));font-weight:700;line-height:1.55}
 .cta-band h2 span{
-  background:rgba(255,255,255,.22);border-radius:var(--radius);padding:2px 8px;
+  /* 緑地に白の半透明面だと沈むため、面ではなく下線で強調する */
+  background:linear-gradient(transparent 62%, rgba(255,255,255,.85) 62%);
+  border-radius:0;padding:0 2px;color:#fff;
 }
 .cta-band p{margin-top:10px;font-size:calc(14.5px * var(--fs,1));opacity:.95;line-height:1.85}
 .cta-band-btns{display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0}

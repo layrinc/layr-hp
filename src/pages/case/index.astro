@@ -200,8 +200,8 @@ const jsonLd = [
   /* 濃緑帯の上。主CTAは白ベタ、副CTAは白枠で階層をつける（緑ボタンは背景に沈むため使わない） */
   .cs-btn-w{background:#fff;color:var(--green-dark);box-shadow:0 8px 22px rgba(0,0,0,.16)}
   .cs-btn-w:hover{background:#fff;color:var(--green-dark);opacity:.92}
-  .cs-btn-ghost{background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,.7)}
-  .cs-btn-ghost:hover{background:rgba(255,255,255,.14);color:#fff}
+  .cs-btn-ghost{background:rgba(255,255,255,.14);color:#fff;border:1.5px solid #fff}
+  .cs-btn-ghost:hover{background:rgba(255,255,255,.26);color:#fff}
   @media (max-width: 900px){.cs-grid{grid-template-columns:1fr 1fr}}
   @media (max-width: 600px){.cs-grid{grid-template-columns:1fr}}
 
@@ -244,7 +244,12 @@ const jsonLd = [
   .iv-iso :global(svg){display:block;width:100%;height:auto}
   .iv-sample-t{font-size:11.5px;font-weight:700;color:var(--green-dark);letter-spacing:var(--track-label);margin-bottom:6px}
   .iv-sample{font-size:13px;line-height:1.95;color:var(--muted);margin:0 0 16px}
-  .iv-cta{width:100%}
+  .iv-cta{
+    width:100%;
+    background:var(--green-dark);color:#fff;
+    box-shadow:0 8px 20px color-mix(in srgb, var(--green-dark) 26%, transparent);
+  }
+  .iv-cta:hover{background:var(--green-ink);color:#fff}
   .iv-note{font-size:11.5px;line-height:1.85;color:var(--muted);margin:12px 0 0}
 
   @media (max-width:900px){
