@@ -246,10 +246,11 @@ const jsonLd = [
   .iv-sample{font-size:13px;line-height:1.95;color:var(--muted);margin:0 0 16px}
   .iv-cta{
     width:100%;
-    background:var(--green-dark);color:#fff;
-    box-shadow:0 8px 20px color-mix(in srgb, var(--green-dark) 26%, transparent);
+    /* 画面全体が緑系のため、CTAだけ資料の推奨色（オレンジ）で浮かせる */
+    background:#E9A32F;color:#fff;
+    box-shadow:0 8px 20px color-mix(in srgb, #E9A32F 32%, transparent);
   }
-  .iv-cta:hover{background:var(--green-ink);color:#fff}
+  .iv-cta:hover{background:color-mix(in srgb, #E9A32F 82%, #7A5510);color:#fff}
   .iv-note{font-size:11.5px;line-height:1.85;color:var(--muted);margin:12px 0 0}
 
   @media (max-width:900px){

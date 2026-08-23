@@ -529,7 +529,7 @@ mark.mk-y{background:linear-gradient(transparent 58%, var(--mark-y) 0);color:inh
 .cta-band h2{font-size:calc(clamp(20px,2.6vw,29px) * var(--fs,1));font-weight:700;line-height:1.55}
 .cta-band h2 span{
   /* 緑地に白の半透明面だと沈むため、面ではなく下線で強調する */
-  background:linear-gradient(transparent 62%, rgba(255,255,255,.85) 62%);
+  background:linear-gradient(transparent 62%, #F6CC01 62%);
   border-radius:0;padding:0 2px;color:#fff;
 }
 .cta-band p{margin-top:10px;font-size:calc(14.5px * var(--fs,1));opacity:.95;line-height:1.85}
@@ -2675,7 +2675,26 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   font-size:calc(11.5px * var(--fs,1));font-weight:700;color:var(--green-dark);
   background:var(--tint);border-radius:var(--r-pill);padding:4px 12px;
 }
-@media (max-width:720px){ .mb-grid{grid-template-columns:1fr;max-width:460px} }
+/* スマホはカードを約半分のサイズにし、横スライド（スナップ）で見せる。PCは2列グリッドのまま */
+@media (max-width:720px){
+  .mb-grid{
+    display:flex;max-width:none;gap:14px;
+    overflow-x:auto;scroll-snap-type:x mandatory;
+    margin-inline:calc(var(--gutter) * -1);
+    padding-inline:var(--gutter);padding-bottom:6px;
+    scrollbar-width:none;
+  }
+  .mb-grid::-webkit-scrollbar{display:none}
+  .mb-card{flex:0 0 58%;scroll-snap-align:start}
+  .mb-body{padding:14px 14px 16px;gap:6px}
+  .mb-name{font-size:calc(16px * var(--fs,1))}
+  .mb-name small{font-size:calc(10.5px * var(--fs,1));margin-top:2px}
+  .mb-role{font-size:calc(11px * var(--fs,1));gap:7px}
+  .mb-role span{font-size:calc(9.5px * var(--fs,1));padding:2px 9px}
+  .mb-catch{font-size:calc(12px * var(--fs,1));line-height:1.7}
+  .mb-text{font-size:calc(11.5px * var(--fs,1));line-height:1.8}
+  .mb-tags span{font-size:calc(10px * var(--fs,1));padding:3px 10px}
+}
 
 /* ===== 自社メディア（発信チャネル一覧） ===== */
 .ch-sec{padding:var(--sec-pad) 0;background:var(--tint)}
