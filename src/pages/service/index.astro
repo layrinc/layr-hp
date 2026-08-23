@@ -112,11 +112,10 @@ const jsonLd = [
   <section class="sv-guide">
     <div class="container">
       <p class="sv-guide-t">どのサービスが合うか迷ったら</p>
-      <p class="sv-guide-s">30秒の料金シミュレーションで目安を確認するか、無料相談（オンライン30分）でお気軽にご相談ください。</p>
+      <p class="sv-guide-s">無料相談（オンライン30分）で、現状のお困りごとからお気軽にご相談ください。</p>
       <div class="sv-guide-cta">
-        <a class="btn btn-green btn-lg" href="/service/line/#sim">30秒 料金シミュレーション</a>
-        <a class="btn btn-black btn-lg" href="/contact/">無料相談に申し込む</a>
-        <a class="btn btn-ghost btn-lg" href="/document/">資料をダウンロード</a>
+        <a class="btn sv-btn-consult btn-lg" href="/contact/">無料相談に申し込む</a>
+        <a class="btn sv-btn-doc btn-lg" href="/document/">資料をダウンロード</a>
       </div>
     </div>
   </section>
@@ -167,7 +166,11 @@ const jsonLd = [
   .sv-guide-t{font-size:clamp(20px,3vw,27px);font-weight:700;margin-bottom:10px}
   .sv-guide-s{font-size:14px;opacity:.88;line-height:1.9;max-width:36em;margin:0 auto 28px}
   .sv-guide-cta{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-  .sv-guide .btn-green{background:#fff;color:var(--green-dark)}
+  /* 濃緑帯の上。主CTA=オレンジ（推奨の役割色）、副CTA=黒で、どちらも緑に沈まない */
+  .sv-btn-consult{background:#E9A32F;color:#fff;box-shadow:0 8px 20px color-mix(in srgb, #E9A32F 32%, transparent)}
+  .sv-btn-consult:hover{background:color-mix(in srgb, #E9A32F 82%, #7A5510);color:#fff}
+  .sv-btn-doc{background:var(--black);color:#fff}
+  .sv-btn-doc:hover{background:color-mix(in srgb, var(--black) 80%, #fff);color:#fff}
   .sv-guide .btn-black{background:var(--green);color:#fff}
   .sv-guide .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.5)}
   @media (max-width: 900px){
