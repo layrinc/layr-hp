@@ -90,11 +90,8 @@ const consult = settings.line_url?.trim()
   : `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
 const contact = `mailto:${settings.email}?subject=${encodeURIComponent('お問い合わせ')}`;
 const taglineLines = settings.tagline.split('\n');
-// favicon はCSS変数を使えないので、テーマ色から組み立てて必ずロゴと同じ緑にする。
-// （ここをハードコードすると、ヘッダーロゴとCTAで色相の違う緑が並ぶ事故になる）
-const faviconAccent = encodeURIComponent(theme.accent);
-const faviconBase = encodeURIComponent(theme.base_black);
-const favicon = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='white'/%3E%3Crect width='32' height='32' rx='7' fill='none' stroke='%23E4EAEA' stroke-width='1'/%3E%3Ctext x='16.2' y='19.9' text-anchor='middle' font-family='Helvetica Neue,Helvetica,Arial,sans-serif' font-weight='700' font-size='10' letter-spacing='.6' fill='${faviconBase}'%3ELAYR%3C/text%3E%3C/svg%3E`;
+// favicon は正式ロゴ画像を使う。SVG非対応の環境向けにPNGも併記する。
+const favicon = '/favicon-96.png';
 ---
 <!doctype html>
 <html lang="ja" class="no-js">

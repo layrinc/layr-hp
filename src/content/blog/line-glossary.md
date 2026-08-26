@@ -21,7 +21,7 @@ supervisor: "河出壱貫（株式会社LAYR 代表取締役）"
 | [LINE広告・友だち獲得](/media/line-glossary-ads/) | 25語 | LINE広告の言葉が分からないとき |
 | [Web広告（Meta・Google）](/media/line-glossary-web-ads/) | 25語 | Web広告（Metaの言葉が分からないとき |
 | [LP・CVR改善](/media/line-glossary-lp-cro/) | 25語 | LPの言葉が分からないとき |
-| [マーケ一般・AI活用](/media/line-glossary-ai/) | 25語 | マーケ一般の言葉が分からないとき |
+| [マーケティング用語（基礎）](/media/line-glossary-ai/) | 50語 | マーケ全般の言葉が分からないとき |
 
 :::point{title="使い方"}
 分からない用語に出会ったら、近いカテゴリのページを開いてページ内検索（Ctrl+F / ⌘F）。用語の意味だけでなく「実務でのポイント」「よくある誤解」まで書いてあるので、そのまま打ち合わせや設定作業に使えます。
@@ -57,6 +57,6 @@ supervisor: "河出壱貫（株式会社LAYR 代表取締役）"
 
 25語収録。
 
-### [マーケ一般・AI活用](/media/line-glossary-ai/)
+### [マーケティング用語（基礎）](/media/line-glossary-ai/)
 
-25語収録。
+50語収録。集客からリスト獲得、販売までの流れに沿って並べています。
