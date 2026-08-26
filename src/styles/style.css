@@ -2417,6 +2417,8 @@ section + .blk-sec:has(> .container > .sec-head){padding-top:var(--sec-pad)}
    ============================================================ */
 .gnav-label,.gnav-cta,.gnav-backdrop{display:none}
 html.nav-open{overflow:hidden}
+/* 記事の目次ボトムシートを開いている間は背面をスクロールさせない */
+html.toc-open{overflow:hidden}
 
 @media (max-width:980px){
   /* 旧・上から降りる折りたたみを廃止 → 右からのドロワーへ */

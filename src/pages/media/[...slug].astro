@@ -226,6 +226,77 @@ const jsonLdAll = faqJsonLd ? [articleJsonLd, breadcrumbJsonLd, faqJsonLd] : [ar
     </div>
   </div>
 
+  {toc.length >= 2 && (
+    <>
+      {/* スマホ用: 右下の目次ボタンと、そこから開くボトムシート */}
+      <button class="toc-fab" id="tocFab" type="button" aria-expanded="false" aria-controls="tocSheet">
+        <span class="toc-fab-ico" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="toc-fab-txt">目次</span>
+      </button>
+      <div class="toc-back" id="tocBack" hidden></div>
+      <div class="toc-sheet" id="tocSheet" role="dialog" aria-modal="true" aria-labelledby="tocSheetT" hidden>
+        <div class="toc-sheet-head">
+          <p class="toc-sheet-t" id="tocSheetT">目次</p>
+          <button class="toc-sheet-x" id="tocClose" type="button" aria-label="目次を閉じる">✕</button>
+        </div>
+        <nav class="toc-sheet-body" aria-label="目次">
+          <ol>
+            {toc.map((h) => (
+              <li class={h.depth === 3 ? 'is-sub' : ''}><a href={`#${h.slug}`}>{h.text}</a></li>
+            ))}
+          </ol>
+        </nav>
+      </div>
+    </>
+  )}
+
+  <script is:inline>
+    // スマホ用の目次ボトムシート。開閉・背面スクロール固定・Escで閉じる。
+    (function () {
+      var fab = document.getElementById('tocFab');
+      var sheet = document.getElementById('tocSheet');
+      var back = document.getElementById('tocBack');
+      var close = document.getElementById('tocClose');
+      if (!fab || !sheet || !back) return;
+
+      function open() {
+        sheet.hidden = false;
+        back.hidden = false;
+        // hidden解除の直後にクラスを付けてトランジションを効かせる
+        requestAnimationFrame(function () {
+          sheet.classList.add('is-open');
+          back.classList.add('is-open');
+        });
+        fab.setAttribute('aria-expanded', 'true');
+        document.documentElement.classList.add('toc-open');
+        close && close.focus();
+      }
+      function shut() {
+        sheet.classList.remove('is-open');
+        back.classList.remove('is-open');
+        fab.setAttribute('aria-expanded', 'false');
+        document.documentElement.classList.remove('toc-open');
+        window.setTimeout(function () {
+          sheet.hidden = true;
+          back.hidden = true;
+        }, 240);
+      }
+
+      fab.addEventListener('click', function () {
+        fab.getAttribute('aria-expanded') === 'true' ? shut() : open();
+      });
+      back.addEventListener('click', shut);
+      close && close.addEventListener('click', shut);
+      // 見出しへ飛んだらシートは閉じる
+      sheet.addEventListener('click', function (e) {
+        if (e.target.closest('a')) shut();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && fab.getAttribute('aria-expanded') === 'true') shut();
+      });
+    })();
+  </script>
+
   <script is:inline>
     // 引用ボックスの種別付け（先頭文字で判定: ⚠→注意 / ✅→チェック / それ以外→ポイント）
     document.querySelectorAll('#wpBody blockquote').forEach(function (bq) {
@@ -391,4 +462,76 @@ const jsonLdAll = faqJsonLd ? [articleJsonLd, breadcrumbJsonLd, faqJsonLd] : [ar
     .wp-side-box.is-sticky-toc{display:none}
     .wp-rel-grid{grid-template-columns:1fr}
   }
+
+  /* ============================================================
+     スマホ用の目次ボタン（右下固定）とボトムシート
+     PCはサイドバーに追従目次があるため、980px以下でのみ出す。
+     ============================================================ */
+  .toc-fab,.toc-back,.toc-sheet{display:none}
+
+  @media (max-width: 980px){
+    .toc-fab{
+      display:inline-flex;align-items:center;gap:9px;
+      position:fixed;right:16px;bottom:16px;z-index:95;
+      padding:13px 20px 13px 17px;border:0;border-radius:999px;cursor:pointer;
+      background:var(--green-dark);color:#fff;
+      font-family:var(--font-jp);font-size:14px;font-weight:700;letter-spacing:.04em;
+      box-shadow:0 6px 20px rgba(0,0,0,.22);
+      transition:transform .18s cubic-bezier(.4,0,.2,1), opacity .18s cubic-bezier(.4,0,.2,1);
+    }
+    .toc-fab:active{transform:scale(.96)}
+    .toc-fab-ico{display:grid;gap:3.5px;width:16px}
+    .toc-fab-ico span{display:block;height:2px;border-radius:1px;background:#fff}
+    .toc-fab-ico span:nth-child(2){width:72%}
+    /* シートを開いている間はボタンを隠す（シート側に閉じるボタンがあるため） */
+    .toc-fab[aria-expanded="true"]{opacity:0;pointer-events:none}
+
+    .toc-back{
+      display:block;position:fixed;inset:0;z-index:96;
+      background:rgba(16,22,22,.5);opacity:0;transition:opacity .22s cubic-bezier(.4,0,.2,1);
+    }
+    .toc-back.is-open{opacity:1}
+
+    .toc-sheet{
+      display:flex;flex-direction:column;
+      position:fixed;left:0;right:0;bottom:0;z-index:97;
+      max-height:74vh;background:#fff;
+      border-radius:18px 18px 0 0;box-shadow:0 -8px 30px rgba(0,0,0,.2);
+      transform:translateY(100%);transition:transform .24s cubic-bezier(.4,0,.2,1);
+    }
+    .toc-sheet.is-open{transform:translateY(0)}
+    .toc-sheet-head{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      padding:16px 18px 12px;border-bottom:1px solid var(--line);flex-shrink:0;
+    }
+    .toc-sheet-t{
+      display:flex;align-items:center;gap:8px;
+      font-size:15px;font-weight:700;color:var(--black);margin:0;
+    }
+    .toc-sheet-t::before{content:"";width:4px;height:16px;background:var(--green);border-radius:2px}
+    .toc-sheet-x{
+      width:34px;height:34px;flex-shrink:0;border:1px solid var(--line);border-radius:50%;
+      background:#fff;color:var(--muted);font-size:14px;line-height:1;cursor:pointer;
+    }
+    .toc-sheet-body{
+      overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;
+      padding:8px 18px calc(18px + env(safe-area-inset-bottom));
+    }
+    .toc-sheet-body ol{list-style:none;margin:0;padding:0;counter-reset:toc}
+    .toc-sheet-body li{counter-increment:toc;border-bottom:1px solid var(--line-soft)}
+    .toc-sheet-body li:last-child{border-bottom:0}
+    .toc-sheet-body a{
+      display:flex;gap:10px;align-items:baseline;
+      padding:13px 2px;color:var(--black);text-decoration:none;
+      font-size:14px;font-weight:700;line-height:1.6;
+    }
+    .toc-sheet-body a::before{
+      content:counter(toc,decimal-leading-zero);flex-shrink:0;
+      font-family:var(--font-en);font-size:11.5px;font-weight:700;color:var(--green);
+    }
+    .toc-sheet-body li.is-sub a{padding-left:18px;font-weight:500;font-size:13px;color:var(--text)}
+    .toc-sheet-body li.is-sub a::before{content:"—";color:var(--green)}
+  }
+
+  @media print{ .toc-fab,.toc-back,.toc-sheet{display:none} }
 </style>
