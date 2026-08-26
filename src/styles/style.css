@@ -247,9 +247,8 @@ mark.mk-y{background:linear-gradient(transparent 58%, var(--mark-y) 0);color:inh
 }
 .brand{display:flex;align-items:center;gap:10px;color:var(--green-ink);flex-shrink:0}
 .brand svg{flex-shrink:0}
-.brand-name{
-  display:block;font-family:var(--font-en);font-weight:700;
-  font-size:calc(23px * var(--fs,1));letter-spacing:var(--track-label);color:var(--black);line-height:1.1;
+.brand-logo{
+  display:block;width:auto;height:19px;
 }
 .brand-sub{
   display:block;font-size:calc(10.5px * var(--fs,1));letter-spacing:var(--track-label);
@@ -900,7 +899,6 @@ mark.mk-y{background:linear-gradient(transparent 58%, var(--mark-y) 0);color:inh
   display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:clamp(24px,3vw,48px);
 }
 .footer .brand{color:var(--green-on-dark)}
-.footer .brand-name{color:#fff}
 .footer-tagline{margin-top:16px;font-size:calc(13px * var(--fs,1));line-height:1.95;opacity:.75}
 .footer h4{
   font-family:var(--font-en);font-size:calc(12.5px * var(--fs,1));font-weight:700;
@@ -1489,7 +1487,7 @@ section + .blk-sec:has(> .container > .sec-head){padding-top:var(--sec-pad)}
   :root{--sec-pad:clamp(40px,10vw,56px);--sec-pad-s:28px}
   .header-inner{height:62px}
   .gnav{top:62px}
-  .brand-name{font-size:calc(20px * var(--fs,1))}
+  .brand-logo{height:17px}
 
   .hero2-points{grid-template-columns:1fr}
   .hero2-actions .btn,.hero-actions .btn,.thanks-actions .btn{width:100%}
@@ -2487,11 +2485,9 @@ html.nav-open{overflow:hidden}
 }
 
 /* ============================================================
-   v14: ロゴをワードマーク「LAYR」に刷新（アイコン廃止・字間広め）
+   v14: ロゴをワードマーク「LAYR」に刷新 / v15: 正式ロゴ画像へ差し替え
    ============================================================ */
 .brand{gap:0}
-.brand-name{font-weight:500;letter-spacing:var(--track-brand);font-size:calc(22px * var(--fs,1));text-indent:.02em}
-.footer .brand-name{font-weight:500;letter-spacing:var(--track-brand)}
 .brand-sub{letter-spacing:var(--track-wide);margin-top:2px}
 
 /* v13補: ドロワーCTAの矢印重複とメールリンクの矢印を解消・黒ボタンの視認性 */
