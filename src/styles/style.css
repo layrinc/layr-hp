@@ -2673,24 +2673,41 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   font-size:calc(11.5px * var(--fs,1));font-weight:700;color:var(--green-dark);
   background:var(--tint);border-radius:var(--r-pill);padding:4px 12px;
 }
-/* スマホはカードを約半分のサイズにし、横スライド（スナップ）で見せる。PCは2列グリッドのまま */
+/* スマホはカードを横スライド（スナップ）で見せる。
+   写真＋肩書・氏名を上段の横並びにして、縦に長い「縮小版PCカード」にならないようにする。
+   .mb-body を display:contents にして、中の要素を .mb-card のグリッドへ直接配置する。 */
 @media (max-width:720px){
+  .mb-lead{font-size:calc(13.5px * var(--fs,1));margin-bottom:22px;text-align:left}
   .mb-grid{
-    display:flex;max-width:none;gap:14px;
+    display:flex;max-width:none;gap:12px;
     overflow-x:auto;scroll-snap-type:x mandatory;
     margin-inline:calc(var(--gutter) * -1);
-    padding-inline:var(--gutter);padding-bottom:6px;
+    padding-inline:var(--gutter);padding-bottom:4px;
     scrollbar-width:none;
   }
   .mb-grid::-webkit-scrollbar{display:none}
-  .mb-card{flex:0 0 58%;scroll-snap-align:start}
-  .mb-body{padding:14px 14px 16px;gap:6px}
-  .mb-name{font-size:calc(16px * var(--fs,1))}
-  .mb-name small{font-size:calc(10.5px * var(--fs,1));margin-top:2px}
-  .mb-role{font-size:calc(11px * var(--fs,1));gap:7px}
+
+  .mb-card{
+    flex:0 0 88%;scroll-snap-align:start;
+    display:grid;grid-template-columns:84px minmax(0,1fr);
+    align-content:start;gap:0 14px;padding:16px;
+  }
+  .mb-body{display:contents}
+
+  /* 肩書はカード幅いっぱいの1行に置く。写真の横に入れると「マーケティング担当」等が
+     途中で折れて崩れるため、写真＋氏名はその下の行で横並びにする。 */
+  .mb-role{grid-column:1 / -1;grid-row:1;font-size:calc(11.5px * var(--fs,1));gap:8px;margin-bottom:13px}
   .mb-role span{font-size:calc(9.5px * var(--fs,1));padding:2px 9px}
-  .mb-catch{font-size:calc(12px * var(--fs,1));line-height:1.7}
-  .mb-text{font-size:calc(11.5px * var(--fs,1));line-height:1.8}
+
+  .mb-photo{grid-column:1;grid-row:2;width:84px;height:84px;border-radius:12px;overflow:hidden}
+  .mb-initial{font-size:34px}
+
+  .mb-name{grid-column:2;grid-row:2;align-self:center;font-size:calc(17px * var(--fs,1))}
+  .mb-name small{font-size:calc(10.5px * var(--fs,1));margin-top:3px}
+
+  .mb-catch{grid-column:1 / -1;grid-row:3;font-size:calc(12.5px * var(--fs,1));line-height:1.75;margin-top:15px}
+  .mb-text{grid-column:1 / -1;grid-row:4;font-size:calc(12px * var(--fs,1));line-height:1.9;margin-top:8px}
+  .mb-tags{grid-column:1 / -1;grid-row:5;gap:6px;margin-top:13px}
   .mb-tags span{font-size:calc(10px * var(--fs,1));padding:3px 10px}
 }
 
