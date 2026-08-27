@@ -2688,8 +2688,8 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   .mb-grid::-webkit-scrollbar{display:none}
 
   .mb-card{
-    flex:0 0 88%;scroll-snap-align:start;
-    display:grid;grid-template-columns:84px minmax(0,1fr);
+    flex:0 0 90%;scroll-snap-align:start;
+    display:grid;grid-template-columns:112px minmax(0,1fr);
     align-content:start;gap:0 14px;padding:16px;
   }
   .mb-body{display:contents}
@@ -2699,8 +2699,8 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   .mb-role{grid-column:1 / -1;grid-row:1;font-size:calc(11.5px * var(--fs,1));gap:8px;margin-bottom:13px}
   .mb-role span{font-size:calc(9.5px * var(--fs,1));padding:2px 9px}
 
-  .mb-photo{grid-column:1;grid-row:2;width:84px;height:84px;border-radius:12px;overflow:hidden}
-  .mb-initial{font-size:34px}
+  .mb-photo{grid-column:1;grid-row:2;width:112px;height:112px;border-radius:14px;overflow:hidden}
+  .mb-initial{font-size:44px}
 
   .mb-name{grid-column:2;grid-row:2;align-self:center;font-size:calc(17px * var(--fs,1))}
   .mb-name small{font-size:calc(10.5px * var(--fs,1));margin-top:3px}
