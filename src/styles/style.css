@@ -2683,6 +2683,8 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
     overflow-x:auto;scroll-snap-type:x mandatory;
     margin-inline:calc(var(--gutter) * -1);
     padding-inline:var(--gutter);padding-bottom:4px;
+    /* これが無いとスナップが最初のカードを画面端まで引き寄せ、左の余白が消える */
+    scroll-padding-inline:var(--gutter);
     scrollbar-width:none;
   }
   .mb-grid::-webkit-scrollbar{display:none}

@@ -468,6 +468,9 @@ const jsonLdAll = faqJsonLd ? [articleJsonLd, breadcrumbJsonLd, faqJsonLd] : [ar
      PCはサイドバーに追従目次があるため、980px以下でのみ出す。
      ============================================================ */
   .toc-fab,.toc-back,.toc-sheet{display:none}
+  /* hidden属性を display 指定より優先させる（これが無いと透明なバックドロップが
+     常に全画面を覆い、目次ボタンも本文中のリンクもタップできなくなる） */
+  .toc-back[hidden],.toc-sheet[hidden]{display:none !important;pointer-events:none}
 
   @media (max-width: 980px){
     .toc-fab{
