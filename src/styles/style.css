@@ -521,18 +521,23 @@ mark.mk-y{background:linear-gradient(transparent 58%, var(--mark-y) 0);color:inh
   background:linear-gradient(100deg, var(--green-dark) 0%, var(--green) 100%);
   color:#fff;padding:clamp(30px,4vw,46px) 0;
 }
+/* 濃色帯の上の主ボタン。緑の帯に緑系ボタンは沈むため、オレンジで浮かせる */
+.btn-orange{background:#E9A32F;color:#fff;box-shadow:0 8px 20px color-mix(in srgb, #E9A32F 32%, transparent)}
+.btn-orange:hover{background:color-mix(in srgb, #E9A32F 82%, #7A5510);color:#fff}
 /* 濃色帯の上の副ボタン。緑ボタンは背景に沈むため使わない */
 .btn-ghost-w{background:rgba(255,255,255,.14);color:#fff;border:1.5px solid #fff}
 .btn-ghost-w:hover{background:rgba(255,255,255,.26);color:#fff}
-.cta-band-inner{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap}
-.cta-band h2{font-size:calc(clamp(20px,2.6vw,29px) * var(--fs,1));font-weight:700;line-height:1.55}
+.cta-band-inner{display:flex;align-items:center;justify-content:space-between;gap:clamp(24px,4vw,56px);flex-wrap:wrap}
+.cta-band h2{font-size:calc(clamp(21px,2.9vw,32px) * var(--fs,1));font-weight:700;line-height:1.55}
 .cta-band h2 span{
   /* 緑地に白の半透明面だと沈むため、面ではなく下線で強調する */
   background:linear-gradient(transparent 62%, #F6CC01 62%);
   border-radius:0;padding:0 2px;color:#fff;
 }
 .cta-band p{margin-top:10px;font-size:calc(14.5px * var(--fs,1));opacity:.95;line-height:1.85}
-.cta-band-btns{display:flex;gap:12px;flex-wrap:wrap;flex-shrink:0}
+.cta-band-btns{display:flex;flex-direction:column;gap:12px;flex-shrink:0;align-items:stretch;min-width:min(340px,100%)}
+.cta-band-btns .btn{padding:16px 30px}
+@media (max-width:640px){ .cta-band-btns{width:100%;min-width:0} }
 .cta-band .btn-green{background:#fff;color:var(--green-ink);box-shadow:0 6px 18px rgba(0,0,0,.18)}
 .cta-band .btn-green:hover{background:var(--tint);color:var(--green-ink)}
 .cta-band .btn-white{background:transparent;color:#fff;border-color:rgba(255,255,255,.7);box-shadow:none}

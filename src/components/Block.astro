@@ -236,9 +236,10 @@ const serviceIcons = [
       </div>
       <div class="cta-band-btns">
         {/* href_primary / href_secondary が指定されていればそちらへ。未指定なら従来どおり相談・問い合わせ */}
-        <a class="btn btn-white" href={p.href_primary || consult}>{p.btn_primary}</a>
+        {/* 緑の帯の上: 主=オレンジ / 副=白ベタ（緑系・白枠は帯に沈むため使わない） */}
+        <a class="btn btn-orange" href={p.href_primary || consult}>{p.btn_primary}</a>
         {p.btn_secondary && (
-          <a class="btn btn-ghost-w" href={p.href_secondary || contact}>{p.btn_secondary}</a>
+          <a class="btn btn-green" href={p.href_secondary || contact}>{p.btn_secondary}</a>
         )}
       </div>
     </div>
