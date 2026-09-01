@@ -413,12 +413,11 @@ const serviceIcons = [
 
 {t === 'mvv' && (
   <section id="mvv" class="mvv-sec">
-    <span class="mvv-stamp" aria-hidden="true">三方よし</span>
     <div class="container">
-      <div class="mvv-head reveal">
-        <p class="mvv-label"><span>理念</span>PHILOSOPHY</p>
-        <h2 class="mvv-mission">{p.mission}</h2>
-        <p class="mvv-lead">{p.lead}</p>
+      <div class="sec-head reveal"><p class="sec-en">PHILOSOPHY</p><h2 class="sec-jp">{p.mission}</h2></div>
+      <div class="mvv-top">
+        <div class="mvv-illust reveal" aria-hidden="true"><Fragment set:html={ILLUSTS.omi} /></div>
+        <p class="mvv-lead reveal">{p.lead}</p>
       </div>
       <div class="mvv-grid">
         {(p.items || []).map((it: any) => (

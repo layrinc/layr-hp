@@ -184,6 +184,18 @@ const favicon = '/favicon-96.png';
       <div class="brand">
         <img class="brand-logo" src="/logo-white.png" alt="LAYR" width="969" height="246" />
       </div>
+      {/* 近江商人のワンポイント（理念「三方よし」のモチーフ。単色線画） */}
+      <svg class="footer-omi" viewBox="0 0 480 340" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M120 158 Q 250 132 380 158M120 158 v22M380 158 v18" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+        <rect x="76" y="180" width="88" height="60" rx="17" stroke="currentColor" stroke-width="7"/>
+        <rect x="334" y="176" width="92" height="64" rx="17" stroke="currentColor" stroke-width="7"/>
+        <path d="M230 148 h40 l16 76 h-72 z" stroke="currentColor" stroke-width="7" stroke-linejoin="round"/>
+        <path d="M236 156 q-22 2 -34 0M264 156 q22 0 36 -2" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+        <path d="M196 106 Q 250 46 304 106 Z" stroke="currentColor" stroke-width="7" stroke-linejoin="round"/>
+        <path d="M188 106 h124" stroke="currentColor" stroke-width="7" stroke-linecap="round"/>
+        <path d="M229 106 h42 v12 a21 21 0 0 1 -42 0 z" stroke="currentColor" stroke-width="7" stroke-linejoin="round"/>
+        <path d="M240 224 l-14 50M262 224 l18 44M226 274 h-18M280 268 h18" stroke="currentColor" stroke-width="8" stroke-linecap="round"/>
+      </svg>
       <p class="footer-tagline" data-edit-ml="settings.tagline">{taglineLines.map((line, i) => <Fragment>{i > 0 && <br />}{line}</Fragment>)}</p>
       {/* SNS。settings.json にURLがある分だけ出す */}
       <ul class="footer-sns">

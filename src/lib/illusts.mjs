@@ -5,6 +5,40 @@
  * 本番(Block.astro)とプレビュー(admin/preview.astro)の両方から使う。
  */
 export const ILLUSTS = {
+  // 🏮 近江商人: 天秤棒にLINEの吹き出しを担いで歩く（三方よし・理念用）
+  omi: `<svg viewBox="0 0 480 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="天秤棒にLINEの吹き出しを担いで歩く近江商人のイラスト">
+    <path d="M60 308c50 6 110 6 170 0M300 312c40 5 80 5 120 0" stroke="var(--green-pale)" stroke-width="14" stroke-linecap="round"/>
+    <path d="M120 158 Q 250 132 380 158" stroke="var(--black)" stroke-width="7" stroke-linecap="round"/>
+    <path d="M120 158 v22" stroke="var(--black)" stroke-width="4" stroke-linecap="round"/>
+    <rect x="76" y="180" width="88" height="60" rx="17" fill="#fff" stroke="var(--black)" stroke-width="3.5"/>
+    <path d="M102 240 l9 14 11-14z" fill="#fff" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+    <rect x="91" y="197" width="56" height="7" rx="3.5" fill="var(--green)"/>
+    <rect x="91" y="212" width="40" height="7" rx="3.5" fill="var(--green-pale)"/>
+    <path d="M380 158 v18" stroke="var(--black)" stroke-width="4" stroke-linecap="round"/>
+    <rect x="334" y="176" width="92" height="64" rx="17" fill="var(--green)" stroke="var(--black)" stroke-width="3.5"/>
+    <path d="M362 240 l9 14 11-14z" fill="var(--green)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+    <rect x="350" y="193" width="58" height="7" rx="3.5" fill="#fff"/>
+    <rect x="350" y="208" width="42" height="7" rx="3.5" fill="#fff" opacity=".85"/>
+    <path d="M230 148 h40 l16 76 h-72 z" fill="#fff" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M230 148 l22 30 14-30" fill="none" stroke="var(--black)" stroke-width="3" stroke-linejoin="round"/>
+    <rect x="222" y="188" width="58" height="12" fill="var(--deep)" stroke="var(--black)" stroke-width="3"/>
+    <path d="M236 156 q-22 2 -34 0" stroke="var(--black)" stroke-width="6.5" stroke-linecap="round"/>
+    <path d="M264 156 q22 0 36 -2" stroke="var(--black)" stroke-width="6.5" stroke-linecap="round"/>
+    <circle cx="200" cy="155" r="6" fill="#fff" stroke="var(--black)" stroke-width="3"/>
+    <circle cx="302" cy="153" r="6" fill="#fff" stroke="var(--black)" stroke-width="3"/>
+    <path d="M196 106 Q 250 46 304 106 Z" fill="var(--green)" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+    <path d="M188 106 h124" stroke="var(--black)" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M229 106 h42 v12 a21 21 0 0 1 -42 0 z" fill="#fff" stroke="var(--black)" stroke-width="3.5" stroke-linejoin="round"/>
+    <circle cx="242" cy="115" r="2.6" fill="var(--black)"/>
+    <circle cx="258" cy="115" r="2.6" fill="var(--black)"/>
+    <path d="M245 126 q5 4 10 0" stroke="var(--black)" stroke-width="2.6" stroke-linecap="round"/>
+    <path d="M240 224 l-14 50" stroke="var(--black)" stroke-width="6.5" stroke-linecap="round"/>
+    <path d="M262 224 l18 44" stroke="var(--black)" stroke-width="6.5" stroke-linecap="round"/>
+    <path d="M226 274 h-18" stroke="var(--black)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M280 268 h18" stroke="var(--black)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M176 258 h-24M190 276 h-38" stroke="var(--green-pale)" stroke-width="6" stroke-linecap="round"/>
+  </svg>`,
+
   // 🚀 ロケット: 成長・立ち上げ
   rocket: `<svg viewBox="0 0 480 340" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="打ち上がるロケットのイラスト">
     <path d="M60 300c40 6 80 6 120 0M320 306c30 5 60 5 90 0" stroke="var(--green-pale)" stroke-width="14" stroke-linecap="round"/>
