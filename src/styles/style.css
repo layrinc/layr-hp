@@ -1560,6 +1560,12 @@ section + .blk-sec:has(> .container > .sec-head){padding-top:var(--sec-pad)}
   --wm-stroke:1.5px;          /* アウトライン英字の輪郭線 */
   --wm-opacity:.075;          /* アウトライン英字の濃さ */
   --cream:color-mix(in srgb, #F3E9CE 32%, var(--paper));
+  /* 理念（三方よし）セクション用の和トークン */
+  --sumi:#332F26;          /* 墨 */
+  --shu:#B23C22;           /* 弁柄朱 */
+  --wa-muted:#5C564A;      /* 和の補足文 */
+  --wa-label:#6E6858;      /* 和の英字ラベル */
+  --wa-line:#E5DEC9;       /* 生成り地の罫線 */
   --card-num:color-mix(in srgb, var(--green) 13%, var(--paper));
   --wave:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 60' preserveAspectRatio='none'%3E%3Cpath d='M0 36 C 210 4 420 4 640 27 C 860 50 1040 50 1240 27 C 1400 9 1520 11 1600 21' fill='none' stroke='%23000' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E");
 }
@@ -2643,6 +2649,85 @@ html.toc-open{overflow:hidden}
 a:focus-visible,button:focus-visible,input:focus-visible,
 select:focus-visible,textarea:focus-visible,summary:focus-visible{
   outline:2px solid var(--green-dark);outline-offset:3px;
+}
+
+/* ============================================================
+   理念（三方よし）— 近江商人×LINEマーケティング
+   生成りの和紙地に明朝・家紋風の丸・朱印。色はモードCの藍朱を借りず、
+   墨と朱のみを差し、緑はアクセントの丸1つに留めてサイトの拍を保つ。
+   ============================================================ */
+.mvv-sec{
+  position:relative;padding:var(--sec-pad) 0;overflow:hidden;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(51,47,38,.03) 0, transparent 42%),
+    var(--cream);
+}
+.mvv-label{
+  display:flex;align-items:center;justify-content:center;gap:12px;
+  font-family:var(--font-en);font-size:calc(12.5px * var(--fs,1));font-weight:700;
+  letter-spacing:var(--track-brand);color:var(--wa-label);margin-bottom:18px;
+}
+.mvv-label span{
+  font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+  font-size:calc(13px * var(--fs,1));letter-spacing:.5em;text-indent:.5em;
+  color:#fff;background:var(--shu);border-radius:2px;padding:6px 10px 6px 14px;
+  writing-mode:horizontal-tb;
+}
+.mvv-head{text-align:center;max-width:46em;margin:0 auto clamp(34px,4.4vw,52px)}
+.mvv-mission{
+  font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+  font-size:calc(clamp(26px,3.6vw,40px) * var(--fs,1));font-weight:600;
+  letter-spacing:.14em;color:var(--sumi);line-height:1.6;margin:0 0 18px;
+}
+.mvv-lead{font-size:calc(14.5px * var(--fs,1));line-height:2.1;color:var(--wa-muted);margin:0;text-align:left}
+.mvv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.4vw,28px);max-width:1040px;margin:0 auto}
+.mvv-card{
+  background:#fff;border:1px solid var(--wa-line);border-radius:var(--r-lg);
+  padding:clamp(24px,3vw,34px) clamp(20px,2.6vw,28px) clamp(26px,3vw,34px);
+  text-align:center;display:flex;flex-direction:column;gap:14px;
+}
+/* 家紋風の二重丸。中に一文字 */
+.mvv-crest{
+  width:84px;height:84px;margin:0 auto;border-radius:50%;
+  display:grid;place-items:center;position:relative;
+  border:2px solid var(--sumi);color:var(--sumi);
+  font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+  font-size:34px;font-weight:600;line-height:1;
+}
+.mvv-crest::before{content:"";position:absolute;inset:5px;border:1px solid currentColor;border-radius:50%;opacity:.55}
+.mvv-crest.is-accent{border-color:var(--green-dark);color:var(--green-dark)}
+.mvv-yoshi{
+  font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+  font-size:calc(20px * var(--fs,1));font-weight:600;letter-spacing:.12em;
+  color:var(--sumi);line-height:1.5;margin:0;
+}
+.mvv-yoshi small{
+  display:block;font-family:var(--font-jp);font-size:calc(12.5px * var(--fs,1));
+  font-weight:700;letter-spacing:var(--track-label);color:var(--shu);margin-top:8px;
+}
+.mvv-text{font-size:calc(13.5px * var(--fs,1));line-height:2.05;color:var(--text);margin:0;text-align:left}
+.mvv-note{
+  max-width:46em;margin:clamp(28px,3.6vw,40px) auto 0;text-align:center;
+  font-size:calc(13.5px * var(--fs,1));line-height:2.05;color:var(--wa-muted);
+}
+/* 縦書きの朱印 */
+.mvv-stamp{
+  position:absolute;top:clamp(28px,4vw,52px);right:clamp(14px,3.5vw,60px);
+  writing-mode:vertical-rl;
+  font-family:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+  font-size:calc(15px * var(--fs,1));font-weight:600;letter-spacing:.34em;
+  color:var(--shu);border:1.5px solid var(--shu);border-radius:4px;
+  padding:14px 7px;opacity:.85;pointer-events:none;
+}
+@media (max-width:860px){ .mvv-grid{grid-template-columns:1fr;max-width:520px} }
+@media (max-width:640px){
+  .mvv-stamp{position:static;writing-mode:horizontal-tb;display:table;margin:0 auto 18px;padding:7px 14px;letter-spacing:.3em;text-indent:.3em}
+  .mvv-head{margin-bottom:26px}
+  .mvv-card{gap:11px;padding:20px 18px 22px}
+  .mvv-crest{width:64px;height:64px;font-size:26px}
+  .mvv-crest::before{inset:4px}
+  .mvv-yoshi{font-size:calc(17.5px * var(--fs,1))}
+  .mvv-yoshi small{margin-top:5px}
 }
 
 /* ===== メンバー（顔出しで信頼を伝える） ===== */

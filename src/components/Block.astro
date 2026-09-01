@@ -411,6 +411,29 @@ const serviceIcons = [
   </section>
 )}
 
+{t === 'mvv' && (
+  <section id="mvv" class="mvv-sec">
+    <span class="mvv-stamp" aria-hidden="true">三方よし</span>
+    <div class="container">
+      <div class="mvv-head reveal">
+        <p class="mvv-label"><span>理念</span>PHILOSOPHY</p>
+        <h2 class="mvv-mission">{p.mission}</h2>
+        <p class="mvv-lead">{p.lead}</p>
+      </div>
+      <div class="mvv-grid">
+        {(p.items || []).map((it: any) => (
+          <article class="mvv-card reveal">
+            <span class={`mvv-crest${it.accent ? ' is-accent' : ''}`} aria-hidden="true">{it.kanji}</span>
+            <h3 class="mvv-yoshi">{it.title}<small>{it.sub}</small></h3>
+            <p class="mvv-text">{it.body}</p>
+          </article>
+        ))}
+      </div>
+      {p.note && <p class="mvv-note reveal">{p.note}</p>}
+    </div>
+  </section>
+)}
+
 {t === 'members' && (
   <section id="members" class="mb-sec">
     <div class="container">
