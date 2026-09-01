@@ -2652,13 +2652,9 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
    家紋風の丸で差す。和紙・明朝・朱は使わない。
    ============================================================ */
 .mvv-sec{padding:var(--sec-pad) 0;background:var(--tint)}
-.mvv-top{
-  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);
-  gap:clamp(24px,4vw,56px);align-items:center;
-  max-width:1040px;margin:0 auto clamp(30px,4vw,46px);
-}
-.mvv-illust :global(svg){display:block;width:100%;max-width:440px;height:auto;margin:0 auto}
-.mvv-lead{font-size:calc(14.5px * var(--fs,1));line-height:2.1;color:var(--text);margin:0}
+/* 見出し直下の小さな補足（近江商人の三方よしの説明） */
+.mvv-lead{max-width:44em;font-size:calc(13.5px * var(--fs,1));line-height:2.05;color:var(--muted)}
+.mvv-sec .sec-head{margin-bottom:clamp(28px,3.6vw,40px)}
 .mvv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(18px,2.4vw,28px);max-width:1040px;margin:0 auto}
 .mvv-card{
   background:#fff;border:1px solid var(--line);border-radius:var(--r-lg);
@@ -2683,8 +2679,6 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
 }
 .mvv-text{font-size:calc(13.5px * var(--fs,1));line-height:2.05;color:var(--text);margin:0;text-align:left}
 @media (max-width:860px){
-  .mvv-top{grid-template-columns:1fr;gap:18px}
-  .mvv-illust :global(svg){max-width:360px}
   .mvv-grid{grid-template-columns:1fr;max-width:520px}
 }
 @media (max-width:640px){
