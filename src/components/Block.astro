@@ -422,13 +422,12 @@ const serviceIcons = [
       <div class="mvv-grid">
         {(p.items || []).map((it: any) => (
           <article class="mvv-card reveal">
-            <span class={`mvv-crest${it.accent ? ' is-accent' : ''}`} aria-hidden="true">{it.kanji}</span>
+            <span class={`mvv-crest${it.accent ? ` is-${it.accent}` : ''}`} aria-hidden="true">{it.kanji}</span>
             <h3 class="mvv-yoshi">{it.title}<small>{it.sub}</small></h3>
             <p class="mvv-text">{it.body}</p>
           </article>
         ))}
       </div>
-      {p.note && <p class="mvv-note reveal">{p.note}</p>}
     </div>
   </section>
 )}
