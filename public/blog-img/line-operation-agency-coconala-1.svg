@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 386" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0499AF"/><stop offset="1" stop-color="#77D55C"/></linearGradient></defs>
+<rect x="1" y="1" width="1198" height="384" rx="16" fill="#FFFFFF" stroke="#D9D9D9" stroke-width="1"/>
+<rect x="48" y="40" width="140" height="46" rx="23" fill="url(#g)"/>
+<text x="118" y="71" font-size="20" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="4">結論</text>
+<text x="216" y="72" font-size="25" font-weight="700" fill="#000000" text-anchor="start">LINE運用代行×ココナラの要点</text>
+<rect x="48" y="156" width="346" height="182" rx="16" fill="#FFFFFF" stroke="url(#g)" stroke-width="2"/>
+<circle cx="64" cy="158" r="26" fill="url(#g)"/>
+<text x="64" y="165" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">01</text>
+<text x="221" y="216" font-size="19" font-weight="700" fill="#000000" text-anchor="middle">依頼は可能</text>
+<circle cx="77" cy="257" r="3.5" fill="#00BF63"/>
+<text x="90" y="262" font-size="15" font-weight="400" fill="#333333" text-anchor="start">個人出品者に依頼できる</text>
+<circle cx="77" cy="291" r="3.5" fill="#00BF63"/>
+<text x="90" y="296" font-size="15" font-weight="400" fill="#333333" text-anchor="start">運用代行メニューあり</text>
+<rect x="426" y="156" width="346" height="182" rx="16" fill="#FFFFFF" stroke="url(#g)" stroke-width="2"/>
+<circle cx="442" cy="158" r="26" fill="url(#g)"/>
+<text x="442" y="165" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">02</text>
+<text x="599" y="216" font-size="19" font-weight="700" fill="#000000" text-anchor="middle">費用は個人差あり</text>
+<circle cx="455" cy="257" r="3.5" fill="#00BF63"/>
+<text x="468" y="262" font-size="15" font-weight="400" fill="#333333" text-anchor="start">出品者ごとに料金差が大きい</text>
+<circle cx="455" cy="291" r="3.5" fill="#00BF63"/>
+<text x="468" y="296" font-size="15" font-weight="400" fill="#333333" text-anchor="start">相場感を事前に比較が必要</text>
+<rect x="804" y="156" width="346" height="182" rx="16" fill="#FFFFFF" stroke="url(#g)" stroke-width="2"/>
+<circle cx="820" cy="158" r="26" fill="url(#g)"/>
+<text x="820" y="165" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">03</text>
+<text x="977" y="216" font-size="19" font-weight="700" fill="#000000" text-anchor="middle">品質・継続性は要確認</text>
+<circle cx="833" cy="257" r="3.5" fill="#00BF63"/>
+<text x="846" y="262" font-size="15" font-weight="400" fill="#333333" text-anchor="start">対応品質にばらつきあり</text>
+<circle cx="833" cy="291" r="3.5" fill="#00BF63"/>
+<text x="846" y="296" font-size="15" font-weight="400" fill="#333333" text-anchor="start">継続対応できるか確認必須</text>
+</svg>
