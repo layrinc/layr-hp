@@ -2675,7 +2675,7 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
 .mvv-crest::before{content:"";position:absolute;inset:5px;border:1.5px solid currentColor;border-radius:50%;opacity:.5}
 .mvv-crest.is-green{background:var(--green);color:#fff}
 .mvv-crest.is-yellow{background:#F6CC01;color:var(--black)}
-.mvv-crest.is-orange{background:#E9A32F;color:#fff}
+.mvv-crest.is-orange{background:#E0532C;color:#fff}
 .mvv-yoshi{font-size:calc(19px * var(--fs,1));font-weight:700;letter-spacing:var(--track-normal);color:var(--black);line-height:1.5;margin:0}
 .mvv-yoshi small{
   display:block;font-size:calc(12.5px * var(--fs,1));font-weight:700;
