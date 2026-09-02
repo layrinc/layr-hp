@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 422" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0499AF"/><stop offset="1" stop-color="#77D55C"/></linearGradient></defs>
+<rect x="1" y="1" width="1198" height="420" rx="16" fill="#FFFFFF" stroke="#D9D9D9" stroke-width="1"/>
+<rect x="48" y="40" width="140" height="46" rx="23" fill="url(#g)"/>
+<text x="118" y="71" font-size="20" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="4">比較</text>
+<text x="216" y="72" font-size="25" font-weight="700" fill="#000000" text-anchor="start">代行会社タイプ別の違い</text>
+<rect x="48" y="138" width="210" height="62" fill="#EAF4D3"/>
+<text x="153" y="175" font-size="15" font-weight="700" fill="#000000" text-anchor="middle">タイプ</text>
+<rect x="258" y="138" width="298" height="62" fill="#A6A6A6"/>
+<text x="407" y="175" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">制作会社系</text>
+<rect x="556" y="138" width="298" height="62" fill="#E9A32F"/>
+<text x="705" y="175" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">マーケ支援会社系</text>
+<rect x="854" y="138" width="298" height="62" fill="#5B9BD5"/>
+<text x="1003" y="175" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">ツールベンダー系</text>
+<rect x="48" y="200" width="210" height="58" fill="#EAF4D3"/>
+<text x="153" y="235" font-size="15" font-weight="700" fill="#000000" text-anchor="middle">得意領域</text>
+<text x="407" y="235" font-size="15" font-weight="500" fill="#333333" text-anchor="middle">配信物の制作</text>
+<text x="705" y="235" font-size="15" font-weight="500" fill="#333333" text-anchor="middle">集客・戦略設計</text>
+<text x="1003" y="235" font-size="15" font-weight="500" fill="#333333" text-anchor="middle">ツール操作支援</text>
+<rect x="48" y="258" width="210" height="58" fill="#EAF4D3"/>
+<text x="153" y="293" font-size="15" font-weight="700" fill="#000000" text-anchor="middle">対応範囲</text>
+<text x="407" y="293" font-size="15" font-weight="500" fill="#333333" text-anchor="middle">制作中心</text>
+<text x="705" y="293" font-size="15" font-weight="500" fill="#333333" text-anchor="middle">運用全般</text>
+<text x="1003" y="293" font-size="15" font-weight="500" fill="#333333" text-anchor="middle">設定・活用のみ</text>
+<rect x="48" y="316" width="210" height="58" fill="#EAF4D3"/>
+<text x="153" y="351" font-size="15" font-weight="700" fill="#000000" text-anchor="middle">向いている企業</text>
+<text x="407" y="351" font-size="15" font-weight="500" fill="#333333" text-anchor="middle">素材はあり配信のみ依頼</text>
+<text x="705" y="351" font-size="15" font-weight="500" fill="#333333" text-anchor="middle">成果重視で伴走希望</text>
+<text x="1003" y="351" font-size="15" font-weight="500" fill="#333333" text-anchor="middle">自社運用したい企業</text>
+<rect x="48" y="138" width="1104" height="236" fill="none" stroke="#BFBFBF" stroke-width="1"/>
+<line x1="48" y1="200" x2="1152" y2="200" stroke="#BFBFBF" stroke-width="1"/>
+<line x1="48" y1="258" x2="1152" y2="258" stroke="#BFBFBF" stroke-width="1"/>
+<line x1="48" y1="316" x2="1152" y2="316" stroke="#BFBFBF" stroke-width="1"/>
+<line x1="258" y1="138" x2="258" y2="374" stroke="#BFBFBF" stroke-width="1"/>
+<line x1="556" y1="138" x2="556" y2="374" stroke="#BFBFBF" stroke-width="1"/>
+<line x1="854" y1="138" x2="854" y2="374" stroke="#BFBFBF" stroke-width="1"/>
+</svg>

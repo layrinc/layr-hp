@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0499AF"/><stop offset="1" stop-color="#77D55C"/></linearGradient></defs>
+<rect x="1" y="1" width="1198" height="418" rx="16" fill="#FFFFFF" stroke="#D9D9D9" stroke-width="1"/>
+<rect x="48" y="40" width="140" height="46" rx="23" fill="url(#g)"/>
+<text x="118" y="71" font-size="20" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="4">比較</text>
+<text x="216" y="72" font-size="25" font-weight="700" fill="#000000" text-anchor="start">代行会社選びの比較ポイント</text>
+<rect x="48" y="156" width="346" height="216" rx="16" fill="#FFFFFF" stroke="url(#g)" stroke-width="2"/>
+<circle cx="64" cy="158" r="26" fill="url(#g)"/>
+<text x="64" y="165" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">01</text>
+<text x="221" y="216" font-size="19" font-weight="700" fill="#000000" text-anchor="middle">実績</text>
+<circle cx="77" cy="257" r="3.5" fill="#00BF63"/>
+<text x="90" y="262" font-size="15" font-weight="400" fill="#333333" text-anchor="start">業界・業種の支援実績</text>
+<circle cx="77" cy="291" r="3.5" fill="#00BF63"/>
+<text x="90" y="296" font-size="15" font-weight="400" fill="#333333" text-anchor="start">運用開始後の成果事例</text>
+<circle cx="77" cy="325" r="3.5" fill="#00BF63"/>
+<text x="90" y="330" font-size="15" font-weight="400" fill="#333333" text-anchor="start">継続率や取引社数</text>
+<rect x="426" y="156" width="346" height="216" rx="16" fill="#FFFFFF" stroke="url(#g)" stroke-width="2"/>
+<circle cx="442" cy="158" r="26" fill="url(#g)"/>
+<text x="442" y="165" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">02</text>
+<text x="599" y="216" font-size="19" font-weight="700" fill="#000000" text-anchor="middle">対応範囲</text>
+<circle cx="455" cy="257" r="3.5" fill="#00BF63"/>
+<text x="468" y="262" font-size="15" font-weight="400" fill="#333333" text-anchor="start">配信設計から分析まで</text>
+<circle cx="455" cy="291" r="3.5" fill="#00BF63"/>
+<text x="468" y="296" font-size="15" font-weight="400" fill="#333333" text-anchor="start">クリエイティブ制作の可否</text>
+<circle cx="455" cy="325" r="3.5" fill="#00BF63"/>
+<text x="468" y="330" font-size="15" font-weight="400" fill="#333333" text-anchor="start">シナリオ設計の対応有無</text>
+<rect x="804" y="156" width="346" height="216" rx="16" fill="#FFFFFF" stroke="url(#g)" stroke-width="2"/>
+<circle cx="820" cy="158" r="26" fill="url(#g)"/>
+<text x="820" y="165" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">03</text>
+<text x="977" y="216" font-size="19" font-weight="700" fill="#000000" text-anchor="middle">料金体系</text>
+<circle cx="833" cy="257" r="3.5" fill="#00BF63"/>
+<text x="846" y="262" font-size="15" font-weight="400" fill="#333333" text-anchor="start">初期費用と月額費用</text>
+<circle cx="833" cy="291" r="3.5" fill="#00BF63"/>
+<text x="846" y="296" font-size="15" font-weight="400" fill="#333333" text-anchor="start">追加費用の発生条件</text>
+<circle cx="833" cy="325" r="3.5" fill="#00BF63"/>
+<text x="846" y="330" font-size="15" font-weight="400" fill="#333333" text-anchor="start">料金と対応範囲の整合性</text>
+</svg>

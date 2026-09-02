@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 420" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0499AF"/><stop offset="1" stop-color="#77D55C"/></linearGradient></defs>
+<rect x="1" y="1" width="1198" height="418" rx="16" fill="#FFFFFF" stroke="#D9D9D9" stroke-width="1"/>
+<rect x="48" y="40" width="148" height="46" rx="23" fill="url(#g)"/>
+<text x="122" y="71" font-size="20" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="4">選び方</text>
+<text x="224" y="72" font-size="25" font-weight="700" fill="#000000" text-anchor="start">LINE運用代行会社の選び方</text>
+<rect x="48" y="156" width="346" height="216" rx="16" fill="#FFFFFF" stroke="url(#g)" stroke-width="2"/>
+<circle cx="64" cy="158" r="26" fill="url(#g)"/>
+<text x="64" y="165" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">01</text>
+<text x="221" y="216" font-size="19" font-weight="700" fill="#000000" text-anchor="middle">タイプを知る</text>
+<circle cx="77" cy="257" r="3.5" fill="#00BF63"/>
+<text x="90" y="262" font-size="15" font-weight="400" fill="#333333" text-anchor="start">代行会社の種類を把握</text>
+<circle cx="77" cy="291" r="3.5" fill="#00BF63"/>
+<text x="90" y="296" font-size="15" font-weight="400" fill="#333333" text-anchor="start">得意領域の違いを理解</text>
+<circle cx="77" cy="325" r="3.5" fill="#00BF63"/>
+<text x="90" y="330" font-size="15" font-weight="400" fill="#333333" text-anchor="start">自社に合う型を絞る</text>
+<rect x="426" y="156" width="346" height="216" rx="16" fill="#FFFFFF" stroke="url(#g)" stroke-width="2"/>
+<circle cx="442" cy="158" r="26" fill="url(#g)"/>
+<text x="442" y="165" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">02</text>
+<text x="599" y="216" font-size="19" font-weight="700" fill="#000000" text-anchor="middle">比較ポイントで見極める</text>
+<circle cx="455" cy="257" r="3.5" fill="#00BF63"/>
+<text x="468" y="262" font-size="15" font-weight="400" fill="#333333" text-anchor="start">料金体系を比較</text>
+<circle cx="455" cy="291" r="3.5" fill="#00BF63"/>
+<text x="468" y="296" font-size="15" font-weight="400" fill="#333333" text-anchor="start">実績・支援範囲を確認</text>
+<circle cx="455" cy="325" r="3.5" fill="#00BF63"/>
+<text x="468" y="330" font-size="15" font-weight="400" fill="#333333" text-anchor="start">運用体制をチェック</text>
+<rect x="804" y="156" width="346" height="216" rx="16" fill="#FFFFFF" stroke="url(#g)" stroke-width="2"/>
+<circle cx="820" cy="158" r="26" fill="url(#g)"/>
+<text x="820" y="165" font-size="18" font-weight="700" fill="#fff" text-anchor="middle">03</text>
+<text x="977" y="216" font-size="19" font-weight="700" fill="#000000" text-anchor="middle">自社課題との適合性を確認</text>
+<circle cx="833" cy="257" r="3.5" fill="#00BF63"/>
+<text x="846" y="262" font-size="15" font-weight="400" fill="#333333" text-anchor="start">自社の目的を明確化</text>
+<circle cx="833" cy="291" r="3.5" fill="#00BF63"/>
+<text x="846" y="296" font-size="15" font-weight="400" fill="#333333" text-anchor="start">課題解決に合うか判断</text>
+<circle cx="833" cy="325" r="3.5" fill="#00BF63"/>
+<text x="846" y="330" font-size="15" font-weight="400" fill="#333333" text-anchor="start">長期運用の相性を確認</text>
+</svg>
