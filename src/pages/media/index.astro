@@ -27,6 +27,71 @@ const CAT_ISO: Record<string, string> = {
 };
 const thumbOf = (c: string) => CAT_ISO[c] || ISO.build;
 
+// 課題から探すタブ（4課題×3記事）。
+// タイトルは記事のfrontmatterから引くので、記事側を直せばここも自動で追従する（表記の乖離が起きない）。
+// slugが実在しない場合はビルド時に落として気づけるようにしている。
+const ISSUES_SRC = [
+  {
+    key: 'start',
+    label: 'LINEを始めたい',
+    lead: 'LINE公式アカウントをこれから立ち上げる段階の記事です。友だちをどこから集めるか、店舗ならどう導線を作るか、社内で話すための基本用語までをまとめました。',
+    slugs: ['line-friends-growth', 'line-meo-restaurant', 'line-glossary-basic'],
+    cta: {
+      question: '何から始めるか、支援内容と料金を見て決めますか。',
+      linkLabel: 'LINE構築・運用のサービス詳細と料金を見る →',
+      href: '/service/line/',
+      note: '※支援範囲と料金を掲載しているページです。',
+    },
+  },
+  {
+    key: 'delivery',
+    label: '配信が読まれない',
+    lead: '配信しても開かれない、ブロックされてしまう。その原因を配信設計の側から確認できます。メールとの届き方の違いと、シナリオを組むときに必要な用語もまとめました。',
+    slugs: ['line-block-rate', 'line-vs-mail', 'line-glossary-delivery'],
+    cta: {
+      question: '自分の業種ではどう配信するのか、使い方の例から確認しますか。',
+      linkLabel: '業種別のおすすめの使い方を見る →',
+      href: '/case/#industry',
+      note: '※業種ごとの活用例をまとめたページです。',
+    },
+  },
+  {
+    key: 'revenue',
+    label: '売上につながらない',
+    lead: '友だちは増えたのに売上が動かないとき、どこで止まっているかを確認できます。広告費を回収する考え方、セール時に初日から売る配信の型、見るべき指標の読み方を扱います。',
+    slugs: ['ad-line-funnel', 'apparel-sale-line-notice', 'line-glossary-metrics'],
+    cta: {
+      question: 'どこで止まっているか、現状を見ながら相談しますか。',
+      linkLabel: '無料相談を申し込む →',
+      href: '/contact/',
+      note: '※無料相談のフォームです。費用は発生しません。',
+    },
+  },
+  {
+    key: 'outsource',
+    label: '運用を外注したい',
+    lead: '自社で続けるか外注するかの判断材料と、代行会社を選ぶときの比較軸、費用が会社ごとに大きく変わる理由をまとめました。発注前の見積もり比較に使えます。',
+    slugs: ['line-inhouse-vs-outsource', 'line-operation-agency', 'line-operation-cost'],
+    cta: {
+      question: '比較検討用に、支援範囲と料金をまとめた資料が必要ですか。',
+      linkLabel: 'LINE構築・運用サービス資料をダウンロード →',
+      href: '/document/line-service/',
+      note: '※フォーム送信後、その場でPDFをダウンロードいただけます。費用はかかりません。',
+    },
+  },
+];
+
+// slug → 記事。存在しないslugを書いたらビルドを失敗させる。
+const byId = new Map(posts.map((p) => [p.id, p]));
+const ISSUES = ISSUES_SRC.map((t) => ({
+  ...t,
+  articles: t.slugs.map((sl) => {
+    const post = byId.get(sl);
+    if (!post) throw new Error(`課題タブ: 記事 "${sl}" が見つかりません（src/content/blog/${sl}.md）`);
+    return { slug: sl, title: post.data.title };
+  }),
+}));
+
 const title = 'LAYR公式メディア｜LINEマーケティング運用コラム';
 const description = 'LINE公式アカウントの構築・運用の現場から、ブロック率の下げ方、ステップ配信の設計、メルマガとの使い分けなど、地方中小企業・スクール・店舗がすぐ使えるLINEマーケティングの実務ノウハウを発信しています。';
 
@@ -64,12 +129,64 @@ const jsonLd = [
     <span class="bj-wm" aria-hidden="true">COLUMN</span>
   </header>
 
+  <!-- 課題から探す（19本→3本の編集キュレーション。グリッドの絞り込みとは独立） -->
+  <section class="bj-issue" id="bjIssue">
+    <div class="container">
+      <div class="sec-head">
+        <p class="sec-en">FIND BY ISSUE</p>
+        <h2 class="sec-jp">課題から探す</h2>
+      </div>
+
+      <div class="bj-issue-tabs" role="tablist" aria-label="課題から記事を探す">
+        {ISSUES.map((t, i) => (
+          <button
+            type="button"
+            role="tab"
+            class={`bj-issue-tab${i === 0 ? ' is-on' : ''}`}
+            id={`bj-issue-tab-${t.key}`}
+            aria-controls={`bj-issue-panel-${t.key}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            data-issue={t.key}
+          >{t.label}</button>
+        ))}
+      </div>
+
+      <div class="bj-issue-panels">
+        {ISSUES.map((t, i) => (
+          <div
+            class="bj-issue-panel"
+            role="tabpanel"
+            id={`bj-issue-panel-${t.key}`}
+            aria-labelledby={`bj-issue-tab-${t.key}`}
+            tabindex="0"
+            data-issue={t.key}
+            hidden={i !== 0}
+          >
+            <p class="bj-issue-lead">{t.lead}</p>
+            <ul class="bj-issue-list">
+              {t.articles.map((a) => (
+                <li><a class="bj-issue-link" href={`/media/${a.slug}/`}>{a.title}</a></li>
+              ))}
+            </ul>
+            <div class="bj-issue-cta">
+              <p class="bj-issue-ask">{t.cta.question}</p>
+              <a class="bj-issue-go" href={t.cta.href}>{t.cta.linkLabel}</a>
+              <small class="bj-issue-note">{t.cta.note}</small>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <div class="container bj-main">
-    <!-- カテゴリチップ -->
-    <div class="bj-cats" role="tablist" aria-label="カテゴリで絞り込み">
-      <button class="bj-cat on" data-cat="">すべて</button>
+    <!-- カテゴリチップ（tablistではなくトグルボタン群。課題タブと役割を分ける） -->
+    <p class="bj-cats-label">カテゴリで絞り込む（全{posts.length}本）</p>
+    <div class="bj-cats" role="group" aria-label="カテゴリで絞り込み">
+      <button type="button" class="bj-cat on" data-cat="" aria-pressed="true">すべて</button>
       {cats.map((c) => (
-        <button class="bj-cat" data-cat={c}>{c}<i>{catCount(c)}</i></button>
+        <button type="button" class="bj-cat" data-cat={c} aria-pressed="false">{c}<i>{catCount(c)}</i></button>
       ))}
     </div>
 
@@ -116,8 +233,56 @@ const jsonLd = [
   .bj-search input:focus{border-color:var(--green)}
   .bj-search button{font-family:var(--font-jp);font-weight:700;font-size:14px;color:#fff;background:var(--green-dark);border:none;border-radius:0 12px 12px 0;padding:0 28px;cursor:pointer}
   .bj-wm{position:absolute;right:-1%;bottom:-8%;font-family:var(--font-en);font-weight:700;font-size:clamp(90px,14vw,190px);letter-spacing:.02em;color:var(--green-dark);opacity:.045;pointer-events:none;line-height:1}
+  /* issue tabs（課題から探す） */
+  .bj-issue{background:var(--tint);border-bottom:1px solid var(--line);padding:clamp(52px,6vw,88px) 0 clamp(34px,4vw,56px);scroll-margin-top:88px}
+  .bj-issue-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+  .bj-issue-tab{
+    display:inline-flex;align-items:center;justify-content:center;min-height:44px;
+    font-family:var(--font-jp);font-size:13px;font-weight:700;line-height:1.5;
+    letter-spacing:var(--track-normal);color:var(--text);background:var(--paper);
+    border:1px solid var(--line);border-radius:var(--r-pill);padding:12px 20px;cursor:pointer;
+    transition:background-color .18s cubic-bezier(.4,0,.2,1),border-color .18s cubic-bezier(.4,0,.2,1),color .18s cubic-bezier(.4,0,.2,1);
+  }
+  .bj-issue-tab:hover{border-color:var(--green-line)}
+  .bj-issue-tab.is-on{background:var(--green-ink);border-color:var(--green-ink);color:#fff}
+  .bj-issue-panel{
+    margin-top:22px;background:var(--paper);border:1px solid var(--line);
+    border-radius:var(--r-lg);padding:clamp(22px,2.6vw,26px) clamp(16px,2.2vw,22px);
+  }
+  .bj-issue-lead{font-size:13.5px;color:var(--muted);line-height:1.85;margin-bottom:6px}
+  .bj-issue-list{list-style:none;margin:0;padding:0}
+  .bj-issue-list li{border-bottom:1px solid var(--line-soft)}
+  .bj-issue-list li:last-child{border-bottom:0}
+  .bj-issue-link{
+    display:flex;gap:10px;padding:16px 4px;font-size:15.5px;font-weight:700;line-height:1.7;
+    color:var(--text);text-decoration:none;
+    transition:color .18s cubic-bezier(.4,0,.2,1),background-color .18s cubic-bezier(.4,0,.2,1);
+  }
+  .bj-issue-link::before{content:"›";color:var(--green-dark);font-weight:700;flex:none;line-height:inherit}
+  .bj-issue-link:hover{color:var(--green-ink);background:color-mix(in srgb,var(--green) 4%,transparent);text-decoration:underline;text-underline-offset:4px}
+  .bj-issue-cta{margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
+  .bj-issue-ask{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:6px}
+  .bj-issue-go{
+    display:inline-block;font-size:13.5px;font-weight:700;color:var(--green-ink);text-decoration:none;
+    transition:color .18s cubic-bezier(.4,0,.2,1);
+  }
+  .bj-issue-go:hover{text-decoration:underline;text-underline-offset:4px}
+  .bj-issue-note{display:block;margin-top:6px;font-size:12px;color:var(--muted);line-height:1.8}
+  .bj-issue-tab:focus-visible,
+  .bj-issue-link:focus-visible,
+  .bj-issue-go:focus-visible,
+  .bj-issue-panel:focus-visible{outline:2px solid var(--green-ink);outline-offset:2px}
+  @media (prefers-reduced-motion: reduce){
+    .bj-issue-tab,.bj-issue-link,.bj-issue-go{transition:none}
+  }
+  @media (max-width: 430px){
+    .bj-issue-tabs{display:grid;grid-template-columns:1fr 1fr}
+    .bj-issue-panel{padding:20px 16px}
+    .bj-issue-link{font-size:14.5px;padding:14px 2px;line-height:1.65}
+  }
   /* cats */
   .bj-main{padding:clamp(34px,4.5vw,54px) var(--gutter) clamp(64px,8vw,110px)}
+  .bj-cats-label{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:var(--track-label);margin-bottom:10px}
   .bj-cats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
   .bj-cat{font-family:var(--font-jp);font-size:13px;font-weight:700;color:var(--black);background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:9px 20px;cursor:pointer;transition:all .15s}
   .bj-cat i{font-style:normal;font-size:11px;color:var(--muted);margin-left:7px;font-family:var(--font-en);font-weight:700}
@@ -171,13 +336,79 @@ const jsonLd = [
     }
     document.querySelectorAll('.bj-cat').forEach(function (b) {
       b.addEventListener('click', function () {
-        document.querySelectorAll('.bj-cat').forEach(function (x) { x.classList.remove('on'); });
+        document.querySelectorAll('.bj-cat').forEach(function (x) { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
         b.classList.add('on');
+        b.setAttribute('aria-pressed', 'true');
         cat = b.dataset.cat || '';
         apply();
       });
     });
     input.addEventListener('input', apply);
     document.getElementById('bjSearchBtn').addEventListener('click', apply);
+  })();
+
+  // 課題タブ（roving tabindex ＋ 自動アクティベーション）。グリッドの絞り込みとは変数を共有しない。
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.bj-issue-tab'));
+    if (!tabs.length) return;
+    var panels = Array.prototype.slice.call(document.querySelectorAll('.bj-issue-panel'));
+    var sec = document.getElementById('bjIssue');
+    var HASH = /^#issue-(start|delivery|revenue|outsource)$/;
+
+    function indexOfSlug(slug) {
+      for (var i = 0; i < tabs.length; i++) { if (tabs[i].getAttribute('data-issue') === slug) return i; }
+      return -1;
+    }
+
+    function select(slug, opts) {
+      var idx = indexOfSlug(slug);
+      if (idx < 0) return;
+      opts = opts || {};
+      tabs.forEach(function (t, i) {
+        var on = i === idx;
+        if (on) { t.classList.add('is-on'); } else { t.classList.remove('is-on'); }
+        t.setAttribute('aria-selected', on ? 'true' : 'false');
+        t.tabIndex = on ? 0 : -1;
+      });
+      panels.forEach(function (p) { p.hidden = p.getAttribute('data-issue') !== slug; });
+      if (opts.focus) tabs[idx].focus();
+      if (opts.hash) { try { history.replaceState(null, '', '#issue-' + slug); } catch (e) {} }
+      if (opts.track && typeof gtag === 'function') {
+        gtag('event', 'select_content', { content_type: 'media_issue_tab', item_id: slug });
+      }
+    }
+
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        // クリック由来では focus を動かさない（focus ringとスクロールの副作用を避ける）
+        select(t.getAttribute('data-issue'), { hash: true, track: true });
+      });
+      t.addEventListener('keydown', function (e) {
+        var cur = indexOfSlug(t.getAttribute('data-issue'));
+        var next = -1;
+        if (e.key === 'ArrowRight') next = (cur + 1) % tabs.length;
+        else if (e.key === 'ArrowLeft') next = (cur - 1 + tabs.length) % tabs.length;
+        else if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = tabs.length - 1;
+        if (next < 0) return;
+        e.preventDefault();
+        select(tabs[next].getAttribute('data-issue'), { focus: true, hash: true, track: true });
+      });
+    });
+
+    function fromHash(scroll) {
+      var m = HASH.exec(location.hash || '');
+      if (!m) return;
+      select(m[1], {});
+      if (!scroll || !sec) return;
+      // html{scroll-behavior:smooth} は behavior:'auto' を smooth 化し、
+      // フラグメント遷移のスクロールリセットに打ち消される。'instant' で確実に飛ばす。
+      var jump = function () { sec.scrollIntoView({ block: 'start', behavior: 'instant' }); };
+      if (document.readyState === 'complete') jump();
+      else window.addEventListener('load', jump, { once: true });
+    }
+
+    fromHash(true);
+    window.addEventListener('hashchange', function () { fromHash(false); });
   })();
 </script>
