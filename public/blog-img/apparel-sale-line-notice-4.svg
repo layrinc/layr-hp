@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 490" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0499AF"/><stop offset="1" stop-color="#77D55C"/></linearGradient></defs>
+<rect x="1" y="1" width="1198" height="488" rx="16" fill="#FFFFFF" stroke="#D9D9D9" stroke-width="1"/>
+<rect x="48" y="40" width="140" height="46" rx="23" fill="url(#g)"/>
+<text x="118" y="71" font-size="20" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="4">手順</text>
+<text x="216" y="72" font-size="25" font-weight="700" fill="#000000" text-anchor="start">セール告知3段階配信フロー</text>
+<circle cx="312" cy="258" r="107.5" fill="#FFFFFF" stroke="url(#g)" stroke-width="9"/>
+<text x="312" y="266" font-size="22" font-weight="700" fill="#000000" text-anchor="middle">予告配信</text>
+<text x="312" y="352" font-size="13" font-weight="700" fill="#00BF63" text-anchor="middle" letter-spacing="2">STEP1</text>
+<path d="M430,232 L474,258 L430,284 Z" fill="url(#g)"/>
+<text x="312" y="404" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">セール開始前に日時と内容を事前告知</text>
+<circle cx="600" cy="258" r="107.5" fill="#FFFFFF" stroke="url(#g)" stroke-width="9"/>
+<text x="600" y="266" font-size="22" font-weight="700" fill="#000000" text-anchor="middle">開始当日告知</text>
+<text x="600" y="352" font-size="13" font-weight="700" fill="#00BF63" text-anchor="middle" letter-spacing="2">STEP2</text>
+<path d="M718,232 L762,258 L718,284 Z" fill="url(#g)"/>
+<text x="600" y="404" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">セール開始を当日に配信し初日集客</text>
+<circle cx="888" cy="258" r="107.5" fill="#FFFFFF" stroke="url(#g)" stroke-width="9"/>
+<text x="888" y="250" font-size="22" font-weight="700" fill="#000000" text-anchor="middle">終了間際リマイ</text>
+<text x="888" y="282" font-size="22" font-weight="700" fill="#000000" text-anchor="middle">ンド</text>
+<text x="888" y="352" font-size="13" font-weight="700" fill="#00BF63" text-anchor="middle" letter-spacing="2">STEP3</text>
+<text x="888" y="404" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">終了間際に再配信し駆け込み購入を促</text>
+<text x="888" y="428" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">進</text>
+</svg>

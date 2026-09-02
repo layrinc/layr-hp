@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 422" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0499AF"/><stop offset="1" stop-color="#77D55C"/></linearGradient></defs>
+<rect x="1" y="1" width="1198" height="420" rx="16" fill="#FFFFFF" stroke="#D9D9D9" stroke-width="1"/>
+<rect x="48" y="40" width="140" height="46" rx="23" fill="url(#g)"/>
+<text x="118" y="71" font-size="20" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="4">比較</text>
+<text x="216" y="72" font-size="25" font-weight="700" fill="#000000" text-anchor="start">セール告知手段の違い</text>
+<rect x="48" y="138" width="210" height="62" fill="#EAF4D3"/>
+<text x="153" y="175" font-size="15" font-weight="700" fill="#000000" text-anchor="middle">機能</text>
+<rect x="258" y="138" width="447" height="62" fill="#A6A6A6"/>
+<text x="481.5" y="175" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">チラシ/SNS</text>
+<rect x="705" y="138" width="447" height="62" fill="#E9A32F"/>
+<text x="928.5" y="175" font-size="16" font-weight="700" fill="#fff" text-anchor="middle">LINE</text>
+<rect x="48" y="200" width="210" height="58" fill="#EAF4D3"/>
+<text x="153" y="235" font-size="15" font-weight="700" fill="#000000" text-anchor="middle">到達確認</text>
+<text x="481.5" y="237" font-size="22" font-weight="700" fill="#A6A6A6" text-anchor="middle">−</text>
+<text x="928.5" y="237" font-size="22" font-weight="700" fill="#00BF63" text-anchor="middle">◯</text>
+<rect x="48" y="258" width="210" height="58" fill="#EAF4D3"/>
+<text x="153" y="293" font-size="15" font-weight="700" fill="#000000" text-anchor="middle">配信タイミング調整</text>
+<text x="481.5" y="295" font-size="22" font-weight="700" fill="#A6A6A6" text-anchor="middle">−</text>
+<text x="928.5" y="295" font-size="22" font-weight="700" fill="#00BF63" text-anchor="middle">◯</text>
+<rect x="48" y="316" width="210" height="58" fill="#EAF4D3"/>
+<text x="153" y="351" font-size="15" font-weight="700" fill="#000000" text-anchor="middle">顧客ごとの出し分け</text>
+<text x="481.5" y="353" font-size="22" font-weight="700" fill="#A6A6A6" text-anchor="middle">−</text>
+<text x="928.5" y="353" font-size="22" font-weight="700" fill="#00BF63" text-anchor="middle">◯</text>
+<rect x="48" y="138" width="1104" height="236" fill="none" stroke="#BFBFBF" stroke-width="1"/>
+<line x1="48" y1="200" x2="1152" y2="200" stroke="#BFBFBF" stroke-width="1"/>
+<line x1="48" y1="258" x2="1152" y2="258" stroke="#BFBFBF" stroke-width="1"/>
+<line x1="48" y1="316" x2="1152" y2="316" stroke="#BFBFBF" stroke-width="1"/>
+<line x1="258" y1="138" x2="258" y2="374" stroke="#BFBFBF" stroke-width="1"/>
+<line x1="705" y1="138" x2="705" y2="374" stroke="#BFBFBF" stroke-width="1"/>
+</svg>
