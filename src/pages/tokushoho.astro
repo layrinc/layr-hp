@@ -1,0 +1,119 @@
+---
+/**
+ * 特定商取引法に基づく表記。
+ * 事業者名・代表者・所在地は company.json、連絡先は settings.json、
+ * 取引条件は tokushoho.json を正本にする（1箇所を直せば全ページに効く）。
+ * tokushoho.json の値が空の項目は「準備中」と明示して出す。
+ * 事実を欠いたまま断定した表記を出さないための安全弁で、埋めるまで公開しない。
+ */
+import Base from '../layouts/Base.astro';
+import company from '../data/company.json';
+import settings from '../data/settings.json';
+import tk from '../data/tokushoho.json';
+
+const title = '特定商取引法に基づく表記｜株式会社LAYR';
+const description = '株式会社LAYRの特定商取引法に基づく表記。事業者情報、役務の対価、支払方法・時期、役務の提供時期、契約の解除についてまとめています。';
+
+// 未記入の項目は断定せず「準備中」と出す
+const NOT_SET = '準備中です。お問い合わせいただければ個別にご案内します。';
+const v = (s: string) => (s && s.trim() !== '' ? s.trim() : '');
+
+const rows = [
+  { th: '事業者名', td: company.name },
+  { th: '運営統括責任者', td: company.representative },
+  { th: '所在地', td: company.address },
+  {
+    th: '電話番号',
+    td: v(tk.phone),
+    sub: v(tk.phone) ? v(tk.phone_note) : 'お電話でのご連絡をご希望の場合は、メールにてお知らせください。折り返しご連絡します。',
+  },
+  { th: 'メールアドレス', td: settings.email },
+  { th: '設立', td: tk.established_date },
+  { th: '事業内容', td: company.business.join('／') },
+  { th: '役務の対価（販売価格）', td: v(tk.price) },
+  { th: '対価以外に必要な費用', td: v(tk.extra_cost) },
+  { th: '支払方法', td: v(tk.payment_method) },
+  { th: '支払時期', td: v(tk.payment_time) },
+  { th: '役務の提供時期', td: v(tk.delivery_time) },
+  { th: '契約期間', td: v(tk.contract_period) },
+  { th: '契約の解除・キャンセル', td: v(tk.cancellation) },
+];
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'ホーム', item: new URL('/', Astro.site).href },
+      { '@type': 'ListItem', position: 2, name: '特定商取引法に基づく表記' },
+    ],
+  },
+];
+---
+<Base title={title} description={description} jsonLd={jsonLd}>
+  <section class="pp-sec">
+    <div class="pp-wrap">
+      <p class="sec-en">LEGAL</p>
+      <h1 class="pp-title">特定商取引法に基づく表記</h1>
+      <p class="pp-lead">{tk.consumer_note}</p>
+
+      <table class="tk-table">
+        <tbody>
+          {rows.map((r) => (
+            <tr>
+              <th scope="row">{r.th}</th>
+              <td>
+                {r.td ? <span>{r.td}</span> : <span class="tk-tbd">{NOT_SET}</span>}
+                {r.sub && <small class="tk-sub">{r.sub}</small>}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h2>お問い合わせ窓口</h2>
+      <p>
+        本表記の内容に関するご質問は、<a href="/contact/">お問い合わせフォーム</a>または
+        <a href={`mailto:${settings.email}`}>{settings.email}</a> までご連絡ください。
+      </p>
+
+      <p class="pp-date">制定日：2026年9月3日</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* 角丸・罫線・リンク色・ウエイトは style.css 側に一本化（プライバシーポリシーと同じ枠） */
+  .pp-sec{padding:150px 0 100px}
+  .pp-wrap{max-width:760px;margin:0 auto;padding:48px 40px;background:var(--paper)}
+  .pp-title{font-size:calc(clamp(24px,3.4vw,32px) * var(--fs,1));margin:8px 0 16px}
+  .pp-lead{color:var(--muted);font-size:calc(15px * var(--fs,1));margin-bottom:28px}
+  .pp-wrap h2{font-size:calc(17px * var(--fs,1));margin:40px 0 12px;padding-left:14px}
+  .pp-wrap p{font-size:calc(15px * var(--fs,1));margin-bottom:20px}
+  .pp-date{color:var(--muted);font-size:calc(13px * var(--fs,1));margin-top:30px;text-align:right}
+
+  .tk-table{width:100%;border-collapse:collapse}
+  .tk-table th,
+  .tk-table td{
+    border-top:1px solid var(--line);
+    padding:16px 4px;text-align:left;vertical-align:top;
+    font-size:calc(14.5px * var(--fs,1));line-height:1.95;
+  }
+  .tk-table tr:last-child th,
+  .tk-table tr:last-child td{border-bottom:1px solid var(--line)}
+  .tk-table th{width:34%;font-weight:700;color:var(--black);padding-right:18px}
+  .tk-table td{color:var(--text)}
+  .tk-sub{display:block;margin-top:6px;font-size:calc(13px * var(--fs,1));color:var(--muted);line-height:1.9}
+  .tk-tbd{color:var(--muted)}
+  .pp-wrap a:focus-visible{outline:2px solid var(--green-ink);outline-offset:2px}
+
+  @media (max-width:640px){
+    .pp-wrap{padding:36px 22px}
+    /* 狭い幅では2列だと項目名が折れて読みにくいので縦積みにする */
+    .tk-table th,
+    .tk-table td{display:block;width:auto;padding:0}
+    .tk-table th{border-top:1px solid var(--line);padding:16px 0 4px}
+    .tk-table td{border-top:0;padding:0 0 16px}
+    .tk-table tr:last-child th{border-bottom:0}
+  }
+</style>
