@@ -1,11 +1,12 @@
 ---
 /**
  * LAYR公式メディア一覧（/media/）— WordPress風ブログUI。
- * 3列カードグリッド＋キーワード検索＋カテゴリチップ（クライアントサイドフィルタ）。
+ * 構成: ヒーロー → 業種別に探す → 課題から探す → カテゴリ絞り込み＋3列カードグリッド → キーワード検索。
  * サムネイルは記事画像が無い場合、カテゴリ別のアイソメトリックイラストで自動生成。
  */
 import Base from '../../layouts/Base.astro';
 import { getCollection } from 'astro:content';
+import industries from '../../data/industries.json';
 import { ISO } from '../../lib/iso-illusts.mjs';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -27,10 +28,130 @@ const CAT_ISO: Record<string, string> = {
 };
 const thumbOf = (c: string) => CAT_ISO[c] || ISO.build;
 
-// 課題から探すタブ（4課題×3記事）。
-// タイトルは記事のfrontmatterから引くので、記事側を直せばここも自動で追従する（表記の乖離が起きない）。
-// slugが実在しない場合はビルド時に落として気づけるようにしている。
-const ISSUES_SRC = [
+// slug → 記事。存在しないslugを書いたらビルドを失敗させる。
+const byId = new Map(posts.map((p) => [p.id, p]));
+
+type FindCta = { question: string; linkLabel: string; href: string; note: string };
+type FindSrc = { key: string; label: string; lead: string; slugs: string[]; cta: FindCta };
+// 業種CTAのhrefは省略可。省略時は /case/#<業種key> を自動で組む（下のINDUSTRIES生成を参照）。
+type IndustryCta = Omit<FindCta, 'href'> & { href?: string };
+
+// slugを記事タイトルへ解決する。タイトルはfrontmatterから引くので、
+// 記事側を直せばここも自動で追従する（表記の乖離が起きない）。
+const resolve = (where: string, slugs: string[]) =>
+  slugs.map((sl) => {
+    const post = byId.get(sl);
+    if (!post) throw new Error(`${where}: 記事 "${sl}" が見つかりません（src/content/blog/${sl}.md）`);
+    return { slug: sl, title: post.data.title };
+  });
+
+// 業種別に探すタブ（8業種×3記事）。
+// label・key・並び順は src/data/industries.json（/case/ と共有の正本）から引く。表記の乖離を作らない。
+// ここは「その業種の方が読むと役に立つ3本」の編集キュレーションであって、業種専用記事の一覧ではない。
+// （記事19本のうち業種名が明示されているのは line-meo-restaurant と apparel-sale-line-notice の2本だけ）
+// industries.json の pain を書き換えたときは、下の lead も合わせて見直すこと。
+const INDUSTRY_COPY: Record<string, { lead: string; slugs: string[]; cta: IndustryCta }> = {
+  beauty: {
+    lead: '施術中に取りこぼす予約と、間隔が空いていく再来店。手を打つ順番は、店頭の導線づくりと、配信の出し分けです。サロンの現場で判断材料になる3本を選びました。',
+    slugs: ['line-friends-growth', 'line-block-rate', 'line-operation-cost'],
+    cta: {
+      question: 'サロンだと、どこから手をつけますか？',
+      linkLabel: '美容サロンの使い方を見る →',
+      note: '※記事3本は業種を限定した内容ではありません。美容サロン向けの使い方と来店までの流れは、支援実績ページ内の「業種別の、おすすめの使い方」にまとめています。',
+    },
+  },
+  seitai: {
+    lead: '1件の問い合わせにいくらかかっているのか読めない。その計算の土台になる指標の言葉と、広告に頼る前に埋めておきたい導線の話を集めた3本です。広告費を続けるかの判断材料に。',
+    slugs: ['ad-line-funnel', 'line-friends-growth', 'line-glossary-metrics'],
+    cta: {
+      question: '治療院では、どんな流れになりますか？',
+      linkLabel: '整体院・治療院の使い方を見る →',
+      note: '※記事は業種横断の内容です。整体院・治療院向けの使い方3つと来院までの流れは、支援実績ページ内の業種別セクションに載せています。',
+    },
+  },
+  clinic: {
+    lead: '受付に集まる予約変更の電話と、反応の薄い検診案内。どこまで自動化できるかは、機能の名前と、配信の分け方を知るところからです。院内の体制づくりに使える3本を選びました。',
+    slugs: ['line-glossary-basic', 'line-block-rate', 'line-inhouse-vs-outsource'],
+    cta: {
+      question: '受付の負担は、どこまで減らせますか？',
+      linkLabel: 'クリニック・歯科の使い方を見る →',
+      note: '※支援実績ページ内の「業種別の、おすすめの使い方」で、クリニック・歯科の使い方3つと、登録から次の検診までの流れを見られます。',
+    },
+  },
+  restaurant: {
+    lead: '掲載サイトを通さず、来店したお客様と直接つながる導線をどう作るか。店内のQRから口コミとLINEを同時に積む話を軸に、飲食の現場で確かめられる3本を集めました。',
+    slugs: ['line-meo-restaurant', 'line-friends-growth', 'line-glossary-basic'],
+    cta: {
+      question: '自店の来店数だと、どこまで積み上がりますか？',
+      linkLabel: '飲食店の使い方を見る →',
+      note: '※リンク先は支援実績ページ内の業種別セクションです。飲食店の使い方3つと、QRからの登録・再来店までの流れを載せています。',
+    },
+  },
+  school: {
+    lead: '体験には来るのに、その後の検討期間が埋められない。順番に届く配信の考え方と、メールとの使い分けを扱った記事を選びました。在校生と検討中の方を分ける話も入っています。',
+    slugs: ['line-vs-mail', 'line-glossary-delivery', 'line-block-rate'],
+    cta: {
+      question: '体験のあとは、何をいつ送りますか？',
+      linkLabel: 'スクール・教室の使い方を見る →',
+      note: '※支援実績ページ内の業種別セクションに、体験申込から入会までのお客様の動きと、期待できる変化を載せています。',
+    },
+  },
+  shigyo: {
+    lead: '紹介が途切れたときに、連絡できる相手が手元に残っているか。すぐには動かない見込み客との接点の残し方と、メールとLINEの線引きを扱った3本です。',
+    slugs: ['ad-line-funnel', 'line-vs-mail', 'line-friends-growth'],
+    cta: {
+      question: 'うちの相談導線は、どこが抜けていますか？',
+      linkLabel: '無料相談で現状を見てもらう →',
+      href: '/contact/',
+      note: '※現状のお困りごとを伺う、オンライン30分の無料相談です。',
+    },
+  },
+  realestate: {
+    lead: '希望条件の聞き取りと、すぐ決めない方の追いかけ。この2つを人の手から仕組みへ移すために、タグ・フォーム・リマインドまわりを扱った記事を集めました。',
+    slugs: ['ad-line-funnel', 'line-block-rate', 'line-glossary-lstep'],
+    cta: {
+      question: '条件のヒアリングは、どこまでLINEでできますか？',
+      linkLabel: '不動産の使い方を見る →',
+      note: '※支援実績ページ内の業種別セクションに、問い合わせから内見までの流れと、不動産での使い方3つを載せています。',
+    },
+  },
+  retail: {
+    lead: 'メルマガが開かれない。セールのたびに広告費で新規を集め直している。その構造を見直すための3本を、アパレルのセール告知の型を含めて選びました。',
+    slugs: ['apparel-sale-line-notice', 'line-vs-mail', 'ad-line-funnel'],
+    cta: {
+      question: 'うちの規模だと、いくらになりますか？',
+      linkLabel: '料金と作業範囲を確認する →',
+      href: '/service/line/',
+      note: '※構築と運用の3プランを公開しています。ページ内に、30秒で目安が出る料金シミュレーションがあります。',
+    },
+  },
+};
+
+// industries.json に無いkeyを書いたらビルドを失敗させる（/case/ との業種セットのズレ検知）
+const INDUSTRY_KEYS = new Set(industries.map((iv) => iv.key));
+for (const k of Object.keys(INDUSTRY_COPY)) {
+  if (!INDUSTRY_KEYS.has(k)) {
+    throw new Error(`業種タブ: key "${k}" は src/data/industries.json に存在しません`);
+  }
+}
+
+const INDUSTRIES = industries.map((iv) => {
+  const copy = INDUSTRY_COPY[iv.key];
+  if (!copy) throw new Error(`業種タブ: industries.json の key "${iv.key}" に対応するコピーがありません`);
+  return {
+    key: iv.key,
+    label: iv.label,
+    lead: copy.lead,
+    // 「クリニック・歯科の使い方を見る」の着地先は、必ずその業種のタブが開いた状態にする。
+    // /case/ 側は接頭辞なしの業種key（#clinic）でタブを開き #industry へスクロールする。
+    // '/case/#industry' 固定だと文言と関係なく先頭の美容サロンが開いてしまう。
+    cta: { ...copy.cta, href: copy.cta.href ?? `/case/#${iv.key}` },
+    articles: resolve(`業種タブ(${iv.key})`, copy.slugs),
+  };
+});
+
+// 課題から探すタブ（4課題×3記事）
+const ISSUES_SRC: FindSrc[] = [
   {
     key: 'start',
     label: 'LINEを始めたい',
@@ -81,15 +202,9 @@ const ISSUES_SRC = [
   },
 ];
 
-// slug → 記事。存在しないslugを書いたらビルドを失敗させる。
-const byId = new Map(posts.map((p) => [p.id, p]));
 const ISSUES = ISSUES_SRC.map((t) => ({
   ...t,
-  articles: t.slugs.map((sl) => {
-    const post = byId.get(sl);
-    if (!post) throw new Error(`課題タブ: 記事 "${sl}" が見つかりません（src/content/blog/${sl}.md）`);
-    return { slug: sl, title: post.data.title };
-  }),
+  articles: resolve('課題タブ', t.slugs),
 }));
 
 const title = 'LAYR公式メディア｜LINEマーケティング運用コラム';
@@ -121,58 +236,111 @@ const jsonLd = [
       <nav class="bj-bc" aria-label="パンくず"><a href="/">トップ</a><span>／</span><em>LAYR公式メディア</em></nav>
       <p class="bj-badge">LAYR MEDIA</p>
       <h1>LAYR公式メディア<br class="sp" /><span class="bj-h1-sub">LINEマーケティング運用コラム</span></h1>
-      <div class="bj-search" role="search">
-        <input type="search" id="bjSearch" placeholder="キーワードで記事を検索" aria-label="記事を検索" />
-        <button type="button" id="bjSearchBtn">検索</button>
-      </div>
+      <p class="bj-lead">LINE公式アカウントの構築・運用の現場から、地方の店舗・スクール・BtoBがそのまま使える手順を公開しています。</p>
     </div>
     <span class="bj-wm" aria-hidden="true">COLUMN</span>
   </header>
 
-  <!-- 課題から探す（19本→3本の編集キュレーション。グリッドの絞り込みとは独立） -->
-  <section class="bj-issue" id="bjIssue">
+  <!-- 業種別に探す（8業種→3本の編集キュレーション。グリッドの絞り込みとは独立） -->
+  <section class="bj-find bj-find--industry" id="bjFindIndustry" data-find="industry">
     <div class="container">
       <div class="sec-head">
-        <p class="sec-en">FIND BY ISSUE</p>
-        <h2 class="sec-jp">課題から探す</h2>
+        <p class="sec-en">FIND BY INDUSTRY</p>
+        <h2 class="sec-jp" id="bj-find-h-industry">業種別に探す</h2>
       </div>
 
-      <div class="bj-issue-tabs" role="tablist" aria-label="課題から記事を探す">
-        {ISSUES.map((t, i) => (
+      <p class="bj-find-intro">同じLINEでも、業種が違えば最初に手をつける場所が変わります。近い業種を選ぶと、その業種の方が読んで役に立つ3本をお出しします。</p>
+      <small class="bj-find-note">※ 業種専用の記事ではありません。どの記事も、他の業種の方が読んでも通用する内容です。</small>
+
+      <div class="bj-find-tabs" role="tablist" aria-labelledby="bj-find-h-industry">
+        {INDUSTRIES.map((t, i) => (
           <button
             type="button"
             role="tab"
-            class={`bj-issue-tab${i === 0 ? ' is-on' : ''}`}
-            id={`bj-issue-tab-${t.key}`}
-            aria-controls={`bj-issue-panel-${t.key}`}
+            class={`bj-find-tab${i === 0 ? ' is-on' : ''}`}
+            id={`bj-industry-tab-${t.key}`}
+            aria-controls={`bj-industry-panel-${t.key}`}
             aria-selected={i === 0 ? 'true' : 'false'}
             tabindex={i === 0 ? 0 : -1}
-            data-issue={t.key}
+            data-key={t.key}
           >{t.label}</button>
         ))}
       </div>
 
-      <div class="bj-issue-panels">
+      <div class="bj-find-panels">
+        {INDUSTRIES.map((t, i) => (
+          <div
+            class="bj-find-panel"
+            role="tabpanel"
+            id={`bj-industry-panel-${t.key}`}
+            aria-labelledby={`bj-industry-tab-${t.key}`}
+            tabindex="0"
+            data-key={t.key}
+            hidden={i !== 0}
+          >
+            <p class="bj-find-lead">{t.lead}</p>
+            <ul class="bj-find-list">
+              {t.articles.map((a) => (
+                <li><a class="bj-find-link" href={`/media/${a.slug}/`}>{a.title}</a></li>
+              ))}
+            </ul>
+            <div class="bj-find-cta">
+              <p class="bj-find-ask">{t.cta.question}</p>
+              <a class="bj-find-go" href={t.cta.href}>{t.cta.linkLabel}</a>
+              <small class="bj-find-note">{t.cta.note}</small>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 課題から探す（19本→3本の編集キュレーション。グリッドの絞り込みとは独立） -->
+  <section class="bj-find bj-find--issue" id="bjIssue" data-find="issue">
+    <div class="container">
+      <div class="sec-head">
+        <p class="sec-en">FIND BY ISSUE</p>
+        <h2 class="sec-jp" id="bj-find-h-issue">課題から探す</h2>
+      </div>
+
+      <p class="bj-find-intro">業種が違っても、つまずく場所は同じです。いま止まっているところから選んでください。</p>
+
+      <div class="bj-find-tabs" role="tablist" aria-labelledby="bj-find-h-issue">
+        {ISSUES.map((t, i) => (
+          <button
+            type="button"
+            role="tab"
+            class={`bj-find-tab${i === 0 ? ' is-on' : ''}`}
+            id={`bj-issue-tab-${t.key}`}
+            aria-controls={`bj-issue-panel-${t.key}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            tabindex={i === 0 ? 0 : -1}
+            data-key={t.key}
+          >{t.label}</button>
+        ))}
+      </div>
+
+      <div class="bj-find-panels">
         {ISSUES.map((t, i) => (
           <div
-            class="bj-issue-panel"
+            class="bj-find-panel"
             role="tabpanel"
             id={`bj-issue-panel-${t.key}`}
             aria-labelledby={`bj-issue-tab-${t.key}`}
             tabindex="0"
-            data-issue={t.key}
+            data-key={t.key}
             hidden={i !== 0}
           >
-            <p class="bj-issue-lead">{t.lead}</p>
-            <ul class="bj-issue-list">
+            <p class="bj-find-lead">{t.lead}</p>
+            <ul class="bj-find-list">
               {t.articles.map((a) => (
-                <li><a class="bj-issue-link" href={`/media/${a.slug}/`}>{a.title}</a></li>
+                <li><a class="bj-find-link" href={`/media/${a.slug}/`}>{a.title}</a></li>
               ))}
             </ul>
-            <div class="bj-issue-cta">
-              <p class="bj-issue-ask">{t.cta.question}</p>
-              <a class="bj-issue-go" href={t.cta.href}>{t.cta.linkLabel}</a>
-              <small class="bj-issue-note">{t.cta.note}</small>
+            <div class="bj-find-cta">
+              <p class="bj-find-ask">{t.cta.question}</p>
+              <a class="bj-find-go" href={t.cta.href}>{t.cta.linkLabel}</a>
+              <small class="bj-find-note">{t.cta.note}</small>
             </div>
           </div>
         ))}
@@ -182,7 +350,11 @@ const jsonLd = [
 
   <div class="container bj-main">
     <!-- カテゴリチップ（tablistではなくトグルボタン群。課題タブと役割を分ける） -->
-    <p class="bj-cats-label">カテゴリで絞り込む（全{posts.length}本）</p>
+    <!-- 見出し＝一覧の開始位置。検索実行時のスクロール着地点とフォーカス移動先も兼ねる（検索窓はページ最下部）。
+         読み上げ用のライブリージョンは別要素に分ける。1要素で兼ねると、検索したとき
+         絞り込みUIの可視ラベルが件数表示に置き換わって消えてしまう。 -->
+    <h2 class="bj-cats-label" id="bjCount" tabindex="-1">カテゴリで絞り込む（全{posts.length}本）</h2>
+    <p class="bj-live" id="bjLive" role="status"></p>
     <div class="bj-cats" role="group" aria-label="カテゴリで絞り込み">
       <button type="button" class="bj-cat on" data-cat="" aria-pressed="true">すべて</button>
       {cats.map((c) => (
@@ -214,6 +386,21 @@ const jsonLd = [
     </div>
     <p class="bj-empty" id="bjEmpty" hidden>該当する記事が見つかりませんでした。条件を変えてお試しください。</p>
   </div>
+
+  <!-- キーワード検索（結果は上のカード一覧に反映される） -->
+  <section class="bj-search-sec" id="bjSearchSec" aria-labelledby="bj-search-h">
+    <div class="container">
+      <div class="sec-head">
+        <p class="sec-en">SEARCH</p>
+        <h2 class="sec-jp" id="bj-search-h">キーワードで探す</h2>
+      </div>
+      <p class="bj-find-intro">記事のタイトルと概要から探します。結果はページ上部の一覧に表示されます。</p>
+      <div class="bj-search" role="search" aria-label="記事をキーワードで検索">
+        <input type="search" id="bjSearch" aria-controls="bjGrid" placeholder="キーワードで記事を検索" aria-label="記事を検索" />
+        <button type="button" id="bjSearchBtn" aria-controls="bjGrid">検索</button>
+      </div>
+    </div>
+  </section>
 </Base>
 
 <style>
@@ -227,62 +414,96 @@ const jsonLd = [
   .bj-hero h1{font-size:clamp(30px,5.4vw,52px);font-weight:700;letter-spacing:-.01em;line-height:1.3;color:var(--black)}
   .bj-hero h1 .sp{display:none}
   .bj-h1-sub{display:block;font-size:clamp(14px,2.1vw,19px);font-weight:700;color:var(--green-dark);margin-top:14px;letter-spacing:.01em;line-height:1.6}
-  .bj-lead{font-size:14.5px;color:var(--muted);margin:16px 0 28px;line-height:1.9}
+  .bj-lead{max-width:640px;font-size:14.5px;color:var(--muted);margin:16px 0 0;line-height:1.9}
   .bj-search{display:flex;max-width:520px;margin-top:clamp(26px,3.6vw,40px)}
   .bj-search input{flex:1;font-family:var(--font-jp);font-size:14.5px;padding:15px 18px;border:1.5px solid var(--line);border-right:none;border-radius:12px 0 0 12px;outline:none;background:#fff}
   .bj-search input:focus{border-color:var(--green)}
   .bj-search button{font-family:var(--font-jp);font-weight:700;font-size:14px;color:#fff;background:var(--green-dark);border:none;border-radius:0 12px 12px 0;padding:0 28px;cursor:pointer}
   .bj-wm{position:absolute;right:-1%;bottom:-8%;font-family:var(--font-en);font-weight:700;font-size:clamp(90px,14vw,190px);letter-spacing:.02em;color:var(--green-dark);opacity:.045;pointer-events:none;line-height:1}
-  /* issue tabs（課題から探す） */
-  .bj-issue{background:var(--tint);border-bottom:1px solid var(--line);padding:clamp(52px,6vw,88px) 0 clamp(34px,4vw,56px);scroll-margin-top:88px}
-  .bj-issue-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
-  .bj-issue-tab{
+  /* find tabs（業種別／課題別で共通。差は地の色と本数だけ） */
+  .bj-find{border-bottom:1px solid var(--line);scroll-margin-top:88px}
+  .bj-find--industry{background:var(--paper);padding:clamp(56px,6.4vw,92px) 0 clamp(34px,4vw,56px)}
+  .bj-find--industry .bj-find-panel{background:var(--tint)}
+  .bj-find--issue{background:var(--tint);padding:clamp(52px,6vw,88px) 0 clamp(34px,4vw,56px)}
+  .bj-find--issue .bj-find-panel{background:var(--paper)}
+  .bj-find-intro{max-width:760px;font-size:13.5px;color:var(--muted);line-height:1.85}
+  .bj-find-intro + .bj-find-tabs,
+  .bj-find-note + .bj-find-tabs{margin-top:22px}
+  .bj-find-tabs{display:flex;flex-wrap:wrap;justify-content:center;gap:10px}
+  .bj-find-tab{
     display:inline-flex;align-items:center;justify-content:center;min-height:44px;
     font-family:var(--font-jp);font-size:13px;font-weight:700;line-height:1.5;
     letter-spacing:var(--track-normal);color:var(--text);background:var(--paper);
     border:1px solid var(--line);border-radius:var(--r-pill);padding:12px 20px;cursor:pointer;
     transition:background-color .18s cubic-bezier(.4,0,.2,1),border-color .18s cubic-bezier(.4,0,.2,1),color .18s cubic-bezier(.4,0,.2,1);
   }
-  .bj-issue-tab:hover{border-color:var(--green-line)}
-  .bj-issue-tab.is-on{background:var(--green-ink);border-color:var(--green-ink);color:#fff}
-  .bj-issue-panel{
-    margin-top:22px;background:var(--paper);border:1px solid var(--line);
+  /* Astroのscoped styleは各compoundに属性セレクタを足すので、子孫セレクタは .is-on より強くなる。
+     活性タブを上書きしないよう :not(.is-on) で明示的に外す。 */
+  .bj-find--industry .bj-find-tab:not(.is-on){background:var(--tint)}
+  .bj-find-tab:hover{border-color:var(--green-line)}
+  .bj-find-tab.is-on{background:var(--green-ink);border-color:var(--green-ink);color:#fff}
+  .bj-find-panel{
+    margin-top:22px;border:1px solid var(--line);
     border-radius:var(--r-lg);padding:clamp(22px,2.6vw,26px) clamp(16px,2.2vw,22px);
   }
-  .bj-issue-lead{font-size:13.5px;color:var(--muted);line-height:1.85;margin-bottom:6px}
-  .bj-issue-list{list-style:none;margin:0;padding:0}
-  .bj-issue-list li{border-bottom:1px solid var(--line-soft)}
-  .bj-issue-list li:last-child{border-bottom:0}
-  .bj-issue-link{
+  /* [hidden]{display:none} のグローバル指定が無いので、クラス側で display を持たせない。念のための保険 */
+  .bj-find-panel[hidden]{display:none}
+  .bj-find-lead{font-size:13.5px;color:var(--muted);line-height:1.85;margin-bottom:6px}
+  .bj-find-list{list-style:none;margin:0;padding:0}
+  .bj-find-list li{border-bottom:1px solid var(--line-soft)}
+  .bj-find-list li:last-child{border-bottom:0}
+  .bj-find-link{
     display:flex;gap:10px;padding:16px 4px;font-size:15.5px;font-weight:700;line-height:1.7;
     color:var(--text);text-decoration:none;
     transition:color .18s cubic-bezier(.4,0,.2,1),background-color .18s cubic-bezier(.4,0,.2,1);
   }
-  .bj-issue-link::before{content:"›";color:var(--green-dark);font-weight:700;flex:none;line-height:inherit}
-  .bj-issue-link:hover{color:var(--green-ink);background:color-mix(in srgb,var(--green) 4%,transparent);text-decoration:underline;text-underline-offset:4px}
-  .bj-issue-cta{margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
-  .bj-issue-ask{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:6px}
-  .bj-issue-go{
+  .bj-find-link::before{content:"›";color:var(--green-dark);font-weight:700;flex:none;line-height:inherit}
+  .bj-find-link:hover{color:var(--green-ink);background:color-mix(in srgb,var(--green) 4%,transparent);text-decoration:underline;text-underline-offset:4px}
+  .bj-find-cta{margin-top:22px;padding-top:20px;border-top:1px solid var(--line)}
+  .bj-find-ask{font-size:13.5px;font-weight:700;color:var(--text);margin-bottom:6px}
+  .bj-find-go{
     display:inline-block;font-size:13.5px;font-weight:700;color:var(--green-ink);text-decoration:none;
     transition:color .18s cubic-bezier(.4,0,.2,1);
   }
-  .bj-issue-go:hover{text-decoration:underline;text-underline-offset:4px}
-  .bj-issue-note{display:block;margin-top:6px;font-size:12px;color:var(--muted);line-height:1.8}
-  .bj-issue-tab:focus-visible,
-  .bj-issue-link:focus-visible,
-  .bj-issue-go:focus-visible,
-  .bj-issue-panel:focus-visible{outline:2px solid var(--green-ink);outline-offset:2px}
+  .bj-find-go:hover{text-decoration:underline;text-underline-offset:4px}
+  .bj-find-note{display:block;max-width:760px;margin-top:6px;font-size:12px;color:var(--muted);line-height:1.8}
+  .bj-find-tab:focus-visible,
+  .bj-find-link:focus-visible,
+  .bj-find-go:focus-visible,
+  .bj-find-panel:focus-visible{outline:2px solid var(--green-ink);outline-offset:2px}
   @media (prefers-reduced-motion: reduce){
-    .bj-issue-tab,.bj-issue-link,.bj-issue-go{transition:none}
+    .bj-find-tab,.bj-find-link,.bj-find-go{transition:none}
+  }
+  /* 業種は8本あるので、狭い画面では折返さず横スクロール1行にする（/case/ の業種タブと同じ操作） */
+  @media (max-width: 600px){
+    .bj-find--industry .bj-find-tabs{
+      flex-wrap:nowrap;justify-content:flex-start;overflow-x:auto;
+      scroll-snap-type:x proximity;scrollbar-width:none;
+      margin-inline:calc(var(--gutter) * -1);padding-inline:var(--gutter);
+    }
+    .bj-find--industry .bj-find-tabs::-webkit-scrollbar{display:none}
+    .bj-find--industry .bj-find-tab{flex:none;scroll-snap-align:start}
+    /* 8業種は画面幅に収まらない。右端をフェードさせて横に続きがあることを示す
+       （DOMを増やさずに済むよう mask で処理する） */
+    .bj-find--industry .bj-find-tabs{
+      -webkit-mask-image:linear-gradient(90deg, black calc(100% - 34px), transparent);
+      mask-image:linear-gradient(90deg, black calc(100% - 34px), transparent);
+    }
   }
   @media (max-width: 430px){
-    .bj-issue-tabs{display:grid;grid-template-columns:1fr 1fr}
-    .bj-issue-panel{padding:20px 16px}
-    .bj-issue-link{font-size:14.5px;padding:14px 2px;line-height:1.65}
+    .bj-find--issue .bj-find-tabs{display:grid;grid-template-columns:1fr 1fr}
+    .bj-find-panel{padding:20px 16px}
+    .bj-find-link{font-size:14.5px;padding:14px 2px;line-height:1.65}
   }
   /* cats */
   .bj-main{padding:clamp(34px,4.5vw,54px) var(--gutter) clamp(64px,8vw,110px)}
-  .bj-cats-label{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:var(--track-label);margin-bottom:10px}
+  /* 見出しだが、幅は文字ぶんに留める。ブロック幅のままだとフォーカスリングが
+     コンテナ全幅の枠になり、空の入力欄に見えてしまう。 */
+  .bj-cats-label{width:fit-content;font-size:12px;font-weight:700;color:var(--muted);letter-spacing:var(--track-label);margin-bottom:10px}
+  /* 最下部の検索窓からここへフォーカスを飛ばすので、着地が見えるようにする */
+  .bj-cats-label:focus-visible{outline:2px solid var(--green-ink);outline-offset:2px}
+  /* 読み上げ専用。style.css に sr-only 系の共通ユーティリティが無いのでローカルに置く */
+  .bj-live{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
   .bj-cats{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px}
   .bj-cat{font-family:var(--font-jp);font-size:13px;font-weight:700;color:var(--black);background:#fff;border:1.5px solid var(--line);border-radius:999px;padding:9px 20px;cursor:pointer;transition:all .15s}
   .bj-cat i{font-style:normal;font-size:11px;color:var(--muted);margin-left:7px;font-family:var(--font-en);font-weight:700}
@@ -305,6 +526,11 @@ const jsonLd = [
   .bj-more{margin-top:auto;padding-top:10px;font-size:12.5px;font-weight:700;color:var(--green-dark)}
   .bj-card:hover .bj-more{text-decoration:underline;text-underline-offset:4px}
   .bj-empty{text-align:center;color:var(--muted);font-size:13.5px;padding:60px 0}
+  /* search（ページ最下部） */
+  .bj-search-sec{background:var(--tint);border-top:1px solid var(--line);padding:clamp(44px,5vw,72px) 0 clamp(52px,6vw,84px)}
+  .bj-search-sec .bj-search{margin:22px 0 0}
+  .bj-search input:focus-visible,
+  .bj-search button:focus-visible{outline:2px solid var(--green-ink);outline-offset:2px}
   @media (max-width: 900px){
     .bj-grid{grid-template-columns:1fr 1fr}
     .bj-hero h1 .sp{display:block}
@@ -315,17 +541,35 @@ const jsonLd = [
 </style>
 
 <script is:inline>
-  // カテゴリ×キーワードのクライアントサイド絞り込み
+  // カテゴリ×キーワードのクライアントサイド絞り込み。
+  // 検索窓はページ最下部、結果（カード一覧）は上。明示的な検索実行のときだけ結果までスクロールする。
   (function () {
     var grid = document.getElementById('bjGrid');
     if (!grid || grid.dataset.bound) return;
+    var input = document.getElementById('bjSearch');
+    var btn = document.getElementById('bjSearchBtn');
+    var empty = document.getElementById('bjEmpty');
+    var count = document.getElementById('bjCount');
+    var live = document.getElementById('bjLive');
+    if (!input || !btn || !empty || !count || !live) return;
     grid.dataset.bound = '1';
     var cards = Array.prototype.slice.call(grid.querySelectorAll('.bj-card'));
-    var empty = document.getElementById('bjEmpty');
-    var input = document.getElementById('bjSearch');
+    var total = cards.length;
     var cat = '';
-    function apply() {
-      var q = (input.value || '').trim().toLowerCase();
+    var countTimer = null;
+
+    function updateCount(raw, shown) {
+      count.textContent = raw
+        ? '「' + raw + '」の検索結果：' + shown + '件'
+        : 'カテゴリで絞り込む（' + (shown === total ? '全' : '') + shown + '本）';
+      // 見出しは即時更新。読み上げだけ遅らせて連呼を防ぐ。
+      if (countTimer) clearTimeout(countTimer);
+      countTimer = setTimeout(function () { live.textContent = count.textContent; }, 400);
+    }
+
+    function apply(opts) {
+      var raw = (input.value || '').trim();
+      var q = raw.toLowerCase();
       var shown = 0;
       cards.forEach(function (c) {
         var ok = (!cat || c.dataset.cat === cat) && (!q || c.dataset.text.indexOf(q) !== -1);
@@ -333,7 +577,16 @@ const jsonLd = [
         if (ok) shown++;
       });
       empty.hidden = shown > 0;
+      updateCount(raw, shown);
+      if (opts && opts.scroll) {
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        count.scrollIntoView({ block: 'start', behavior: reduce ? 'instant' : 'smooth' });
+        // 検索窓は最下部。スクロールだけだとフォーカスが画面外に取り残されるので、
+        // 明示実行（Enter／検索ボタン）のときだけ結果の見出しへフォーカスを移す。
+        count.focus({ preventScroll: true });
+      }
     }
+
     document.querySelectorAll('.bj-cat').forEach(function (b) {
       b.addEventListener('click', function () {
         document.querySelectorAll('.bj-cat').forEach(function (x) { x.classList.remove('on'); x.setAttribute('aria-pressed', 'false'); });
@@ -343,72 +596,102 @@ const jsonLd = [
         apply();
       });
     });
-    input.addEventListener('input', apply);
-    document.getElementById('bjSearchBtn').addEventListener('click', apply);
+    // 1打鍵ごとにページが飛ぶとモバイルで操作できなくなるので、逐次入力ではスクロールしない
+    input.addEventListener('input', function () { apply(); });
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') { e.preventDefault(); apply({ scroll: true }); }
+    });
+    btn.addEventListener('click', function () { apply({ scroll: true }); });
   })();
 
-  // 課題タブ（roving tabindex ＋ 自動アクティベーション）。グリッドの絞り込みとは変数を共有しない。
+  // タブ（業種別／課題別）の共通コントローラ。data-find でグループを識別する。
+  // ハッシュ文法は #<グループ名>-<key>（#industry-beauty / #issue-start）。
+  // 業種CTAのリンク先は /case/ 側の文法（接頭辞なしの業種key）。こちらとは混ぜない。
+  // ハッシュが表すのは「最後に触ったタブ1つ」だけ。2グループの状態を同時に符号化はしない。
   (function () {
-    var tabs = Array.prototype.slice.call(document.querySelectorAll('.bj-issue-tab'));
-    if (!tabs.length) return;
-    var panels = Array.prototype.slice.call(document.querySelectorAll('.bj-issue-panel'));
-    var sec = document.getElementById('bjIssue');
-    var HASH = /^#issue-(start|delivery|revenue|outsource)$/;
+    var sections = Array.prototype.slice.call(document.querySelectorAll('[data-find]'));
+    if (!sections.length) return;
+    var RE = /^#([a-z]+)-([a-z]+)$/;
 
-    function indexOfSlug(slug) {
-      for (var i = 0; i < tabs.length; i++) { if (tabs[i].getAttribute('data-issue') === slug) return i; }
+    var reg = sections.map(function (sec) {
+      return {
+        name: sec.getAttribute('data-find'),
+        sec: sec,
+        // 必ずセクションでスコープする。document 全体から拾うと、
+        // 業種タブの末尾で ArrowRight したときフォーカスが課題タブへ飛ぶ。
+        tabs: Array.prototype.slice.call(sec.querySelectorAll('.bj-find-tab')),
+        panels: Array.prototype.slice.call(sec.querySelectorAll('.bj-find-panel')),
+      };
+    });
+
+    function idxOf(g, key) {
+      for (var i = 0; i < g.tabs.length; i++) {
+        if (g.tabs[i].getAttribute('data-key') === key) return i;
+      }
       return -1;
     }
 
-    function select(slug, opts) {
-      var idx = indexOfSlug(slug);
-      if (idx < 0) return;
+    function select(g, key, opts) {
+      var idx = idxOf(g, key);
+      if (idx < 0) return false;
       opts = opts || {};
-      tabs.forEach(function (t, i) {
+      g.tabs.forEach(function (t, i) {
         var on = i === idx;
         if (on) { t.classList.add('is-on'); } else { t.classList.remove('is-on'); }
         t.setAttribute('aria-selected', on ? 'true' : 'false');
         t.tabIndex = on ? 0 : -1;
       });
-      panels.forEach(function (p) { p.hidden = p.getAttribute('data-issue') !== slug; });
-      if (opts.focus) tabs[idx].focus();
-      if (opts.hash) { try { history.replaceState(null, '', '#issue-' + slug); } catch (e) {} }
-      if (opts.track && typeof gtag === 'function') {
-        gtag('event', 'select_content', { content_type: 'media_issue_tab', item_id: slug });
+      g.panels.forEach(function (p) { p.hidden = p.getAttribute('data-key') !== key; });
+      if (opts.focus) {
+        g.tabs[idx].focus();
+        // 横スクロールのタブ行で、選択が可視域外に残らないようにする
+        g.tabs[idx].scrollIntoView({ block: 'nearest', inline: 'nearest' });
       }
+      if (opts.hash) { try { history.replaceState(null, '', '#' + g.name + '-' + key); } catch (e) {} }
+      if (opts.track && typeof gtag === 'function') {
+        gtag('event', 'select_content', { content_type: 'media_' + g.name + '_tab', item_id: key });
+      }
+      return true;
     }
 
-    tabs.forEach(function (t) {
-      t.addEventListener('click', function () {
-        // クリック由来では focus を動かさない（focus ringとスクロールの副作用を避ける）
-        select(t.getAttribute('data-issue'), { hash: true, track: true });
-      });
-      t.addEventListener('keydown', function (e) {
-        var cur = indexOfSlug(t.getAttribute('data-issue'));
-        var next = -1;
-        if (e.key === 'ArrowRight') next = (cur + 1) % tabs.length;
-        else if (e.key === 'ArrowLeft') next = (cur - 1 + tabs.length) % tabs.length;
-        else if (e.key === 'Home') next = 0;
-        else if (e.key === 'End') next = tabs.length - 1;
-        if (next < 0) return;
-        e.preventDefault();
-        select(tabs[next].getAttribute('data-issue'), { focus: true, hash: true, track: true });
+    reg.forEach(function (g) {
+      g.tabs.forEach(function (t) {
+        t.addEventListener('click', function () {
+          // クリック由来では focus を動かさない（focus ringとスクロールの副作用を避ける）
+          select(g, t.getAttribute('data-key'), { hash: true, track: true });
+        });
+        t.addEventListener('keydown', function (e) {
+          var cur = idxOf(g, t.getAttribute('data-key'));
+          var next = -1;
+          if (e.key === 'ArrowRight') next = (cur + 1) % g.tabs.length;
+          else if (e.key === 'ArrowLeft') next = (cur - 1 + g.tabs.length) % g.tabs.length;
+          else if (e.key === 'Home') next = 0;
+          else if (e.key === 'End') next = g.tabs.length - 1;
+          if (next < 0) return;
+          e.preventDefault();
+          select(g, g.tabs[next].getAttribute('data-key'), { focus: true, hash: true, track: true });
+        });
       });
     });
 
-    function fromHash(scroll) {
-      var m = HASH.exec(location.hash || '');
+    function route(hash, scroll) {
+      var m = RE.exec(hash || '');
       if (!m) return;
-      select(m[1], {});
-      if (!scroll || !sec) return;
-      // html{scroll-behavior:smooth} は behavior:'auto' を smooth 化し、
-      // フラグメント遷移のスクロールリセットに打ち消される。'instant' で確実に飛ばす。
-      var jump = function () { sec.scrollIntoView({ block: 'start', behavior: 'instant' }); };
-      if (document.readyState === 'complete') jump();
-      else window.addEventListener('load', jump, { once: true });
+      for (var i = 0; i < reg.length; i++) {
+        if (reg[i].name !== m[1]) continue;
+        if (!select(reg[i], m[2], {})) return;
+        if (!scroll) return;
+        var sec = reg[i].sec;
+        // html{scroll-behavior:smooth} は behavior:'auto' を smooth 化し、
+        // フラグメント遷移のスクロールリセットに打ち消される。'instant' で確実に飛ばす。
+        var jump = function () { sec.scrollIntoView({ block: 'start', behavior: 'instant' }); };
+        if (document.readyState === 'complete') jump();
+        else window.addEventListener('load', jump, { once: true });
+        return;
+      }
     }
 
-    fromHash(true);
-    window.addEventListener('hashchange', function () { fromHash(false); });
+    route(location.hash, true);
+    window.addEventListener('hashchange', function () { route(location.hash, false); });
   })();
 </script>
