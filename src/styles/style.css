@@ -2682,7 +2682,18 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   .mvv-grid{grid-template-columns:1fr;max-width:520px}
 }
 @media (max-width:640px){
-  .mvv-card{gap:11px;padding:20px 18px 22px}
+  /* 3枚を縦に積むと理念セクションだけ極端に長くなるので、
+     メンバーカードと同じ横スライド（スナップ）で見せる。 */
+  .mvv-grid{
+    display:flex;max-width:none;gap:12px;
+    overflow-x:auto;scroll-snap-type:x mandatory;
+    margin-inline:calc(var(--gutter) * -1);
+    padding-inline:var(--gutter);padding-bottom:4px;
+    scroll-padding-inline:var(--gutter);
+    scrollbar-width:none;
+  }
+  .mvv-grid::-webkit-scrollbar{display:none}
+  .mvv-card{flex:0 0 84%;scroll-snap-align:start;gap:11px;padding:20px 18px 22px}
   .mvv-crest{width:64px;height:64px;font-size:calc(25px * var(--fs,1))}
   .mvv-crest::before{inset:4px}
   .mvv-yoshi{font-size:calc(17.5px * var(--fs,1))}
