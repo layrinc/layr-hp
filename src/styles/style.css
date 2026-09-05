@@ -2892,7 +2892,7 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
 .hd-phone::after{
   content:"";position:absolute;z-index:-1;width:3px;
   background:color-mix(in srgb, var(--black) 88%, var(--paper));
-  border-radius:2px;
+  border-radius:var(--r-pill);
 }
 .hd-phone::before{
   left:-3px;top:19%;height:19%;
