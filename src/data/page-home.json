@@ -4,7 +4,7 @@
       "id": "b-hero",
       "type": "heroText",
       "p": {
-        "iso": "consult",
+        "iso": "",
         "eyebrow": "",
         "line1": "LINEマーケティングで、",
         "line2": "事業を加速させる。",
@@ -17,7 +17,61 @@
         "scene": false,
         "points": [],
         "cta_primary_url": "/document/",
-        "cta_line": "LINEで相談する"
+        "cta_line": "LINEで相談する",
+        "mock": "line",
+        "mock_data": {
+          "caption": "LINE公式アカウントの画面イメージ（作例）。特定の企業の実際の画面ではありません。",
+          "note": "※画面はLINE公式アカウントの作例です",
+          "account": {
+            "name": "ヘアサロン ソラ",
+            "badge": "作例"
+          },
+          "messages": [
+            {
+              "from": "shop",
+              "kind": "text",
+              "text": "ご登録ありがとうございます。ご予約は下のメニューからいつでも承ります。"
+            },
+            {
+              "from": "shop",
+              "kind": "card",
+              "text": "前回のご来店から2か月が経ちました。",
+              "cardTitle": "今月の空き枠のご案内",
+              "cardBody": "平日の午前とお昼過ぎに空きがあります。"
+            },
+            {
+              "from": "user",
+              "kind": "text",
+              "text": "今週の土曜、午後は空いていますか。"
+            }
+          ],
+          "richmenu": [
+            {
+              "label": "ご予約する"
+            },
+            {
+              "label": "クーポン"
+            },
+            {
+              "label": "メニュー"
+            },
+            {
+              "label": "よくある質問"
+            },
+            {
+              "label": "アクセス"
+            },
+            {
+              "label": "電話する"
+            }
+          ],
+          "aside_caption": "ステップ配信",
+          "aside_items": [
+            "登録直後にあいさつ",
+            "3日後にクーポン",
+            "2か月後に再来店案内"
+          ]
+        }
       }
     },
     {

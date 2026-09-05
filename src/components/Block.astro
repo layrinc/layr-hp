@@ -10,6 +10,7 @@ import settings from '../data/settings.json';
 import IllustWorry from './IllustWorry.astro';
 import IllustGrowth from './IllustGrowth.astro';
 import IllustConsult from './IllustConsult.astro';
+import HeroDevice from './HeroDevice.astro';
 import { ILLUSTS } from '../lib/illusts.mjs';
 import { ISO } from '../lib/iso-illusts.mjs';
 
@@ -129,12 +130,16 @@ const serviceIcons = [
         </a>}
         {p.cta_secondary && <a class="btn btn-black btn-lg" href={p.cta_secondary_url || '#service'}>{p.cta_secondary}</a>}
       </div>
-      {p.iso && ISO[p.iso] && (
-        <div class="hero2-fig" aria-hidden="true">
-          <span class="hero2-blob"></span>
-          <Fragment set:html={ISO[p.iso]} />
-        </div>
-      )}
+      {/* 図版は排他。mock（スマホモック）が指定されていればそちらを優先し、
+          従来のアイソメSVG＋ブロブ経路（他ページで使用中）はそのまま残す。 */}
+      {p.mock === 'line'
+        ? <HeroDevice data={p.mock_data} />
+        : (p.iso && ISO[p.iso] && (
+            <div class="hero2-fig" aria-hidden="true">
+              <span class="hero2-blob"></span>
+              <Fragment set:html={ISO[p.iso]} />
+            </div>
+          ))}
       {p.scene && (
         <div class="hero2-scene" aria-hidden="true">
           <div class="hs-row">

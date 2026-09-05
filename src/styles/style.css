@@ -73,6 +73,10 @@
   --green-pale2:color-mix(in srgb, var(--green) 18%, var(--paper));
   --green-line:color-mix(in srgb, var(--green) 34%, var(--paper));
   --green-on-dark:color-mix(in srgb, var(--green) 72%, var(--paper));
+  /* LINEブランドの緑。LAYRのブランドグリーン(--green)とは別物で、
+     「LINEの入口」を示す時だけ使う（.btn-line / ヒーローのスマホモック）。
+     テーマ設定では変えない固定色。 */
+  --line-green:#06C755;
   --marker-ink:color-mix(in srgb, var(--green) 30%, transparent);
   /* イラスト(IllustWorry/Growth/Consult・ILLUSTS)の濃色面。
      未定義だと <svg fill="none"> を継承して髪や服が塗り無しで描画される。 */
@@ -2806,3 +2810,243 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
 
 @media (max-width:900px){ .ch-grid{grid-template-columns:1fr 1fr} }
 @media (max-width:560px){ .ch-grid{grid-template-columns:1fr} }
+
+/* =====================================================
+   v28 — TOPヒーローのスマホモック（LINE公式アカウントの実画面）
+   狙い: 「LINEを作る会社なのに作ったLINEの実物が1枚も無い」を解消する。
+   構図: 背景の斜めカラーブロック2枚（角度18°）＋ ほぼ立っている端末（Y-10°/Z-3°）。
+        斜めは板が全部引き受け、文字が乗る面は傾けない＝画面が読める。
+   制約: 新しい font-size / border-radius / hex / box-shadow / 2px以上border は増やさない。
+        使う文字サイズは 12px / 13px / 15px の3種のみ（いずれも既出のリテラル）。
+   ===================================================== */
+
+/* 読み上げには残し、視覚的にだけ隠すユーティリティ（display:none にしない） */
+.u-vh{
+  position:absolute;width:1px;height:1px;
+  margin:-1px;padding:0;overflow:hidden;
+  clip-path:inset(50%);white-space:nowrap;border:0;
+}
+
+/* ---- 図版のガワ ---- */
+.hero2-fig.hero-device{
+  --dev-w:clamp(240px, 26vw, 268px);
+  --dev-tilt-y:-10deg;   /* 奥行き。cos10°=0.985 で日本語の字面は崩れない */
+  --dev-tilt-z:-3deg;    /* 面内回転。6°を超えると可読性が落ちるので半分に留める */
+  /* 端末の角丸はテーマの --radius に追従させない。
+     管理画面で角丸を上げると画面内の時刻やリッチメニューが切れるため、上下限で挟む */
+  --dev-r:clamp(14px, calc(var(--r-lg) * 2.4), 26px);
+  --dev-r-s:clamp(10px, calc(var(--r-lg) * 1.6), 18px);
+  --dev-r-bubble:clamp(8px, calc(var(--r-lg) * 1.4), 14px);
+  position:relative;
+  display:flex;flex-direction:column;align-items:center;
+  padding:clamp(8px, 1.6vw, 22px);
+  /* 左上の角はh1に明け渡す（視線は eyebrow → h1 → sub → CTA → 端末） */
+  padding-top:clamp(8px, 2.4vw, 30px);
+}
+
+/* ---- 背景の斜めカラーブロック ----
+   ブロブ（境界も形も意味も無いにじみ）をやめ、角度と面を持った幾何に置き換える。
+   端末に紐づけているので1カラム化しても位置合わせが要らない。
+   ベタ塗りのみ＝Chromeのグラデ背景がLCP候補に昇格する事故も起きない。 */
+.hd-stage{position:relative;width:var(--dev-w)}
+.hd-stage::before,
+.hd-stage::after{
+  content:"";position:absolute;z-index:0;pointer-events:none;
+  border-radius:var(--r-lg);
+  transform:rotate(-18deg);
+}
+.hd-stage::before{           /* 主板: 右下へ抜ける */
+  right:-26%;bottom:5%;width:124%;height:48%;
+  background:var(--green-pale2);
+  border:1px solid var(--green-line);
+}
+.hd-stage::after{            /* 副板: 主板から上へずらして「板の重なり」を作る */
+  left:-26%;top:7%;width:110%;height:42%;
+  background:var(--green-pale);
+}
+
+/* ---- 端末 ----
+   立体感は ①1px罫 ②背後の板 ③Y軸回転 の3つで作る。影は1件も足さない。
+   preserve-3d / will-change は付けない（合成レイヤーとボケの原因になる）。 */
+.hd-phone{
+  position:relative;z-index:2;
+  width:100%;padding:10px;
+  background:var(--paper);
+  border:1px solid var(--line);
+  border-radius:var(--dev-r);
+  transform:perspective(1400px) rotateY(var(--dev-tilt-y)) rotateZ(var(--dev-tilt-z));
+  transform-origin:58% 50%;
+}
+.hd-screen{
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+  border-radius:var(--dev-r-s);
+  /* トーク画面の地。LINEらしさは「淡い緑の地」と構造で示し、ロゴ意匠は使わない */
+  background:color-mix(in srgb, var(--line-green) 7%, var(--paper));
+}
+.hd-notch{
+  position:absolute;left:50%;top:6px;z-index:2;
+  transform:translateX(-50%);
+  width:29%;height:9px;
+  border-radius:var(--r-pill);
+  background:color-mix(in srgb, var(--black) 86%, var(--paper));
+}
+.hd-status{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 12px 5px;background:var(--paper);
+}
+.hd-time{
+  font-size:calc(12px * var(--fs,1));
+  font-weight:700;line-height:1.2;color:var(--black);
+}
+.hd-sig{display:flex;align-items:center;gap:3px}
+.hd-sig i{display:block;width:4px;height:4px;border-radius:50%;background:var(--muted)}
+
+.hd-head{
+  display:flex;align-items:center;gap:8px;
+  padding:9px 12px;
+  background:var(--paper);
+  border-bottom:1px solid var(--line-soft);
+}
+.hd-avatar{
+  flex:0 0 auto;width:24px;height:24px;border-radius:50%;
+  background:var(--line-green);
+}
+.hd-name{
+  min-width:0;flex:0 1 auto;
+  font-size:calc(15px * var(--fs,1));
+  font-weight:700;line-height:1.4;color:var(--black);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+.hd-badge{
+  margin-left:auto;flex:0 0 auto;
+  padding:1px 8px;
+  border:1px solid var(--line);border-radius:var(--r-pill);
+  font-size:calc(12px * var(--fs,1));line-height:1.6;color:var(--muted);
+  white-space:nowrap;
+}
+
+/* ---- トーク ---- */
+.hd-talk{
+  flex:1 1 auto;min-height:0;
+  display:flex;flex-direction:column;gap:8px;
+  padding:11px 10px;
+}
+.hd-msg{display:flex;flex-direction:column;gap:5px;max-width:84%}
+.hd-msg.is-user{align-self:flex-end;align-items:flex-end}
+.hd-bubble{
+  padding:8px 11px;
+  border:1px solid var(--line-soft);border-radius:var(--dev-r-bubble);
+  background:var(--paper);color:var(--text);
+  font-size:calc(12px * var(--fs,1));line-height:1.7;
+}
+/* 緑を塗るのはユーザー側の1本だけ。文字は黒＝コントラスト比9以上を確保する */
+.hd-msg.is-user .hd-bubble{
+  background:var(--line-green);border-color:var(--line-green);color:var(--black);
+}
+.hd-card{
+  width:100%;overflow:hidden;
+  background:var(--paper);
+  border:1px solid var(--line-soft);border-radius:var(--dev-r-bubble);
+}
+.hd-card-img{
+  display:grid;place-items:center;height:44px;
+  background:color-mix(in srgb, var(--line-green) 16%, var(--paper));
+  border-bottom:1px solid var(--line-soft);
+  color:var(--green-dark);
+}
+.hd-card-img svg{width:48px;height:32px;display:block}
+.hd-card-title{
+  padding:8px 10px 0;
+  font-size:calc(13px * var(--fs,1));
+  font-weight:700;line-height:1.5;color:var(--black);
+}
+.hd-card-body{
+  padding:3px 10px 10px;
+  font-size:calc(12px * var(--fs,1));line-height:1.7;color:var(--muted);
+}
+
+/* ---- リッチメニュー（1px罫の隙間で区切る＝太枠を作らない） ---- */
+.hd-menu{
+  display:grid;grid-template-columns:repeat(3, minmax(0, 1fr));
+  gap:1px;
+  background:var(--line-soft);
+  border-top:1px solid var(--line-soft);
+}
+.hd-menu li{
+  display:grid;place-items:center;
+  padding:10px 1px;
+  background:var(--paper);
+  font-size:calc(12px * var(--fs,1));
+  font-weight:500;line-height:1.4;color:var(--text);
+  white-space:nowrap;
+}
+.hd-menu li.is-lead{
+  background:color-mix(in srgb, var(--line-green) 12%, var(--paper));
+  font-weight:700;color:var(--black);
+}
+.hd-home{
+  position:relative;display:block;height:14px;background:var(--paper);
+}
+.hd-home::after{
+  content:"";position:absolute;left:50%;top:5px;
+  transform:translateX(-50%);
+  width:30%;height:3px;border-radius:var(--r-pill);
+  background:color-mix(in srgb, var(--black) 22%, var(--paper));
+}
+
+/* ---- 補助カード（タブレットの代わり。奥行き＋「リッチメニュー」の語をFVに足す） ---- */
+.hd-aside{
+  /* 純装飾。端末外へ張り出してCTA列に重なりうるので、クリックは常に下へ通す */
+  position:absolute;z-index:1;pointer-events:none;
+  right:calc(100% - 26px);bottom:11%;
+  width:clamp(136px, 14vw, 152px);
+  padding:10px 9px;
+  background:var(--paper);
+  border:1px solid var(--line);border-radius:var(--dev-r-s);
+  /* 端末と同じ角度を共有することで「同じ空間にある2枚」に見せる */
+  transform:perspective(1400px) rotateY(var(--dev-tilt-y)) rotateZ(var(--dev-tilt-z));
+  transform-origin:100% 50%;
+}
+.hd-aside-cap{
+  display:block;margin-bottom:7px;
+  font-size:calc(12px * var(--fs,1));line-height:1.5;color:var(--muted);
+}
+.hd-aside-grid{display:flex;flex-direction:column;gap:5px}
+.hd-aside-grid span{
+  padding:6px 8px;
+  border-radius:var(--r-s);
+  background:var(--tint);
+  font-size:calc(12px * var(--fs,1));line-height:1.4;color:var(--text);
+  white-space:nowrap;
+}
+
+/* ---- 端末下の注記（作例であることを目に見える形でも出す） ---- */
+.hero-device-note{
+  position:relative;z-index:2;
+  margin-top:12px;max-width:var(--dev-w);
+  font-size:calc(12px * var(--fs,1));line-height:1.7;color:var(--muted);
+}
+
+/* 新FVでは既存の背景ブロブ／ドット層を出さない（斜めの板と役割が二重になるため）。
+   :has() でこのヒーローに限定するので、他ページの .hero2 は現状のまま。 */
+.hero2:has(.hero-device)::before,
+.hero2:has(.hero-device)::after{content:none;display:none}
+
+@media (max-width:980px){
+  .hero2-fig.hero-device{--dev-w:min(300px, 78vw);margin:clamp(28px, 5vw, 44px) auto 0;padding-top:0}
+}
+@media (max-width:640px){
+  /* 幅が狭い端末を数度傾けると辺が半端ピクセルに落ちて「歪んで」見える。
+     斜めは背景の板が引き続き担うので、端末は両軸とも0にする。 */
+  .hero2-fig.hero-device{--dev-w:min(272px, 74vw);--dev-tilt-y:0deg;--dev-tilt-z:0deg}
+  /* 狭い画面で情報が2つ重なると主役の端末が消えるので補助カードは出さない */
+  .hd-aside{display:none}
+  .hd-talk{gap:8px;padding:11px 9px}
+  /* CTAの直下に端末が来るよう上余白を詰める（リッチメニューを少しでも上へ） */
+  .hero2-inner:has(.hero2-fig) > .hero2-fig.hero-device{margin-top:18px}
+}
+@media (max-width:480px){
+  /* この幅では2枚の板の重なりが視認できないサイズになるので主板1枚に絞る */
+  .hd-stage::after{display:none}
+}
