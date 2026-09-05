@@ -2834,8 +2834,8 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   --dev-tilt-z:-3deg;    /* 面内回転。6°を超えると可読性が落ちるので半分に留める */
   /* 端末の角丸はテーマの --radius に追従させない。
      管理画面で角丸を上げると画面内の時刻やリッチメニューが切れるため、上下限で挟む */
-  --dev-r:clamp(14px, calc(var(--r-lg) * 2.4), 26px);
-  --dev-r-s:clamp(10px, calc(var(--r-lg) * 1.6), 18px);
+  --dev-r:clamp(24px, calc(var(--r-lg) * 3.8), 42px);
+  --dev-r-s:clamp(16px, calc(var(--r-lg) * 2.8), 30px);
   --dev-r-bubble:clamp(8px, calc(var(--r-lg) * 1.4), 14px);
   position:relative;
   display:flex;flex-direction:column;align-items:center;
@@ -2870,13 +2870,37 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
    preserve-3d / will-change は付けない（合成レイヤーとボケの原因になる）。 */
 .hd-phone{
   position:relative;z-index:2;
-  width:100%;padding:10px;
-  background:var(--paper);
-  border:1px solid var(--line);
+  width:100%;padding:11px;
+  /* 実機のチタン枠。黒を基調に、光の当たる左上だけわずかに明るくする（新色なし＝--black と --paper の混色） */
+  background:
+    linear-gradient(155deg,
+      color-mix(in srgb, var(--black) 70%, var(--paper)) 0%,
+      var(--black) 32%,
+      color-mix(in srgb, var(--black) 92%, var(--paper)) 100%);
+  border:1px solid color-mix(in srgb, var(--black) 55%, var(--paper));
   border-radius:var(--dev-r);
+  /* 枠の内側の細いハイライトと、机に落ちる影。端末モックに必要な最小の1宣言 */
+  box-shadow:
+    inset 0 0 0 1.5px color-mix(in srgb, var(--paper) 14%, transparent),
+    0 30px 50px -18px color-mix(in srgb, var(--black) 42%, transparent),
+    0 10px 18px -10px color-mix(in srgb, var(--black) 30%, transparent);
   transform:perspective(1400px) rotateY(var(--dev-tilt-y)) rotateZ(var(--dev-tilt-z));
   transform-origin:58% 50%;
 }
+/* 側面ボタン。左＝音量2つ・右＝電源。枠と同じ黒で、少しだけ外へ張り出す */
+.hd-phone::before,
+.hd-phone::after{
+  content:"";position:absolute;z-index:-1;width:3px;
+  background:color-mix(in srgb, var(--black) 88%, var(--paper));
+  border-radius:2px;
+}
+.hd-phone::before{
+  left:-3px;top:19%;height:19%;
+  background:
+    linear-gradient(var(--black), var(--black)) 0 0 / 100% 42% no-repeat,
+    linear-gradient(var(--black), var(--black)) 0 100% / 100% 42% no-repeat;
+}
+.hd-phone::after{right:-3px;top:24%;height:13%}
 .hd-screen{
   position:relative;overflow:hidden;
   display:flex;flex-direction:column;
@@ -2884,12 +2908,20 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   /* トーク画面の地。LINEらしさは「淡い緑の地」と構造で示し、ロゴ意匠は使わない */
   background:color-mix(in srgb, var(--line-green) 7%, var(--paper));
 }
+/* ガラスの反射。左上から斜めに薄く走らせる。文字の可読性を落とさない濃さに留める */
+.hd-screen::after{
+  content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
+  background:linear-gradient(118deg,
+    color-mix(in srgb, var(--paper) 26%, transparent) 0%,
+    color-mix(in srgb, var(--paper) 8%, transparent) 22%,
+    transparent 40%);
+}
 .hd-notch{
-  position:absolute;left:50%;top:6px;z-index:2;
+  position:absolute;left:50%;top:9px;z-index:4;
   transform:translateX(-50%);
-  width:29%;height:9px;
+  width:31%;height:11px;
   border-radius:var(--r-pill);
-  background:color-mix(in srgb, var(--black) 86%, var(--paper));
+  background:var(--black);
 }
 .hd-status{
   display:flex;align-items:center;justify-content:space-between;
