@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 452" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0499AF"/><stop offset="1" stop-color="#77D55C"/></linearGradient></defs>
+<rect x="1" y="1" width="1198" height="450" rx="16" fill="#FFFFFF" stroke="#D9D9D9" stroke-width="1"/>
+<rect x="48" y="40" width="140" height="46" rx="23" fill="url(#g)"/>
+<text x="118" y="71" font-size="20" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="4">手順</text>
+<text x="216" y="72" font-size="25" font-weight="700" fill="#000000" text-anchor="start">施策が定着するまでの流れ</text>
+<circle cx="225" cy="239" r="88.5" fill="#FFFFFF" stroke="url(#g)" stroke-width="9"/>
+<text x="225" y="247" font-size="20" font-weight="700" fill="#000000" text-anchor="middle">配信開始</text>
+<text x="225" y="314" font-size="13" font-weight="700" fill="#00BF63" text-anchor="middle" letter-spacing="2">STEP1</text>
+<path d="M324,213 L368,239 L324,265 Z" fill="url(#g)"/>
+<text x="225" y="366" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">LINEでの会員・ファン化施策を</text>
+<text x="225" y="390" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">スタート</text>
+<circle cx="475" cy="239" r="88.5" fill="#FFFFFF" stroke="url(#g)" stroke-width="9"/>
+<text x="475" y="232.5" font-size="20" font-weight="700" fill="#000000" text-anchor="middle">店舗・EC担当</text>
+<text x="475" y="261.5" font-size="20" font-weight="700" fill="#000000" text-anchor="middle">ですり合わせ</text>
+<text x="475" y="314" font-size="13" font-weight="700" fill="#00BF63" text-anchor="middle" letter-spacing="2">STEP2</text>
+<path d="M574,213 L618,239 L574,265 Z" fill="url(#g)"/>
+<text x="475" y="366" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">配信内容や役割分担を関係者間で</text>
+<text x="475" y="390" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">調整</text>
+<circle cx="725" cy="239" r="88.5" fill="#FFFFFF" stroke="url(#g)" stroke-width="9"/>
+<text x="725" y="232.5" font-size="20" font-weight="700" fill="#000000" text-anchor="middle">配信計画の共</text>
+<text x="725" y="261.5" font-size="20" font-weight="700" fill="#000000" text-anchor="middle">有</text>
+<text x="725" y="314" font-size="13" font-weight="700" fill="#00BF63" text-anchor="middle" letter-spacing="2">STEP3</text>
+<path d="M824,213 L868,239 L824,265 Z" fill="url(#g)"/>
+<text x="725" y="366" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">すり合わせた内容を計画として共</text>
+<text x="725" y="390" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">有</text>
+<circle cx="975" cy="239" r="88.5" fill="#FFFFFF" stroke="url(#g)" stroke-width="9"/>
+<text x="975" y="232.5" font-size="20" font-weight="700" fill="#000000" text-anchor="middle">長期的なリピ</text>
+<text x="975" y="261.5" font-size="20" font-weight="700" fill="#000000" text-anchor="middle">ート定着</text>
+<text x="975" y="314" font-size="13" font-weight="700" fill="#00BF63" text-anchor="middle" letter-spacing="2">STEP4</text>
+<text x="975" y="366" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">継続的な配信でファン化・リピー</text>
+<text x="975" y="390" font-size="14" font-weight="700" fill="#333333" text-anchor="middle">トが定着</text>
+</svg>
