@@ -1,0 +1,29 @@
+name: ci
+
+# PRと main への push で、ビルドとデザインゲートの回帰チェックを回す。
+# 落ちたPRはマージできない（main のブランチ保護でこのチェックを必須にしている）。
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build（全ページが生成されること）
+        run: npm run build
+
+      - name: Design gate regression（基準値から1項目でも悪化していれば失敗）
+        run: bash scripts/gate-regression.sh
