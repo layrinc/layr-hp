@@ -2871,13 +2871,13 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
 .hd-phone{
   position:relative;z-index:2;
   width:100%;padding:11px;
-  /* 実機のチタン枠。黒を基調に、光の当たる左上だけわずかに明るくする（新色なし＝--black と --paper の混色） */
+  /* 緑の筐体。光の当たる左上を明るく、下へ向かって濃緑へ（新色なし＝--green/--green-dark/--paper の混色） */
   background:
     linear-gradient(155deg,
-      color-mix(in srgb, var(--black) 70%, var(--paper)) 0%,
-      var(--black) 32%,
-      color-mix(in srgb, var(--black) 92%, var(--paper)) 100%);
-  border:1px solid color-mix(in srgb, var(--black) 55%, var(--paper));
+      color-mix(in srgb, var(--green) 58%, var(--paper)) 0%,
+      var(--green) 34%,
+      var(--green-dark) 100%);
+  border:1px solid color-mix(in srgb, var(--green-dark) 72%, var(--black));
   border-radius:var(--dev-r);
   /* 枠の内側の細いハイライトと、机に落ちる影。端末モックに必要な最小の1宣言 */
   box-shadow:
@@ -2891,14 +2891,14 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
 .hd-phone::before,
 .hd-phone::after{
   content:"";position:absolute;z-index:-1;width:3px;
-  background:color-mix(in srgb, var(--black) 88%, var(--paper));
+  background:var(--green-dark);
   border-radius:var(--r-pill);
 }
 .hd-phone::before{
   left:-3px;top:19%;height:19%;
   background:
-    linear-gradient(var(--black), var(--black)) 0 0 / 100% 42% no-repeat,
-    linear-gradient(var(--black), var(--black)) 0 100% / 100% 42% no-repeat;
+    linear-gradient(var(--green-dark), var(--green-dark)) 0 0 / 100% 42% no-repeat,
+    linear-gradient(var(--green-dark), var(--green-dark)) 0 100% / 100% 42% no-repeat;
 }
 .hd-phone::after{right:-3px;top:24%;height:13%}
 .hd-screen{
