@@ -1,88 +1,38 @@
 ---
+import { Image } from 'astro:assets';
+import heroArtwork from '../assets/layr-hero-approved.png';
+
 /**
- * ヒーローのスマホモック（LINE公式アカウントの画面イメージ）。
- *
- * 方針:
- * - SVGではなくDOM＋CSSで組む。画面内の文字を実CSSピクセルで持たせ、
- *   ブラウザズーム・読み上げ・翻訳・LLMOのすべてで「読める」状態を保つため。
- * - CSSはこのファイルに持たせない。正本は src/styles/style.css の v28セクション。
- * - 文言は page-home.json（b-hero.p.mock_data）から渡す。ここにハードコードしない。
- * - LINEヤフー社のロゴ・バッジ意匠は模倣しない。「LINEらしさ」は
- *   淡緑の地・左右に振れる吹き出し・下部のリッチメニューという構造だけで示す。
- * - figcaption（読み上げ専用）と端末下の注記で「作例」であることを二重に明示する。
+ * ユーザー指定の会話画面を保った透過端末画像を、右側へ直接配置する。
+ * 画像内の会話内容を維持する。h1・リード・CTAは従来のHTMLを維持する。
+ * 配信用WebPはAstroが生成し、読み上げ用の紹介文は既存データから取得する。
  */
 interface Props { data?: any }
 const { data = {} } = Astro.props;
-
 const acc = data.account ?? {};
 const msgs: any[] = Array.isArray(data.messages) ? data.messages : [];
 const menu: any[] = Array.isArray(data.richmenu) ? data.richmenu : [];
-
-const caption = data.caption || 'LINE公式アカウントの画面イメージ（作例）。特定の企業の実際の画面ではありません。';
-const note = data.note || '※画面はLINE公式アカウントの作例です';
-const asideCap = data.aside_caption || 'リッチメニュー';
-const asideItems: string[] = (Array.isArray(data.aside_items) && data.aside_items.length
-  ? data.aside_items
-  : menu.slice(0, 3).map((m: any) => m?.label)).filter(Boolean);
+const caption = data.caption || 'サービスを紹介するトーク形式のイメージです。';
 ---
 <figure class="hero2-fig hero-device">
-  {/* 端末の中身より先に読ませる。作例である旨の担保もここが持つ */}
-  <figcaption class="u-vh">{caption}</figcaption>
-
-  <div class="hd-stage">
-    {asideItems.length > 0 && (
-      <div class="hd-aside" aria-hidden="true">
-        <span class="hd-aside-cap">{asideCap}</span>
-        <div class="hd-aside-grid">
-          {asideItems.map((l: string) => <span>{l}</span>)}
-        </div>
-      </div>
-    )}
-
-    <div class="hd-phone">
-      <div class="hd-screen">
-        <i class="hd-notch" aria-hidden="true"></i>
-        <div class="hd-status" aria-hidden="true">
-          <span class="hd-time">9:41</span>
-          <span class="hd-sig"><i></i><i></i><i></i></span>
-        </div>
-
-        <div class="hd-head">
-          <span class="hd-avatar" aria-hidden="true"></span>
-          <span class="hd-name">{acc.name}</span>
-          {acc.badge && <span class="hd-badge" aria-hidden="true">{acc.badge}</span>}
-        </div>
-
-        <div class="hd-talk">
-          {msgs.map((m: any) => (
-            <div class={`hd-msg is-${m?.from === 'user' ? 'user' : 'shop'}`}>
-              {m?.text && <p class="hd-bubble">{m.text}</p>}
-              {m?.kind === 'card' && (
-                <div class="hd-card">
-                  <span class="hd-card-img" aria-hidden="true">
-                    <svg viewBox="0 0 48 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                      <rect x="10" y="5" width="28" height="23" rx="3" stroke="currentColor" stroke-width="1.6"/>
-                      <path d="M10 12h28M17 2v6M31 2v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-                      <circle cx="18" cy="18" r="1.6" fill="currentColor"/><circle cx="24" cy="18" r="1.6" fill="currentColor"/>
-                      <circle cx="30" cy="18" r="1.6" fill="currentColor"/><circle cx="18" cy="23" r="1.6" fill="currentColor"/>
-                      <circle cx="24" cy="23" r="1.6" fill="currentColor" opacity=".4"/>
-                    </svg>
-                  </span>
-                  {m.cardTitle && <p class="hd-card-title">{m.cardTitle}</p>}
-                  {m.cardBody && <p class="hd-card-body">{m.cardBody}</p>}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-
-        <ul class="hd-menu">
-          {menu.map((m: any, i: number) => <li class={i === 0 ? 'is-lead' : ''}>{m?.label}</li>)}
-        </ul>
-        <span class="hd-home" aria-hidden="true"></span>
-      </div>
-    </div>
+  <div class="hero-device-window" aria-hidden="true">
+    <Image
+      src={heroArtwork}
+      alt=""
+      format="webp"
+      quality={90}
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+      draggable="false"
+    />
   </div>
-
-  <p class="hero-device-note">{note}</p>
+  <figcaption class="u-vh">
+    <p>{caption}</p>
+    <p>{acc.name}</p>
+    {msgs.map((m: any) => (
+      <p>{m?.from === 'user' ? '質問：' : `${acc.name}：`}{m?.text}</p>
+    ))}
+    <p>リッチメニュー：{menu.map((m: any) => m?.label).filter(Boolean).join('、')}</p>
+  </figcaption>
 </figure>
