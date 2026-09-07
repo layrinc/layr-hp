@@ -1,0 +1,8 @@
+# Legacy paths retained when serving static assets on Cloudflare Workers.
+# Host-based www redirects are configured in the Cloudflare zone; see docs/cloudflare-hosting.md.
+/service-line /service/line/ 308
+/service-line/ /service/line/ 308
+/blog /media/ 308
+/blog/ /media/ 308
+/blog/:slug/ /media/:slug/ 308
+/blog/:slug /media/:slug/ 308

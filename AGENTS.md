@@ -10,16 +10,20 @@
 | 本番URL | https://layr.co.jp/ |
 | 会社 | 株式会社LAYR。LINE公式アカウントの構築・運用代行。2026年8月設立（実績構築中） |
 | 技術 | Astro（静的サイト）。ブロック型CMS＝`src/data/page-home.json` を `src/components/Block.astro` が描画。記事は `src/content/blog/*.md` |
-| ホスティング | Vercel。**GitHub連携で `main` にマージされると自動で本番公開される** |
+| ホスティング | **Cloudflare Workers Static Assets**。既存の `wrangler.jsonc` を正本とする。Cloudflare側のGit連携・独自ドメインは実設定で確認する |
+
+河出の2026-09-07の指定：会社の公式サイト・会員サイト・社内ツールはCloudflareを標準の開発・公開基盤とする。この公式サイトもCloudflareで開発・公開する。
 
 ## 2. ブランチと公開の流れ（全員共通）
 
 ```
-作業ブランチ（feat/xxx）→ Pull Request → Vercelのプレビューで確認 → CI合格 → 河出が承認してマージ → 本番へ自動公開
+作業ブランチ（feat/xxx）→ Pull Request → Cloudflareのプレビューで確認 → CI合格 → 河出が承認してマージ → Cloudflareで本番公開
 ```
 
 - **`main` に直接 push しない**（保護ブランチ。PR必須）。
-- **`vercel deploy` を手で打たない**。公開はマージによる自動デプロイだけ。
+- **Vercelにはデプロイしない**。`vercel.json` はGit自動デプロイを停止するために残す。
+- Cloudflare Workers Buildsの本番ブランチを `main`、それ以外をプレビューに設定する。設定手順は `docs/cloudflare-hosting.md`。
+- Cloudflare側のGit連携が確認できるまでは「マージで自動公開される」と断定しない。既存Worker・独自ドメインを確認し、別Workerの作成やDNS変更を推測で行わない。
 - PRには「何を・なぜ・どう確認したか」と、変更後のスクリーンショット（1280 / 768 / 390）を付ける。
 - 1 PR = 1 目的。無関係な整理を混ぜない。
 
