@@ -20,56 +20,52 @@
         "cta_line": "LINEで相談する",
         "mock": "line",
         "mock_data": {
-          "caption": "LINE公式アカウントの画面イメージ（作例）。特定の企業の実際の画面ではありません。",
-          "note": "※画面はLINE公式アカウントの作例です",
+          "caption": "株式会社LAYRのサービスと特徴を紹介するトーク形式のイメージです。実際のお客様との会話ではありません。",
           "account": {
-            "name": "ヘアサロン ソラ",
-            "badge": "作例"
+            "name": "株式会社LAYR",
+            "initial": "L"
           },
           "messages": [
             {
-              "from": "shop",
+              "from": "user",
               "kind": "text",
-              "text": "ご登録ありがとうございます。ご予約は下のメニューからいつでも承ります。"
+              "text": "どんなサービスがありますか？"
             },
             {
               "from": "shop",
-              "kind": "card",
-              "text": "前回のご来店から2か月が経ちました。",
-              "cardTitle": "今月の空き枠のご案内",
-              "cardBody": "平日の午前とお昼過ぎに空きがあります。"
+              "kind": "text",
+              "text": "LINE構築・運用を中心に、広告運用・クリエイティブ制作まで支援します。"
             },
             {
               "from": "user",
               "kind": "text",
-              "text": "今週の土曜、午後は空いていますか。"
+              "text": "LAYRの強みは？"
+            },
+            {
+              "from": "shop",
+              "kind": "text",
+              "text": "構築から運用・改善まで一貫対応。数字を見ながら、事業の成長を支えます。"
             }
           ],
           "richmenu": [
             {
-              "label": "ご予約する"
+              "label": "サービス"
             },
             {
-              "label": "クーポン"
+              "label": "支援実績"
             },
             {
-              "label": "メニュー"
+              "label": "料金プラン"
             },
             {
-              "label": "よくある質問"
+              "label": "会社概要"
             },
             {
-              "label": "アクセス"
+              "label": "資料請求"
             },
             {
-              "label": "電話する"
+              "label": "無料相談"
             }
-          ],
-          "aside_caption": "ステップ配信",
-          "aside_items": [
-            "登録直後にあいさつ",
-            "3日後にクーポン",
-            "2か月後に再来店案内"
           ]
         }
       }

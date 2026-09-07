@@ -2812,12 +2812,12 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
 @media (max-width:560px){ .ch-grid{grid-template-columns:1fr} }
 
 /* =====================================================
-   v28 — TOPヒーローのスマホモック（LINE公式アカウントの実画面）
-   狙い: 「LINEを作る会社なのに作ったLINEの実物が1枚も無い」を解消する。
+   v28 — TOPヒーローのスマホモック（LAYRのサービス紹介トーク）
+   狙い: 構築・運用・改善までの支援内容を、2組の質問と回答で伝える。
    構図: 背景の斜めカラーブロック2枚（角度18°）＋ ほぼ立っている端末（Y-10°/Z-3°）。
         斜めは板が全部引き受け、文字が乗る面は傾けない＝画面が読める。
    制約: 新しい font-size / border-radius / hex / box-shadow / 2px以上border は増やさない。
-        使う文字サイズは 12px / 13px / 15px の3種のみ（いずれも既出のリテラル）。
+        文字サイズと角丸は既存の値・トークンを再利用する。
    ===================================================== */
 
 /* 読み上げには残し、視覚的にだけ隠すユーティリティ（display:none にしない） */
@@ -2829,7 +2829,7 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
 
 /* ---- 図版のガワ ---- */
 .hero2-fig.hero-device{
-  --dev-w:clamp(240px, 26vw, 268px);
+  --dev-w:clamp(272px, 26vw, 296px);
   --dev-tilt-y:-10deg;   /* 奥行き。cos10°=0.985 で日本語の字面は崩れない */
   --dev-tilt-z:-3deg;    /* 面内回転。6°を超えると可読性が落ちるので半分に留める */
   /* 端末の角丸はテーマの --radius に追従させない。
@@ -2866,28 +2866,32 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
 }
 
 /* ---- 端末 ----
-   立体感は ①1px罫 ②背後の板 ③Y軸回転 の3つで作る。影は1件も足さない。
+   緑の金属縁・黒いベゼル・ガラス面を分け、既存の影1宣言で接地感を作る。
    preserve-3d / will-change は付けない（合成レイヤーとボケの原因になる）。 */
 .hd-phone{
   position:relative;z-index:2;
-  width:100%;padding:11px;
-  /* 緑の筐体。光の当たる左上を明るく、下へ向かって濃緑へ（新色なし＝--green/--green-dark/--paper の混色） */
+  display:flex;
+  width:100%;min-height:calc(var(--dev-w) * 1.85);padding:3px;
+  /* 細い緑の金属縁。明暗を切り替えて側面の反射を表す。色は既存トークンの混色のみ */
   background:
-    linear-gradient(155deg,
-      color-mix(in srgb, var(--green) 58%, var(--paper)) 0%,
-      var(--green) 34%,
+    linear-gradient(115deg,
+      color-mix(in srgb, var(--green) 24%, var(--paper)) 0%,
+      var(--green) 8%,
+      var(--green-dark) 46%,
+      var(--green) 78%,
+      color-mix(in srgb, var(--green) 32%, var(--paper)) 96%,
       var(--green-dark) 100%);
   border:1px solid color-mix(in srgb, var(--green-dark) 72%, var(--black));
   border-radius:var(--dev-r);
   /* 枠の内側の細いハイライトと、机に落ちる影。端末モックに必要な最小の1宣言 */
   box-shadow:
-    inset 0 0 0 1.5px color-mix(in srgb, var(--paper) 14%, transparent),
-    0 30px 50px -18px color-mix(in srgb, var(--black) 42%, transparent),
-    0 10px 18px -10px color-mix(in srgb, var(--black) 30%, transparent);
+    inset 0 0 0 1px color-mix(in srgb, var(--paper) 48%, transparent),
+    0 32px 52px -20px color-mix(in srgb, var(--black) 32%, transparent),
+    0 9px 16px -8px color-mix(in srgb, var(--black) 28%, transparent);
   transform:perspective(1400px) rotateY(var(--dev-tilt-y)) rotateZ(var(--dev-tilt-z));
   transform-origin:58% 50%;
 }
-/* 側面ボタン。左＝音量2つ・右＝電源。枠と同じ黒で、少しだけ外へ張り出す */
+/* 側面ボタン。左＝音量2つ・右＝電源。筐体と同じ濃緑で少しだけ外へ張り出す */
 .hd-phone::before,
 .hd-phone::after{
   content:"";position:absolute;z-index:-1;width:3px;
@@ -2901,27 +2905,39 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
     linear-gradient(var(--green-dark), var(--green-dark)) 0 100% / 100% 42% no-repeat;
 }
 .hd-phone::after{right:-3px;top:24%;height:13%}
+.hd-bezel{
+  display:flex;flex-direction:column;flex:1 1 auto;min-width:0;
+  padding:5px;border-radius:var(--dev-r);
+  background:linear-gradient(135deg,
+    color-mix(in srgb, var(--paper) 24%, var(--black)),
+    var(--black) 18%,
+    var(--black) 72%,
+    color-mix(in srgb, var(--paper) 16%, var(--black)));
+}
 .hd-screen{
   position:relative;overflow:hidden;
-  display:flex;flex-direction:column;
+  display:flex;flex-direction:column;flex:1 1 auto;
   border-radius:var(--dev-r-s);
   /* トーク画面の地。LINEらしさは「淡い緑の地」と構造で示し、ロゴ意匠は使わない */
-  background:color-mix(in srgb, var(--line-green) 7%, var(--paper));
+  background:var(--tint-green);
 }
 /* ガラスの反射。左上から斜めに薄く走らせる。文字の可読性を落とさない濃さに留める */
 .hd-screen::after{
   content:"";position:absolute;inset:0;z-index:3;pointer-events:none;
   background:linear-gradient(118deg,
-    color-mix(in srgb, var(--paper) 26%, transparent) 0%,
-    color-mix(in srgb, var(--paper) 8%, transparent) 22%,
-    transparent 40%);
+    color-mix(in srgb, var(--paper) 16%, transparent) 0%,
+    transparent 18%,
+    transparent 82%,
+    color-mix(in srgb, var(--paper) 8%, transparent) 100%);
 }
 .hd-notch{
   position:absolute;left:50%;top:9px;z-index:4;
   transform:translateX(-50%);
-  width:31%;height:11px;
+  width:31%;height:13px;
   border-radius:var(--r-pill);
-  background:var(--black);
+  background:
+    radial-gradient(circle at 83% 50%, color-mix(in srgb, var(--paper) 20%, var(--black)) 0 2px, transparent 3px),
+    var(--black);
 }
 .hd-status{
   display:flex;align-items:center;justify-content:space-between;
@@ -2931,8 +2947,10 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   font-size:calc(12px * var(--fs,1));
   font-weight:700;line-height:1.2;color:var(--black);
 }
-.hd-sig{display:flex;align-items:center;gap:3px}
-.hd-sig i{display:block;width:4px;height:4px;border-radius:50%;background:var(--muted)}
+.hd-sig{display:flex;align-items:flex-end;gap:3px}
+.hd-sig i{display:block;width:3px;height:5px;border-radius:var(--radius);background:var(--black)}
+.hd-sig i:nth-child(2){height:8px}
+.hd-sig i:nth-child(3){height:11px}
 
 .hd-head{
   display:flex;align-items:center;gap:8px;
@@ -2941,8 +2959,10 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   border-bottom:1px solid var(--line-soft);
 }
 .hd-avatar{
+  display:grid;place-items:center;
   flex:0 0 auto;width:24px;height:24px;border-radius:50%;
-  background:var(--line-green);
+  background:var(--deep);color:var(--paper);
+  font-size:calc(12px * var(--fs,1));font-weight:700;line-height:1;
 }
 .hd-name{
   min-width:0;flex:0 1 auto;
@@ -2950,52 +2970,23 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   font-weight:700;line-height:1.4;color:var(--black);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
 }
-.hd-badge{
-  margin-left:auto;flex:0 0 auto;
-  padding:1px 8px;
-  border:1px solid var(--line);border-radius:var(--r-pill);
-  font-size:calc(12px * var(--fs,1));line-height:1.6;color:var(--muted);
-  white-space:nowrap;
-}
-
 /* ---- トーク ---- */
 .hd-talk{
   flex:1 1 auto;min-height:0;
   display:flex;flex-direction:column;gap:8px;
   padding:11px 10px;
 }
-.hd-msg{display:flex;flex-direction:column;gap:5px;max-width:84%}
+.hd-msg{display:flex;flex-direction:column;align-items:flex-start;gap:5px;max-width:92%}
 .hd-msg.is-user{align-self:flex-end;align-items:flex-end}
 .hd-bubble{
-  padding:8px 11px;
+  padding:8px 10px;
   border:1px solid var(--line-soft);border-radius:var(--dev-r-bubble);
   background:var(--paper);color:var(--text);
   font-size:calc(12px * var(--fs,1));line-height:1.7;
 }
-/* 緑を塗るのはユーザー側の1本だけ。文字は黒＝コントラスト比9以上を確保する */
+/* 質問を右の緑、回答を左の白で分ける。文字色はどちらも濃色にする */
 .hd-msg.is-user .hd-bubble{
-  background:var(--line-green);border-color:var(--line-green);color:var(--black);
-}
-.hd-card{
-  width:100%;overflow:hidden;
-  background:var(--paper);
-  border:1px solid var(--line-soft);border-radius:var(--dev-r-bubble);
-}
-.hd-card-img{
-  display:grid;place-items:center;height:44px;
-  background:color-mix(in srgb, var(--line-green) 16%, var(--paper));
-  border-bottom:1px solid var(--line-soft);
-  color:var(--green-dark);
-}
-.hd-card-img svg{width:48px;height:32px;display:block}
-.hd-card-title{
-  padding:8px 10px 0;
-  font-size:calc(13px * var(--fs,1));
-  font-weight:700;line-height:1.5;color:var(--black);
-}
-.hd-card-body{
-  padding:3px 10px 10px;
-  font-size:calc(12px * var(--fs,1));line-height:1.7;color:var(--muted);
+  background:var(--green);border-color:var(--green);color:var(--black);
 }
 
 /* ---- リッチメニュー（1px罫の隙間で区切る＝太枠を作らない） ---- */
@@ -3014,7 +3005,7 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   white-space:nowrap;
 }
 .hd-menu li.is-lead{
-  background:color-mix(in srgb, var(--line-green) 12%, var(--paper));
+  background:var(--green-pale);
   font-weight:700;color:var(--black);
 }
 .hd-home{
@@ -3025,39 +3016,6 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   transform:translateX(-50%);
   width:30%;height:3px;border-radius:var(--r-pill);
   background:color-mix(in srgb, var(--black) 22%, var(--paper));
-}
-
-/* ---- 補助カード（タブレットの代わり。奥行き＋「リッチメニュー」の語をFVに足す） ---- */
-.hd-aside{
-  /* 純装飾。端末外へ張り出してCTA列に重なりうるので、クリックは常に下へ通す */
-  position:absolute;z-index:1;pointer-events:none;
-  right:calc(100% - 26px);bottom:11%;
-  width:clamp(136px, 14vw, 152px);
-  padding:10px 9px;
-  background:var(--paper);
-  border:1px solid var(--line);border-radius:var(--dev-r-s);
-  /* 端末と同じ角度を共有することで「同じ空間にある2枚」に見せる */
-  transform:perspective(1400px) rotateY(var(--dev-tilt-y)) rotateZ(var(--dev-tilt-z));
-  transform-origin:100% 50%;
-}
-.hd-aside-cap{
-  display:block;margin-bottom:7px;
-  font-size:calc(12px * var(--fs,1));line-height:1.5;color:var(--muted);
-}
-.hd-aside-grid{display:flex;flex-direction:column;gap:5px}
-.hd-aside-grid span{
-  padding:6px 8px;
-  border-radius:var(--r-s);
-  background:var(--tint);
-  font-size:calc(12px * var(--fs,1));line-height:1.4;color:var(--text);
-  white-space:nowrap;
-}
-
-/* ---- 端末下の注記（作例であることを目に見える形でも出す） ---- */
-.hero-device-note{
-  position:relative;z-index:2;
-  margin-top:12px;max-width:var(--dev-w);
-  font-size:calc(12px * var(--fs,1));line-height:1.7;color:var(--muted);
 }
 
 /* 新FVでは既存の背景ブロブ／ドット層を出さない（斜めの板と役割が二重になるため）。
@@ -3072,13 +3030,27 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   /* 幅が狭い端末を数度傾けると辺が半端ピクセルに落ちて「歪んで」見える。
      斜めは背景の板が引き続き担うので、端末は両軸とも0にする。 */
   .hero2-fig.hero-device{--dev-w:min(272px, 74vw);--dev-tilt-y:0deg;--dev-tilt-z:0deg}
-  /* 狭い画面で情報が2つ重なると主役の端末が消えるので補助カードは出さない */
-  .hd-aside{display:none}
-  .hd-talk{gap:8px;padding:11px 9px}
-  /* CTAの直下に端末が来るよう上余白を詰める（リッチメニューを少しでも上へ） */
-  .hero2-inner:has(.hero2-fig) > .hero2-fig.hero-device{margin-top:18px}
+  /* 文字を縮小・省略せず、端末の余白を詰めてリッチメニューを上へ寄せる */
+  .hd-phone{min-height:0}
+  .hd-head{padding:8px 10px}
+  .hd-talk{gap:6px;padding:8px}
+  .hd-bubble{padding:6px 9px;line-height:1.5}
+  .hd-menu li{padding:6px 1px}
+  .hero2:has(.hero-device){padding-top:24px;padding-bottom:48px}
+  .hero2-inner:has(.hero-device) .hero2-sub{margin-top:16px;line-height:1.75}
+  .hero2-inner:has(.hero-device) .hero2-actions{
+    display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:8px;margin-top:20px;
+  }
+  .hero2-inner:has(.hero-device) .hero2-actions .btn{
+    min-width:0;padding:12px 8px;font-size:calc(14px * var(--fs,1));
+  }
+  .hero2-inner:has(.hero2-fig) > .hero2-fig.hero-device{margin-top:16px}
 }
 @media (max-width:480px){
   /* この幅では2枚の板の重なりが視認できないサイズになるので主板1枚に絞る */
   .hd-stage::after{display:none}
+}
+@media (max-width:359px){
+  /* さらに狭い幅ではCTAを縦に戻す。高さ固定や文字切り捨ては行わない */
+  .hero2-inner:has(.hero-device) .hero2-actions{grid-template-columns:1fr}
 }
