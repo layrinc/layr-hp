@@ -3,8 +3,8 @@ import { Image } from 'astro:assets';
 import heroArtwork from '../assets/layr-hero-approved.png';
 
 /**
- * ユーザー指定の生成画像をそのまま使い、CSSの表示窓で右側の端末を見せる。
- * 画像内の会話は描き直さない。h1・リード・CTAは従来のHTMLを維持する。
+ * ユーザー指定の会話画面を保った透過端末画像を、右側へ直接配置する。
+ * 画像内の会話内容を維持する。h1・リード・CTAは従来のHTMLを維持する。
  * 配信用WebPはAstroが生成し、読み上げ用の紹介文は既存データから取得する。
  */
 interface Props { data?: any }
@@ -24,6 +24,7 @@ const caption = data.caption || 'サービスを紹介するトーク形式の�
       loading="eager"
       decoding="async"
       fetchpriority="high"
+      draggable="false"
     />
   </div>
   <figcaption class="u-vh">

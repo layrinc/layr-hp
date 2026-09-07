@@ -2829,15 +2829,12 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
 .hero-device-window{
   position:relative;flex-shrink:0;
   width:clamp(340px, 36vw, 480px);
-  aspect-ratio:665 / 860;
-  overflow:hidden;
 }
 .hero-device-window img{
-  position:absolute;display:block;max-width:none;
-  width:calc(1512 / 665 * 100%);height:auto;
-  left:calc(-835 / 665 * 100%);top:calc(-120 / 860 * 100%);
+  display:block;width:100%;height:auto;
+  pointer-events:none;user-select:none;-webkit-user-drag:none;
 }
-/* 画像に含まれる背景を使用するため、既存の背景装飾は重ねない。 */
+/* 透過端末を主役にするため、既存の背景装飾は重ねない。 */
 .hero2:has(.hero-device)::before,
 .hero2:has(.hero-device)::after{content:none;display:none}
 @media (max-width:980px){
@@ -2845,8 +2842,5 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
   .hero-device-window{width:min(480px, 100%)}
 }
 @media (max-width:640px){
-  /* スマホ幅では端末を大きく保ち、周囲の背景だけ表示範囲を狭める。
-     表示窓: x920 / y120 / 520 × 860。端末と会話は全体を表示する。 */
-  .hero-device-window{width:clamp(350px, 100%, 420px);aspect-ratio:520 / 860}
-  .hero-device-window img{width:calc(1512 / 520 * 100%);left:calc(-920 / 520 * 100%)}
+  .hero-device-window{width:min(420px, 100%)}
 }
