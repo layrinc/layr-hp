@@ -2812,10 +2812,9 @@ select:focus-visible,textarea:focus-visible,summary:focus-visible{
 @media (max-width:560px){ .ch-grid{grid-template-columns:1fr} }
 
 /* =====================================================
-   v28 — ユーザー指定の生成画像をTOPの右側に表示
-   添付画像そのものを保持し、元画像の右側だけをCSSの表示窓に収める。
-   元画像: 1512 × 1040。PC表示窓: x835 / y120 / 665 × 860。
-   見出し・リード・CTAは従来のHTMLとスタイルを使う。
+   v28 — 会話画面を持つ背景透過の端末をTOP右側に表示
+   端末画像を直接配置し、画面全体画像の切り抜きは行わない。
+   端末外周は黒。見出し・リード・CTAは従来のHTMLを使う。
    ===================================================== */
 .u-vh{
   position:absolute;width:1px;height:1px;
