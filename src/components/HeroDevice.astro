@@ -1,59 +1,37 @@
 ---
+import { Image } from 'astro:assets';
+import heroArtwork from '../assets/layr-hero-approved.png';
+
 /**
- * ヒーローのスマホモック（LAYRのサービスを紹介するトーク画面）。
- *
- * 方針:
- * - SVGではなくDOM＋CSSで組む。画面内の文字を実CSSピクセルで持たせ、
- *   ブラウザズーム・読み上げ・翻訳・LLMOのすべてで「読める」状態を保つため。
- * - CSSはこのファイルに持たせない。正本は src/styles/style.css の v28セクション。
- * - 文言は page-home.json（b-hero.p.mock_data）から渡す。ここにハードコードしない。
- * - LINEヤフー社のロゴ・バッジ意匠は模倣しない。「LINEらしさ」は
- *   淡緑の地・左右に振れる吹き出し・下部のリッチメニューという構造だけで示す。
- * - figcaptionで紹介用の画面イメージであることを伝える。顧客事例や実際の会話ではない。
+ * ユーザー指定の生成画像をそのまま使い、CSSの表示窓で右側の端末を見せる。
+ * 画像内の会話は描き直さない。h1・リード・CTAは従来のHTMLを維持する。
+ * 配信用WebPはAstroが生成し、読み上げ用の紹介文は既存データから取得する。
  */
 interface Props { data?: any }
 const { data = {} } = Astro.props;
-
 const acc = data.account ?? {};
 const msgs: any[] = Array.isArray(data.messages) ? data.messages : [];
 const menu: any[] = Array.isArray(data.richmenu) ? data.richmenu : [];
-
 const caption = data.caption || 'サービスを紹介するトーク形式のイメージです。';
 ---
 <figure class="hero2-fig hero-device">
-  {/* 画面の目的を先に伝え、会話の順番と質問・回答を読み上げられるようにする */}
-  <figcaption class="u-vh">{caption}</figcaption>
-
-  <div class="hd-stage">
-    <div class="hd-phone">
-      <div class="hd-bezel">
-        <div class="hd-screen">
-          <i class="hd-notch" aria-hidden="true"></i>
-          <div class="hd-status" aria-hidden="true">
-            <span class="hd-time">9:41</span>
-            <span class="hd-sig"><i></i><i></i><i></i></span>
-          </div>
-
-          <div class="hd-head">
-            <span class="hd-avatar" aria-hidden="true">{acc.initial}</span>
-            <span class="hd-name">{acc.name}</span>
-          </div>
-
-          <div class="hd-talk">
-            {msgs.map((m: any) => (
-              <div class={`hd-msg is-${m?.from === 'user' ? 'user' : 'shop'}`}>
-                <span class="u-vh">{m?.from === 'user' ? '質問：' : `${acc.name}：`}</span>
-                {m?.text && <p class="hd-bubble">{m.text}</p>}
-              </div>
-            ))}
-          </div>
-
-          <ul class="hd-menu" aria-label="リッチメニューのイメージ">
-            {menu.map((m: any, i: number) => <li class={i === 0 ? 'is-lead' : ''}>{m?.label}</li>)}
-          </ul>
-          <span class="hd-home" aria-hidden="true"></span>
-        </div>
-      </div>
-    </div>
+  <div class="hero-device-window" aria-hidden="true">
+    <Image
+      src={heroArtwork}
+      alt=""
+      format="webp"
+      quality={90}
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+    />
   </div>
+  <figcaption class="u-vh">
+    <p>{caption}</p>
+    <p>{acc.name}</p>
+    {msgs.map((m: any) => (
+      <p>{m?.from === 'user' ? '質問：' : `${acc.name}：`}{m?.text}</p>
+    ))}
+    <p>リッチメニュー：{menu.map((m: any) => m?.label).filter(Boolean).join('、')}</p>
+  </figcaption>
 </figure>
