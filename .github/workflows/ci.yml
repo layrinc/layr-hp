@@ -27,3 +27,8 @@ jobs:
 
       - name: Design gate regression（基準値から1項目でも悪化していれば失敗）
         run: bash scripts/gate-regression.sh
+
+      - name: Validate Cloudflare configuration（アップロードなし）
+        run: npm run check:cloudflare
+        env:
+          WRANGLER_SEND_METRICS: "false"

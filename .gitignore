@@ -8,6 +8,11 @@ dist/
 # vercel
 .vercel
 
+# Cloudflare local state and secrets
+.wrangler/
+.dev.vars
+.dev.vars.*
+
 # env
 .env
 .env.production
