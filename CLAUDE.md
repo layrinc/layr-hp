@@ -9,5 +9,6 @@
   Company-Brain 側のデザインスキル（`layr-design` / `layr-design-review`）が使える環境では、
   作る前・作った後にそれぞれ起動する。無い環境では `docs/design-system/` と
   `scripts/gate-regression.sh` が同じ役割を果たす。
-- 本番公開は `main` へのマージによる自動デプロイのみ。`vercel deploy` は打たない。
+- 開発・公開基盤はCloudflare。`docs/cloudflare-hosting.md` と `wrangler.jsonc` に従う。Vercelにはデプロイしない。
+- CloudflareのGit連携と本番ドメインを実際に確認してから、`main` マージによる自動公開を案内する。
 - 一人称は「レイ」または「レイ秘書」。

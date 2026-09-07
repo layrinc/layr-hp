@@ -3,9 +3,10 @@
 株式会社LAYRの自社HP。**Astro（静的サイト生成）＋ Sveltia CMS（管理画面）＋ SEO自動化** のモダン構成。
 打ち出し：**LINE構築・運用を軸にしたマーケティング支援会社**（LINE構築・運用マーケ × 広告運用代行）。
 
-- 公開URL: **https://layr-hp.vercel.app**
-- 管理画面: **https://layr-hp.vercel.app/admin/**
-- リポジトリ: layrinc/company-brain（このサイトは `株式会社LAYR/layr-hp/`）
+- 公開URL: **https://layr.co.jp/**
+- 管理画面: **https://layr.co.jp/admin/**
+- リポジトリ: **layrinc/layr-hp**（独立リポジトリ）
+- 開発・公開基盤: **Cloudflare Workers Static Assets**。会社サイト・会員サイト・社内ツールはCloudflareを標準とする。
 
 移行日: 2026-07-07（旧・手書きHTML版 → Astro版）。デザイン参考: h-link-marketing.co.jp
 
@@ -48,7 +49,9 @@ layr-hp/
 │   ├── uploads/                 # 画像アップロード先
 │   └── robots.txt
 ├── astro.config.mjs             # サイトURL・サイトマップ設定
-├── vercel.json                  # デプロイ設定
+├── wrangler.jsonc               # Cloudflare Workers配信設定
+├── public/_redirects            # 旧URLの転送
+├── docs/cloudflare-hosting.md    # Cloudflareの開発・公開手順
 ├── docs/管理画面の使い方.md      # ★河出さん向け・管理画面マニュアル
 └── _archive_static_v1/          # 旧・手書きHTML版（退避。参照用）
 ```
@@ -58,10 +61,12 @@ layr-hp/
 ## ローカル開発
 
 ```bash
-cd 株式会社LAYR/layr-hp
-npm install        # 初回のみ
+cd layr-hp
+npm ci             # lockfileから依存をインストール
 npm run dev        # → http://localhost:4321
 npm run build      # 本番ビルド（dist/ に出力）
+npm run check      # ビルド＋デザイン回帰ゲート
+npm run dev:cloudflare  # ローカルのWorkers環境で配信確認
 ```
 
 ※ このMacは pnpm が不調（[[nextjs-pnpm-corepack-workaround]]）。**npm を使う。**
@@ -98,18 +103,19 @@ npm run build      # 本番ビルド（dist/ に出力）
 - `robots.txt`: `/admin` を除外、サイトマップを明示
 - 静的生成＝表示が速い（Core Web Vitals で有利）
 
-**独自ドメインを設定したら** `astro.config.mjs` の `site` と `public/robots.txt` のURLを差し替える。
+公開先の正規URLは `https://layr.co.jp/`。独自ドメインの関連付けはCloudflare側で確認する。
 
 ---
 
 ## デプロイ
 
-**自動デプロイ有効（保存＝公開）。** `main` への push が `株式会社LAYR/layr-hp/` 配下を変更すると、GitHub Actions（`.github/workflows/deploy-layr-hp.yml`）が Vercel 本番へ自動デプロイする（約1〜2分）。CMSの保存・AI経由の記事追加・手動編集、いずれも push すれば自動で公開される。
+**Cloudflareでプレビューと本番公開を行う。** 設定の正本は `wrangler.jsonc`、手順は [Cloudflareでの開発・公開](docs/cloudflare-hosting.md)。
 
-- モノレポなので layr-hp 以外の変更ではデプロイは走らない（`paths` フィルタ）。
-- 認証は GitHub secret `VERCEL_TOKEN`（登録済み）。
-- 手動で即時デプロイしたい時のみ: `cd 株式会社LAYR/layr-hp && npx vercel deploy --prod --yes`。
-- Vercelプロジェクト: `ikkan-kawades-projects/layr-hp`。
+- 既存Worker `layr-hp` と `layr.co.jp` の関連付けを確認し、Workers Buildsを `layrinc/layr-hp` に接続する。
+- 本番ブランチは `main`。PRのCI・表示確認・河出の承認後にマージする。
+- Build command: `npm run check`。本番Deploy command: `npm run deploy:cloudflare`。非本番Deploy command: `npm run preview:cloudflare`。
+- Cloudflare側の接続と初回デプロイが確認できるまでは、自動公開が有効とは扱わない。
+- Vercelへの手動ワークフローは削除し、Git自動デプロイは `vercel.json` で停止する。既存プロジェクトの削除は行わない。
 
 ---
 

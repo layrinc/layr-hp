@@ -1,4 +1,5 @@
 {
+  "$schema": "node_modules/wrangler/config-schema.json",
   // layr.co.jp コーポレートサイト（Astro静的ビルドをWorkers Assetsで配信）
   "name": "layr-hp",
   "account_id": "970414d67575a1afb2eb889748741af7",
