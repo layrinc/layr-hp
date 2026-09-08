@@ -1,0 +1,29 @@
+---
+import HeroDevice from './HeroDevice.astro';
+import settings from '../data/settings.json';
+interface Props { data: any }
+const { data: p } = Astro.props;
+const consult = settings.line_url?.trim() || `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
+const rich = (s: string) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/&lt;(\/?strong)&gt;/g, '<$1>').replace(/\n/g, '<br>');
+---
+<section class="studio-hero" aria-label="メインビジュアル">
+  <div class="container studio-hero-layout">
+    <div class="studio-copy">
+      <p class="studio-eyebrow">LINE構築・運用マーケティング</p>
+      <h1>{p.line1}{p.line2 && <><br />{p.line2}</>}{p.line3 && <><br />{p.line3}</>}</h1>
+      <p class="studio-lead" set:html={rich(p.sub)} />
+      <div class="studio-actions">
+        {p.cta_primary && <a class="btn btn-green btn-lg" href={p.cta_primary_url || consult}>{p.cta_primary}</a>}
+        {p.cta_line && <a class="btn btn-line btn-lg" href={consult}>{p.cta_line}</a>}
+        {p.cta_secondary && <a class="btn btn-black btn-lg" href={p.cta_secondary_url || '#service'}>{p.cta_secondary}</a>}
+      </div>
+      <a class="studio-discover" href="#service"><span class="studio-down" aria-hidden="true">↓</span><span>サービスを知る</span></a>
+    </div>
+    <div class="studio-stage">
+      <div class="studio-stage-top"><span>{p.mock_data.account.name}</span><span>LINE / MARKETING</span></div>
+      <HeroDevice data={p.mock_data} stage />
+      <div class="studio-stage-bottom"><span>構築</span><i aria-hidden="true">→</i><span>運用</span><i aria-hidden="true">→</i><span>改善</span></div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,29 @@
+---
+/** トップの特徴と運用フロー。装飾図版ではなく説明を左右に分けて読む。 */
+interface Props { data: any }
+const { data: p } = Astro.props;
+const rich = (value: string) => String(value ?? '')
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  .replace(/&lt;(\/?strong)&gt;/g, '<$1>').replace(/\n/g, '<br>');
+---
+<section class="service-detail" id={p.anchor || undefined}>
+  <div class="container detail-layout">
+    <div class="detail-intro">
+      <p class="sec-en">{p.eyebrow}</p>
+      <h2 class="sec-jp" set:html={rich(p.title)} />
+      <p class="detail-lead" set:html={rich(p.lead)} />
+      {p.btn_label && <a class="btn btn-green" href={p.btn_url}>{p.btn_label}</a>}
+    </div>
+    <div class="detail-content">
+      {p.points?.length > 0 && <ul class="detail-points">
+        {p.points.map((point: string) => <li set:html={rich(point)} />)}
+      </ul>}
+      {p.steps?.length > 0 && <ol class="detail-steps">
+        {p.steps.map((step: any, index: number) => <li>
+          <span class="detail-number" aria-hidden="true">{String(index + 1).padStart(2, '0')}</span>
+          <div><h3>{step.t}</h3><p>{step.d}</p></div>
+        </li>)}
+      </ol>}
+    </div>
+  </div>
+</section>
