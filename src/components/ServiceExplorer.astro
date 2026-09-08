@@ -1,0 +1,34 @@
+---
+interface Props { data: any }
+const { data: p } = Astro.props;
+---
+<section class="service-explorer" id="service">
+  <div class="container">
+    <div class="explorer-heading">
+      <div><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
+      <p>{p.lead}</p>
+    </div>
+    <div class="explorer-layout" data-service-explorer>
+      <div class="explorer-tabs" aria-label="サービスを選ぶ">
+        {p.items.map((item: any, i: number) => <a class="explorer-tab" id={`service-tab-${i}`} href={`#service-panel-${i}`} data-service-tab>
+          <span class="explorer-tab-number">{String(i + 1).padStart(2, '0')}</span>
+          <span>{item.title}</span><span class="explorer-tab-arrow" aria-hidden="true">↗</span>
+        </a>)}
+      </div>
+      <div class="explorer-panels">
+        {p.items.map((item: any, i: number) => <article class="explorer-panel" id={`service-panel-${i}`} aria-labelledby={`service-tab-${i}`} data-service-panel>
+          <div class="explorer-panel-head"><p>{item.number}</p><span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span></div>
+          <h3>{item.title}</h3><p class="explorer-description">{item.desc}</p>
+          <p class="explorer-label">対応内容</p>
+          <ul class="explorer-deliverables">{item.tags.map((tag: string, j: number) => <li><span aria-hidden="true">{String(j + 1).padStart(2, '0')}</span>{tag}</li>)}</ul>
+          <a class="explorer-more" href="/service/">サービス詳細と料金の目安を見る <span aria-hidden="true">↗</span></a>
+        </article>)}
+      </div>
+    </div>
+    {p.note && <p class="service-note">{p.note}</p>}
+  </div>
+</section>
+<script>
+  import { initServiceExplorer } from '../scripts/service-explorer';
+  document.querySelectorAll<HTMLElement>('[data-service-explorer]').forEach(initServiceExplorer);
+</script>

@@ -1,0 +1,23 @@
+---
+const items = [['service', 'サービス'], ['reason', 'できること'], ['flow', '運用のながれ'], ['price', '価格'], ['company', '会社概要']];
+---
+<nav class="home-index" aria-label="このページの目次">
+  <div class="container home-index-inner">
+    {items.map(([id, label], i) => <a href={`#${id}`}><span aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>{label}</a>)}
+  </div>
+</nav>
+<script>
+  const nav = document.querySelector('.home-index');
+  if (nav && 'IntersectionObserver' in window) {
+    const links = Array.from(nav.querySelectorAll<HTMLAnchorElement>('a'));
+    const observer = new IntersectionObserver(entries => {
+      const current = entries.filter(entry => entry.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+      if (!current) return;
+      links.forEach(link => {
+        if (link.hash === `#${current.target.id}`) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    }, { rootMargin: '-25% 0px -55% 0px' });
+    links.forEach(link => { const target = document.getElementById(link.hash.slice(1)); if (target) observer.observe(target); });
+  }
+</script>

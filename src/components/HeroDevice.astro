@@ -7,15 +7,15 @@ import heroArtwork from '../assets/layr-hero-approved.png';
  * 画像内の会話内容を維持する。h1・リード・CTAは従来のHTMLを維持する。
  * 配信用WebPはAstroが生成し、読み上げ用の紹介文は既存データから取得する。
  */
-interface Props { data?: any }
-const { data = {} } = Astro.props;
+interface Props { data?: any; stage?: boolean }
+const { data = {}, stage = false } = Astro.props;
 const acc = data.account ?? {};
 const msgs: any[] = Array.isArray(data.messages) ? data.messages : [];
 const menu: any[] = Array.isArray(data.richmenu) ? data.richmenu : [];
 const caption = data.caption || 'サービスを紹介するトーク形式のイメージです。';
 ---
-<figure class="hero2-fig hero-device">
-  <div class="hero-device-window" aria-hidden="true">
+<figure class={stage ? 'studio-device' : 'hero2-fig hero-device'}>
+  <div class={stage ? 'studio-device-screen' : 'hero-device-window'} aria-hidden="true">
     <Image
       src={heroArtwork}
       alt=""

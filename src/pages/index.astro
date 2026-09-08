@@ -5,6 +5,9 @@
  */
 import Base from '../layouts/Base.astro';
 import Block from '../components/Block.astro';
+import HomeHero from '../components/HomeHero.astro';
+import HomeNav from '../components/HomeNav.astro';
+import ServiceExplorer from '../components/ServiceExplorer.astro';
 import PriceSimulator from '../components/PriceSimulator.astro';
 import settings from '../data/settings.json';
 import page from '../data/page-home.json';
@@ -71,6 +74,8 @@ if (faqBlock && Array.isArray(faqBlock.p?.items)) {
   {page.blocks.map((block, i) => {
     // _fs = ブロック単位の文字サイズ倍率（CSSの font-size:calc(... * var(--fs,1)) が拾う）
     const fs = Number((block.p as any)?._fs) || 1;
+    if (block.id === 'b-hero') return <><div style={`--fs:${fs}`}><HomeHero data={block.p} /></div><HomeNav /></>;
+    if (block.id === 'b-service') return <div style={`--fs:${fs}`}><ServiceExplorer data={block.p} /></div>;
     const rendered = fs !== 1
       ? <div style={`--fs:${fs}`}><Block block={block} posts={posts} /></div>
       : <Block block={block} posts={posts} />;
