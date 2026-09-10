@@ -908,7 +908,6 @@ mark.mk-y{background:linear-gradient(transparent 58%, var(--mark-y) 0);color:inh
   display:grid;grid-template-columns:1.5fr 1fr 1fr;gap:clamp(24px,3vw,48px);
 }
 .footer .brand{color:var(--green-on-dark)}
-.footer-omi{width:132px;height:auto;display:block;margin:16px 0 -6px -10px;color:var(--green-on-dark);opacity:.6}
 .footer-tagline{margin-top:16px;font-size:calc(13px * var(--fs,1));line-height:1.95;opacity:.75}
 .footer h4{
   font-family:var(--font-en);font-size:calc(12.5px * var(--fs,1));font-weight:700;
