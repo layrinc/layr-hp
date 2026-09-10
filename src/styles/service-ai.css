@@ -1,5 +1,5 @@
 /* AI service LP: scoped to .ai-lp; shared brand tokens stay unchanged. */
-.ai-lp{--ai-display:clamp(30px,3.6vw,48px);--ai-heading:clamp(26px,3.2vw,38px);--ai-title:22px;--ai-lead:20px;--ai-body:16px;--ai-small:14px;--ai-label:12px;color:var(--text);background:var(--paper);font-family:var(--font-jp);font-size:var(--ai-body);line-height:1.85}
+.ai-lp{--muted:color-mix(in srgb,var(--black) 65%,var(--paper));--ai-display:clamp(30px,3.6vw,48px);--ai-heading:clamp(26px,3.2vw,38px);--ai-title:22px;--ai-lead:20px;--ai-body:16px;--ai-small:14px;--ai-label:12px;color:var(--text);background:var(--paper);font-family:var(--font-jp);font-size:var(--ai-body);line-height:1.85}
 .ai-lp em{font-style:normal;color:var(--green-ink)}
 .ai-lp h1,.ai-lp h2,.ai-lp h3{font-weight:700;color:var(--black);letter-spacing:var(--track-tight)}
 .ai-lp a{text-decoration:none}
