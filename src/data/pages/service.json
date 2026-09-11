@@ -1,7 +1,7 @@
 {
   "title": "サービス一覧（LINE構築・運用／広告運用／WebマーケBPO／AI導入支援）",
   "h1": "サービス",
-  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング、広告運用代行、月10万円のWebマーケティングBPO「よろず屋マーケくん」、法人向けAI導入・業務実装支援「サクゲンAI by LAYR」。",
+  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング、広告運用代行、月10万円のWebマーケティングBPO「よろず屋マーケくん」、法人向けAI導入・業務実装支援「アッシュクAI by LAYR」。",
   "blocks": [
     {
       "id": "sv-head",
@@ -135,7 +135,7 @@
       "type": "capBox",
       "p": {
         "color": "green",
-        "title": "サクゲンAI by LAYR",
+        "title": "アッシュクAI by LAYR",
         "body": "AIでムダな経費を減らし、会社の利益を上げる。バックオフィス・CS・月次業務をAIで効率化し、残業・外注・追加採用のコストを見直します。人を売上をつくる仕事へ回すため、業務整理から一括管理の仕組みづくりまで支援します。"
       }
     },
@@ -146,7 +146,7 @@
         "align": "center",
         "items": [
           {
-            "label": "サクゲンAIを見る",
+            "label": "アッシュクAIを見る",
             "url": "/service/ai/",
             "style": "green"
           }
