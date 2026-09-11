@@ -136,14 +136,20 @@ const jsonLd = [
     <div class="ai-wrap">
       <div class="ai-section-heading ai-heading-wide"><p class="ai-eyebrow">相談から、実装まで。</p><h2>御社に合わせて選べる、<br /><em>3つのプラン。</em></h2><p>まず相談する。専用の仕組みをつくる。一つの作業から始める。<br />今の課題に合う入口を選べます。</p></div>
       <div class="ai-plans">{service.plans.map((plan, index) => <article class={'ai-plan ai-plan-' + plan.id} id={'plan-' + plan.id}>
-        <div class="ai-plan-top"><span class="ai-plan-number">{String(index + 1).padStart(2, '0')}</span><span>{plan.label}</span></div>
-        <h3>{plan.name}</h3>
-        <p class="ai-plan-description">{plan.description}</p>
-        <div class="ai-plan-price"><span class="ai-plan-billing">{plan.billing}</span><p><strong>{yen(plan.price)}</strong><b>万円</b><span> / {plan.unit}</span></p><small>（{tax(plan.taxIncluded)}）</small></div>
-        {plan.id === 'invoice' && <p class="ai-plan-limit">通常<s>{yen(invoice.regularPrice)}万円</s> → 毎月{invoice.monthlyLimit}社限定</p>}
-        <ul>{plan.features.map(feature => <li>{feature}</li>)}</ul>
-        <p class="ai-plan-note">{plan.note}</p>
-        {plan.id === 'invoice' ? <a href="#invoice" class="ai-button ai-button-outline">請求書プランを見る <span aria-hidden="true">↓</span></a> : <a href={lineUrl || mailFor(plan.name)} class="ai-button" data-ai-lead="plan" data-ai-plan={plan.id}>このプランを相談する <span aria-hidden="true">↗</span></a>}
+        <div class="ai-plan-intro">
+          <div class="ai-plan-top"><span class="ai-plan-number">{String(index + 1).padStart(2, '0')}</span><span>{plan.label}</span></div>
+          <h3>{plan.name}</h3>
+          <p class="ai-plan-description">{plan.description}</p>
+        </div>
+        <div class="ai-plan-details">
+          <ul>{plan.features.map(feature => <li>{feature}</li>)}</ul>
+          <p class="ai-plan-note">{plan.note}</p>
+        </div>
+        <div class="ai-plan-action">
+          <div class="ai-plan-price"><span class="ai-plan-billing">{plan.billing}</span><p><strong>{yen(plan.price)}</strong><b>万円</b><span> / {plan.unit}</span><small>（{tax(plan.taxIncluded)}）</small></p></div>
+          {plan.id === 'invoice' && <p class="ai-plan-limit">通常<s>{yen(invoice.regularPrice)}万円</s> → 毎月{invoice.monthlyLimit}社限定</p>}
+          {plan.id === 'invoice' ? <a href="#invoice" class="ai-button ai-button-outline">請求書プランを見る <span aria-hidden="true">↓</span></a> : <a href={lineUrl || mailFor(plan.name)} class="ai-button ai-button-outline" data-ai-lead="plan" data-ai-plan={plan.id}>このプランを相談する <span aria-hidden="true">↗</span></a>}
+        </div>
       </article>)}</div>
       <p class="ai-plans-note">外部ツール・APIの利用料や継続保守が必要な場合は、対象範囲とあわせて契約前にご案内します。</p>
     </div>
