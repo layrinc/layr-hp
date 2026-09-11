@@ -1,0 +1,23 @@
+---
+interface Props {
+  kind: 'ad' | 'lp' | 'line' | 'sale' | 'success';
+  size?: 'icon' | 'card' | 'scene';
+}
+const { kind, size = 'card' } = Astro.props;
+---
+<img
+  class:list={['home-isome-art', `home-isome-art--${size}`]}
+  src={`/images/journey/isome-${kind}.svg`}
+  alt=""
+  aria-hidden="true"
+  width="400"
+  height="300"
+  loading="lazy"
+  decoding="async"
+/>
+<style>
+  .home-isome-art{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;flex:none}
+  .home-isome-art--icon{max-width:112px}
+  .home-isome-art--card{max-width:220px}
+  .home-isome-art--scene{max-width:440px}
+</style>
