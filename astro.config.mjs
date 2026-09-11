@@ -8,6 +8,9 @@ import remarkBlocks from './src/lib/remark-blocks.mjs';
 // sitemap / canonical / OGP はこの値を基準に自動生成される。
 export default defineConfig({
   site: 'https://layr.co.jp',
+  vite: {
+    server: { allowedHosts: ['terminal.local'] },
+  },
   markdown: {
     // 記事内でWPテーマ風の装飾記法（:::point 等・==マーカー==）を使えるようにする
     remarkPlugins: [remarkDirective, remarkBlocks],

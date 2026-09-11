@@ -1,0 +1,24 @@
+{
+  "name": "AI導入・業務実装支援",
+  "brand": "よろず屋AI",
+  "clientCases": [
+    {
+      "company": "株式会社アドバンス・インタートレード",
+      "industry": "水産物の輸出・貿易",
+      "title": "水産貿易のオーダー業務を、AIで自動化。",
+      "description": "日本産水産物を海外へ届ける同社のオーダー業務に、AIを組み込んだ自動化を支援しました。",
+      "support": "オーダー業務のAI自動化",
+      "url": "https://advance-intertrade.jp/jp/catalog"
+    }
+  ],
+  "offer": {
+    "name": "請求書管理の自動化",
+    "monthlyLimit": 5,
+    "regularPrice": 150000,
+    "price": 50000,
+    "taxIncluded": false,
+    "billing": "自動化の導入費用"
+  },
+  "title": "AIで業務を効率化し、会社の利益を増やす｜株式会社LAYR",
+  "description": "AIで業務を効率化。ムダな経費を削減して、会社の利益を上げませんか。まずは請求書管理の自動化から。毎月5社限定で、通常15万円の自動化費用を5万円（税別）でご提供。"
+}

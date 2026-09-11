@@ -1,872 +1,154 @@
 ---
-/**
- * よろず屋AI — 法人向けAI導入・業務実装支援 LP（/service/ai/）— v4 和風（モードC）版
- * ターゲット: 地方中小・AI超初心者（2026-08-18確定）
- * 価格: AI顧問 初期10万＋月5万を主役に、開発10・30・50万〜を従に（2階建て）
- * v4: 「よろず屋AI」へブランド改称（よろず屋マーケくんの兄弟ブランド）。
- *     デザインをモードC（和風・藍×和紙×弁柄朱）へ全面改修。暖簾・丸に智の屋号マーク・
- *     朱の角印を導入。文言・数字・FAQ・ショーケース・CTA分岐・ギミック動作は不変。
- *     トークンは --wa-* のページ内スコープ（グローバルトークンを上書きしない）。
- * 正本: AI導入支援事業/（競合調査・LP修正案）。値上げ運用ルールはLPに書かない。
- */
 import Base from '../../layouts/Base.astro';
 import settings from '../../data/settings.json';
+import service from '../../data/service-ai.json';
+import '../../styles/service-ai.css';
 
-const title = 'AI導入・業務実装支援「よろず屋AI」｜株式会社LAYR';
-const description = 'AIを何から始めればいいか分からない中小企業向け。初期10万円・月額5万円のAI顧問から、業務アプリ開発まで。専門知識は不要です。';
-const mail = `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】AI導入について')}`;
+const { offer } = service;
+const regular = offer.regularPrice / 10000;
+const price = offer.price / 10000;
+const tax = offer.taxIncluded ? '税込' : '税別';
+const mail = `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】請求書管理のAI自動化について')}&body=${encodeURIComponent('請求書管理のAI自動化について相談を希望します。\n\n会社名：\nご担当者名：\n毎月の請求書の件数：\n現在の管理方法：\n困っている作業：')}`;
 const lineUrl = settings.line_url?.trim() || '';
-
-const starts = [
-  'AIが良いのは分かるけど、何から始めればいいのか分からない',
-  'ChatGPTは登録してみたが、結局使っていない',
-  'うちみたいな会社に、AIなんてまだ早いと思っている',
-  '詳しい社員がいない。相談できる相手もいない',
-  '業者に頼むと高いイメージがあって、聞くのが怖い',
-  'そもそも、うちの何がAIでできるのか分からない',
-];
-
-const pains = [
-  ['予約・スケジュール管理', '電話とホワイトボードで管理していて、ダブルブッキングが怖い'],
-  ['スタッフの割り振り', 'シフトと案件のマッチングを毎週、手で組んでいる'],
-  ['請求書の発行', '月末に1件ずつ作って送っている。ミスも起きる'],
-  ['問い合わせ対応', '同じ質問への返信に、毎日時間が溶けている'],
-  ['転記・入力作業', '紙やExcelからの転記が誰かの仕事になっている'],
-  ['レポート作成', '数字を集めて資料にするだけで半日かかる'],
-];
-
-// ショーケース: 実際に社内で毎日使っているツールのスクリーンショット
-const showcase = [
-  {
-    key: 'b2b', name: 'LAYR B2B DB', label: '営業管理ダッシュボード',
-    desc: '問い合わせ・診断・営業リスト・顧客台帳をひとつに束ねた、LAYR自身の営業司令塔。未対応のリードを取りこぼさない仕組みです。',
-    slides: [
-      { img: '/service/ai/shots/b2b-1.jpg', cap: 'ダッシュボード — 集客と営業の全体像がひと目で分かる' },
-      { img: '/service/ai/shots/b2b-2.jpg', cap: '営業リスト — 候補企業の収集から提案文の下書きまでAIが用意' },
-      { img: '/service/ai/shots/b2b-3.jpg', cap: '顧客台帳 — すべてのリードを名寄せして一元管理' },
-    ],
-  },
-  {
-    key: 'banlabo', name: 'バナラボ', label: '広告バナー生成ツール',
-    desc: '広告バナーを話し言葉から一括生成する社内ツール。媒体ごとの規定サイズを選ぶだけで、複数パターンをまとめて作れます。',
-    slides: [
-      { img: '/service/ai/shots/banlabo-1.jpg', cap: '配信サイズを選んで、やりたいことを話し言葉で入力するだけ' },
-      { img: '/service/ai/shots/banlabo-2.jpg', cap: 'LINE・Meta・GDN…媒体ごとの規定サイズを網羅' },
-    ],
-  },
-  {
-    key: 'check', name: 'LINEスコア診断', label: '見込み客獲得ツール',
-    desc: '10問に答えるとその場で100点満点のスコアと個別レポートが出る診断ツール。LAYRのWebサイトで、問い合わせの入口として運用しています。',
-    slides: [
-      { img: '/service/ai/shots/check-1.jpg', cap: '診断の入口 — 訪問者が気軽に始められる設計' },
-      { img: '/service/ai/shots/check-2.jpg', cap: '10問の質問に答えると、その場でレポートを生成' },
-    ],
-  },
-  {
-    key: 'lscope', name: 'L SCOPE', label: 'LINE配信の分析ツール',
-    desc: '広告→LP→LINEの流れを1本のタイムラインに並べて見比べる分析ツール。トーク履歴を取り込むと配信の流れが時系列で可視化され、AIがシナリオの初稿づくりまで支援します。',
-    slides: [
-      // 実データに他社情報が含まれるため、この1枚のみ機能図（figure）で掲載する
-      { img: '/service/ai/shots/lscope-1.svg', cap: '広告→LP→LINE配信を1本の時間軸に並べて見比べる（機能図）', figure: true },
-    ],
-  },
-];
-
-const services = [
-  { n: '01', t: 'AI顧問（毎月の伴走）', d: '月1回の定例とチャット相談で、御社の業務を一緒に見ながら「AIで手放せる作業」から順番に片づけます。毎月ひとつ、小さな自動化を作って納品します。', chips: ['月1回の定例MTG', 'チャット相談 無制限', '毎月1つの自動化', '使い方レクチャー'] },
-  { n: '02', t: '業務Webアプリ開発', d: '予約受付からカレンダー表示、スタッフ割り振り、LINE連携、請求書のダウンロードまで。バラバラだった業務をひとつのアプリに束ねます。必要になったタイミングで、プロトタイプを見てから決められます。', chips: ['予約・カレンダー', 'スタッフ管理', 'LINE連携', '請求書発行'] },
-  { n: '03', t: 'AI業務効率化の実装', d: '文書作成・問い合わせ一次対応・データ整理・レポート生成など、繰り返し業務にAIを組み込みます。「ツールを契約して終わり」ではなく、御社の業務フローの中で毎日動く仕組みにします。', chips: ['文書・資料の自動作成', '問い合わせ自動化', 'データ整理', '定型レポート'] },
-];
-
+const consult = lineUrl || mail;
 const faqs = [
-  { q: '費用の目安を教えてください。', a: 'AI顧問は初期10万円＋月額5万円からです。業務アプリの開発が必要になった場合は別途、単機能の業務ツールで10万円〜、予約・請求まで束ねた一式で30万円〜、大規模・基幹連携込みで50万円〜が目安です(税抜)。' },
-  { q: '本当に何も分かっていないのですが、大丈夫ですか？', a: 'それが普通です。「ChatGPTを開いたことがない」状態からのご相談がいちばん多い前提で設計しています。専門用語は使いません。' },
-  { q: '月5万円で、具体的に何をしてもらえますか？', a: '月1回の定例ミーティング(オンライン60〜90分)、チャットでの相談(回数無制限)、毎月ひとつの小さな自動化の納品、ツール選定と社内向けの使い方レクチャーです。' },
-  { q: '途中でやめられますか？', a: '最低3ヶ月で、4ヶ月目以降は月単位でいつでも停止できます。違約金もありません。' },
-  { q: '地方なのですが、対応できますか？', a: 'オンラインで完結するので全国対応しています。必要な場合のみ訪問します。' },
-  { q: '補助金は使えますか？', a: '業務アプリの開発は「デジタル化・AI導入補助金2026」の対象になる可能性があります(最大450万円・小規模事業者は補助率最大4/5)。申請の進め方もご相談ください。※支給は審査によるもので、保証するものではありません。' },
-  { q: '社員が「AIに仕事を奪われる」と不安がっています。', a: '人を減らすためではなく、面倒な作業を手放して、人にしかできない仕事に時間を回すための導入です。社内向けの使い方レクチャーも含めて設計します。' },
-  { q: '発注前に完成イメージを確認できますか？', a: 'はい。開発をご検討いただく場合は、ご発注の前に動くプロトタイプをご覧いただき、確認してから範囲と金額を決めていただけます。' },
+  { q: '5万円で、どこまで自動化できますか？', a: '請求書管理の中から、まず自動化する業務を決めて仕組みを構築します。たとえば、受領した請求書の情報を読み取り、管理台帳にまとめる流れです。対応できる書式や連携先、含まれる作業は、現在の運用を確認したうえで契約前にご案内します。' },
+  { q: '5万円は月額料金ですか？', a: `月額料金ではなく、自動化の導入費用です。毎月${offer.monthlyLimit}社限定で、通常${regular}万円のところ${price}万円（${tax}）でご提供します。外部ツールの利用料、追加開発、継続保守の有無と費用は、必要な構成に応じて事前にご案内します。` },
+  { q: 'Excelや、今使っているツールのまま相談できますか？', a: 'はい。まずは現在お使いのExcel・スプレッドシート・メール・会計ソフトと、担当者の作業手順を伺います。連携の可否を確認し、今の運用を活かせる方法からご提案します。' },
+  { q: 'AIに詳しい社員がいなくても使えますか？', a: 'はい。日々使う担当者の操作に合わせて設計し、使い方までご案内します。専門用語で考える必要はありません。「毎月この作業が大変」というお話から始められます。' },
+  { q: '読み取りミスや、機密情報の取り扱いはどうなりますか？', a: 'AIの読み取り結果を担当者が確認・修正できる工程を組み込みます。利用するサービス、保存先、閲覧権限、データの取り扱いは導入前に確認します。振込や会計処理の確定など、最終判断が必要な作業は人が確認する前提で設計します。' },
+  { q: '請求書以外の業務も相談できますか？', a: 'はい。見積書・報告書の作成、問い合わせ対応、データ入力、営業管理などもご相談いただけます。自動化の効果と導入費用を見ながら、優先順位を一緒に決めます。請求書管理の限定プランとは別に、必要な範囲をお見積もりします。' },
 ];
-
+const flow = [
+  { n: '01', title: '今の業務を伺う', body: '請求書の件数、届き方、管理方法を確認。「何に時間がかかっているか」を整理します。' },
+  { n: '02', title: '範囲と費用を決める', body: '自動化できる作業と完成イメージをご案内。対象範囲・費用に納得いただいてから進めます。' },
+  { n: '03', title: '構築・動作確認', body: '現在の業務に合わせて仕組みを構築。担当者と一緒に読み取りや転記の流れを確認します。' },
+  { n: '04', title: '使い方までサポート', body: '操作手順と確認ポイントを共有。実際の業務で使い始められる状態に整えます。' },
+];
+const examples = [
+  { name: 'LAYR B2B DB', label: '営業管理', text: '営業リストや問い合わせをまとめて管理。探す・転記する作業を減らすための社内ツールです。', images: [
+    ['/service/ai/shots/b2b-1.jpg', '営業管理のダッシュボード'], ['/service/ai/shots/b2b-2.jpg', '営業リストと提案文の管理'], ['/service/ai/shots/b2b-3.jpg', '顧客台帳の管理'],
+  ] },
+  { name: 'バナラボ', label: '制作業務', text: '配信サイズに合わせたバナー制作を支援。繰り返し発生する制作作業にもAIを取り入れています。', images: [
+    ['/service/ai/shots/banlabo-1.jpg', '広告バナーの生成画面'], ['/service/ai/shots/banlabo-2.jpg', '媒体別サイズの選択画面'],
+  ] },
+  { name: 'LINEスコア診断', label: '顧客対応', text: '質問への回答からレポートを作成。ヒアリングから情報整理までの流れを仕組みにしています。', images: [
+    ['/service/ai/shots/check-1.jpg', 'LINEスコア診断の開始画面'], ['/service/ai/shots/check-2.jpg', '質問と診断レポートの画面'],
+  ] },
+  { name: 'L SCOPE', label: '分析業務', text: '広告・LP・LINE配信の流れを可視化。情報を並べて確認する作業から、改善の検討へつなげます。', images: [
+    ['/service/ai/shots/lscope-1.svg', '広告からLINE配信までの流れを整理する機能図'],
+  ] },
+];
 const jsonLd = [
-  {
-    '@context': 'https://schema.org', '@type': 'BreadcrumbList',
-    itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://layr.co.jp/' },
-      { '@type': 'ListItem', position: 2, name: 'サービス', item: 'https://layr.co.jp/service/' },
-      { '@type': 'ListItem', position: 3, name: 'AI導入・業務実装支援' },
-    ],
-  },
-  {
-    '@context': 'https://schema.org', '@type': 'Service', '@id': 'https://layr.co.jp/#service-ai',
-    name: 'AI導入・業務実装支援「よろず屋AI」', serviceType: 'AI導入支援・AI顧問・業務システム開発',
-    provider: { '@id': 'https://layr.co.jp/#organization' }, areaServed: 'JP', url: 'https://layr.co.jp/service/ai/',
-    hasOfferCatalog: {
-      '@type': 'OfferCatalog', name: 'AI導入支援プラン',
-      itemListElement: [
-        { '@type': 'Offer', name: 'AI顧問', priceSpecification: { '@type': 'UnitPriceSpecification', price: 50000, priceCurrency: 'JPY', unitText: '月' } },
-        { '@type': 'Offer', name: '業務アプリ開発', priceSpecification: { '@type': 'PriceSpecification', minPrice: 100000, priceCurrency: 'JPY' } },
-      ],
-    },
-  },
-  {
-    '@context': 'https://schema.org', '@type': 'FAQPage',
-    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
-  },
+  { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://layr.co.jp/' },
+    { '@type': 'ListItem', position: 2, name: 'サービス', item: 'https://layr.co.jp/service/' },
+    { '@type': 'ListItem', position: 3, name: service.name },
+  ] },
+  { '@context': 'https://schema.org', '@type': 'Service', '@id': 'https://layr.co.jp/#service-ai', name: service.name, serviceType: 'AI業務効率化・業務自動化', provider: { '@id': 'https://layr.co.jp/#organization' }, areaServed: 'JP', url: 'https://layr.co.jp/service/ai/', offers: {
+    '@type': 'Offer', name: `${offer.name}・毎月${offer.monthlyLimit}社限定`, price: offer.price, priceCurrency: 'JPY', description: `通常${regular}万円から${price}万円（${tax}）。${offer.billing}。対象範囲と外部ツール費用等は契約前に確認。`, url: 'https://layr.co.jp/service/ai/#price', priceSpecification: { '@type': 'PriceSpecification', price: offer.price, priceCurrency: 'JPY', valueAddedTaxIncluded: offer.taxIncluded },
+  } },
+  { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
 ];
 ---
-<Base title={title} description={description} jsonLd={jsonLd} hideHeader={true}>
-
-  <!-- LP専用ミニヘッダー -->
-  <header class="lp-head">
-    <div class="lp-head-in">
-      <a class="lp-brand" href="/" aria-label="株式会社LAYR トップへ">
-        <b>LAYR</b><span>よろず屋AI</span>
-      </a>
-      <a class="lp-head-cta" href={lineUrl || mail}>無料で相談する</a>
+<Base title={service.title} description={service.description} jsonLd={jsonLd} hideHeader={true}>
+<div class="ai-lp">
+  <header class="ai-header">
+    <div class="ai-wrap ai-header-inner">
+      <a href="/" class="ai-brand" aria-label="株式会社LAYR トップへ"><img src="/logo.png" alt="LAYR" width="969" height="246" /><span>{service.name}</span></a>
+      <nav class="ai-nav" aria-label="AIサービスのページ内ナビゲーション"><a href="#invoice">自動化できること</a><a href="#price">費用</a><a href="#flow">導入の流れ</a><a href="#works">支援実績</a></nav>
+      <a href="#consult" class="ai-button ai-button-small">無料で相談する <span aria-hidden="true">↗</span></a>
     </div>
   </header>
 
-  <!-- HERO: 暖簾＋屋号＋会話から始まる -->
-  <section class="hv">
-    <div class="noren" aria-hidden="true">
-      <span></span><span></span><span class="mark"></span><span></span><span></span>
-    </div>
-    <span class="hanko" aria-hidden="true">よろず屋<b class="tate">AI</b></span>
-    <div class="container hv-in">
-      <div class="hv-copy">
-        <p class="hv-brand">
-          <svg class="hv-mark" viewBox="0 0 96 96" role="img" aria-label="丸に智 — よろず屋AIの屋号マーク">
-            <circle class="mk-base" cx="48" cy="48" r="46"/>
-            <circle class="mk-ring" cx="48" cy="48" r="38"/>
-            <text class="mk-char" x="48" y="50" text-anchor="middle" dominant-baseline="central" font-size="40" font-weight="700">智</text>
-          </svg>
-          <span class="hv-brand-name">よろず屋AI<small>法人向けAI導入・業務実装支援｜株式会社LAYR</small></span>
-        </p>
-        <p class="hv-tag">地方の中小企業のための、AIの相談窓口</p>
-        <div class="hv-talk">
-          <p class="hv-q">「AIって、うちに関係あるの？」</p>
-        </div>
-        <h1 class="hv-h1">——からで、<br class="sp" /><em>大丈夫です。</em></h1>
-        <p class="hv-lead">何から手をつければいいか分からない。それが普通です。LAYRは専門用語を使わずに御社の業務を一緒に見て、AIで手放せる作業から順番に片づけていきます。まずは、1つの業務を自動化するところから。</p>
-        <div class="hv-cta">
-          {lineUrl ? (
-            <>
-              <a class="btn-ink" href={lineUrl}>LINEで相談する<i>→</i></a>
-              <a class="btn-line2" href={mail}>メールで相談する</a>
-            </>
-          ) : (
-            <>
-              <a class="btn-ink" href={mail}>無料で相談する<i>→</i></a>
-              <a class="btn-line2" href="#price">料金を見る</a>
-            </>
-          )}
-        </div>
-        <p class="hv-checks"><span>売り込みなし</span><span>専門用語なし</span><span>質問だけでもOK</span></p>
+  <section class="ai-hero">
+    <div class="ai-wrap ai-hero-grid">
+      <div class="ai-hero-copy">
+        <p class="ai-eyebrow">LAYR / BUSINESS AUTOMATION</p>
+        <p class="ai-hero-kicker">中小企業のための、AI業務自動化。</p>
+        <h1>AIで業務を効率化。<br />ムダな経費を削減して、<br />会社の<em>利益</em>を<br class="ai-mobile-break" />上げませんか。</h1>
+        <p class="ai-lead">毎月くり返す入力、転記、確認。<br />その手作業をAIで減らして、<br />人と時間を、売上をつくる仕事へ。</p>
+        <div class="ai-actions"><a href="#price" class="ai-button">まずは請求書管理の自動化から <span aria-hidden="true">↓</span></a></div>
+        <p class="ai-hero-note">毎月{offer.monthlyLimit}社限定｜通常{regular}万円 → {price}万円（{tax}）</p>
       </div>
-      <div class="hv-visual">
-        <div class="hv-browser" aria-hidden="true">
-          <div class="hv-bar"><i></i><i></i><i></i><em>LAYRが自社で使っているツール</em></div>
-          <div class="hv-frames">
-            <img src="/service/ai/shots/b2b-1.jpg" alt="" loading="eager" />
-            <img src="/service/ai/shots/banlabo-1.jpg" alt="" loading="lazy" />
-            <img src="/service/ai/shots/lscope-1.svg" alt="" loading="lazy" />
-            <img src="/service/ai/shots/check-1.jpg" alt="" loading="lazy" />
+      <div class="ai-hero-aside">
+        <div class="ai-workspace" aria-label="請求書管理の画面構成例">
+          <div class="ai-workspace-top"><span>請求書管理</span><span class="ai-sample">画面構成例</span></div>
+          <div class="ai-workspace-body">
+            <p class="ai-workspace-label">月末の作業を、ひとつの流れに。</p>
+            <div class="ai-document-row"><span class="ai-filetype">PDF</span><div><b>受け取った請求書</b><span>メール・共有フォルダなど</span></div></div>
+            <div class="ai-extract"><span class="ai-step-tag">AIが読み取り・整理</span><dl><div><dt>取引先</dt><dd>サンプル商事</dd></div><div><dt>請求金額</dt><dd>¥55,000</dd></div><div><dt>支払期日</dt><dd>月末</dd></div></dl></div>
+            <div class="ai-ledger"><div><b>管理台帳へまとめる</b><span>取引先・金額・期限を一覧に</span></div><span class="ai-status">確認待ち</span></div>
+            <div class="ai-review"><span>最後は、人が確認。</span><p>読み取り内容を確認・修正して、<br />次の処理へ進めます。</p></div>
           </div>
         </div>
-        <p class="hv-visual-note">ぜんぶ、AIで内製した自社ツールです（<a href="#works">実物を見る</a>）</p>
+        <p class="ai-visual-caption">※説明用の架空データです。実際の構成は業務に合わせて設計します。</p>
       </div>
     </div>
-    <div class="hv-stats container">
-      <div><b><span class="cnt" data-to="5">5</span><small>万円〜</small></b><span>AI顧問・月額（初期10万円）</span></div>
-      <div><b>0<small>円</small></b><span>発注前のプロトタイプ</span></div>
-      <div><b><span class="cnt" data-to="30">30</span><small>本+</small></b><span>自社でAI内製した業務ツール</span></div>
+    <div class="ai-wrap ai-hero-footer"><span>小さく始めて、毎月のムダを減らす。</span><a href="#invoice">請求書管理で、できることを見る <span aria-hidden="true">↓</span></a></div>
+  </section>
+
+  <section class="ai-offer-section" id="price" aria-labelledby="offer-heading">
+    <div class="ai-wrap ai-offer">
+      <div class="ai-offer-copy"><p class="ai-eyebrow">FIRST STEP</p><h2 id="offer-heading">まずは、請求書管理を<br /><em>AIで自動化</em>しませんか？</h2><p>毎月の「届いた請求書を探す」「数字を打ち直す」を、<br class="ai-desktop-break" />仕組みで減らす。ひとつの業務から始められます。</p><a href="#consult" class="ai-text-link">自社でもできるか相談する <span aria-hidden="true">↗</span></a></div>
+      <div class="ai-offer-price"><span class="ai-limit">毎月 <b>{offer.monthlyLimit}社限定</b></span><p class="ai-price-label">{offer.name} / {offer.billing}</p><div class="ai-pricing"><span class="ai-regular">通常 <s>{regular}万円</s></span><span class="ai-price-arrow" aria-hidden="true">→</span><strong>{price}<span>万円<small>（{tax}）</small></span></strong></div><p class="ai-price-note">月額料金ではなく、導入時の費用です。</p><a href={consult} class="ai-button ai-button-light" data-ai-lead="offer">{price}万円プランを相談する <span aria-hidden="true">↗</span></a><p class="ai-offer-terms">対象範囲・連携先は事前に確認。外部ツール利用料や追加開発・保守が必要な場合は、契約前にご案内します。</p></div>
     </div>
   </section>
 
-  <!-- スタート地点 -->
-  <section class="sec">
-    <div class="container narrow">
-      <p class="en reveal">START</p>
-      <h2 class="h2 reveal">皆さん、だいたい<em>ここから</em>始まります。</h2>
-      <div class="st-grid">
-        {starts.map((s, i) => (
-          <div class="st-card reveal" style={`transition-delay:${i * 70}ms`}>
-            <span class="st-n">{String(i + 1).padStart(2, '0')}</span>
-            <p>「{s}」</p>
-          </div>
-        ))}
-      </div>
-      <div class="st-callout reveal">
-        <p class="t">→ ぜんぶ、普通です。</p>
-        <p class="s">実際、AIを導入していない中小企業のいちばんの理由は「何から始めればいいか分からない」でした。<br /><small>（中小企業基盤整備機構 調査／2026年3月）</small></p>
+  <section class="ai-section ai-problem">
+    <div class="ai-wrap ai-split">
+      <div class="ai-section-heading"><p class="ai-section-index">01 <span>見直したい業務</span></p><h2>その手作業にも、<br /><em>コスト</em>が<br />かかっています。</h2><p>見えにくい経費は、<br />担当者の時間の中にもあります。</p></div>
+      <div class="ai-problem-list">
+        <article><span class="ai-row-number">01</span><div><h3>請求書を探す、集める。</h3><p>メール、PDF、共有フォルダ。届く場所がバラバラで、確認するだけでもひと仕事。</p></div></article>
+        <article><span class="ai-row-number">02</span><div><h3>同じ数字を、何度も入力する。</h3><p>取引先、金額、支払期日。管理表へ打ち直すたびに、時間も入力ミスの心配も増えていく。</p></div></article>
+        <article><span class="ai-row-number">03</span><div><h3>月末になると、本業が止まる。</h3><p>確認と取りまとめに追われて、営業やお客様への対応が後回しになってしまう。</p></div></article>
       </div>
     </div>
   </section>
 
-  <!-- 手放せる作業: 赤ペンで消していく -->
-  <section class="sec is-paper">
-    <div class="container narrow">
-      <p class="en reveal">TO-DO LIST</p>
-      <h2 class="h2 reveal">その「手作業」、<em>リストから消していけます</em>。</h2>
-      <div class="td-sheet reveal" id="tdSheet">
-        {pains.map((p, i) => (
-          <div class="td-row" style={`--d:${i * 350}ms`}>
-            <span class="td-check" aria-hidden="true"></span>
-            <div class="td-body">
-              <b><span class="td-strike">{p[0]}</span></b>
-              <p>{p[1]}</p>
-            </div>
-            <span class="td-done" aria-hidden="true">AIへ</span>
-          </div>
-        ))}
-        <p class="td-foot">こうした作業から、ひとつずつ手放していけます。</p>
+  <section class="ai-section ai-invoice" id="invoice">
+    <div class="ai-wrap">
+      <div class="ai-section-heading ai-heading-wide"><p class="ai-section-index">02 <span>請求書管理の自動化</span></p><h2>「入力する仕事」を減らして、<br /><em>確認する仕事</em>へ。</h2><p>たとえば、受領した請求書の整理から台帳への転記まで。<br />今の業務を見ながら、自動化する範囲を設計します。</p></div>
+      <div class="ai-comparison">
+        <div class="ai-before"><p class="ai-eyebrow">BEFORE / これまで</p><h3>担当者が、ひとつずつ処理。</h3><ol><li>メールやフォルダから請求書を集める</li><li>書面を見ながら管理表へ入力する</li><li>金額や期限の抜け漏れを見直す</li><li>社内の確認・承認へ回す</li></ol></div>
+        <div class="ai-after"><p class="ai-eyebrow">AFTER / 自動化の一例</p><h3>AIが整理。人が確認。</h3><ol><li><span>受領</span><div><b>請求書の取り込み先をまとめる</b><p>メール・フォルダなど、届き方に合わせて設計。</p></div></li><li><span>AI</span><div><b>必要な情報を読み取り、台帳へ</b><p>取引先・請求金額・支払期日などを整理。</p></div></li><li><span>確認</span><div><b>読み取り結果を確認・修正する</b><p>人の確認をはさんで、次の処理へ。</p></div></li></ol></div>
       </div>
+      <div class="ai-scope"><b>いつもの仕事に、無理なく組み込む。</b><p>Excel・スプレッドシート・会計ソフトなど、今お使いのツールを伺い、連携できる方法を確認します。読み取り対象や書式によっては、自動化に向かない作業も事前にお伝えします。</p></div>
     </div>
   </section>
 
-  <!-- ショーケース: 例えば、こんなものが作れます -->
-  <section class="sec is-ink" id="works">
-    <div class="container">
-      <p class="en is-w reveal">SHOWCASE</p>
-      <h2 class="h2 is-w reveal">例えば、<em>こんなもの</em>が作れます。</h2>
-      <p class="ink-lead reveal">これらは販売用のデモではありません。LAYRが社員を増やさずに会社を回すため、自分たちのために作って毎日使っている実物のツールです。同じ作り方を、御社の業務に合わせて持ち込みます。</p>
+  <div class="ai-manifesto ai-wrap"><p>毎月の作業を減らすことが、<br />これからの<em>利益</em>につながる。</p></div>
 
-      <div class="sw reveal">
-        <div class="sw-tabs" role="tablist" aria-label="自社ツールの実例">
-          {showcase.map((t, i) => (
-            <button
-              class={`sw-tab${i === 0 ? ' is-on' : ''}`}
-              role="tab"
-              id={`swtab-${t.key}`}
-              aria-controls={`swpanel-${t.key}`}
-              aria-selected={i === 0 ? 'true' : 'false'}
-              tabindex={i === 0 ? 0 : -1}
-              data-tab={t.key}
-            >
-              <b>{t.name}</b><span>{t.label}</span>
-            </button>
-          ))}
-        </div>
+  <section class="ai-section ai-flow" id="flow">
+    <div class="ai-wrap ai-split"><div class="ai-section-heading"><p class="ai-section-index">03 <span>導入の流れ</span></p><h2>「この作業が大変」<br />から、<em>始められます。</em></h2><p>AIの知識は不要です。<br />普段の業務を、そのままお聞かせください。</p><a href="#consult" class="ai-text-link">まずは無料で相談する <span aria-hidden="true">↗</span></a></div><ol class="ai-flow-list">{flow.map(step => <li><span>{step.n}</span><div><h3>{step.title}</h3><p>{step.body}</p></div></li>)}</ol></div>
+  </section>
 
-        {showcase.map((t, i) => (
-          <div
-            class={`sw-panel${i === 0 ? ' is-on' : ''}`}
-            data-panel={t.key}
-            role="tabpanel"
-            id={`swpanel-${t.key}`}
-            aria-labelledby={`swtab-${t.key}`}
-            tabindex="0"
-          >
-            <p class="sw-desc">{t.desc}</p>
-            <div class="sw-stage">
-              <button class="sw-arrow is-prev" aria-label="前のスクリーンショット" data-dir="-1">‹</button>
-              <div class="sw-viewport">
-                <div class="sw-strip">
-                  {t.slides.map((s) => (
-                    <figure class="sw-slide">
-                      {(s as any).figure ? (
-                        <div class="sw-figure">
-                          <img src={s.img} alt={`${t.name}の機能図 — ${s.cap}`} loading="lazy" width="1200" height="620" />
-                        </div>
-                      ) : (
-                        <div class="sw-browser">
-                          <div class="sw-bar"><i></i><i></i><i></i></div>
-                          <img src={s.img} alt={`${t.name}の画面 — ${s.cap}`} loading="lazy" width="1600" height="900" />
-                        </div>
-                      )}
-                      <figcaption>{s.cap}</figcaption>
-                    </figure>
-                  ))}
-                </div>
-              </div>
-              <button class="sw-arrow is-next" aria-label="次のスクリーンショット" data-dir="1">›</button>
-            </div>
-            <div class="sw-dots" role="presentation">
-              {t.slides.map((_, di) => <button class={`sw-dot${di === 0 ? ' is-on' : ''}`} data-i={di} aria-label={`${di + 1}枚目`}></button>)}
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <p class="ink-note reveal">…ほか、30本以上。御社にお渡しするのは、<b>この体制そのもの</b>です。</p>
+  <section class="ai-section ai-works" id="works">
+    <div class="ai-wrap">
+      <div class="ai-section-heading ai-heading-wide"><p class="ai-section-index">04 <span>支援実績・自社実装例</span></p><h2>日々の業務に、<br /><em>AIを実装。</em></h2><p>お客様のオーダー業務の自動化から、自社ツールの開発まで。<br />請求書管理のその先も、必要な業務からご相談いただけます。</p></div>
+      {service.clientCases.map(client => <article class="ai-client-case">
+        <div class="ai-client-story"><p class="ai-eyebrow">CLIENT CASE / 支援実績</p><p class="ai-client-name">{client.company}<span> 様</span></p><h3>{client.title}</h3><p class="ai-client-description">{client.description}</p></div>
+        <div class="ai-client-info"><dl><div><dt>業種</dt><dd>{client.industry}</dd></div><div><dt>支援内容</dt><dd>{client.support}</dd></div></dl><a href={client.url} class="ai-text-link" target="_blank" rel="noopener noreferrer" aria-label={`${client.company}の商品カタログを見る（新しいタブで開きます）`}>同社の商品カタログを見る <span aria-hidden="true">↗</span></a></div>
+      </article>)}
+      <div class="ai-own-heading"><p class="ai-eyebrow">IN-HOUSE / LAYRの自社実装例</p><p>営業管理、制作、情報整理。自分たちの実務で使う仕組みも開発しています。</p></div>
+      <div class="ai-example-list">{examples.map((example, i) => <details class="ai-example" open={i === 0}>
+        <summary><span class="ai-example-label">{example.label}</span><h3>{example.name}</h3><span class="ai-toggle" aria-hidden="true"></span></summary>
+        <div class="ai-example-content"><p>{example.text}</p><div class="ai-gallery" tabindex="0" role="region" aria-label={`${example.name}の画面。横にスクロールして閲覧できます。`}>{example.images.map(([src, caption]) => <figure><img src={src} alt={caption} width="1400" height="900" loading="lazy" decoding="async" /><figcaption>{caption}{src.endsWith('.svg') ? '（機能図）' : '（自社ツール）'}</figcaption></figure>)}</div>{example.images.length > 1 && <p class="ai-gallery-note">横にスクロールして、ほかの画面を見る <span aria-hidden="true">→</span></p>}</div>
+      </details>)}</div>
     </div>
   </section>
 
-  <!-- できること3つ -->
-  <section class="sec">
-    <div class="container narrow">
-      <p class="en reveal">SERVICE</p>
-      <h2 class="h2 reveal">LAYRのAI支援は、<em>3つ</em>。</h2>
-      <div class="sv-list">
-        {services.map((s, i) => (
-          <div class="sv-row reveal" style={`transition-delay:${i * 90}ms`}>
-            <span class="sv-num">{s.n}</span>
-            <div class="sv-body">
-              <h3>{s.t}</h3>
-              <p>{s.d}</p>
-              <div class="sv-chips">{s.chips.map((c) => <span>{c}</span>)}</div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
+  <section class="ai-section ai-faq" id="faq"><div class="ai-wrap ai-split"><div class="ai-section-heading"><p class="ai-section-index">05 <span>よくあるご質問</span></p><h2>導入前の<br /><em>気になること。</em></h2></div><div class="ai-faq-list">{faqs.map(f => <details><summary><span>Q</span><h3>{f.q}</h3><span class="ai-toggle" aria-hidden="true"></span></summary><p>{f.a}</p></details>)}</div></div></section>
 
-  <!-- 選ばれる理由 -->
-  <section class="sec is-paper">
-    <div class="container narrow">
-      <p class="en reveal">WHY LAYR</p>
-      <h2 class="h2 reveal">安心して、<em>任せてもらえる理由</em>。</h2>
-      <div class="wh-grid">
-        <div class="wh-card reveal"><b>分からないことを、分からないまま聞けます</b><p>「こんなことも知らないのか」と思われる心配は不要です。専門用語を使わず、御社の言葉で会話します。</p></div>
-        <div class="wh-card reveal" style="transition-delay:80ms"><b>発注前に、動くものを見せます</b><p>開発をご検討の場合は「完成してみないと分からない」を無くすため、契約前にプロトタイプをご覧いただきます。</p></div>
-        <div class="wh-card reveal" style="transition-delay:160ms"><b>自社で毎日やっていることを、そのまま提供</b><p>LAYR自身が30本以上の業務ツールをAIで内製して経営しています。売るためのAIではなく、使うためのAIを知っています。</p></div>
-        <div class="wh-card reveal" style="transition-delay:240ms"><b>LINE連携が得意</b><p>LINEマーケティング専業の知見をそのまま接続。予約通知・顧客対応・配信まで、LINEと業務の仕組みを一体で設計できます。</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 進め方（2本立て） -->
-  <section class="sec" id="flow">
-    <div class="container narrow">
-      <p class="en reveal">FLOW</p>
-      <h2 class="h2 reveal">進め方は、<em>2通り</em>。</h2>
-      <div class="fl-grid">
-        <div class="fl-card reveal">
-          <p class="fl-t">AI顧問で始める <span class="fl-osusume">おすすめ</span></p>
-          <ol>
-            <li><b>無料相談</b>困りごとが言葉にできていなくても大丈夫です。一緒に探します</li>
-            <li><b>初期設定</b>ツールの用意と、最初の自動化テーマを決めます</li>
-            <li><b>毎月の伴走</b>定例＋チャット相談＋毎月ひとつの自動化</li>
-          </ol>
-        </div>
-        <div class="fl-card reveal" style="transition-delay:100ms">
-          <p class="fl-t">業務アプリを開発する</p>
-          <ol>
-            <li><b>ヒアリング</b>現状の業務と、束ねたい作業を伺います</li>
-            <li><b>プロトタイプ提示</b>発注前に、動くものをご覧いただきます（無料）</li>
-            <li><b>松竹梅お見積もり→開発</b>3案から選んで、開発・運用伴走へ</li>
-          </ol>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- 料金（2階建て） -->
-  <section class="sec is-paper" id="price">
-    <div class="container narrow">
-      <p class="en reveal">PRICE</p>
-      <h2 class="h2 reveal">月5万円から、<em>始められます</em>。</h2>
-
-      <div class="pr-main reveal">
-        <p class="pr-label"><span class="pr-ichi">①</span> まずは「AI顧問」から</p>
-        <div class="pr-nums">
-          <div><span>初期費用</span><b><i class="cnt" data-to="10">10</i><small>万円</small></b></div>
-          <div class="pr-x">＋</div>
-          <div><span>月額</span><b><i class="cnt" data-to="5">5</i><small>万円</small></b></div>
-        </div>
-        <ul class="pr-list">
-          <li>月1回の定例ミーティング（オンライン60〜90分）</li>
-          <li>チャットでの相談は回数無制限</li>
-          <li>毎月ひとつ、小さな自動化をつくって納品</li>
-          <li>ツール選定と、社内の使い方レクチャー</li>
-        </ul>
-        <p class="pr-note">最低3ヶ月から。4ヶ月目以降は月単位で、いつでも停止できます。</p>
-      </div>
-
-      <div class="pr-sub reveal">
-        <p class="pr-label"><span class="pr-ichi">②</span> 本格的に作るなら「業務アプリ開発」</p>
-        <div class="pr-rows">
-          <div><b>単機能の業務ツール</b><span class="pr-dots"></span><em>10万円〜</em></div>
-          <div><b>業務アプリ一式（予約〜請求まで）</b><span class="pr-dots"></span><em>30万円〜</em></div>
-          <div><b>大規模・基幹連携・LINE連携込み</b><span class="pr-dots"></span><em>50万円〜</em></div>
-        </div>
-        <p class="pr-note">※ 顧問契約とは別のお見積もりです。必要になったタイミングで、動くプロトタイプをご確認いただいてから決めていただけます。※ 税抜・目安</p>
-      </div>
-
-      <p class="pr-cap reveal">※ 現在の価格は、先着5社さまの実績づくり価格です。</p>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section class="sec">
-    <div class="container narrow">
-      <p class="en reveal">FAQ</p>
-      <h2 class="h2 reveal">よくあるご質問</h2>
-      <div class="fq">
-        {faqs.map((f, i) => (
-          <details class="fq-item reveal" style={`transition-delay:${i * 40}ms`}>
-            <summary><span class="fq-q">Q{i + 1}</span>{f.q}<span class="fq-plus" aria-hidden="true"></span></summary>
-            <div class="fq-a"><p>{f.a}</p></div>
-          </details>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- 最終CTA -->
-  <section class="fin">
-    <div class="container">
-      <p class="fin-t reveal">まずは、御社の<em>「よく分からない」</em>を<br class="sp" />聞かせてください。</p>
-      <p class="fin-s reveal">まだ何も決まっていない段階で構いません。質問だけでも大丈夫です。</p>
-      <div class="fin-row reveal">
-        {lineUrl ? (
-          <>
-            <a class="btn-ink is-w" href={lineUrl}>LINEで相談する<i>→</i></a>
-            <a class="btn-line2 is-w" href={mail}>メールで相談する</a>
-          </>
-        ) : (
-          <a class="btn-ink is-w" href={mail}>無料で相談する<i>→</i></a>
-        )}
-      </div>
-    </div>
-  </section>
+  <section class="ai-final" id="consult"><div class="ai-wrap ai-final-inner"><p class="ai-eyebrow">LET’S START SMALL.</p><h2>まずは、月末の請求書管理から。<br />会社の<em>ムダ</em>を、一緒に減らしませんか。</h2><p>「うちの業務でも自動化できる？」というご相談からどうぞ。<br />現在の運用を伺い、できることと費用をご案内します。</p><div class="ai-final-offer"><span>毎月{offer.monthlyLimit}社限定</span><span>通常<s>{regular}万円</s> → <b>{price}万円</b>（{tax}）</span></div><div class="ai-actions">{lineUrl && <a href={lineUrl} class="ai-button" data-ai-lead="line">LINEで無料相談する <span aria-hidden="true">↗</span></a>}<a href={mail} class="ai-button ai-button-outline" data-ai-lead="email">メールで相談する <span aria-hidden="true">↗</span></a></div><p class="ai-final-note">株式会社LAYR / {service.name}「{service.brand}」</p></div></section>
+</div>
 </Base>
-
-<style>
-  /* ============ v4 モードC（和風）: 藍×和紙×弁柄朱・よろず屋の暖簾 ============ */
-  /* トークンは --wa-* のページ内スコープ。丸ゴ見出しはsystem書体で賄う（追加Webフォントなし） */
-  :global(:root){
-    --wa-ai:#1D3A4D;
-    --wa-ai-deep:#152936;
-    --wa-paper:#F5EEDA;
-    --wa-card:#FBF6E7;
-    --wa-shu:#B23C22;
-    --wa-shu-dark:#93301A;
-    --wa-ink:#332F26;
-    --wa-muted:#6D6555;
-    --wa-line:#D9CBA4;
-    --wa-line-strong:#C4B184;
-    --wa-kin:#B78A2F;
-    --wa-font-head:"Hiragino Maru Gothic ProN","Zen Maru Gothic","Noto Sans JP",sans-serif;
-    --wa-fs-display:clamp(30px,4.4vw,46px);
-    --wa-fs-h2:clamp(24px,3.2vw,34px);
-    --wa-fs-h3:20px;
-    --wa-fs-lead:17px;
-    --wa-fs-body:16px;
-    --wa-fs-sm:14px;
-    --wa-fs-label:12px;
-    --wa-r-card:12px;
-    --wa-r-btn:8px;
-    --wa-r-s:4px;
-    --wa-r-pill:999px;
-    --wa-r-bubble:12px 12px 12px 4px;
-    --wa-r-noren:0 0 8px 8px;
-    --wa-shadow:3px 3px 0 rgba(29,58,77,.15);
-    --wa-shadow-hover:5px 5px 0 rgba(29,58,77,.15);
-    --wa-ease:cubic-bezier(.22,.61,.36,1);
-    --wa-seigaiha:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='36' viewBox='0 0 72 36'%3E%3Cg fill='none' stroke='%23f5eeda' stroke-opacity='.08' stroke-width='2'%3E%3Ccircle cx='36' cy='36' r='16'/%3E%3Ccircle cx='36' cy='36' r='10'/%3E%3Ccircle cx='36' cy='36' r='4'/%3E%3Ccircle cx='0' cy='36' r='16'/%3E%3Ccircle cx='0' cy='36' r='10'/%3E%3Ccircle cx='72' cy='36' r='16'/%3E%3Ccircle cx='72' cy='36' r='10'/%3E%3Ccircle cx='18' cy='18' r='16'/%3E%3Ccircle cx='18' cy='18' r='10'/%3E%3Ccircle cx='18' cy='18' r='4'/%3E%3Ccircle cx='54' cy='18' r='16'/%3E%3Ccircle cx='54' cy='18' r='10'/%3E%3Ccircle cx='54' cy='18' r='4'/%3E%3Ccircle cx='0' cy='18' r='4'/%3E%3Ccircle cx='72' cy='18' r='4'/%3E%3C/g%3E%3C/svg%3E");
-  }
-
-  a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var(--wa-shu);outline-offset:2px}
-  .sec.is-ink :focus-visible,.fin :focus-visible{outline-color:var(--wa-paper)}
-  .st-callout,.td-foot,.sw-slide figcaption,.ink-note,.pr-cap,.fin{text-align:center}
-  .narrow{max-width:880px}
-  .sp{display:none}
-
-  /* ---------- ミニヘッダー ---------- */
-  .lp-head{position:fixed;inset:0 0 auto 0;z-index:100;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:2px solid var(--wa-ai)}
-  .lp-head-in{max-width:1160px;margin:0 auto;padding:0 20px;height:60px;display:flex;align-items:center;justify-content:space-between}
-  .lp-brand{display:flex;align-items:baseline;gap:12px;text-decoration:none;color:var(--wa-ink)}
-  .lp-brand b{font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-lead);letter-spacing:.12em}
-  .lp-brand span{font-family:var(--wa-font-head);font-size:var(--wa-fs-label);font-weight:700;color:var(--wa-muted);border-left:1px solid var(--wa-line-strong);padding-left:12px}
-  .lp-head-cta{background:var(--wa-shu);color:var(--wa-paper);font-family:var(--wa-font-head);font-size:var(--wa-fs-sm);font-weight:700;letter-spacing:.12em;border-radius:var(--wa-r-btn);padding:9px 20px;text-decoration:none;transition:transform .15s var(--wa-ease),background .15s var(--wa-ease),box-shadow .15s var(--wa-ease)}
-  .lp-head-cta:hover{background:var(--wa-shu-dark)}
-
-  /* ---------- 暖簾 ---------- */
-  .noren{display:flex;height:72px;margin:60px 0 clamp(34px,4.5vw,52px)}
-  .noren span{flex:1;background:var(--wa-ai);border-radius:var(--wa-r-noren);margin:0 3px;position:relative;box-shadow:inset 0 -6px 0 rgba(0,0,0,.12)}
-  .noren span.mark::after{content:"智";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--wa-paper);font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-h3);border:1.5px solid var(--wa-paper);border-radius:50%;width:46px;height:46px;margin:auto}
-
-  /* ---------- HERO ---------- */
-  .hv{background:var(--wa-paper);padding:0 0 40px;border-bottom:1px solid var(--wa-line);overflow:hidden;position:relative}
-  .hv-in{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,4vw,56px);align-items:center}
-  /* 初速優先: 遅延はLCP候補(h1)が0.35s以内に出る範囲に圧縮する */
-  .hv-brand{display:flex;align-items:center;gap:14px;margin-bottom:20px;animation:rise .5s var(--wa-ease) .02s both}
-  .hv-mark{width:64px;height:64px;flex:none}
-  .mk-base{fill:var(--wa-ai)}
-  .mk-ring{fill:none;stroke:var(--wa-kin);stroke-width:1.5}
-  .mk-char{fill:var(--wa-paper);font-family:var(--wa-font-head)}
-  .hv-brand-name{font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-h3);color:var(--wa-ink);line-height:1.4;letter-spacing:.08em}
-  .hv-brand-name small{display:block;font-family:var(--wa-font-head);font-size:var(--wa-fs-label);font-weight:700;color:var(--wa-muted);letter-spacing:.08em;margin-top:4px}
-  .hv-tag{display:inline-block;font-family:var(--wa-font-head);font-size:var(--wa-fs-sm);font-weight:700;letter-spacing:.12em;color:var(--wa-paper);background:var(--wa-ai);border-radius:var(--wa-r-btn);padding:8px 18px;margin-bottom:24px;animation:rise .5s var(--wa-ease) .08s both}
-  .hv-talk{margin-bottom:6px}
-  .hv-q{position:relative;display:inline-block;background:#fff;border:1.5px solid var(--wa-ai);border-radius:var(--wa-r-bubble);padding:13px 22px;font-family:var(--wa-font-head);font-size:var(--wa-fs-h3);font-weight:700;color:var(--wa-ink);box-shadow:var(--wa-shadow);animation:pop .45s var(--wa-ease) .16s both}
-  .hv-q::after{content:"";position:absolute;left:18px;bottom:-9px;width:14px;height:14px;background:#fff;border-left:1.5px solid var(--wa-ai);border-bottom:1.5px solid var(--wa-ai);transform:skewX(35deg) rotate(-45deg)}
-  .hv-h1{font-family:var(--wa-font-head);font-size:var(--wa-fs-display);font-weight:700;line-height:1.55;letter-spacing:.02em;color:var(--wa-ink);margin:18px 0 20px;animation:rise .55s var(--wa-ease) .3s both}
-  .hv-h1 em{font-style:normal;display:inline-block;color:var(--wa-shu)}
-  .hv-lead{font-size:var(--wa-fs-lead);line-height:1.95;color:var(--wa-muted);max-width:34em;margin-bottom:26px;animation:rise .55s var(--wa-ease) .42s both}
-  .hv-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px;animation:rise .55s var(--wa-ease) .52s both}
-  .btn-ink{display:inline-flex;align-items:center;gap:10px;background:var(--wa-shu);color:var(--wa-paper);font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-body);letter-spacing:.12em;border-radius:var(--wa-r-btn);padding:15px 32px;text-decoration:none;transition:transform .15s var(--wa-ease),background .15s var(--wa-ease),box-shadow .15s var(--wa-ease)}
-  .btn-ink:hover{background:var(--wa-shu-dark)}
-  .btn-ink i{font-style:normal}
-  .btn-line2{display:inline-flex;align-items:center;background:#fff;color:var(--wa-ai);font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-body);letter-spacing:.12em;border:1.5px solid var(--wa-ai);border-radius:var(--wa-r-btn);padding:14px 28px;text-decoration:none;transition:transform .15s var(--wa-ease),background .15s var(--wa-ease),box-shadow .15s var(--wa-ease)}
-  .btn-line2:hover{background:var(--wa-card)}
-  .lp-head-cta,.btn-ink,.btn-line2,.en,.hv-q,.hv-browser,.hv-stats > div,.st-card,.st-callout,.td-sheet,.sw-browser,.sw-figure,.fl-card,.pr-main,.pr-sub{box-shadow:var(--wa-shadow)}
-  .lp-head-cta:hover,.btn-ink:hover,.btn-line2:hover{transform:translate(-1px,-1px);box-shadow:var(--wa-shadow-hover)}
-  .hv-checks{display:flex;gap:18px;flex-wrap:wrap;font-size:var(--wa-fs-label);font-weight:700;color:var(--wa-muted);animation:rise .55s var(--wa-ease) .6s both}
-  .hv-checks span{position:relative;padding-left:18px}
-  .hv-checks span::before{content:"✓";position:absolute;left:0;color:var(--wa-shu);font-weight:700}
-  /* 朱の角印（装飾・モバイル非表示） */
-  .hanko{position:absolute;top:150px;right:2.5%;z-index:2;font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-sm);letter-spacing:.2em;color:var(--wa-shu);border:1.5px solid var(--wa-shu);border-radius:var(--wa-r-s);padding:12px 8px;line-height:1.5;transform:rotate(7deg);opacity:.85;writing-mode:vertical-rl}
-  .hanko .tate{text-combine-upright:all;font-weight:700}
-  /* hero browser visual */
-  .hv-visual{animation:rise .7s var(--wa-ease) .34s both}
-  .hv-browser{background:#fff;border:1.5px solid var(--wa-ai);border-radius:var(--wa-r-card);overflow:hidden;transform:rotate(.6deg)}
-  .hv-bar{display:flex;align-items:center;gap:6px;background:var(--wa-card);border-bottom:1.5px solid var(--wa-ai);padding:9px 12px}
-  .hv-bar i{width:10px;height:10px;border-radius:50%;background:var(--wa-line);border:1px solid var(--wa-line-strong)}
-  .hv-bar em{font-style:normal;font-size:var(--wa-fs-label);font-weight:700;color:var(--wa-muted);margin-left:8px;background:#fff;border-radius:var(--wa-r-pill);padding:2px 12px;border:1px solid var(--wa-line)}
-  .hv-frames{position:relative;aspect-ratio:16/9.6;background:var(--wa-card)}
-  .hv-frames img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:top;opacity:0;animation:frameCycle 16s infinite}
-  /* 1枚目はLCP候補になり得るので透明から始めない（フェードは最終盤で戻す） */
-  .hv-frames img:nth-child(1){opacity:1;animation-name:frameCycleFirst;animation-delay:0s}
-  .hv-frames img:nth-child(2){animation-delay:4s}
-  .hv-frames img:nth-child(3){animation-delay:8s}
-  .hv-frames img:nth-child(4){animation-delay:12s}
-  .hv-visual-note{font-size:var(--wa-fs-label);font-weight:700;color:var(--wa-muted);text-align:right;margin-top:12px}
-  .hv-visual-note a{color:var(--wa-shu)}
-  /* stats */
-  .hv-stats{display:flex;gap:14px;flex-wrap:wrap;margin-top:clamp(30px,4vw,50px)}
-  .hv-stats > div{flex:1;min-width:180px;background:var(--wa-card);border:1px solid var(--wa-line-strong);border-radius:var(--wa-r-card);padding:16px 22px}
-  .hv-stats b{display:flex;align-items:baseline;font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-h2);color:var(--wa-ai);line-height:1.2}
-  .hv-stats b small{font-size:var(--wa-fs-sm);font-weight:700;margin-left:2px}
-  .hv-stats > div > span{display:block;font-size:var(--wa-fs-label);color:var(--wa-muted);font-weight:700;margin-top:4px}
-
-  @keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-  @keyframes pop{from{opacity:0;transform:translateY(10px) scale(.92)}to{opacity:1;transform:none}}
-  @keyframes frameCycle{0%{opacity:0}3%{opacity:1}25%{opacity:1}31%{opacity:0}100%{opacity:0}}
-  @keyframes frameCycleFirst{0%{opacity:1}25%{opacity:1}31%{opacity:0}97%{opacity:0}100%{opacity:1}}
-
-  /* ---------- 共通セクション ---------- */
-  .sec{padding:clamp(88px,9vw,136px) 0 clamp(56px,6vw,88px);background:#fff;scroll-margin-top:60px}
-  .sec.is-paper{background:var(--wa-card)}
-  .sec.is-ink,.fin{background-color:var(--wa-ai);background-image:var(--wa-seigaiha);color:var(--wa-paper)}
-  .en{display:inline-block;font-family:var(--wa-font-head);font-size:var(--wa-fs-label);font-weight:700;letter-spacing:.2em;color:var(--wa-shu);background:var(--wa-card);border:1.5px solid var(--wa-shu);border-radius:var(--wa-r-s);padding:6px 16px 5px;margin-bottom:16px;transform:rotate(-1.2deg)}
-  .en.is-w{color:color-mix(in srgb, var(--wa-shu) 38%, var(--wa-paper));border-color:color-mix(in srgb, var(--wa-shu) 38%, var(--wa-paper));background:transparent}
-  .h2{font-family:var(--wa-font-head);font-size:var(--wa-fs-h2);font-weight:700;line-height:1.65;letter-spacing:.02em;color:var(--wa-ink);margin-bottom:34px}
-  .h2 em{font-style:normal;color:var(--wa-shu)}
-  .h2.is-w{color:var(--wa-paper)}
-  .h2.is-w em{color:color-mix(in srgb, var(--wa-shu) 38%, var(--wa-paper))}
-
-  /* reveal（Baseの共通IntersectionObserverが is-visible を付ける） */
-  .reveal{opacity:0;transform:translateY(18px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
-  .reveal:global(.is-visible){opacity:1;transform:none}
-
-  /* ---------- start ---------- */
-  .st-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:30px}
-  .st-card{display:flex;gap:16px;align-items:flex-start;background:var(--wa-card);border:1px solid var(--wa-line);border-left:3px solid var(--wa-ai);border-radius:var(--wa-r-s);padding:18px 20px}
-  .st-n{font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-sm);color:var(--wa-shu);padding-top:2px}
-  .st-card p{font-size:var(--wa-fs-sm);font-weight:700;color:var(--wa-ink);line-height:1.95}
-  .st-callout{border:1.5px solid var(--wa-ai);background:var(--wa-card);border-radius:var(--wa-r-card);padding:28px 28px 26px;position:relative}
-  .st-callout::before{content:"";position:absolute;inset:5px;border:1px solid var(--wa-line-strong);border-radius:var(--wa-r-btn);pointer-events:none}
-  .st-callout .t{font-family:var(--wa-font-head);font-size:var(--wa-fs-h3);font-weight:700;color:var(--wa-ai);margin-bottom:8px}
-  .st-callout .s{font-size:var(--wa-fs-sm);color:var(--wa-muted);line-height:2}
-  .st-callout small{color:var(--wa-muted);font-size:var(--wa-fs-label)}
-
-  /* ---------- to-do 赤ペン ---------- */
-  .td-sheet{background:#fff;border:1px solid var(--wa-line-strong);border-radius:var(--wa-r-card);padding:10px 26px 22px}
-  .td-row{display:flex;align-items:center;gap:16px;padding:16px 0;border-bottom:1px dashed var(--wa-line-strong)}
-  .td-check{flex:none;width:20px;height:20px;border:1.5px solid var(--wa-line-strong);border-radius:var(--wa-r-s);position:relative}
-  .td-check::after{content:"✓";position:absolute;inset:0;display:grid;place-items:center;color:var(--wa-shu);font-weight:700;font-size:var(--wa-fs-sm);opacity:0;transform:scale(.4);transition:opacity .3s var(--wa-ease) var(--d),transform .3s var(--wa-ease) var(--d)}
-  .td-body{flex:1}
-  .td-body b{font-size:var(--wa-fs-body);color:var(--wa-ink);display:block}
-  .td-strike{position:relative;display:inline-block}
-  .td-strike::after{content:"";position:absolute;left:-2%;top:54%;height:2.5px;width:0;background:var(--wa-shu);border-radius:var(--wa-r-s);transform:rotate(-.7deg);transition:width .5s cubic-bezier(.6,0,.3,1) var(--d)}
-  .td-body p{font-size:var(--wa-fs-sm);color:var(--wa-muted);line-height:1.8;margin-top:3px}
-  .td-done{flex:none;font-family:var(--wa-font-head);font-size:var(--wa-fs-label);font-weight:700;color:var(--wa-shu);border:1.5px solid var(--wa-shu);border-radius:var(--wa-r-s);padding:4px 10px;opacity:0;transform:rotate(-6deg) scale(.6);transition:opacity .35s var(--wa-ease) var(--d),transform .35s var(--wa-ease) var(--d)}
-  .td-sheet:global(.td-on) .td-check::after{opacity:1;transform:scale(1)}
-  .td-sheet:global(.td-on) .td-strike::after{width:104%}
-  .td-sheet:global(.td-on) .td-done{opacity:1;transform:rotate(-6deg) scale(1)}
-  .td-foot{font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-lead);color:var(--wa-ink);padding-top:20px}
-
-  /* ---------- showcase（藍の座敷） ---------- */
-  .ink-lead{font-size:var(--wa-fs-sm);line-height:2.1;color:color-mix(in srgb, var(--wa-paper) 88%, transparent);max-width:40em;margin-bottom:34px}
-  .sw-tabs{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid color-mix(in srgb, var(--wa-paper) 25%, transparent);margin-bottom:26px}
-  .sw-tab{appearance:none;background:transparent;border:none;border-bottom:3px solid transparent;color:color-mix(in srgb, var(--wa-paper) 62%, transparent);padding:10px 18px 14px;cursor:pointer;text-align:left;transition:color .15s var(--wa-ease),border-color .15s var(--wa-ease)}
-  .sw-tab b{display:block;font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-sm)}
-  .sw-tab span{display:block;font-size:var(--wa-fs-label);font-weight:700;margin-top:2px}
-  .sw-tab:hover{color:var(--wa-paper)}
-  .sw-tab.is-on{color:var(--wa-paper);border-bottom-color:color-mix(in srgb, var(--wa-shu) 55%, var(--wa-paper))}
-  .sw-panel{display:none}
-  .sw-panel.is-on{display:block;animation:rise .45s var(--wa-ease) both}
-  .sw-desc{font-size:var(--wa-fs-sm);line-height:2;color:color-mix(in srgb, var(--wa-paper) 82%, transparent);max-width:44em;margin-bottom:20px}
-  .sw-stage{position:relative}
-  .sw-viewport{overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;scrollbar-width:none;border-radius:var(--wa-r-btn)}
-  .sw-viewport::-webkit-scrollbar{display:none}
-  .sw-strip{display:flex;gap:18px}
-  .sw-slide{flex:0 0 100%;scroll-snap-align:center;margin:0}
-  .sw-browser{background:#fff;border-radius:var(--wa-r-btn);overflow:hidden;border:1px solid color-mix(in srgb, var(--wa-paper) 35%, transparent)}
-  .sw-bar{display:flex;gap:6px;background:var(--wa-paper);padding:9px 14px}
-  .sw-bar i{width:10px;height:10px;border-radius:50%;background:var(--wa-line-strong)}
-  .sw-browser img{display:block;width:100%;height:auto}
-  /* 機能図はブラウザ枠を付けず、スクリーンショットと見分けがつくようにする */
-  .sw-figure{background:var(--wa-card);border:1px solid color-mix(in srgb, var(--wa-paper) 35%, transparent);border-radius:var(--wa-r-btn);overflow:hidden}
-  .sw-figure img{display:block;width:100%;height:auto}
-  .sw-slide figcaption{font-size:var(--wa-fs-label);font-weight:700;color:color-mix(in srgb, var(--wa-paper) 78%, transparent);margin-top:12px}
-  .sw-arrow{position:absolute;top:42%;z-index:2;appearance:none;width:44px;height:44px;border-radius:50%;border:1.5px solid color-mix(in srgb, var(--wa-paper) 50%, transparent);background:color-mix(in srgb, var(--wa-ai-deep) 78%, transparent);color:var(--wa-paper);font-size:var(--wa-fs-h3);line-height:1;cursor:pointer;backdrop-filter:blur(4px);transition:background .15s var(--wa-ease),opacity .15s var(--wa-ease),border-color .15s var(--wa-ease)}
-  .sw-arrow:hover{background:var(--wa-shu);border-color:var(--wa-shu)}
-  .sw-arrow.is-prev{left:-12px}
-  .sw-arrow.is-next{right:-12px}
-  .sw-arrow[disabled]{opacity:.25;pointer-events:none}
-  .sw-dots{display:flex;gap:2px;justify-content:center;margin-top:10px}
-  /* 見た目は8pxのまま、当たり判定はpaddingで24px以上を確保する */
-  .sw-dot{appearance:none;border:none;width:8px;height:8px;padding:9px;box-sizing:content-box;border-radius:50%;background:color-mix(in srgb, var(--wa-paper) 30%, transparent);background-clip:content-box;cursor:pointer;transition:background .15s var(--wa-ease),transform .15s var(--wa-ease)}
-  .sw-dot.is-on{background:color-mix(in srgb, var(--wa-shu) 55%, var(--wa-paper));background-clip:content-box;transform:scale(1.3)}
-  .ink-note{font-size:var(--wa-fs-body);font-weight:700;color:var(--wa-paper);margin-top:34px}
-  .ink-note b{color:color-mix(in srgb, var(--wa-shu) 38%, var(--wa-paper))}
-
-  /* ---------- services ---------- */
-  .sv-list{display:flex;flex-direction:column}
-  .sv-row{display:flex;gap:clamp(18px,3vw,36px);padding:30px 4px;border-bottom:1px solid var(--wa-line)}
-  .sv-row:first-child{border-top:1px solid var(--wa-line)}
-  .sv-num{flex:none;display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:var(--wa-r-btn);background:var(--wa-ai);color:var(--wa-paper);font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-h3);line-height:1}
-  .sv-body h3{font-family:var(--wa-font-head);font-size:var(--wa-fs-h3);font-weight:700;color:var(--wa-ink);margin-bottom:10px}
-  .sv-body p{font-size:var(--wa-fs-sm);color:var(--wa-muted);line-height:2.05;margin-bottom:14px;max-width:44em}
-  .sv-chips{display:flex;gap:8px;flex-wrap:wrap}
-  .sv-chips span{font-size:var(--wa-fs-label);font-weight:700;color:var(--wa-ai);border:1px solid var(--wa-line-strong);border-radius:var(--wa-r-s);padding:4px 12px;background:var(--wa-card)}
-
-  /* ---------- why ---------- */
-  .wh-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .wh-card{background:#fff;border:1px solid var(--wa-line);border-radius:var(--wa-r-card);padding:24px;position:relative;overflow:hidden}
-  .wh-card::before{content:"";position:absolute;left:0;top:0;width:100%;height:3px;background:var(--wa-ai)}
-  .wh-card b{font-family:var(--wa-font-head);font-size:var(--wa-fs-body);color:var(--wa-ink);display:block;margin-bottom:8px;line-height:1.7}
-  .wh-card p{font-size:var(--wa-fs-sm);color:var(--wa-muted);line-height:2}
-
-  /* ---------- flow ---------- */
-  .fl-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-  .fl-card{background:var(--wa-card);border:1px solid var(--wa-line-strong);border-radius:var(--wa-r-card);padding:26px}
-  .fl-t{font-family:var(--wa-font-head);font-size:var(--wa-fs-lead);font-weight:700;color:var(--wa-ink);margin-bottom:18px;display:flex;align-items:center;gap:10px}
-  .fl-osusume{font-family:var(--wa-font-head);font-size:var(--wa-fs-label);font-weight:700;color:var(--wa-paper);background:var(--wa-shu);border-radius:var(--wa-r-s);padding:3px 10px}
-  .fl-card ol{list-style:none;margin:0;padding:0;counter-reset:fl;display:flex;flex-direction:column;gap:14px}
-  .fl-card li{counter-increment:fl;position:relative;padding-left:42px;font-size:var(--wa-fs-sm);color:var(--wa-muted);line-height:1.9}
-  .fl-card li::before{content:"0" counter(fl);position:absolute;left:0;top:1px;font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-sm);color:var(--wa-shu)}
-  .fl-card li::after{content:"";position:absolute;left:4px;top:26px;bottom:-12px;width:1px;background:var(--wa-line-strong)}
-  .fl-card li:last-child::after{display:none}
-  .fl-card li b{display:block;font-size:var(--wa-fs-body);color:var(--wa-ink);margin-bottom:2px}
-
-  /* ---------- price ---------- */
-  .pr-main{background:#fff;border:1.5px solid var(--wa-shu);border-radius:var(--wa-r-card);padding:clamp(24px,4vw,36px);position:relative;margin-bottom:18px}
-  .pr-main::before{content:"おすすめ";position:absolute;top:-13px;left:26px;background:var(--wa-shu);color:var(--wa-paper);font-family:var(--wa-font-head);font-size:var(--wa-fs-label);font-weight:700;padding:4px 16px;letter-spacing:.08em;border-radius:var(--wa-r-s)}
-  .pr-sub{background:#fff;border:1px solid var(--wa-line-strong);border-radius:var(--wa-r-card);padding:clamp(24px,4vw,36px);margin-bottom:18px}
-  .pr-label{font-family:var(--wa-font-head);font-size:var(--wa-fs-lead);font-weight:700;color:var(--wa-ink);margin-bottom:20px}
-  .pr-ichi{color:var(--wa-shu)}
-  .pr-nums{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
-  .pr-nums > div:not(.pr-x){flex:1;min-width:150px;border:1px solid var(--wa-line);background:var(--wa-card);border-radius:var(--wa-r-btn);padding:16px 20px;text-align:center}
-  .pr-x{font-size:var(--wa-fs-h3);font-weight:700;color:var(--wa-muted)}
-  .pr-nums span{display:block;font-size:var(--wa-fs-label);font-weight:700;color:var(--wa-muted);margin-bottom:2px}
-  .pr-nums b{font-family:var(--wa-font-head);font-size:var(--wa-fs-display);font-weight:700;color:var(--wa-ai);line-height:1.15}
-  .pr-nums b i{font-style:normal}
-  .pr-nums b small{font-size:var(--wa-fs-sm);font-weight:700}
-  .pr-list{list-style:none;margin:0 0 14px;padding:0;display:flex;flex-direction:column;gap:9px}
-  .pr-list li{position:relative;padding-left:26px;font-size:var(--wa-fs-sm);font-weight:700;color:var(--wa-ink);line-height:1.85}
-  .pr-list li::before{content:"✓";position:absolute;left:2px;color:var(--wa-shu);font-weight:700}
-  .pr-note{font-size:var(--wa-fs-label);color:var(--wa-muted);line-height:1.9}
-  .pr-rows{display:flex;flex-direction:column;gap:12px;margin-bottom:14px}
-  .pr-rows > div{display:flex;align-items:baseline;gap:10px}
-  .pr-rows b{font-size:var(--wa-fs-sm);color:var(--wa-ink);white-space:nowrap}
-  .pr-dots{flex:1;border-bottom:1.5px dotted var(--wa-line-strong);transform:translateY(-4px)}
-  .pr-rows em{font-style:normal;font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-lead);color:var(--wa-ai);white-space:nowrap}
-  .pr-cap{font-family:var(--wa-font-head);font-size:var(--wa-fs-sm);font-weight:700;color:var(--wa-shu);border:1.5px dashed var(--wa-shu);border-radius:var(--wa-r-s);background:#fff;padding:10px 22px;display:table;margin:8px auto 0}
-
-  /* ---------- faq ---------- */
-  .fq{display:flex;flex-direction:column;gap:10px}
-  .fq-item{background:var(--wa-card);border:1px solid var(--wa-line);border-radius:var(--wa-r-card)}
-  .fq-item summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:14px;padding:17px 20px;font-weight:700;font-size:var(--wa-fs-body);color:var(--wa-ink)}
-  .fq-item summary::-webkit-details-marker{display:none}
-  .fq-q{font-family:var(--wa-font-head);font-weight:700;font-size:var(--wa-fs-label);letter-spacing:.08em;color:var(--wa-paper);background:var(--wa-ai);border-radius:var(--wa-r-s);flex:none;padding:3px 9px}
-  .fq-plus{margin-left:auto;position:relative;width:14px;height:14px;flex:none}
-  .fq-plus::before,.fq-plus::after{content:"";position:absolute;background:var(--wa-shu);transition:transform .25s var(--wa-ease)}
-  .fq-plus::before{left:0;top:6px;width:14px;height:2px}
-  .fq-plus::after{left:6px;top:0;width:2px;height:14px}
-  .fq-item[open] .fq-plus::after{transform:scaleY(0)}
-  .fq-a{overflow:hidden}
-  .fq-a p{padding:0 20px 18px 62px;font-size:var(--wa-fs-sm);line-height:2.05;color:var(--wa-muted)}
-
-  /* ---------- final ---------- */
-  .fin{padding:clamp(88px,9vw,136px) 0 clamp(56px,6vw,88px)}
-  .fin-t{font-family:var(--wa-font-head);font-size:var(--wa-fs-h2);font-weight:700;letter-spacing:.02em;line-height:1.8;margin-bottom:12px}
-  .fin-t em{font-style:normal;color:color-mix(in srgb, var(--wa-shu) 38%, var(--wa-paper))}
-  .fin-s{font-size:var(--wa-fs-sm);color:color-mix(in srgb, var(--wa-paper) 85%, transparent);line-height:2;margin-bottom:30px}
-  .fin-row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
-  .btn-ink.is-w{background:var(--wa-shu);color:var(--wa-paper)}
-  .btn-ink.is-w:hover{background:var(--wa-shu-dark)}
-  .btn-line2.is-w{background:transparent;color:var(--wa-paper);border-color:color-mix(in srgb, var(--wa-paper) 60%, transparent)}
-  .btn-line2.is-w:hover{background:color-mix(in srgb, var(--wa-paper) 10%, transparent)}
-
-  @media(max-width:1100px){
-    .hanko{display:none}
-  }
-  @media(max-width:920px){
-    .hv-in{grid-template-columns:1fr}
-    .noren{height:58px;margin-bottom:28px}
-    .st-grid,.wh-grid,.fl-grid{grid-template-columns:1fr}
-    .sw-arrow.is-prev{left:4px}
-    .sw-arrow.is-next{right:4px}
-    .sp{display:inline}
-  }
-  @media(max-width:560px){
-    .lp-brand span{display:none}
-    .hv-brand{gap:12px}
-    .hv-mark{width:54px;height:54px}
-    /* 「初期費用 ＋ 月額」は縦積みにして＋を中央に置く（横並びだと＋が行末に取り残される） */
-    .pr-nums{flex-direction:column;align-items:stretch}
-    .pr-nums > div:not(.pr-x){width:100%}
-    .pr-x{text-align:center}
-    /* 開発料金は品目と金額を2行に分ける（nowrap同士で横にはみ出すため） */
-    .pr-rows > div{flex-wrap:wrap}
-    .pr-rows b{white-space:normal;flex:1 0 100%}
-    .pr-dots{display:none}
-    .pr-rows em{margin-left:auto}
-    /* 回答のインデントは狭い画面では畳む（62pxは幅の17%を食う） */
-    .fq-a p{padding-left:20px}
-  }
-  @media (prefers-reduced-motion: reduce){
-    .hv-brand,.hv-tag,.hv-q,.hv-h1,.hv-lead,.hv-cta,.hv-checks,.hv-visual{animation:none}
-    .hv-frames img{animation:none}
-    .hv-frames img:first-child{opacity:1}
-    .reveal{opacity:1;transform:none;transition:none}
-    .td-check::after,.td-strike::after,.td-done{transition:none}
-    .sw-panel.is-on{animation:none}
-  }
-</style>
-
 <script>
-  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
-
-  // ---------- ショーケース: スライダー（パネルごとに独立） ----------
-  // パネルはdisplay:noneで隠すため、再表示時にscrollLeftが0へ戻る。
-  // 表示のたびにsyncを呼んで内部状態と実位置を合わせ直す。
-  const sliders = new Map<string, () => void>();
-
-  document.querySelectorAll<HTMLElement>('.sw-panel').forEach((panel) => {
-    const vp = panel.querySelector<HTMLElement>('.sw-viewport');
-    const slides = panel.querySelectorAll('.sw-slide');
-    const dots = panel.querySelectorAll<HTMLButtonElement>('.sw-dot');
-    const prev = panel.querySelector<HTMLButtonElement>('.sw-arrow.is-prev');
-    const next = panel.querySelector<HTMLButtonElement>('.sw-arrow.is-next');
-    if (!vp) return;
-    let idx = 0;
-    // スライド間のgapを含めた1枚あたりの送り幅
-    const step = () => {
-      const first = slides[0] as HTMLElement | undefined;
-      const second = slides[1] as HTMLElement | undefined;
-      if (first && second) return second.offsetLeft - first.offsetLeft;
-      return vp.clientWidth;
-    };
-    const setUI = () => {
-      dots.forEach((d, i) => d.classList.toggle('is-on', i === idx));
-      if (prev) prev.disabled = idx <= 0;
-      if (next) next.disabled = idx >= slides.length - 1;
-    };
-    const go = (i: number, smooth = true) => {
-      idx = Math.max(0, Math.min(slides.length - 1, i));
-      vp.scrollTo({ left: idx * step(), behavior: smooth && !reduceMotion.matches ? 'smooth' : 'auto' });
-      setUI();
-    };
-    prev?.addEventListener('click', () => go(idx - 1));
-    next?.addEventListener('click', () => go(idx + 1));
-    dots.forEach((d, i) => d.addEventListener('click', () => go(i)));
-    // 手動スワイプにもドット・矢印を追従させる
-    let st: number | undefined;
-    vp.addEventListener('scroll', () => {
-      if (st) window.clearTimeout(st);
-      st = window.setTimeout(() => { idx = Math.round(vp.scrollLeft / step()); setUI(); }, 80);
-    }, { passive: true });
-    // 表示直後・リサイズ後に実位置へ合わせ直す
-    const sync = () => { idx = slides.length ? Math.round(vp.scrollLeft / step()) : 0; setUI(); };
-    window.addEventListener('resize', sync);
-    if (panel.dataset.panel) sliders.set(panel.dataset.panel, sync);
-    setUI();
-  });
-
-  // ---------- ショーケース: タブ（ARIA tabs パターン） ----------
-  const tabs = [...document.querySelectorAll<HTMLButtonElement>('.sw-tab')];
-  const activate = (tab: HTMLButtonElement, focus = false) => {
-    const key = tab.dataset.tab;
-    tabs.forEach((t) => {
-      const on = t === tab;
-      t.classList.toggle('is-on', on);
-      t.setAttribute('aria-selected', on ? 'true' : 'false');
-      t.tabIndex = on ? 0 : -1;
-    });
-    document.querySelectorAll<HTMLElement>('.sw-panel').forEach((p) => p.classList.toggle('is-on', p.dataset.panel === key));
-    if (focus) tab.focus();
-    if (key) sliders.get(key)?.();
-  };
-  tabs.forEach((tab, i) => {
-    tab.addEventListener('click', () => activate(tab));
-    tab.addEventListener('keydown', (e) => {
-      const map: Record<string, number> = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabs.length - 1 };
-      const to = map[e.key];
-      if (to === undefined) return;
-      e.preventDefault();
-      activate(tabs[(to + tabs.length) % tabs.length], true);
-    });
-  });
-
-  // ---------- 赤ペン取り消し線（表示されたら一括発火・CSS変数で時差） ----------
-  const sheet = document.getElementById('tdSheet');
-  if (sheet && 'IntersectionObserver' in window) {
-    const io = new IntersectionObserver((es) => {
-      es.forEach((e) => { if (e.isIntersecting) { sheet.classList.add('td-on'); io.disconnect(); } });
-    }, { threshold: 0.35 });
-    io.observe(sheet);
-  } else if (sheet) {
-    sheet.classList.add('td-on');
-  }
-
-  // ---------- 数字カウントアップ ----------
-  const counters = document.querySelectorAll<HTMLElement>('.cnt');
-  if (counters.length && 'IntersectionObserver' in window && !reduceMotion.matches) {
-    const io2 = new IntersectionObserver((es) => {
-      es.forEach((e) => {
-        if (!e.isIntersecting) return;
-        const el = e.target as HTMLElement;
-        io2.unobserve(el);
-        const to = parseInt(el.dataset.to || '0', 10);
-        const t0 = performance.now();
-        const dur = 900;
-        const tick = (t: number) => {
-          const p = Math.min(1, (t - t0) / dur);
-          el.textContent = String(Math.round(to * (1 - Math.pow(1 - p, 3))));
-          if (p < 1) requestAnimationFrame(tick);
-        };
-        requestAnimationFrame(tick);
-      });
-    }, { threshold: 0.6 });
-    counters.forEach((c) => io2.observe(c));
-  }
-
-  // ---------- FAQ スムーズ開閉 ----------
-  document.querySelectorAll<HTMLDetailsElement>('.fq-item').forEach((d) => {
-    const sum = d.querySelector('summary');
-    const body = d.querySelector<HTMLElement>('.fq-a');
-    if (!sum || !body) return;
-    let busy = false;
-    // transitionendが来ない環境でも必ず後始末する
-    const finish = (close: boolean) => {
-      if (close) d.open = false;
-      body.style.cssText = '';
-      busy = false;
-    };
-    sum.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      if (busy) return;
-      if (reduceMotion.matches) { d.open = !d.open; return; }
-      busy = true;
-      const close = d.open;
-      if (!close) d.open = true;
-      const h = body.scrollHeight;
-      body.style.height = close ? h + 'px' : '0px';
-      requestAnimationFrame(() => {
-        body.style.transition = 'height .3s ease';
-        body.style.height = close ? '0px' : h + 'px';
-        let done = false;
-        const onEnd = () => { if (done) return; done = true; finish(close); };
-        body.addEventListener('transitionend', onEnd, { once: true });
-        window.setTimeout(onEnd, 400);
+  document.querySelectorAll<HTMLAnchorElement>('[data-ai-lead]').forEach(link => {
+    link.addEventListener('click', () => {
+      const analytics = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+      if (typeof analytics === 'function') analytics('event', 'generate_lead', {
+        event_category: 'ai_invoice_automation', event_label: link.dataset.aiLead, method: link.href.startsWith('mailto:') ? 'email' : 'line',
       });
     });
   });
