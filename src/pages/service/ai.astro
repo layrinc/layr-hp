@@ -68,7 +68,7 @@ const jsonLd = [
     <div class="ai-wrap ai-hero-grid">
       <div class="ai-hero-copy">
         <p class="ai-hero-kicker">人件費・バックオフィス経費を見直す。</p>
-        <h1>{service.hero.line1}<br /><em>{service.hero.emphasis}</em></h1>
+        <h1>{service.hero.line1}<em>{service.hero.emphasis}</em><br />{service.hero.line2}</h1>
         <p class="ai-lead">{service.hero.lead.split('\n').map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
         <div class="ai-actions"><a href={consult} class="ai-button" data-ai-lead="hero" data-ai-plan="general">経費を見直す無料相談 <span aria-hidden="true">↗</span></a><a href="#automation" class="ai-text-link">効率化できる業務を見る <span aria-hidden="true">↓</span></a></div>
         <p class="ai-hero-note">AI導入コンサル・専用アプリ開発・業務自動化</p>

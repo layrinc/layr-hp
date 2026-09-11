@@ -37,7 +37,7 @@
 .ai-hero{padding:56px 0 40px;background:color-mix(in srgb,var(--ai-hero-blue) 6%,var(--paper))}
 .ai-hero-grid{display:grid;grid-template-columns:minmax(0,1.04fr) minmax(0,1fr);gap:32px;align-items:center}
 .ai-hero-kicker{display:inline-block;font-size:var(--ai-small);font-weight:700;color:var(--green-ink);padding:6px 16px;border:1px solid var(--green-line);border-radius:var(--r-pill);background:var(--paper)}
-.ai-hero h1{font-size:var(--ai-display);line-height:1.5;margin-top:22px;color:var(--black)}
+.ai-hero h1{font-size:var(--ai-heading);line-height:1.5;margin-top:22px;color:var(--black)}
 .ai-hero h1 em{display:inline-block}
 .ai-lead{font-size:var(--ai-lead);line-height:1.9;margin-top:22px}
 .ai-actions{display:flex;align-items:center;flex-wrap:wrap;gap:16px;margin-top:28px}
