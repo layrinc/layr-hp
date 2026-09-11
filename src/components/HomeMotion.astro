@@ -1,0 +1,133 @@
+---
+/**
+ * Top-page-only motion trial. Existing content, assets and the shared reveal
+ * observer remain the source of truth; no scroll interception or new library.
+ * signature: the approved phone image moves in depth as the page scrolls.
+ */
+---
+<script>
+  const hero = document.querySelector<HTMLElement>('.hero2:has(.hero-device)');
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const desktop = window.matchMedia('(min-width: 981px)');
+
+  if (hero) {
+    hero.closest('main')?.classList.add('home-motion-page');
+    const device = hero.querySelector<HTMLElement>('.hero-device-window');
+    const copy = Array.from(hero.querySelectorAll<HTMLElement>(
+      '.hero2-eyebrow, .hero2-title, .hero2-sub, .hero2-actions'
+    ));
+    let frame = 0;
+    let stop = () => {};
+    let entrance: Animation[] = [];
+    let played = false;
+
+    function reset() {
+      stop();
+      cancelAnimationFrame(frame);
+      frame = 0;
+      entrance.forEach((animation) => animation.cancel());
+      entrance = [];
+      hero!.classList.remove('home-motion-active');
+      hero!.style.removeProperty('--home-scroll-y');
+      hero!.style.removeProperty('--home-scroll-scale');
+      hero!.style.removeProperty('--home-copy-y');
+    }
+
+    function configure() {
+      reset();
+      if (reduceMotion.matches || !device) return;
+
+      // Finite entrance animations never hide content when JavaScript fails.
+      // Do not replay the introduction when returning to a scrolled page.
+      if (!played && window.scrollY < hero!.offsetHeight / 2) {
+        played = true;
+        if (typeof device.animate === 'function') {
+          copy.forEach((element, index) => {
+            entrance.push(element.animate([
+              { opacity: 0, translate: '0 24px', clipPath: 'inset(0 0 100% 0)' },
+              { opacity: 1, translate: '0 0', clipPath: 'inset(0 0 -8% 0)' },
+            ], {
+              duration: 800, delay: 80 + index * 100,
+              easing: 'cubic-bezier(.4,0,.2,1)', fill: 'backwards',
+            }));
+          });
+          entrance.push(device.animate([
+            { opacity: 0, translate: '0 34px', rotate: '-3deg', scale: '0.94' },
+            { opacity: 1, translate: '0 0', rotate: '0deg', scale: '1' },
+          ], {
+            duration: 1100, delay: 120,
+            easing: 'cubic-bezier(.4,0,.2,1)', fill: 'backwards',
+          }));
+        }
+      }
+
+      // Mobile keeps the short introduction without continuous parallax.
+      if (!desktop.matches) return;
+      hero!.classList.add('home-motion-active');
+      let inView = true;
+
+      function render() {
+        frame = 0;
+        if (document.hidden || !inView) return;
+        const rect = hero!.getBoundingClientRect();
+        const distance = Math.min(Math.max(-rect.top, 0), rect.height);
+        const progress = distance / Math.max(rect.height, 1);
+        hero!.style.setProperty('--home-scroll-y', `${(distance * 0.26).toFixed(2)}px`);
+        hero!.style.setProperty('--home-scroll-scale', (1 + progress * 0.14).toFixed(4));
+        hero!.style.setProperty('--home-copy-y', `${(distance * 0.07).toFixed(2)}px`);
+      }
+
+      function schedule() {
+        if (!frame && inView && !document.hidden) frame = requestAnimationFrame(render);
+      }
+
+      const observer = 'IntersectionObserver' in window
+        ? new IntersectionObserver(([entry]) => {
+            inView = entry.isIntersecting;
+            if (inView) schedule();
+          }) : null;
+      observer?.observe(hero!);
+      window.addEventListener('scroll', schedule, { passive: true });
+      window.addEventListener('resize', schedule, { passive: true });
+      document.addEventListener('visibilitychange', schedule);
+      schedule();
+      stop = () => {
+        observer?.disconnect();
+        window.removeEventListener('scroll', schedule);
+        window.removeEventListener('resize', schedule);
+        document.removeEventListener('visibilitychange', schedule);
+      };
+    }
+
+    configure();
+    reduceMotion.addEventListener('change', configure);
+    desktop.addEventListener('change', configure);
+    window.addEventListener('pagehide', reset);
+    window.addEventListener('pageshow', (event) => { if (event.persisted) configure(); });
+  }
+</script>
+
+<style is:global>
+  /* Keep the shared .reveal observer; only the first service cards stagger. */
+  @media (prefers-reduced-motion: no-preference) {
+    .home-motion-page #service .service-card.reveal {
+      transition:opacity .7s cubic-bezier(.4,0,.2,1), transform .7s cubic-bezier(.4,0,.2,1);
+    }
+    .home-motion-page #service .service-card.reveal:nth-child(2) {transition-delay:60ms}
+  }
+  @media (prefers-reduced-motion: no-preference) and (min-width:981px) {
+    .home-motion-active .hero-device-window {
+      transform:translate3d(0, var(--home-scroll-y, 0px), 0) scale(var(--home-scroll-scale, 1));
+      transform-origin:50% 38%;
+    }
+    .home-motion-active :is(.hero2-eyebrow, .hero2-title, .hero2-sub, .hero2-actions) {
+      transform:translate3d(0, var(--home-copy-y, 0px), 0);
+    }
+  }
+  @media print {
+    .home-motion-active .hero-device-window,
+    .home-motion-active :is(.hero2-eyebrow, .hero2-title, .hero2-sub, .hero2-actions) {
+      transform:none;
+    }
+  }
+</style>

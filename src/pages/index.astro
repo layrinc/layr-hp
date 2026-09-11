@@ -6,6 +6,7 @@
 import Base from '../layouts/Base.astro';
 import Block from '../components/Block.astro';
 import PriceSimulator from '../components/PriceSimulator.astro';
+import HomeMotion from '../components/HomeMotion.astro';
 import settings from '../data/settings.json';
 import page from '../data/page-home.json';
 import { getCollection } from 'astro:content';
@@ -68,6 +69,7 @@ if (faqBlock && Array.isArray(faqBlock.p?.items)) {
 }
 ---
 <Base title={title} description={description} jsonLd={jsonLd}>
+  <HomeMotion />
   {page.blocks.map((block, i) => {
     // _fs = ブロック単位の文字サイズ倍率（CSSの font-size:calc(... * var(--fs,1)) が拾う）
     const fs = Number((block.p as any)?._fs) || 1;
