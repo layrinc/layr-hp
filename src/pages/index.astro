@@ -6,6 +6,8 @@
 import Base from '../layouts/Base.astro';
 import Block from '../components/Block.astro';
 import PriceSimulator from '../components/PriceSimulator.astro';
+import CustomerJourney from '../components/CustomerJourney.astro';
+import JourneyHappiness from '../components/JourneyHappiness.astro';
 import settings from '../data/settings.json';
 import page from '../data/page-home.json';
 import { getCollection } from 'astro:content';
@@ -71,6 +73,13 @@ if (faqBlock && Array.isArray(faqBlock.p?.items)) {
   {page.blocks.map((block, i) => {
     // _fs = ブロック単位の文字サイズ倍率（CSSの font-size:calc(... * var(--fs,1)) が拾う）
     const fs = Number((block.p as any)?._fs) || 1;
+    // Keep the CMS's approved hero copy and links; replace its visual with the customer journey.
+    if (block.type === 'heroText') {
+      return <div style={`--fs:${fs}`}>
+        <CustomerJourney hero={block.p as any} consult={simConsult} />
+        <JourneyHappiness serviceLink />
+      </div>;
+    }
     const rendered = fs !== 1
       ? <div style={`--fs:${fs}`}><Block block={block} posts={posts} /></div>
       : <Block block={block} posts={posts} />;

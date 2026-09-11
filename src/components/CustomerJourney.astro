@@ -1,0 +1,227 @@
+---
+import steps from '../data/customer-journey.json';
+interface Props {
+  hero: { line1: string; line2: string; line3?: string; sub: string; cta_primary: string; cta_primary_url: string; cta_line: string };
+  consult: string;
+  id?: string;
+  eyebrow?: string;
+}
+const { hero, consult, id = 'customer-journey', eyebrow = 'LINE MARKETING / LAYR' } = Astro.props;
+const circumference = 2 * Math.PI * 177;
+---
+<section class="customer-journey" id={id} data-customer-journey aria-label="広告から成約まで、お客様とつながる導線">
+  <div class="journey-view">
+    <div class="journey-layout container">
+      <div class="journey-orbit-column">
+        <div class="journey-orbit" aria-label="広告・LP・LINE・成約を順に結ぶ円形の導線">
+          <svg class="journey-route" viewBox="0 0 620 620" aria-hidden="true">
+            <circle class="journey-track" cx="310" cy="310" r="177" />
+            <circle class="journey-trace" cx="310" cy="310" r="177" stroke-dasharray={circumference} stroke-dashoffset={circumference} transform="rotate(-90 310 310)" />
+          </svg>
+          {steps.map((step, i) => (
+            <a class={`journey-node journey-node-${i}`} href={`#${id}-stage-${i}`} data-journey-step={i} aria-label={`${i + 1}. ${step.name}の説明へ`}>
+              <img src={`/images/journey/isome-${step.asset}.svg`} alt="" width="200" height="160" decoding="async" />
+              <span><small>0{i + 1}</small><b>{step.name}</b></span>
+            </a>
+          ))}
+          <div class="journey-center">
+            <span class="journey-center-label">ONE FLOW</span>
+            <strong>出会いが、<br />信頼に変わる。</strong>
+            <p><span data-journey-percent>00</span><small> / 100</small></p>
+          </div>
+          <div class="journey-traveler" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="7" r="3.5" /><path d="M5 21v-3a7 7 0 0 1 14 0v3" /></svg>
+          </div>
+        </div>
+        <div class="journey-legend"><span>○ お客様の現在地</span><span>スクロールで、つながりの先へ ↓</span></div>
+      </div>
+      <div class="journey-story">
+        <div class="journey-panels">
+          <div class="journey-panel journey-intro" data-phase="-1">
+            <p class="journey-eyebrow">{eyebrow}</p>
+            <h1>{hero.line1}<br /><em>{hero.line2}</em>{hero.line3 && <><br />{hero.line3}</>}</h1>
+            <p class="journey-body" set:html={hero.sub} />
+            <div class="journey-actions">
+              <a class="btn btn-green" href={hero.cta_primary_url}>{hero.cta_primary}</a>
+              <a class="btn btn-outline" href={consult}>{hero.cta_line}</a>
+            </div>
+            <p class="journey-intro-note">広告・LP・LINEを、一気通貫で。</p>
+          </div>
+          {steps.map((step, i) => (
+            <section class="journey-panel" data-phase={i} id={`${id}-stage-${i}`} aria-labelledby={`${id}-title-${i}`}>
+              <p class="journey-eyebrow">STEP 0{i + 1}<span>{step.en}</span></p>
+              <h2 id={`${id}-title-${i}`}>{step.title[0]}<br /><em>{step.title[1]}</em></h2>
+              <p class="journey-body">{step.body}</p>
+              <p class="journey-voice">「{step.voice}」</p>
+              <ul class:list={['journey-support', { 'journey-messages': i === 2 }]} aria-label={i === 2 ? 'LINEシナリオの流れ' : 'LAYRの支援内容'}>
+                {step.support.map((support, n) => <li style={i === 2 ? `--message-index:${n}` : undefined}><span>{i === 2 ? `0${n + 1}` : '✓'}</span>{support}</li>)}
+              </ul>
+            </section>
+          ))}
+        </div>
+        <div class="journey-bottom">
+          <nav class="journey-steps" aria-label="導線の各ステップへ">
+            {steps.map((step, i) => <a href={`#${id}-stage-${i}`} data-journey-step={i}>{step.name}<span aria-hidden="true">{i < 3 ? '→' : '✓'}</span></a>)}
+          </nav>
+          <a class="journey-skip" href={`#${id}-happiness`}>三方よしの、その先へ ↓</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .customer-journey{background:var(--paper);position:relative;padding:0}
+  .journey-view{padding:32px 0 24px;background:radial-gradient(ellipse at 20% 45%,var(--tint-green),transparent 60%)}
+  .journey-layout{display:grid;grid-template-columns:1.08fr 1fr;gap:clamp(24px,4vw,56px);align-items:center;max-width:1280px}
+  .journey-orbit-column,.journey-story{min-width:0}
+  .journey-orbit{position:relative;width:100%;aspect-ratio:1;margin:auto}
+  .journey-route{position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:none}
+  .journey-track{stroke:var(--green-line);stroke-width:1.5;stroke-dasharray:3 7}
+  .journey-trace{stroke:var(--green-dark);stroke-width:3;stroke-linecap:round}
+  .journey-node{position:absolute;display:grid;justify-items:center;width:35%;text-decoration:none;color:var(--black);transform:translate(-50%,-50%);z-index:2;border-radius:var(--r-lg)}
+  .journey-node-0{left:50%;top:14%}.journey-node-1{left:83%;top:48%}.journey-node-2{left:50%;top:81%}.journey-node-3{left:17%;top:48%}
+  .journey-node img{width:100%;height:auto;aspect-ratio:1.35;object-fit:contain}
+  .journey-node>span{display:flex;gap:8px;align-items:center;background:var(--paper);padding:3px 12px;border-radius:var(--r-pill);border:1px solid var(--line-soft);font-size:calc(14px * var(--fs,1));line-height:1.6}
+  .journey-node small{font-size:calc(12px * var(--fs,1));color:var(--green-ink)}
+  .journey-node[aria-current="step"]>span{background:var(--green-dark);color:var(--paper);border-color:var(--green-dark)}
+  .journey-node[aria-current="step"] small{color:inherit}
+  .journey-center{position:absolute;left:50%;top:47%;transform:translate(-50%,-50%);text-align:center;white-space:nowrap}
+  .journey-center-label{color:var(--green-ink);font-size:calc(12px * var(--fs,1));font-weight:700;letter-spacing:var(--track-label)}
+  .journey-center strong{display:block;font-size:calc(clamp(16px,1.8vw,22px) * var(--fs,1));line-height:1.65;margin:10px 0;color:var(--black)}
+  .journey-center p{font-size:calc(22px * var(--fs,1));font-weight:500;line-height:1.5;color:var(--green-ink);font-variant-numeric:tabular-nums}
+  .journey-center p small{font-size:calc(12px * var(--fs,1));font-weight:400}
+  .journey-traveler{position:absolute;left:50%;top:21.4516%;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:var(--r-pill);background:var(--green-dark);color:var(--paper);border:3px solid var(--paper);z-index:3;padding:3px}
+  .journey-traveler svg{width:100%;height:100%}
+  .journey-legend{display:flex;justify-content:space-between;gap:12px;color:var(--green-ink);font-size:calc(12px * var(--fs,1));line-height:1.8}
+  .journey-panels{display:grid;align-items:center}
+  .journey-panel{margin:32px 0;min-width:0;padding:0}
+  .journey-eyebrow{display:flex;flex-wrap:wrap;gap:12px;color:var(--green-ink);font-size:calc(12px * var(--fs,1));font-weight:700;letter-spacing:var(--track-label);margin:0 0 22px;line-height:1.7}
+  .journey-eyebrow span{font-weight:400}
+  .journey-panel h1,.journey-panel h2{font-size:calc(clamp(26px,3.15vw,42px) * var(--fs,1));line-height:1.55;letter-spacing:var(--track-tight);font-weight:700;color:var(--black);margin:0}
+  .journey-panel em{color:var(--green-ink);font-style:normal}
+  .journey-body{font-size:calc(16px * var(--fs,1));line-height:2;margin:24px 0;color:var(--text);max-width:33em}
+  .journey-actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 18px}
+  .journey-actions .btn{font-size:calc(14px * var(--fs,1));padding:12px 20px;min-height:46px;box-shadow:none}
+  .journey-intro-note{font-size:calc(14px * var(--fs,1));color:var(--green-ink)}
+  .journey-voice{border-left:2px solid var(--green);padding:10px 16px;font-size:calc(16px * var(--fs,1));color:var(--green-ink);margin:22px 0}
+  .journey-support{display:flex;flex-wrap:wrap;gap:8px 16px;list-style:none;padding:0;margin:20px 0 0;font-size:calc(14px * var(--fs,1))}
+  .journey-support li{display:flex;gap:6px;align-items:center}.journey-support li span{color:var(--green-ink);font-size:calc(12px * var(--fs,1))}
+  .journey-messages li{background:var(--tint-green);padding:8px 10px;border-radius:var(--radius)}
+  .journey-bottom{border-top:1px solid var(--line);padding-top:18px;margin-top:20px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+  .journey-steps{display:flex;gap:14px}.journey-steps a{display:flex;gap:14px;align-items:center;font-size:calc(14px * var(--fs,1));font-weight:700;text-decoration:none;color:var(--black);min-height:32px}
+  .journey-steps a span{color:var(--green-dark);font-weight:400}.journey-steps a[aria-current="step"]{color:var(--green-ink);text-decoration:underline;text-underline-offset:5px}
+  .journey-skip{color:var(--green-ink);font-size:calc(12px * var(--fs,1));text-underline-offset:4px}
+  .customer-journey.is-enhanced{height:500svh}
+  .is-enhanced .journey-view{position:sticky;top:var(--journey-header,80px);height:calc(100svh - var(--journey-header,80px));display:grid;align-items:center;min-height:580px}
+  .is-enhanced .journey-panel{grid-area:1/1;margin:0}
+  .is-enhanced .journey-panel[hidden]{display:block;visibility:hidden;pointer-events:none}
+  .is-enhanced .journey-orbit{max-width:min(100%,68svh)}
+  .is-enhanced .journey-messages li{opacity:clamp(.22,calc(var(--journey-message,0) - var(--message-index)),1)}
+  .customer-journey:not(.is-enhanced) .journey-layout{grid-template-columns:1fr}
+  .customer-journey:not(.is-enhanced) .journey-orbit-column{order:-3;max-width:420px;width:100%;margin:auto}
+  .journey-node:hover>span{border-color:var(--green-dark)}
+  .journey-node:focus-visible,.journey-steps a:focus-visible,.journey-skip:focus-visible{outline:2px solid var(--green-dark);outline-offset:5px}
+  @media(max-width:900px){
+    .journey-layout{gap:20px;grid-template-columns:1fr 1fr}.journey-panel h1,.journey-panel h2{font-size:calc(28px * var(--fs,1))}
+    .journey-actions{gap:8px}.journey-actions .btn{padding:10px 14px}.journey-center-label{display:none}.journey-legend{flex-direction:column;gap:0}.journey-body{margin:18px 0}
+  }
+  @media(max-width:640px){
+    .journey-view{padding:18px 0}.journey-layout{grid-template-columns:1fr;gap:16px}
+    .journey-story{display:contents}.journey-panels{order:-2}.journey-bottom{order:2;margin:0;padding-top:12px;gap:8px}
+    .journey-panel h1,.journey-panel h2{font-size:calc(26px * var(--fs,1));line-height:1.5}
+    .journey-eyebrow{margin-bottom:10px;gap:10px}.journey-body{margin:12px 0;font-size:calc(16px * var(--fs,1));line-height:1.85}
+    .journey-actions{margin:16px 0 0}.journey-actions .btn{padding:10px 16px;font-size:calc(14px * var(--fs,1))}
+    .journey-intro-note,.journey-voice{display:none}.journey-support{margin-top:12px;gap:4px 12px;font-size:calc(12px * var(--fs,1))}
+    .journey-messages li{padding:4px 6px}.journey-orbit{max-width:330px}.is-enhanced .journey-orbit{max-width:min(100%,34svh)}
+    .journey-node{width:35%}.journey-node>span{padding:1px 8px;gap:5px;font-size:calc(12px * var(--fs,1))}
+    .journey-center strong{font-size:calc(14px * var(--fs,1));margin:4px 0;line-height:1.6}.journey-center-label{display:inline;font-size:calc(12px * var(--fs,1))}
+    .journey-center p{font-size:calc(16px * var(--fs,1))}.journey-traveler{width:26px;height:26px}
+    .journey-legend{flex-direction:row;justify-content:center;margin-top:8px}.journey-legend>span:first-child{display:none}
+    .journey-steps{gap:10px}.journey-steps a{gap:10px;font-size:calc(12px * var(--fs,1))}.journey-skip{font-size:calc(12px * var(--fs,1))}
+    .is-enhanced .journey-view{min-height:0;padding:16px 0}.customer-journey.is-enhanced{height:530svh}
+  }
+  @media(prefers-reduced-motion:reduce){.is-enhanced .journey-messages li{opacity:1}}
+</style>
+
+<script>
+  // One scroll value owns every visual state. No clock, damping, or autoplay.
+  document.querySelectorAll<HTMLElement>('[data-customer-journey]').forEach((root) => {
+    const view = root.querySelector<HTMLElement>('.journey-view')!;
+    const layout = root.querySelector<HTMLElement>('.journey-layout')!;
+    const panels = Array.from(root.querySelectorAll<HTMLElement>('[data-phase]'));
+    const links = Array.from(root.querySelectorAll<HTMLAnchorElement>('[data-journey-step]'));
+    const trace = root.querySelector<SVGCircleElement>('.journey-trace')!;
+    const traveler = root.querySelector<HTMLElement>('.journey-traveler')!;
+    const counter = root.querySelector<HTMLElement>('[data-journey-percent]')!;
+    const center = root.querySelector<HTMLElement>('.journey-center strong')!;
+    const header = document.querySelector<HTMLElement>('.header');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const clamp = (n: number) => Math.max(0, Math.min(1, n));
+    let frame = 0;
+    let active = -2;
+    let headerHeight = 0;
+    let enhanced = true;
+    root.classList.add('is-enhanced');
+
+    const draw = () => {
+      frame = 0;
+      if (!enhanced) return;
+      const distance = Math.max(1, root.offsetHeight - view.offsetHeight);
+      const progress = clamp((headerHeight - root.getBoundingClientRect().top) / distance);
+      const route = clamp((progress - .12) / .88);
+      const phase = progress < .12 ? -1 : Math.min(3, Math.floor(route * 4));
+      if (phase !== active) {
+        panels.forEach(panel => { panel.hidden = Number(panel.dataset.phase) !== phase; });
+        links.forEach(link => {
+          if (Number(link.dataset.journeyStep) === phase) link.setAttribute('aria-current', 'step');
+          else link.removeAttribute('aria-current');
+        });
+        active = phase;
+      }
+      trace.setAttribute('stroke-dashoffset', String(2 * Math.PI * 177 * (1 - route)));
+      const angle = (-90 + route * 360) * Math.PI / 180;
+      traveler.style.left = `${50 + Math.cos(angle) * 177 / 620 * 100}%`;
+      traveler.style.top = `${50 + Math.sin(angle) * 177 / 620 * 100}%`;
+      counter.textContent = String(Math.round(route * 100)).padStart(2, '0');
+      view.style.setProperty('--journey-message', String(clamp((route - .5) * 4) * 4));
+      center.innerHTML = route >= .995 ? 'つながった。<br>みんなの笑顔へ。' : '出会いが、<br>信頼に変わる。';
+    };
+    const schedule = () => { if (!frame) frame = requestAnimationFrame(draw); };
+    const measure = () => {
+      headerHeight = header?.offsetHeight ?? 0;
+      root.style.setProperty('--journey-header', `${headerHeight}px`);
+      // Short landscape screens and enlarged text receive the complete linear story.
+      // Never clip text to make a sticky scene fit.
+      root.classList.add('is-enhanced');
+      panels.forEach(panel => { panel.hidden = Number(panel.dataset.phase) !== Math.max(-1, active); });
+      enhanced = window.innerHeight >= 650 && layout.scrollHeight + 40 <= window.innerHeight - headerHeight;
+      root.classList.toggle('is-enhanced', enhanced);
+      if (!enhanced) {
+        panels.forEach(panel => { panel.hidden = false; });
+        links.forEach(link => link.removeAttribute('aria-current'));
+        trace.setAttribute('stroke-dashoffset', '0');
+        traveler.hidden = true;
+        counter.textContent = '100';
+      } else {
+        traveler.hidden = false;
+        active = -2;
+      }
+      schedule();
+    };
+    links.forEach(link => link.addEventListener('click', (event) => {
+      if (!enhanced || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      const phase = Number(link.dataset.journeyStep);
+      const progress = .12 + .88 * ((phase + .08) / 4);
+      const top = window.scrollY + root.getBoundingClientRect().top - headerHeight;
+      window.scrollTo({ top: top + (root.offsetHeight - view.offsetHeight) * progress, behavior: reduced.matches ? 'instant' : 'smooth' });
+    }));
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', measure);
+    window.addEventListener('pageshow', measure);
+    reduced.addEventListener('change', schedule);
+    document.fonts.ready.then(measure);
+    measure();
+  });
+</script>
