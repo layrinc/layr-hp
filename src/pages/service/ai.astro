@@ -6,6 +6,7 @@ import service from '../../data/service-ai.json';
 import '../../styles/service-ai.css';
 
 const [consulting, development, invoice] = service.plans;
+const brandName = `${service.brand} ${service.byline}`;
 const yen = (amount: number) => amount / 10000;
 const tax = (included: boolean) => included ? '税込' : '税別';
 const mailFor = (topic: string) => 'mailto:' + settings.email + '?subject=' + encodeURIComponent('【無料相談】' + topic) + '&body=' + encodeURIComponent(topic + 'について相談を希望します。\n\n会社名：\nご担当者名：\n現在の業務・管理方法：\n困っている作業：');
@@ -45,9 +46,9 @@ const jsonLd = [
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://layr.co.jp/' },
     { '@type': 'ListItem', position: 2, name: 'サービス', item: 'https://layr.co.jp/service/' },
-    { '@type': 'ListItem', position: 3, name: service.brand },
+    { '@type': 'ListItem', position: 3, name: brandName },
   ] },
-  { '@context': 'https://schema.org', '@type': 'Service', '@id': 'https://layr.co.jp/#service-ai', name: service.name + '「' + service.brand + '」', serviceType: 'AI業務効率化・業務自動化', provider: { '@id': 'https://layr.co.jp/#organization' }, areaServed: 'JP', url: 'https://layr.co.jp/service/ai/', offers: service.plans.map(plan => ({
+  { '@context': 'https://schema.org', '@type': 'Service', '@id': 'https://layr.co.jp/#service-ai', name: brandName, serviceType: 'AI業務効率化・業務自動化', provider: { '@id': 'https://layr.co.jp/#organization' }, areaServed: 'JP', url: 'https://layr.co.jp/service/ai/', offers: service.plans.map(plan => ({
     '@type': 'Offer', name: plan.name, price: plan.price, priceCurrency: 'JPY', description: plan.billing + '・' + yen(plan.price) + '万円（' + tax(plan.taxIncluded) + '）。' + plan.note, url: 'https://layr.co.jp/service/ai/#plan-' + plan.id, priceSpecification: { '@type': 'PriceSpecification', price: plan.price, priceCurrency: 'JPY', valueAddedTaxIncluded: plan.taxIncluded },
   })) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
@@ -57,7 +58,7 @@ const jsonLd = [
 <div class="ai-lp">
   <header class="ai-header">
     <div class="ai-wrap ai-header-inner">
-      <a href="/" class="ai-brand" aria-label="株式会社LAYR トップへ"><img src="/logo.png" alt="LAYR" width="969" height="246" /><span>{service.brand}</span></a>
+      <a href="/service/ai/" class="ai-brand" aria-label={brandName + ' トップへ'}><strong>{service.brand}</strong><span>{service.byline}</span></a>
       <nav class="ai-nav" aria-label="AIサービスのページ内ナビゲーション"><a href="#automation">効率化できる業務</a><a href="#price">3つのプラン</a><a href="#works">支援実績</a></nav>
       <a href={consult} class="ai-button ai-button-small" data-ai-lead="header" data-ai-plan="general">無料で相談する <span aria-hidden="true">↗</span></a>
     </div>
@@ -67,7 +68,7 @@ const jsonLd = [
     <div class="ai-wrap ai-hero-grid">
       <div class="ai-hero-copy">
         <p class="ai-hero-kicker">人件費・バックオフィス経費を見直す。</p>
-        <h1>{service.hero.line1}<br />{service.hero.line2}<em>{service.hero.emphasis}</em></h1>
+        <h1>{service.hero.line1}<br /><em>{service.hero.emphasis}</em></h1>
         <p class="ai-lead">{service.hero.lead.split('\n').map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
         <div class="ai-actions"><a href={consult} class="ai-button" data-ai-lead="hero" data-ai-plan="general">経費を見直す無料相談 <span aria-hidden="true">↗</span></a><a href="#automation" class="ai-text-link">効率化できる業務を見る <span aria-hidden="true">↓</span></a></div>
         <p class="ai-hero-note">AI導入コンサル・専用アプリ開発・業務自動化</p>
