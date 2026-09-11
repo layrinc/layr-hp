@@ -1,0 +1,33 @@
+---
+import service from '../data/service-ai.json';
+import settings from '../data/settings.json';
+interface Props { placement: 'middle' | 'final' }
+const { placement } = Astro.props;
+const offer = service.plans.find(plan => plan.id === 'invoice')!;
+const price = offer.price / 10000;
+const regular = offer.regularPrice! / 10000;
+const tax = offer.taxIncluded ? '税込' : '税別';
+const lineUrl = settings.line_url?.trim() || '';
+const mail = 'mailto:' + settings.email + '?subject=' + encodeURIComponent('【無料相談】請求書管理のAI自動化') + '&body=' + encodeURIComponent('請求書管理のAI自動化について相談を希望します。\n\n会社名：\nご担当者名：\n毎月の請求書の件数：\n現在の管理方法：\n困っている作業：');
+const id = placement === 'middle' ? 'invoice' : 'consult';
+---
+<section class={'ai-invoice-cta ai-invoice-' + placement} id={id} aria-labelledby={id + '-heading'}>
+  <div class="ai-wrap ai-invoice-inner">
+    <div class="ai-invoice-copy">
+      <p class="ai-eyebrow">小さく始めるなら、このプラン。</p>
+      <h2 id={id + '-heading'}>まずは請求書管理を、<br /><em>AIで自動化</em>しませんか？</h2>
+      <p>届いた請求書を、読み取る・まとめる・転記する。<br />毎月のくり返しを、働くAIに任せる仕組みへ。</p>
+      <p class="ai-invoice-scope">読み取り・台帳への転記を自動化し、<strong>最後は担当者が確認。</strong></p>
+      {placement === 'final' && <a href="#price" class="ai-text-link">ほかのプランも見る <span aria-hidden="true">↑</span></a>}
+    </div>
+    <div class="ai-invoice-price">
+      <p class="ai-limit">毎月 <strong>{offer.monthlyLimit}社限定</strong></p>
+      <p class="ai-invoice-billing">請求書管理の自動化 / 導入費用</p>
+      <div class="ai-pricing"><span>通常 <s>{regular}万円</s></span><span class="ai-price-arrow" aria-hidden="true">→</span><strong>{price}<span>万円<small>（{tax}）</small></span></strong></div>
+      <p class="ai-price-note">月額ではなく、導入時の費用です。</p>
+      <a href={lineUrl || mail} class="ai-button" data-ai-lead={'invoice-' + placement} data-ai-plan="invoice">{price}万円で自動化を相談する <span aria-hidden="true">↗</span></a>
+      {lineUrl && <a href={mail} class="ai-invoice-email" data-ai-lead={'invoice-email-' + placement} data-ai-plan="invoice">メールで相談する</a>}
+      <p class="ai-offer-terms">対象書式・連携先は事前に確認。外部ツール利用料や追加開発・保守が必要な場合は、契約前にご案内します。</p>
+    </div>
+  </div>
+</section>

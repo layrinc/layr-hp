@@ -1,29 +1,30 @@
 ---
 import Base from '../../layouts/Base.astro';
+import AiInvoiceOffer from '../../components/AiInvoiceOffer.astro';
 import settings from '../../data/settings.json';
 import service from '../../data/service-ai.json';
 import '../../styles/service-ai.css';
 
-const { offer } = service;
-const regular = offer.regularPrice / 10000;
-const price = offer.price / 10000;
-const tax = offer.taxIncluded ? '税込' : '税別';
-const mail = `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】請求書管理のAI自動化について')}&body=${encodeURIComponent('請求書管理のAI自動化について相談を希望します。\n\n会社名：\nご担当者名：\n毎月の請求書の件数：\n現在の管理方法：\n困っている作業：')}`;
+const [consulting, development, invoice] = service.plans;
+const yen = (amount: number) => amount / 10000;
+const tax = (included: boolean) => included ? '税込' : '税別';
+const mailFor = (topic: string) => 'mailto:' + settings.email + '?subject=' + encodeURIComponent('【無料相談】' + topic) + '&body=' + encodeURIComponent(topic + 'について相談を希望します。\n\n会社名：\nご担当者名：\n現在の業務・管理方法：\n困っている作業：');
 const lineUrl = settings.line_url?.trim() || '';
-const consult = lineUrl || mail;
+const generalMail = mailFor('AI導入・業務自動化');
+const consult = lineUrl || generalMail;
 const faqs = [
-  { q: '5万円で、どこまで自動化できますか？', a: '請求書管理の中から、まず自動化する業務を決めて仕組みを構築します。たとえば、受領した請求書の情報を読み取り、管理台帳にまとめる流れです。対応できる書式や連携先、含まれる作業は、現在の運用を確認したうえで契約前にご案内します。' },
-  { q: '5万円は月額料金ですか？', a: `月額料金ではなく、自動化の導入費用です。毎月${offer.monthlyLimit}社限定で、通常${regular}万円のところ${price}万円（${tax}）でご提供します。外部ツールの利用料、追加開発、継続保守の有無と費用は、必要な構成に応じて事前にご案内します。` },
-  { q: 'Excelや、今使っているツールのまま相談できますか？', a: 'はい。まずは現在お使いのExcel・スプレッドシート・メール・会計ソフトと、担当者の作業手順を伺います。連携の可否を確認し、今の運用を活かせる方法からご提案します。' },
-  { q: 'AIに詳しい社員がいなくても使えますか？', a: 'はい。日々使う担当者の操作に合わせて設計し、使い方までご案内します。専門用語で考える必要はありません。「毎月この作業が大変」というお話から始められます。' },
-  { q: '読み取りミスや、機密情報の取り扱いはどうなりますか？', a: 'AIの読み取り結果を担当者が確認・修正できる工程を組み込みます。利用するサービス、保存先、閲覧権限、データの取り扱いは導入前に確認します。振込や会計処理の確定など、最終判断が必要な作業は人が確認する前提で設計します。' },
-  { q: '請求書以外の業務も相談できますか？', a: 'はい。見積書・報告書の作成、問い合わせ対応、データ入力、営業管理などもご相談いただけます。自動化の効果と導入費用を見ながら、優先順位を一緒に決めます。請求書管理の限定プランとは別に、必要な範囲をお見積もりします。' },
+  { q: 'どのプランを選べばいいですか？', a: 'まず方針を相談したい場合はAI導入コンサル（月' + yen(consulting.price) + '万円）、自社専用の仕組みをつくりたい場合は専用ツール・業務アプリ開発（1件' + yen(development.price) + '万円）、請求書管理から始めたい場合は請求書自動化（導入' + yen(invoice.price) + '万円）をご案内します。いずれも' + tax(invoice.taxIncluded) + 'です。迷っている段階でもご相談ください。' },
+  { q: 'AI導入コンサルには、開発も含まれますか？', a: 'コンサルでは、現在の業務の整理、AIを活用する場所の検討、導入・運用方法の相談を行います。専用ツールの開発が必要な場合は、対象範囲と費用をご案内したうえで別途承ります。' },
+  { q: '1件30万円で、どこまで開発できますか？', a: '入力・管理・集計など、御社の業務に合わせた専用ツールを開発します。必要な機能、画面、連携先を伺い、1件' + yen(development.price) + '万円（' + tax(development.taxIncluded) + '）で対応する範囲を契約前に決めます。追加開発、外部サービスの利用料、継続保守が必要な場合は、別途費用を事前にご案内します。' },
+  { q: '請求書自動化の5万円は、月額料金ですか？', a: '月額ではなく導入費用です。毎月' + invoice.monthlyLimit + '社限定で、通常' + yen(invoice.regularPrice) + '万円のところ' + yen(invoice.price) + '万円（' + tax(invoice.taxIncluded) + '）でご提供します。読み取り対象・書式・連携先を確認し、自動化する範囲を決めます。外部ツール利用料や保守が必要な場合は、契約前にご案内します。' },
+  { q: '今使っているExcelやツールのまま相談できますか？', a: 'はい。Excel・スプレッドシート・メール・会計ソフトなど、現在の環境と作業手順を伺います。連携の可否を確認し、今の運用を活かせる方法からご提案します。AIに詳しい社員がいなくてもご相談いただけます。' },
+  { q: 'AIの間違いや、機密情報の取り扱いはどうなりますか？', a: 'AIの出力を担当者が確認・修正できる工程を組み込みます。利用するサービス、保存先、閲覧権限、データの取り扱いは導入前に確認します。振込や会計処理の確定など、重要な最終判断は人が確認する前提で設計します。' },
 ];
 const flow = [
-  { n: '01', title: '今の業務を伺う', body: '請求書の件数、届き方、管理方法を確認。「何に時間がかかっているか」を整理します。' },
-  { n: '02', title: '範囲と費用を決める', body: '自動化できる作業と完成イメージをご案内。対象範囲・費用に納得いただいてから進めます。' },
-  { n: '03', title: '構築・動作確認', body: '現在の業務に合わせて仕組みを構築。担当者と一緒に読み取りや転記の流れを確認します。' },
-  { n: '04', title: '使い方までサポート', body: '操作手順と確認ポイントを共有。実際の業務で使い始められる状態に整えます。' },
+  { n: '01', title: '業務を見える化', body: '毎日・毎月くり返している作業と、時間がかかっている場所を伺います。' },
+  { n: '02', title: '効果と費用を整理', body: '減らせる作業、必要な仕組み、導入・運用費用を見て、取り組む順番を決めます。' },
+  { n: '03', title: '業務に合わせて実装', body: '選んだプランに沿って導入や開発を進め、実際の担当者と動作・操作を確認します。' },
+  { n: '04', title: '使える状態へ', body: '使い方と確認ポイントを共有。日々の仕事の中で運用できる状態に整えます。' },
 ];
 const examples = [
   { name: 'LAYR B2B DB', label: '営業管理', text: '営業リストや問い合わせをまとめて管理。探す・転記する作業を減らすための社内ツールです。', images: [
@@ -43,11 +44,11 @@ const jsonLd = [
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://layr.co.jp/' },
     { '@type': 'ListItem', position: 2, name: 'サービス', item: 'https://layr.co.jp/service/' },
-    { '@type': 'ListItem', position: 3, name: service.name },
+    { '@type': 'ListItem', position: 3, name: service.brand },
   ] },
-  { '@context': 'https://schema.org', '@type': 'Service', '@id': 'https://layr.co.jp/#service-ai', name: service.name, serviceType: 'AI業務効率化・業務自動化', provider: { '@id': 'https://layr.co.jp/#organization' }, areaServed: 'JP', url: 'https://layr.co.jp/service/ai/', offers: {
-    '@type': 'Offer', name: `${offer.name}・毎月${offer.monthlyLimit}社限定`, price: offer.price, priceCurrency: 'JPY', description: `通常${regular}万円から${price}万円（${tax}）。${offer.billing}。対象範囲と外部ツール費用等は契約前に確認。`, url: 'https://layr.co.jp/service/ai/#price', priceSpecification: { '@type': 'PriceSpecification', price: offer.price, priceCurrency: 'JPY', valueAddedTaxIncluded: offer.taxIncluded },
-  } },
+  { '@context': 'https://schema.org', '@type': 'Service', '@id': 'https://layr.co.jp/#service-ai', name: service.name + '「' + service.brand + '」', serviceType: 'AI業務効率化・業務自動化', provider: { '@id': 'https://layr.co.jp/#organization' }, areaServed: 'JP', url: 'https://layr.co.jp/service/ai/', offers: service.plans.map(plan => ({
+    '@type': 'Offer', name: plan.name, price: plan.price, priceCurrency: 'JPY', description: plan.billing + '・' + yen(plan.price) + '万円（' + tax(plan.taxIncluded) + '）。' + plan.note, url: 'https://layr.co.jp/service/ai/#plan-' + plan.id, priceSpecification: { '@type': 'PriceSpecification', price: plan.price, priceCurrency: 'JPY', valueAddedTaxIncluded: plan.taxIncluded },
+  })) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
 ];
 ---
@@ -55,92 +56,95 @@ const jsonLd = [
 <div class="ai-lp">
   <header class="ai-header">
     <div class="ai-wrap ai-header-inner">
-      <a href="/" class="ai-brand" aria-label="株式会社LAYR トップへ"><img src="/logo.png" alt="LAYR" width="969" height="246" /><span>{service.name}</span></a>
-      <nav class="ai-nav" aria-label="AIサービスのページ内ナビゲーション"><a href="#invoice">自動化できること</a><a href="#price">費用</a><a href="#flow">導入の流れ</a><a href="#works">支援実績</a></nav>
-      <a href="#consult" class="ai-button ai-button-small">無料で相談する <span aria-hidden="true">↗</span></a>
+      <a href="/" class="ai-brand" aria-label="株式会社LAYR トップへ"><img src="/logo.png" alt="LAYR" width="969" height="246" /><span>{service.brand}</span></a>
+      <nav class="ai-nav" aria-label="AIサービスのページ内ナビゲーション"><a href="#change">AIで変わること</a><a href="#price">3つのプラン</a><a href="#works">支援実績</a></nav>
+      <a href={consult} class="ai-button ai-button-small" data-ai-lead="header" data-ai-plan="general">無料で相談する <span aria-hidden="true">↗</span></a>
     </div>
   </header>
 
   <section class="ai-hero">
     <div class="ai-wrap ai-hero-grid">
       <div class="ai-hero-copy">
-        <p class="ai-eyebrow">LAYR / BUSINESS AUTOMATION</p>
-        <p class="ai-hero-kicker">中小企業のための、AI業務自動化。</p>
-        <h1>AIで業務を効率化。<br />ムダな経費を削減して、<br />会社の<em>利益</em>を<br class="ai-mobile-break" />上げませんか。</h1>
-        <p class="ai-lead">毎月くり返す入力、転記、確認。<br />その手作業をAIで減らして、<br />人と時間を、売上をつくる仕事へ。</p>
-        <div class="ai-actions"><a href="#price" class="ai-button">まずは請求書管理の自動化から <span aria-hidden="true">↓</span></a></div>
-        <p class="ai-hero-note">毎月{offer.monthlyLimit}社限定｜通常{regular}万円 → {price}万円（{tax}）</p>
+        <p class="ai-hero-kicker">社長の右腕に、AIという選択。</p>
+        <h1>{service.hero.line1}<br />{service.hero.line2}<em>{service.hero.emphasis}</em></h1>
+        <p class="ai-lead">{service.hero.lead.split('\n').map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
+        <div class="ai-actions"><a href={consult} class="ai-button" data-ai-lead="hero" data-ai-plan="general">自社の業務を無料で相談 <span aria-hidden="true">↗</span></a><a href="#price" class="ai-text-link">3つのプランを見る <span aria-hidden="true">↓</span></a></div>
+        <p class="ai-hero-note">AI導入コンサル・専用アプリ開発・業務自動化</p>
       </div>
-      <div class="ai-hero-aside">
-        <div class="ai-workspace" aria-label="請求書管理の画面構成例">
-          <div class="ai-workspace-top"><span>請求書管理</span><span class="ai-sample">画面構成例</span></div>
-          <div class="ai-workspace-body">
-            <p class="ai-workspace-label">月末の作業を、ひとつの流れに。</p>
-            <div class="ai-document-row"><span class="ai-filetype">PDF</span><div><b>受け取った請求書</b><span>メール・共有フォルダなど</span></div></div>
-            <div class="ai-extract"><span class="ai-step-tag">AIが読み取り・整理</span><dl><div><dt>取引先</dt><dd>サンプル商事</dd></div><div><dt>請求金額</dt><dd>¥55,000</dd></div><div><dt>支払期日</dt><dd>月末</dd></div></dl></div>
-            <div class="ai-ledger"><div><b>管理台帳へまとめる</b><span>取引先・金額・期限を一覧に</span></div><span class="ai-status">確認待ち</span></div>
-            <div class="ai-review"><span>最後は、人が確認。</span><p>読み取り内容を確認・修正して、<br />次の処理へ進めます。</p></div>
-          </div>
-        </div>
-        <p class="ai-visual-caption">※説明用の架空データです。実際の構成は業務に合わせて設計します。</p>
-      </div>
+      <figure class="ai-hero-art">
+        <img src="/service/ai/ai-office.webp" alt="AIが会社で入力・情報整理・対応を進め、人が本業に集中する様子を描いたアイソメトリックイラスト" width="1536" height="1024" fetchpriority="high" decoding="async" />
+        <figcaption>あなたの会社にも、働くAIを。</figcaption>
+      </figure>
     </div>
-    <div class="ai-wrap ai-hero-footer"><span>小さく始めて、毎月のムダを減らす。</span><a href="#invoice">請求書管理で、できることを見る <span aria-hidden="true">↓</span></a></div>
-  </section>
-
-  <section class="ai-offer-section" id="price" aria-labelledby="offer-heading">
-    <div class="ai-wrap ai-offer">
-      <div class="ai-offer-copy"><p class="ai-eyebrow">FIRST STEP</p><h2 id="offer-heading">まずは、請求書管理を<br /><em>AIで自動化</em>しませんか？</h2><p>毎月の「届いた請求書を探す」「数字を打ち直す」を、<br class="ai-desktop-break" />仕組みで減らす。ひとつの業務から始められます。</p><a href="#consult" class="ai-text-link">自社でもできるか相談する <span aria-hidden="true">↗</span></a></div>
-      <div class="ai-offer-price"><span class="ai-limit">毎月 <b>{offer.monthlyLimit}社限定</b></span><p class="ai-price-label">{offer.name} / {offer.billing}</p><div class="ai-pricing"><span class="ai-regular">通常 <s>{regular}万円</s></span><span class="ai-price-arrow" aria-hidden="true">→</span><strong>{price}<span>万円<small>（{tax}）</small></span></strong></div><p class="ai-price-note">月額料金ではなく、導入時の費用です。</p><a href={consult} class="ai-button ai-button-light" data-ai-lead="offer">{price}万円プランを相談する <span aria-hidden="true">↗</span></a><p class="ai-offer-terms">対象範囲・連携先は事前に確認。外部ツール利用料や追加開発・保守が必要な場合は、契約前にご案内します。</p></div>
+    <div class="ai-wrap ai-value-strip" aria-label="AI導入で目指すこと">
+      <p><span>作業を減らす</span><strong>ムダなコストを削減</strong></p>
+      <p><span>本業に集中する</span><strong>売上をつくる時間へ</strong></p>
+      <p><span>経営に余力をつくる</span><strong>利益が残る会社へ</strong></p>
     </div>
   </section>
 
-  <section class="ai-section ai-problem">
-    <div class="ai-wrap ai-split">
-      <div class="ai-section-heading"><p class="ai-section-index">01 <span>見直したい業務</span></p><h2>その手作業にも、<br /><em>コスト</em>が<br />かかっています。</h2><p>見えにくい経費は、<br />担当者の時間の中にもあります。</p></div>
-      <div class="ai-problem-list">
-        <article><span class="ai-row-number">01</span><div><h3>請求書を探す、集める。</h3><p>メール、PDF、共有フォルダ。届く場所がバラバラで、確認するだけでもひと仕事。</p></div></article>
-        <article><span class="ai-row-number">02</span><div><h3>同じ数字を、何度も入力する。</h3><p>取引先、金額、支払期日。管理表へ打ち直すたびに、時間も入力ミスの心配も増えていく。</p></div></article>
-        <article><span class="ai-row-number">03</span><div><h3>月末になると、本業が止まる。</h3><p>確認と取りまとめに追われて、営業やお客様への対応が後回しになってしまう。</p></div></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="ai-section ai-invoice" id="invoice">
+  <section class="ai-section ai-change" id="change">
     <div class="ai-wrap">
-      <div class="ai-section-heading ai-heading-wide"><p class="ai-section-index">02 <span>請求書管理の自動化</span></p><h2>「入力する仕事」を減らして、<br /><em>確認する仕事</em>へ。</h2><p>たとえば、受領した請求書の整理から台帳への転記まで。<br />今の業務を見ながら、自動化する範囲を設計します。</p></div>
+      <div class="ai-section-heading ai-heading-wide"><p class="ai-eyebrow">AIで、働き方はこう変わる。</p><h2>手作業に追われる毎日から、<br /><em>利益をつくる毎日へ。</em></h2></div>
       <div class="ai-comparison">
-        <div class="ai-before"><p class="ai-eyebrow">BEFORE / これまで</p><h3>担当者が、ひとつずつ処理。</h3><ol><li>メールやフォルダから請求書を集める</li><li>書面を見ながら管理表へ入力する</li><li>金額や期限の抜け漏れを見直す</li><li>社内の確認・承認へ回す</li></ol></div>
-        <div class="ai-after"><p class="ai-eyebrow">AFTER / 自動化の一例</p><h3>AIが整理。人が確認。</h3><ol><li><span>受領</span><div><b>請求書の取り込み先をまとめる</b><p>メール・フォルダなど、届き方に合わせて設計。</p></div></li><li><span>AI</span><div><b>必要な情報を読み取り、台帳へ</b><p>取引先・請求金額・支払期日などを整理。</p></div></li><li><span>確認</span><div><b>読み取り結果を確認・修正する</b><p>人の確認をはさんで、次の処理へ。</p></div></li></ol></div>
+        <article class="ai-before">
+          <p class="ai-compare-label"><span>BEFORE</span> いまの仕事</p>
+          <h3>人が、<br />全部やる。</h3>
+          <ul><li>入力・転記・集計に時間がかかる</li><li>確認や返信が後回しになる</li><li>社長まで日々の作業に追われる</li></ul>
+          <p class="ai-before-result">人件費と時間が、<br /><strong>作業に消えていく。</strong></p>
+        </article>
+        <article class="ai-after">
+          <p class="ai-compare-label"><span>AFTER</span> AIを業務に組み込むと</p>
+          <h3>AIが進める。<br /><em>人は、本業へ。</em></h3>
+          <dl><div><dt>入力・集計・返信</dt><dd>AIが下準備を進める</dd></div><div><dt>確認・判断</dt><dd>人がチェックして決める</dd></div><div><dt>営業・改善・お客様対応</dt><dd>空いた時間を、本業へ</dd></div></dl>
+          <p class="ai-after-result"><span>ムダなコストを抑え、</span><strong>利益を生む時間を増やす。</strong></p>
+        </article>
       </div>
-      <div class="ai-scope"><b>いつもの仕事に、無理なく組み込む。</b><p>Excel・スプレッドシート・会計ソフトなど、今お使いのツールを伺い、連携できる方法を確認します。読み取り対象や書式によっては、自動化に向かない作業も事前にお伝えします。</p></div>
+      <p class="ai-comparison-note">自動化できる範囲や減らせる工数は業務によって異なります。導入・運用費用も含めて、取り組む価値のある業務からご提案します。</p>
     </div>
   </section>
 
-  <div class="ai-manifesto ai-wrap"><p>毎月の作業を減らすことが、<br />これからの<em>利益</em>につながる。</p></div>
+  <section class="ai-section ai-plans-section" id="price">
+    <div class="ai-wrap">
+      <div class="ai-section-heading ai-heading-wide"><p class="ai-eyebrow">相談から、実装まで。</p><h2>御社に合わせて選べる、<br /><em>3つのプラン。</em></h2><p>まず相談する。専用の仕組みをつくる。一つの作業から始める。<br />今の課題に合う入口を選べます。</p></div>
+      <div class="ai-plans">{service.plans.map((plan, index) => <article class={'ai-plan ai-plan-' + plan.id} id={'plan-' + plan.id}>
+        <div class="ai-plan-top"><span class="ai-plan-number">{String(index + 1).padStart(2, '0')}</span><span>{plan.label}</span></div>
+        <h3>{plan.name}</h3>
+        <p class="ai-plan-description">{plan.description}</p>
+        <div class="ai-plan-price"><span class="ai-plan-billing">{plan.billing}</span><p><strong>{yen(plan.price)}</strong><b>万円</b><span> / {plan.unit}</span></p><small>（{tax(plan.taxIncluded)}）</small></div>
+        {plan.id === 'invoice' && <p class="ai-plan-limit">通常<s>{yen(invoice.regularPrice)}万円</s> → 毎月{invoice.monthlyLimit}社限定</p>}
+        <ul>{plan.features.map(feature => <li>{feature}</li>)}</ul>
+        <p class="ai-plan-note">{plan.note}</p>
+        {plan.id === 'invoice' ? <a href="#invoice" class="ai-button ai-button-outline">請求書プランを見る <span aria-hidden="true">↓</span></a> : <a href={lineUrl || mailFor(plan.name)} class={'ai-button' + (plan.id === 'development' ? ' ai-button-blue' : '')} data-ai-lead="plan" data-ai-plan={plan.id}>このプランを相談する <span aria-hidden="true">↗</span></a>}
+      </article>)}</div>
+      <p class="ai-plans-note">外部ツール・APIの利用料や継続保守が必要な場合は、対象範囲とあわせて契約前にご案内します。</p>
+    </div>
+  </section>
+
+  <AiInvoiceOffer placement="middle" />
 
   <section class="ai-section ai-flow" id="flow">
-    <div class="ai-wrap ai-split"><div class="ai-section-heading"><p class="ai-section-index">03 <span>導入の流れ</span></p><h2>「この作業が大変」<br />から、<em>始められます。</em></h2><p>AIの知識は不要です。<br />普段の業務を、そのままお聞かせください。</p><a href="#consult" class="ai-text-link">まずは無料で相談する <span aria-hidden="true">↗</span></a></div><ol class="ai-flow-list">{flow.map(step => <li><span>{step.n}</span><div><h3>{step.title}</h3><p>{step.body}</p></div></li>)}</ol></div>
+    <div class="ai-wrap ai-split"><div class="ai-section-heading"><p class="ai-eyebrow">導入の流れ</p><h2>「この作業、大変。」<br />その一言から、<br /><em>一緒に変えていく。</em></h2><p>AIの知識は不要です。<br />普段の仕事を、そのままお聞かせください。</p><a href={consult} class="ai-text-link" data-ai-lead="flow" data-ai-plan="general">まずは無料で相談 <span aria-hidden="true">↗</span></a></div><ol class="ai-flow-list">{flow.map(step => <li><span>{step.n}</span><div><h3>{step.title}</h3><p>{step.body}</p></div></li>)}</ol></div>
   </section>
 
   <section class="ai-section ai-works" id="works">
     <div class="ai-wrap">
-      <div class="ai-section-heading ai-heading-wide"><p class="ai-section-index">04 <span>支援実績・自社実装例</span></p><h2>日々の業務に、<br /><em>AIを実装。</em></h2><p>お客様のオーダー業務の自動化から、自社ツールの開発まで。<br />請求書管理のその先も、必要な業務からご相談いただけます。</p></div>
+      <div class="ai-section-heading ai-heading-wide"><p class="ai-eyebrow">支援実績・自社実装例</p><h2>AIはもう、<br /><em>現場で働いています。</em></h2><p>お客様のオーダー業務の自動化から、自社ツールの開発まで。<br />仕事の中で使える仕組みをつくっています。</p></div>
       {service.clientCases.map(client => <article class="ai-client-case">
-        <div class="ai-client-story"><p class="ai-eyebrow">CLIENT CASE / 支援実績</p><p class="ai-client-name">{client.company}<span> 様</span></p><h3>{client.title}</h3><p class="ai-client-description">{client.description}</p></div>
-        <div class="ai-client-info"><dl><div><dt>業種</dt><dd>{client.industry}</dd></div><div><dt>支援内容</dt><dd>{client.support}</dd></div></dl><a href={client.url} class="ai-text-link" target="_blank" rel="noopener noreferrer" aria-label={`${client.company}の商品カタログを見る（新しいタブで開きます）`}>同社の商品カタログを見る <span aria-hidden="true">↗</span></a></div>
+        <div class="ai-client-story"><p class="ai-eyebrow">お客様の支援実績</p><p class="ai-client-name">{client.company}<span> 様</span></p><h3>{client.title}</h3><p class="ai-client-description">{client.description}</p></div>
+        <div class="ai-client-info"><dl><div><dt>業種</dt><dd>{client.industry}</dd></div><div><dt>支援内容</dt><dd>{client.support}</dd></div></dl><a href={client.url} class="ai-text-link" target="_blank" rel="noopener noreferrer" aria-label={client.company + 'の商品カタログを見る（新しいタブで開きます）'}>同社の商品カタログを見る <span aria-hidden="true">↗</span></a></div>
       </article>)}
-      <div class="ai-own-heading"><p class="ai-eyebrow">IN-HOUSE / LAYRの自社実装例</p><p>営業管理、制作、情報整理。自分たちの実務で使う仕組みも開発しています。</p></div>
+      <div class="ai-own-heading"><p class="ai-eyebrow">LAYRの自社実装例</p><p>営業管理、制作、情報整理。自分たちの実務でも使っています。</p></div>
       <div class="ai-example-list">{examples.map((example, i) => <details class="ai-example" open={i === 0}>
         <summary><span class="ai-example-label">{example.label}</span><h3>{example.name}</h3><span class="ai-toggle" aria-hidden="true"></span></summary>
-        <div class="ai-example-content"><p>{example.text}</p><div class="ai-gallery" tabindex="0" role="region" aria-label={`${example.name}の画面。横にスクロールして閲覧できます。`}>{example.images.map(([src, caption]) => <figure><img src={src} alt={caption} width="1400" height="900" loading="lazy" decoding="async" /><figcaption>{caption}{src.endsWith('.svg') ? '（機能図）' : '（自社ツール）'}</figcaption></figure>)}</div>{example.images.length > 1 && <p class="ai-gallery-note">横にスクロールして、ほかの画面を見る <span aria-hidden="true">→</span></p>}</div>
+        <div class="ai-example-content"><p>{example.text}</p><div class="ai-gallery" tabindex="0" role="region" aria-label={example.name + 'の画面。横にスクロールして閲覧できます。'}>{example.images.map(([src, caption]) => <figure><img src={src} alt={caption} width="1400" height="900" loading="lazy" decoding="async" /><figcaption>{caption}{src.endsWith('.svg') ? '（機能図）' : '（自社ツール）'}</figcaption></figure>)}</div>{example.images.length > 1 && <p class="ai-gallery-note">横にスクロールして、ほかの画面を見る <span aria-hidden="true">→</span></p>}</div>
       </details>)}</div>
     </div>
   </section>
 
-  <section class="ai-section ai-faq" id="faq"><div class="ai-wrap ai-split"><div class="ai-section-heading"><p class="ai-section-index">05 <span>よくあるご質問</span></p><h2>導入前の<br /><em>気になること。</em></h2></div><div class="ai-faq-list">{faqs.map(f => <details><summary><span>Q</span><h3>{f.q}</h3><span class="ai-toggle" aria-hidden="true"></span></summary><p>{f.a}</p></details>)}</div></div></section>
+  <section class="ai-section ai-faq" id="faq"><div class="ai-wrap ai-split"><div class="ai-section-heading"><p class="ai-eyebrow">よくあるご質問</p><h2>導入前の<br /><em>気になること。</em></h2></div><div class="ai-faq-list">{faqs.map(f => <details><summary><span>Q</span><h3>{f.q}</h3><span class="ai-toggle" aria-hidden="true"></span></summary><p>{f.a}</p></details>)}</div></div></section>
 
-  <section class="ai-final" id="consult"><div class="ai-wrap ai-final-inner"><p class="ai-eyebrow">LET’S START SMALL.</p><h2>まずは、月末の請求書管理から。<br />会社の<em>ムダ</em>を、一緒に減らしませんか。</h2><p>「うちの業務でも自動化できる？」というご相談からどうぞ。<br />現在の運用を伺い、できることと費用をご案内します。</p><div class="ai-final-offer"><span>毎月{offer.monthlyLimit}社限定</span><span>通常<s>{regular}万円</s> → <b>{price}万円</b>（{tax}）</span></div><div class="ai-actions">{lineUrl && <a href={lineUrl} class="ai-button" data-ai-lead="line">LINEで無料相談する <span aria-hidden="true">↗</span></a>}<a href={mail} class="ai-button ai-button-outline" data-ai-lead="email">メールで相談する <span aria-hidden="true">↗</span></a></div><p class="ai-final-note">株式会社LAYR / {service.name}「{service.brand}」</p></div></section>
+  <AiInvoiceOffer placement="final" />
 </div>
 </Base>
 <script>
@@ -148,7 +152,7 @@ const jsonLd = [
     link.addEventListener('click', () => {
       const analytics = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
       if (typeof analytics === 'function') analytics('event', 'generate_lead', {
-        event_category: 'ai_invoice_automation', event_label: link.dataset.aiLead, method: link.href.startsWith('mailto:') ? 'email' : 'line',
+        event_category: 'ai_automation', event_label: link.dataset.aiLead, plan: link.dataset.aiPlan || 'general', method: link.href.startsWith('mailto:') ? 'email' : 'line',
       });
     });
   });
