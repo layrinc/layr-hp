@@ -63,7 +63,7 @@ const circumference = 2 * Math.PI * 177;
           <nav class="journey-steps" aria-label="導線の各ステップへ">
             {steps.map((step, i) => <a href={`#${id}-stage-${i}`} data-journey-step={i}>{step.name}<span aria-hidden="true">{i < 3 ? '→' : '✓'}</span></a>)}
           </nav>
-          <a class="journey-skip" href={`#${id}-happiness`}>三方よしの、その先へ ↓</a>
+          <a class="journey-skip" href="#service">サービスを見る ↓</a>
         </div>
       </div>
     </div>

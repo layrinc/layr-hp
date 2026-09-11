@@ -7,8 +7,6 @@ import Base from '../layouts/Base.astro';
 import Block from '../components/Block.astro';
 import PriceSimulator from '../components/PriceSimulator.astro';
 import CustomerJourney from '../components/CustomerJourney.astro';
-import JourneyHappiness from '../components/JourneyHappiness.astro';
-import HomeIsometricArt from '../components/HomeIsometricArt.astro';
 import '../styles/home-isometric.css';
 import settings from '../data/settings.json';
 import page from '../data/page-home.json';
@@ -79,7 +77,6 @@ if (faqBlock && Array.isArray(faqBlock.p?.items)) {
     if (block.type === 'heroText') {
       return <div style={`--fs:${fs}`}>
         <CustomerJourney hero={block.p as any} consult={simConsult} />
-        <JourneyHappiness serviceLink />
       </div>;
     }
     const rendered = fs !== 1
@@ -92,13 +89,10 @@ if (faqBlock && Array.isArray(faqBlock.p?.items)) {
           {rendered}
           <section class="sim-sec" id="sim">
             <div class="container">
-              <div class="home-sim-heading">
-                <div class="sec-head">
-                  <p class="sec-en">PRICE SIMULATOR</p>
-                  <h2 class="sec-jp">30秒 料金シミュレーション</h2>
-                  <p class="sec-lead">選択式4問で、貴社に合うプランと料金の目安がその場で分かります。</p>
-                </div>
-                <HomeIsometricArt kind="sale" />
+              <div class="sec-head">
+                <p class="sec-en">PRICE SIMULATOR</p>
+                <h2 class="sec-jp">30秒 料金シミュレーション</h2>
+                <p class="sec-lead">選択式4問で、貴社に合うプランと料金の目安がその場で分かります。</p>
               </div>
               <PriceSimulator docHref="/document/" consult={simConsult} />
             </div>

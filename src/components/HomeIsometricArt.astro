@@ -1,23 +1,21 @@
 ---
+import { HOME_SCENES } from '../lib/home-isometric-scenes.mjs';
 interface Props {
-  kind: 'ad' | 'lp' | 'line' | 'sale' | 'success';
-  size?: 'icon' | 'card' | 'scene';
+  kind: 'build' | 'operate' | 'account' | 'scenario' | 'creative' | 'campaign' | 'industries' | 'client' | 'society' | 'partnership' | 'contact' | 'success';
+  size?: 'card' | 'scene';
 }
 const { kind, size = 'card' } = Astro.props;
 ---
-<img
-  class:list={['home-isome-art', `home-isome-art--${size}`]}
-  src={`/images/journey/isome-${kind}.svg`}
-  alt=""
-  aria-hidden="true"
-  width="400"
-  height="300"
-  loading="lazy"
-  decoding="async"
-/>
+<div class:list={['home-isome-art', `home-isome-art--${size}`]} data-home-art={kind} aria-hidden="true">
+  {kind === 'success' ? (
+    <img src="/images/journey/isome-success.svg" alt="" width="400" height="300" loading="lazy" decoding="async" />
+  ) : (
+    <Fragment set:html={HOME_SCENES[kind]} />
+  )}
+</div>
 <style>
-  .home-isome-art{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;flex:none}
-  .home-isome-art--icon{max-width:112px}
+  .home-isome-art{display:block;width:100%;aspect-ratio:4/3;flex:none;margin-inline:auto}
+  .home-isome-art :global(svg),.home-isome-art img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:contain;object-position:center;margin-inline:auto}
   .home-isome-art--card{max-width:220px}
   .home-isome-art--scene{max-width:440px}
 </style>
