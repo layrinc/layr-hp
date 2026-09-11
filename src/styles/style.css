@@ -82,8 +82,8 @@
      未定義だと <svg fill="none"> を継承して髪や服が塗り無しで描画される。 */
   --deep:color-mix(in srgb, var(--green-dark) 70%, var(--black));
   --mark-y:color-mix(in srgb, #FFD54A 60%, transparent);
-  /* 2026-09-11 ユーザー指定: AI LPのAfterを青で強調。既存色は保持。 */
-  --ai-blue:#1D4ED8;
+  /* 2026-09-11 ユーザー指定: AIイラストを白・緑のトーンに統一。 */
+  --ai-illustration-filter:grayscale(1) sepia(.55) hue-rotate(75deg) saturate(1.6) brightness(1.08);
   --red:#D8453B;
   --red-pale:color-mix(in srgb, var(--red) 8%, var(--paper));
 
