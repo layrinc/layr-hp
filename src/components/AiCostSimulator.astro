@@ -1,0 +1,105 @@
+---
+import service from '../data/service-ai.json';
+import { calculateAiSavings, simulationDefaults, simulationLimits } from '../lib/ai-cost-simulation.mjs';
+const plans = ['invoice', 'consulting', 'development'].map(id => service.plans.find(plan => plan.id === id)!);
+const firstPlan = plans[0];
+const defaultInput = { ...simulationDefaults, upfront: firstPlan.price, monthlyService: 0 };
+const example = calculateAiSavings(defaultInput);
+const number = (value: number) => new Intl.NumberFormat('ja-JP', { maximumFractionDigits: 1 }).format(value);
+const yen = (value: number) => new Intl.NumberFormat('ja-JP', { maximumFractionDigits: 0 }).format(value);
+---
+<section class="ai-section ai-simulator" id="simulation" aria-labelledby="ai-sim-heading">
+  <div class="ai-wrap">
+    <div class="ai-section-heading">
+      <p class="ai-eyebrow">経費削減シミュレーション</p>
+      <h2 id="ai-sim-heading">AIで、どれくらい<br /><em>時間と経費を減らせる？</em></h2>
+      <p>今の作業時間と費用を入れて、その場で試算。<br />導入費用を含めた効果の目安が分かります。</p>
+    </div>
+    <div class="ai-sim" data-ai-cost-calculator>
+      <form class="ai-sim-form" aria-label="経費削減の試算条件">
+        <fieldset disabled>
+          <legend>御社の状況に合わせて入力</legend>
+          <p class="ai-sim-hint">初期値は試算例です。数字を変えると、結果も変わります。</p>
+          <div class="ai-sim-fields">
+            <div class="ai-sim-field">
+              <label for="ai-sim-hours">月の定型作業時間</label>
+              <div class="ai-sim-input"><input id="ai-sim-hours" name="monthlyHours" data-label="月の定型作業時間" type="number" inputmode="decimal" min="0" max={simulationLimits.monthlyHours} step="0.1" value={simulationDefaults.monthlyHours} required aria-describedby="ai-sim-hours-help" /><span>時間</span></div>
+              <small id="ai-sim-hours-help">担当者全員の合計時間</small>
+            </div>
+            <div class="ai-sim-field">
+              <label for="ai-sim-hourly">1時間あたりの費用</label>
+              <div class="ai-sim-input"><input id="ai-sim-hourly" name="hourlyCost" data-label="1時間あたりの費用" type="number" inputmode="numeric" min="0" max={simulationLimits.hourlyCost} step="1" value={simulationDefaults.hourlyCost} required aria-describedby="ai-sim-hourly-help" /><span>円</span></div>
+              <small id="ai-sim-hourly-help">人件費・外注費の時間単価</small>
+            </div>
+          </div>
+          <div class="ai-sim-range">
+            <label for="ai-sim-reduction"><span>AIで減らす作業時間の割合</span><output for="ai-sim-reduction" data-sim-output="reductionRate">{simulationDefaults.reductionRate}%</output></label>
+            <input id="ai-sim-reduction" name="reductionRate" data-label="削減する作業時間の割合" type="range" min="0" max="100" step="5" value={simulationDefaults.reductionRate} aria-describedby="ai-sim-rate-help" />
+            <div class="ai-sim-range-scale" aria-hidden="true"><span>0%</span><span>50%</span><span>100%</span></div>
+            <p id="ai-sim-rate-help" class="ai-sim-hint">確認・修正にかかる時間を残して設定してください。</p>
+          </div>
+          <details class="ai-sim-options">
+            <summary>経費削減・導入費用の条件<span class="ai-toggle" aria-hidden="true"></span></summary>
+            <div class="ai-sim-options-body">
+              <div class="ai-sim-range">
+                <label for="ai-sim-cash"><span>工数換算のうち、実際に経費が減る割合</span><output for="ai-sim-cash" data-sim-output="cashShare">{simulationDefaults.cashShare}%</output></label>
+                <input id="ai-sim-cash" name="cashShare" data-label="実際に経費が減る割合" type="range" min="0" max="100" step="5" value={simulationDefaults.cashShare} aria-describedby="ai-sim-cash-help" />
+                <div class="ai-sim-range-scale" aria-hidden="true"><span>0%</span><span>50%</span><span>100%</span></div>
+                <p id="ai-sim-cash-help" class="ai-sim-hint">残業・外注の支払いが減る分だけ設定。固定給の社員を本業へ回し、支出が変わらない場合は0%にします。</p>
+              </div>
+              <div class="ai-sim-field">
+                <label for="ai-sim-plan">検討するプラン</label>
+                <select id="ai-sim-plan" name="plan" aria-describedby="ai-sim-plan-cost ai-sim-plan-note">
+                  {plans.map(plan => <option value={plan.id} data-upfront={plan.id === 'consulting' ? 0 : plan.price} data-monthly={plan.id === 'consulting' ? plan.price : 0}>{plan.name}</option>)}
+                </select>
+                <small id="ai-sim-plan-cost" data-sim-output="planCost">初期 {yen(firstPlan.price)}円 ／ 月額 0円（税別）</small>
+                <small id="ai-sim-plan-note">料金表の条件を適用。コンサルは12か月利用、導入・開発は1件を想定します。自動化・開発の範囲は事前に確認します。</small>
+              </div>
+              <div class="ai-sim-field">
+                <label for="ai-sim-tools">追加のツール・保守費用（月額）</label>
+                <div class="ai-sim-input"><input id="ai-sim-tools" name="monthlyTools" data-label="追加のツール・保守費用" type="number" inputmode="numeric" min="0" max={simulationLimits.monthlyTools} step="1" value={simulationDefaults.monthlyTools} required /><span>円</span></div>
+                <small>外部ツール・APIなどの見込み費用。初期値0円は無料の保証ではありません。</small>
+              </div>
+            </div>
+          </details>
+          <button type="reset" class="ai-sim-reset">試算例に戻す ↺</button>
+        </fieldset>
+        <noscript><p class="ai-sim-hint">入力して試算するにはJavaScriptを有効にしてください。現在は試算例を表示しています。</p></noscript>
+      </form>
+
+      <div class="ai-sim-result" aria-label="シミュレーション結果">
+        <p data-sim-error class="ai-sim-error" role="status" hidden></p>
+        <div data-sim-results>
+          <div class="ai-sim-total" role="status" aria-live="polite" aria-atomic="true">
+            <p data-sim-output="yearLabel">初年度の経費削減効果</p>
+            <p class="ai-sim-value"><strong data-sim-output="firstYearNet">{yen(example.firstYearNet)}</strong><span>円</span></p>
+            <p class="ai-sim-hint">導入・運用費用を差し引いた目安（税別）</p>
+          </div>
+          <p class="ai-sim-assumption">工数換算の <strong data-sim-output="cashShare">{simulationDefaults.cashShare}%</strong> が、実際の経費削減につながる想定</p>
+          <div class="ai-sim-metrics">
+            <div><p>生まれる時間</p><strong><span data-sim-output="savedHours">{number(example.savedHours)}</span><small>時間／月</small></strong></div>
+            <div><p>その時間の金額換算</p><strong><span data-sim-output="timeValue">{yen(example.timeValue)}</span><small>円／月</small></strong></div>
+          </div>
+          <div class="ai-sim-chart" aria-label="毎月の作業時間の比較">
+            <div><p><span>導入前</span><span><b data-sim-output="monthlyHours">{number(defaultInput.monthlyHours)}</b> 時間／月</span></p><div class="ai-sim-bar"><span data-sim-before style="width:100%"></span></div></div>
+            <div><p><span>導入後</span><span><b data-sim-output="remainingHours">{number(example.remainingHours)}</b> 時間／月</span></p><div class="ai-sim-bar"><span data-sim-after style="width:50%"></span></div></div>
+          </div>
+          <dl class="ai-sim-breakdown">
+            <div><dt>毎月の経費削減見込み</dt><dd data-sim-output="monthlySavings">{yen(example.monthlySavings)}円</dd></div>
+            <div><dt>サービス・ツール・保守の月額</dt><dd data-sim-output="monthlyRunningCost">0円</dd></div>
+            <div><dt>導入・開発の初期費用</dt><dd data-sim-output="upfront">{yen(defaultInput.upfront)}円</dd></div>
+            <div><dt>初期費用の回収目安</dt><dd data-sim-output="payback">約{example.paybackMonths}か月</dd></div>
+          </dl>
+          <p class="ai-sim-hint" data-sim-output="yearNote">月の削減見込みから運用費用を引き、12か月分から初期費用を差し引いた目安です。</p>
+          <a href="#consult" class="ai-button">この条件で相談する <span aria-hidden="true">↗</span></a>
+          <p class="ai-sim-hint ai-sim-cta-note">入力内容は送信されません。相談時に数字をお伝えください。</p>
+        </div>
+      </div>
+    </div>
+    <p class="ai-note">入力条件に基づく概算で、削減額を保証するものではありません。毎月同じ条件で12か月運用する想定です。コンサル費用だけで自動化できるとは限らず、別途開発が必要な場合は追加費用を含めて再試算します。</p>
+    <details class="ai-sim-formula"><summary>計算方法を見る</summary><p>削減時間 ＝ 月の作業時間 × 時間の削減率<br />工数の金額換算 ＝ 削減時間 × 1時間あたりの費用<br />月の経費削減 ＝ 工数の金額換算 × 実際に経費が減る割合<br />初年度の効果 ＝（月の経費削減 − サービス・ツール・保守の月額）× 12 − 初期費用</p></details>
+  </div>
+</section>
+<script>
+  import '../scripts/ai-cost-simulator';
+</script>
