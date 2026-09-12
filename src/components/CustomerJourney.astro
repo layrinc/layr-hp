@@ -13,43 +13,45 @@ const circumference = 2 * Math.PI * 177;
   <div class="journey-view">
     <div class="journey-layout container">
       <div class="journey-orbit-column">
-        <div class="journey-orbit" aria-label="広告・LP・LINEの3つの輪を順に結ぶ導線">
-          <svg class="journey-route" viewBox="0 0 620 620" aria-hidden="true">
-            <circle class="journey-track" cx="310" cy="310" r="177" />
-            <circle class="journey-trace" cx="310" cy="310" r="177" stroke-dasharray={circumference} stroke-dashoffset={circumference} transform="rotate(-90 310 310)" />
-          </svg>
-          {steps.map((step, i) => (
-            <a class={`journey-node journey-node-${i}`} href={`#${id}-stage-${i}`} data-journey-step={i} aria-label={`${i + 1}. ${step.name}の説明へ`}>
-              <span class="journey-node-visual"><img src={`/images/journey/isome-${step.asset}.svg`} alt="" width="200" height="160" decoding="async" /></span>
-              <span class="journey-node-caption">
-                <span class="journey-node-label"><small>0{i + 1}</small><b>{step.name}</b></span>
-                <span class="journey-node-action">{step.action}</span>
-              </span>
-            </a>
-          ))}
-          <div class="journey-bloom" role="img" aria-label="成約。桜が開花し、集客から販売までのつながりが実を結ぶ">
-            <svg class="journey-flower" viewBox="-80 -80 160 160" aria-hidden="true">
-              <g class="journey-flower-leaves">
-                <path d="M-4 26C-28 19-50 33-51 53C-27 56-10 46-4 26Z" />
-                <path d="M6 29C29 23 49 39 47 57C26 58 11 46 6 29Z" />
-              </g>
-              {[0, 72, 144, 216, 288].map(angle => (
-                <g transform={`rotate(${angle})`}>
-                  <g data-bloom-petal>
-                    <path class="journey-flower-petal" d="M0 6C-15-2-35-25-24-47C-18-61-5-57 0-48C5-57 18-61 24-47C35-25 15-2 0 6Z" />
-                    <path class="journey-flower-vein" d="M0 1V-32M0-18L-8-26M0-18L8-26" />
-                  </g>
-                </g>
-              ))}
-              <circle class="journey-flower-heart" r="10" />
-              {[0, 72, 144, 216, 288].map(angle => (
-                <circle class="journey-flower-stamen" cx="0" cy="-5" r="1.5" transform={`rotate(${angle})`} />
-              ))}
+        <div class="journey-orbit-fit">
+          <div class="journey-orbit" aria-label="広告・LP・LINEの3つの輪を順に結ぶ導線">
+            <svg class="journey-route" viewBox="0 0 620 620" aria-hidden="true">
+              <circle class="journey-track" cx="310" cy="310" r="177" />
+              <circle class="journey-trace" cx="310" cy="310" r="177" stroke-dasharray={circumference} stroke-dashoffset={circumference} transform="rotate(-90 310 310)" />
             </svg>
-            <strong aria-hidden="true">成約</strong>
-          </div>
-          <div class="journey-traveler" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="7" r="3.5" /><path d="M5 21v-3a7 7 0 0 1 14 0v3" /></svg>
+            {steps.map((step, i) => (
+              <a class={`journey-node journey-node-${i}`} href={`#${id}-stage-${i}`} data-journey-step={i} aria-label={`${i + 1}. ${step.name}の説明へ`}>
+                <span class="journey-node-visual"><img src={`/images/journey/isome-${step.asset}.svg`} alt="" width="200" height="160" decoding="async" /></span>
+                <span class="journey-node-caption">
+                  <span class="journey-node-label"><small>0{i + 1}</small><b>{step.name}</b></span>
+                  <span class="journey-node-action">{step.action}</span>
+                </span>
+              </a>
+            ))}
+            <div class="journey-bloom" role="img" aria-label="成約。桜が開花し、集客から販売までのつながりが実を結ぶ">
+              <svg class="journey-flower" viewBox="-80 -80 160 160" aria-hidden="true">
+                <g class="journey-flower-leaves">
+                  <path d="M-4 26C-28 19-50 33-51 53C-27 56-10 46-4 26Z" />
+                  <path d="M6 29C29 23 49 39 47 57C26 58 11 46 6 29Z" />
+                </g>
+                {[0, 72, 144, 216, 288].map(angle => (
+                  <g transform={`rotate(${angle})`}>
+                    <g data-bloom-petal>
+                      <path class="journey-flower-petal" d="M0 6C-15-2-35-25-24-47C-18-61-5-57 0-48C5-57 18-61 24-47C35-25 15-2 0 6Z" />
+                      <path class="journey-flower-vein" d="M0 1V-32M0-18L-8-26M0-18L8-26" />
+                    </g>
+                  </g>
+                ))}
+                <circle class="journey-flower-heart" r="10" />
+                {[0, 72, 144, 216, 288].map(angle => (
+                  <circle class="journey-flower-stamen" cx="0" cy="-5" r="1.5" transform={`rotate(${angle})`} />
+                ))}
+              </svg>
+              <strong aria-hidden="true">成約</strong>
+            </div>
+            <div class="journey-traveler" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="7" r="3.5" /><path d="M5 21v-3a7 7 0 0 1 14 0v3" /></svg>
+            </div>
           </div>
         </div>
         <p class="journey-summary"><span>集客から販売まで</span><span>一気通貫で支援します</span></p>
@@ -70,9 +72,9 @@ const circumference = 2 * Math.PI * 177;
             <section class="journey-panel" data-phase={i} data-stage={step.asset} id={`${id}-stage-${i}`} aria-labelledby={`${id}-title-${i}`}>
               <p class="journey-eyebrow">STEP 0{i + 1}<span>{step.en}</span></p>
               <h2 id={`${id}-title-${i}`}>{step.title[0]}<br /><em>{step.title[1]}</em></h2>
-              <p class="journey-body">{step.body}</p>
+              <p class="journey-body"><span class="journey-body-wide">{step.body}</span><span class="journey-body-mobile">{step.mobile_body}</span></p>
               <ul class:list={['journey-support', { 'journey-messages': step.asset === 'line' }]} aria-label={step.asset === 'line' ? 'LINEシナリオの流れ' : 'LAYRの支援内容'}>
-                {step.support.map((support, n) => <li style={step.asset === 'line' ? `--message-index:${n}` : undefined}><span>{step.asset === 'line' ? `0${n + 1}` : '✓'}</span>{support}</li>)}
+                {step.support.map((support, n) => <li class:list={{ 'is-message-current': n === 0 }} style={step.asset === 'line' ? `--message-index:${n}` : undefined}><span>{step.asset === 'line' ? `0${n + 1}` : '✓'}</span>{support}</li>)}
               </ul>
             </section>
           ))}
@@ -93,6 +95,7 @@ const circumference = 2 * Math.PI * 177;
   .journey-view{padding:32px 0 24px;background:radial-gradient(ellipse at 20% 45%,var(--tint-green),transparent 60%)}
   .journey-layout{display:grid;grid-template-columns:1.08fr 1fr;gap:clamp(24px,4vw,56px);align-items:center;max-width:1280px}
   .journey-orbit-column,.journey-story{min-width:0}
+  .journey-orbit-fit{display:contents}
   .journey-orbit{position:relative;width:100%;aspect-ratio:1;margin:auto}
   .journey-route{position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:none}
   .journey-track{stroke:var(--green-line);stroke-width:1.5;stroke-dasharray:3 7}
@@ -129,6 +132,7 @@ const circumference = 2 * Math.PI * 177;
   .journey-panel h1,.journey-panel h2{font-size:calc(clamp(26px,3.15vw,42px) * var(--fs,1));line-height:1.55;letter-spacing:var(--track-tight);font-weight:700;color:var(--black);margin:0}
   .journey-panel em{color:var(--green-ink);font-style:normal}
   .journey-body{font-size:calc(16px * var(--fs,1));line-height:2;margin:24px 0;color:var(--text);max-width:33em}
+  .journey-body-mobile{display:none}
   .journey-actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 18px}
   .journey-actions .btn{font-size:calc(14px * var(--fs,1));padding:12px 20px;min-height:46px;box-shadow:none}
   .journey-support{display:flex;flex-wrap:wrap;gap:8px 16px;list-style:none;padding:0;margin:20px 0 0;font-size:calc(14px * var(--fs,1))}
@@ -145,7 +149,14 @@ const circumference = 2 * Math.PI * 177;
   .is-enhanced .journey-orbit{max-width:min(100%,68svh)}
   .is-enhanced .journey-messages li{opacity:clamp(.22,calc(var(--journey-message,0) - var(--message-index)),1)}
   .customer-journey:not(.is-enhanced) .journey-layout{grid-template-columns:1fr}
-  .customer-journey:not(.is-enhanced) .journey-orbit-column{order:-3;max-width:420px;width:100%;margin:auto}
+  .customer-journey:not(.is-enhanced) .journey-story,
+  .customer-journey:not(.is-enhanced) .journey-panels{display:contents}
+  .customer-journey:not(.is-enhanced) .journey-intro{order:-4;margin-top:0}
+  .customer-journey:not(.is-enhanced) .journey-orbit-column{order:-3;max-width:320px;width:100%;margin:auto}
+  .customer-journey:not(.is-enhanced) .journey-bottom{order:2}
+  .customer-journey:not(.is-enhanced) .journey-traveler,
+  .customer-journey:not(.is-enhanced) .journey-bloom,
+  .customer-journey:not(.is-enhanced) .journey-legend{display:none}
   .journey-node:hover .journey-node-visual{border-color:var(--green-dark)}
   .journey-node:focus-visible,.journey-steps a:focus-visible,.journey-skip:focus-visible{outline:2px solid var(--green-dark);outline-offset:5px}
   @media(max-width:900px){
@@ -153,19 +164,42 @@ const circumference = 2 * Math.PI * 177;
     .journey-actions{gap:8px}.journey-actions .btn{padding:10px 14px}.journey-legend{flex-direction:column;gap:0}.journey-body{margin:18px 0}
   }
   @media(max-width:640px){
-    .journey-view{padding:18px 0}.journey-layout{grid-template-columns:1fr;gap:16px}
-    .journey-story{display:contents}.journey-panels{order:-2}.journey-bottom{order:2;margin:0;padding-top:12px;gap:8px}
-    .journey-panel h1,.journey-panel h2{font-size:calc(26px * var(--fs,1));line-height:1.5}
-    .journey-eyebrow{margin-bottom:10px;gap:10px}.journey-body{margin:12px 0;font-size:calc(16px * var(--fs,1));line-height:1.85}
-    .journey-actions{margin:16px 0 0}.journey-actions .btn{padding:10px 16px;font-size:calc(14px * var(--fs,1))}
-    .journey-support{margin-top:12px;gap:4px 12px;font-size:calc(12px * var(--fs,1))}
-    .journey-messages li{padding:4px 6px}.journey-orbit{max-width:330px}.is-enhanced .journey-orbit{max-width:min(100%,34svh)}
-    .journey-node-label{padding:1px 8px;gap:5px;font-size:calc(12px * var(--fs,1))}
-    .journey-bloom{top:74%}
-    .journey-node-caption{gap:2px}.journey-summary{margin:4px 0 0}.journey-traveler{width:26px;height:26px}
-    .journey-legend{flex-direction:row;justify-content:center;margin-top:8px}.journey-legend>span:first-child{display:none}
-    .journey-steps{gap:10px}.journey-steps a{gap:10px;font-size:calc(12px * var(--fs,1))}.journey-skip{font-size:calc(12px * var(--fs,1))}
-    .is-enhanced .journey-view{min-height:0;padding:16px 0}.customer-journey.is-enhanced{height:430svh}
+    .journey-view{padding:20px 0}
+    .journey-layout{grid-template-columns:minmax(0,1fr);gap:12px}
+    .journey-story{display:contents}
+    .journey-panels{order:0}
+    .journey-orbit-column{order:1}
+    .journey-bottom{order:2;margin:0;padding-top:6px;gap:8px}
+    .journey-panel h1,.journey-panel h2{font-size:calc(clamp(22px,6.2vw,26px) * var(--fs,1));line-height:1.45}
+    .journey-eyebrow{margin-bottom:6px;gap:8px;line-height:1.5}
+    .journey-body{margin:8px 0;font-size:calc(14px * var(--fs,1));line-height:1.65}
+    .journey-actions{margin:10px 0 0;gap:8px}
+    .journey-actions .btn{padding:8px 12px;font-size:calc(14px * var(--fs,1));min-height:40px}
+    .journey-support{margin-top:8px;gap:4px 12px;font-size:calc(12px * var(--fs,1))}
+    .journey-messages li{padding:4px 8px}
+    .journey-node-label{padding:1px 7px;gap:4px;font-size:calc(12px * var(--fs,1))}
+    .journey-node-caption{gap:2px}
+    .journey-node-action{display:none}
+    .journey-summary{margin:0;font-size:calc(14px * var(--fs,1));line-height:1.6}
+    .journey-traveler{width:24px;height:24px;border-width:2px}
+    .journey-bloom{top:68%}
+    .journey-bloom strong{padding:1px 7px;font-size:calc(12px * var(--fs,1))}
+    .journey-steps{gap:10px}
+    .journey-steps a{gap:10px;font-size:calc(12px * var(--fs,1));min-height:32px}
+    .journey-skip{font-size:calc(12px * var(--fs,1))}
+    .customer-journey.is-enhanced{height:430svh}
+    .is-enhanced .journey-view{min-height:0;padding:10px 0 8px;align-items:stretch}
+    .is-enhanced .journey-layout{height:100%;grid-template-rows:auto minmax(0,1fr) auto;gap:8px}
+    .is-enhanced .journey-orbit-column{display:grid;grid-template-rows:minmax(160px,1fr) auto;gap:4px;min-height:0;align-self:stretch}
+    .is-enhanced .journey-orbit-fit{display:grid;place-items:center;min-height:160px;min-width:0}
+    .is-enhanced .journey-orbit{width:auto;height:100%;max-height:260px;max-width:100%;margin:0;justify-self:center;align-self:center}
+    .is-enhanced .journey-legend{display:none}
+    .is-enhanced .journey-body-wide{display:none}
+    .is-enhanced .journey-body-mobile{display:inline}
+    .is-enhanced .journey-support:not(.journey-messages){display:none}
+    .is-enhanced .journey-messages{display:grid}
+    .is-enhanced .journey-messages li{grid-area:1/1;opacity:0;visibility:hidden;width:max-content;max-width:100%}
+    .is-enhanced .journey-messages li.is-message-current{opacity:1;visibility:visible}
   }
   @media(prefers-reduced-motion:reduce){.is-enhanced .journey-messages li{opacity:1}}
 </style>
@@ -180,13 +214,15 @@ const circumference = 2 * Math.PI * 177;
     const stages = panels.filter(panel => Number(panel.dataset.phase) >= 0);
     const stepCount = stages.length;
     const linePhase = stages.findIndex(panel => panel.dataset.stage === 'line');
-    const messageCount = stages[linePhase]?.querySelectorAll('.journey-messages li').length ?? 0;
+    const messages = Array.from(stages[linePhase]?.querySelectorAll<HTMLElement>('.journey-messages li') ?? []);
+    const messageCount = messages.length;
     const trace = root.querySelector<SVGCircleElement>('.journey-trace')!;
     const traveler = root.querySelector<HTMLElement>('.journey-traveler')!;
     const bloom = root.querySelector<HTMLElement>('.journey-bloom')!;
     const petals = Array.from(root.querySelectorAll<SVGGElement>('[data-bloom-petal]'));
     const header = document.querySelector<HTMLElement>('.header');
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mobile = window.matchMedia('(max-width: 640px)');
     const clamp = (n: number) => Math.max(0, Math.min(1, n));
     const ease = (n: number) => { const t = clamp(n); return t * t * (3 - 2 * t); };
     const introEnd = .12;
@@ -220,7 +256,10 @@ const circumference = 2 * Math.PI * 177;
       const angle = (-90 + arc * 360) * Math.PI / 180;
       traveler.style.left = `${50 + Math.cos(angle) * 177 / 620 * 100}%`;
       traveler.style.top = `${50 + Math.sin(angle) * 177 / 620 * 100}%`;
-      view.style.setProperty('--journey-message', String(clamp(route * stepCount - linePhase) * (messageCount + 1)));
+      const messageProgress = clamp(route * stepCount - linePhase);
+      view.style.setProperty('--journey-message', String(messageProgress * (messageCount + 1)));
+      const currentMessage = Math.min(messageCount - 1, Math.floor(messageProgress * messageCount));
+      messages.forEach((message, i) => message.classList.toggle('is-message-current', i === currentMessage));
       const bloomProgress = clamp((progress - loopEnd) / (bloomEnd - loopEnd));
       const bloomVisible = progress > loopEnd;
       bloom.hidden = !bloomVisible;
@@ -237,21 +276,26 @@ const circumference = 2 * Math.PI * 177;
     const measure = () => {
       headerHeight = header?.offsetHeight ?? 0;
       root.style.setProperty('--journey-header', `${headerHeight}px`);
-      // Short landscape screens and enlarged text receive the complete linear story.
-      // Never clip text to make a sticky scene fit.
+      // Measure the rendered small-viewport layout, not the changing browser chrome.
+      // Short landscape screens and enlarged text still receive the complete linear story.
       root.classList.add('is-enhanced');
       panels.forEach(panel => { panel.hidden = Number(panel.dataset.phase) !== Math.max(-1, active); });
-      enhanced = window.innerHeight >= 650 && layout.scrollHeight + 40 <= window.innerHeight - headerHeight;
+      if (mobile.matches) {
+        const padding = getComputedStyle(view);
+        const available = view.clientHeight - parseFloat(padding.paddingTop) - parseFloat(padding.paddingBottom);
+        const orbitHeight = root.querySelector<HTMLElement>('.journey-orbit')!.getBoundingClientRect().height;
+        enhanced = layout.scrollHeight <= available + 2 && orbitHeight >= 159;
+      } else {
+        enhanced = window.innerHeight >= 650 && layout.scrollHeight + 40 <= window.innerHeight - headerHeight;
+      }
       root.classList.toggle('is-enhanced', enhanced);
       if (!enhanced) {
         panels.forEach(panel => { panel.hidden = false; });
         links.forEach(link => link.removeAttribute('aria-current'));
         trace.setAttribute('stroke-dashoffset', '0');
         traveler.hidden = true;
-        bloom.hidden = false;
-        bloom.setAttribute('aria-hidden', 'false');
-        view.style.setProperty('--journey-bloom-opacity', '1');
-        petals.forEach(petal => petal.removeAttribute('transform'));
+        bloom.hidden = true;
+        bloom.setAttribute('aria-hidden', 'true');
       } else {
         traveler.hidden = false;
         active = -2;
