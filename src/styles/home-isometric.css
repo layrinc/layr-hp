@@ -40,7 +40,6 @@
 .home-case-bar b{position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);font-weight:500;color:var(--text);font-size:calc(12px * var(--fs,1));white-space:nowrap}
 .home-isometric .case-metric{margin-top:34px}
 .home-isometric .cta-band-inner{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:28px;align-items:center}
-.home-band-art{grid-column:1/-1;width:150px;max-width:100%;margin-inline:auto}
 .home-isometric.cta-band{background:var(--tint-green);color:var(--text);border-top:1px solid var(--green-line);border-bottom:1px solid var(--green-line)}
 .home-isometric.cta-band h2{color:var(--black)}
 .home-isometric.cta-band h2 span{color:var(--green-ink)}
@@ -75,7 +74,6 @@
   .home-service-art{width:164px}
   .home-capability-art{width:128px}
   .home-isometric .cta-band-inner{gap:20px}
-  .home-band-art{width:120px}
   .home-flow-grid{grid-template-columns:minmax(0,1fr);gap:28px;margin:28px 0}
   .home-flow-step{padding-top:20px}
   .home-flow-step h3{font-size:calc(18px * var(--fs,1))}
