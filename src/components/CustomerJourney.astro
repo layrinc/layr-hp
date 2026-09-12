@@ -86,7 +86,7 @@ const circumference = 2 * Math.PI * 177;
   .journey-node small{font-size:calc(12px * var(--fs,1));color:var(--green-ink)}
   .journey-node[aria-current="step"] .journey-node-label{background:var(--green-dark);color:var(--paper);border-color:var(--green-dark)}
   .journey-node[aria-current="step"] small{color:inherit}
-  .journey-traveler{position:absolute;left:50%;top:21.4516%;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:var(--r-pill);background:var(--green-dark);color:var(--paper);border:3px solid var(--paper);z-index:3;padding:3px}
+  .journey-traveler{position:absolute;left:50%;top:21.4516%;width:30px;height:30px;transform:translate(-50%,-50%);border-radius:var(--r-pill);background:var(--green-dark);color:var(--paper);border:3px solid var(--paper);z-index:3;padding:3px;pointer-events:none}
   .journey-traveler svg{width:100%;height:100%}
   .journey-legend{display:flex;justify-content:space-between;gap:12px;color:var(--green-ink);font-size:calc(12px * var(--fs,1));line-height:1.8}
   .journey-summary{font-size:calc(clamp(15px,1.5vw,20px) * var(--fs,1));font-weight:700;line-height:1.7;color:var(--black);text-align:center;margin:0 0 12px}
