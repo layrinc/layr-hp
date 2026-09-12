@@ -7,6 +7,7 @@ import members from '../data/members.json';
  * ※ プレビュー用のJS描画（admin/preview.astro）と見た目を一致させること。
  */
 import settings from '../data/settings.json';
+import company from '../data/company.json';
 import IllustWorry from './IllustWorry.astro';
 import IllustGrowth from './IllustGrowth.astro';
 import IllustConsult from './IllustConsult.astro';
@@ -480,6 +481,7 @@ const serviceIcons = [
       <table class="company-table reveal">
         <tbody>
           <tr><th>会社名</th><td>{p.name}</td></tr>
+          {company.corporate_number && <tr><th scope="row">法人番号</th><td>{company.corporate_number}</td></tr>}
           <tr><th>代表者</th><td>{p.representative}</td></tr>
           <tr><th>所在地</th><td>{p.address}</td></tr>
           <tr><th>設立</th><td>{p.founded}</td></tr>
