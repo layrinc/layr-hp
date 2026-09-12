@@ -318,7 +318,8 @@
   .ai-gallery{scroll-snap-type:none}
 }
 
-/* Live cost and time estimates. All input/output stays in the page. */
+
+/* Simple task checklist, two numeric inputs, and capacity value estimates. */
 .ai-simulator{background:var(--tint-green)}
 .ai-sim{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
 .ai-sim-form,.ai-sim-result{min-width:0;padding:32px;border:1px solid var(--green-line);border-radius:var(--r-lg);background:var(--paper)}
@@ -326,52 +327,50 @@
 .ai-sim-form legend{padding:0;font-size:var(--ai-title);font-weight:700;line-height:1.6}
 .ai-sim-hint{font-size:.75rem;line-height:1.8;color:var(--ai-muted)}
 .ai-sim-form fieldset>p{margin-top:10px}
-.ai-sim-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:24px}
-.ai-sim-field{min-width:0}
-.ai-sim-field>label{display:block;font-size:var(--ai-small);font-weight:700;margin-bottom:8px}
-.ai-sim-input{display:flex;align-items:center;border:1px solid var(--green-line);border-radius:var(--radius);background:var(--tint-green);padding-right:12px;min-width:0}
-.ai-sim-input>input{display:block;min-width:0;width:100%;padding:10px 8px 10px 12px;border:0;border-radius:var(--radius);background:transparent;color:var(--black);font:700 1rem/1.6 var(--font-jp);font-variant-numeric:tabular-nums}
+.ai-sim-form .ai-sim-task-group{margin-top:24px}
+.ai-sim-task-group>legend,.ai-sim-field>label{display:flex;align-items:center;gap:10px;font-size:var(--ai-small);font-weight:700}
+.ai-sim-step{display:inline-grid;place-items:center;flex-shrink:0;width:26px;height:26px;background:var(--green-pale);border-radius:var(--r-pill);color:var(--green-ink);font-size:.75rem}
+.ai-sim-checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:14px}
+.ai-sim-checklist>label{display:flex;align-items:center;gap:9px;min-height:52px;padding:10px 12px;border:1px solid var(--line);border-radius:var(--radius);font-size:var(--ai-small);line-height:1.6;cursor:pointer}
+.ai-sim-checklist>label:has(input:checked){background:var(--tint-green);border-color:var(--green-ink);color:var(--green-ink)}
+.ai-sim-checklist input{width:18px;height:18px;flex-shrink:0;margin:0;accent-color:var(--green-ink);cursor:pointer}
+.ai-sim-field{min-width:0;margin-top:24px}
+.ai-sim-field>p{margin:8px 0 10px}
+.ai-sim-input{display:flex;align-items:center;border:1px solid var(--green-line);border-radius:var(--radius);background:var(--tint-green);padding-right:16px;min-width:0}
+.ai-sim-input>input{display:block;min-width:0;width:100%;padding:12px 16px;border:0;border-radius:var(--radius);background:transparent;color:var(--black);font:700 1rem/1.6 var(--font-jp);font-variant-numeric:tabular-nums}
 .ai-sim-input>span{font-size:var(--ai-small);color:var(--ai-muted);white-space:nowrap}
-.ai-sim-field>small{display:block;margin-top:6px;color:var(--ai-muted);font-size:.75rem;line-height:1.8}
-.ai-sim-range{margin-top:24px}
-.ai-sim-range>label{display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:var(--ai-small);font-weight:700}
-.ai-sim-range output{font-size:var(--ai-title);color:var(--green-ink);white-space:nowrap}
-.ai-sim-range input[type="range"]{display:block;width:100%;height:32px;margin:10px 0 0;accent-color:var(--green-ink);cursor:pointer}
-.ai-sim-range-scale{display:flex;justify-content:space-between;font-size:.75rem;color:var(--ai-muted);margin-bottom:8px}
-.ai-sim-options{margin-top:24px;border-top:1px solid var(--green-line);border-bottom:1px solid var(--green-line)}
-.ai-sim-options>summary{display:flex;align-items:center;gap:12px;list-style:none;cursor:pointer;padding:18px 0;font-size:var(--ai-small);font-weight:700;color:var(--green-ink)}
-.ai-sim-options-body{padding-bottom:22px}
-.ai-sim-options-body>.ai-sim-range{margin-top:0}
-.ai-sim-options-body>.ai-sim-field{margin-top:22px}
-.ai-sim select{width:100%;min-width:0;min-height:48px;padding:10px 8px;border:1px solid var(--green-line);border-radius:var(--radius);font:400 1rem/1.6 var(--font-jp);background:var(--paper);color:var(--black)}
-.ai-sim-reset{padding:12px 0;margin-top:12px;border:0;background:transparent;color:var(--green-ink);font:700 var(--ai-small)/1.6 var(--font-jp);text-decoration:underline;text-underline-offset:5px;cursor:pointer}
-.ai-sim :is(input,select,button):focus-visible{outline:3px solid var(--green-ink);outline-offset:3px}
+.ai-sim-form fieldset>.ai-sim-assumption{margin-top:22px;padding-top:16px;border-top:1px solid var(--green-line);font-size:.75rem;line-height:1.85;color:var(--ai-muted)}
+.ai-sim-assumption strong{color:var(--green-ink)}
+.ai-sim-reset{padding:12px 0;margin-top:8px;border:0;background:transparent;color:var(--green-ink);font:700 var(--ai-small)/1.6 var(--font-jp);text-decoration:underline;text-underline-offset:5px;cursor:pointer}
+.ai-sim :is(input,button):focus-visible{outline:3px solid var(--green-ink);outline-offset:3px}
 .ai-sim input[aria-invalid="true"]{outline:2px solid var(--ai-emphasis)}
 .ai-sim-result{border-color:var(--green-dark)}
+.ai-sim-selected{font-size:.75rem;color:var(--ai-muted);line-height:1.8;margin-bottom:16px;overflow-wrap:anywhere}
 .ai-sim-total>p:first-child{font-size:var(--ai-body);font-weight:700}
-.ai-sim-value{display:flex;align-items:baseline;gap:8px;line-height:1.3;margin:10px 0;color:var(--green-ink);overflow-wrap:anywhere}
-.ai-sim-value strong{font-size:clamp(2rem,3.8vw,3.25rem);font-variant-numeric:tabular-nums;min-width:0}
-.ai-sim-value>span{font-size:var(--ai-title);flex-shrink:0}
-.ai-sim[data-negative="true"] .ai-sim-total>p:first-child,.ai-sim[data-negative="true"] .ai-sim-value{color:var(--ai-emphasis)}
-.ai-sim-assumption{font-size:.75rem;line-height:1.8;color:var(--ai-muted);margin-top:12px}
-.ai-sim-assumption strong{color:var(--green-ink)}
-.ai-sim-metrics{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.35fr);gap:16px;margin-top:22px;padding:18px 0;border-top:1px solid var(--green-line);border-bottom:1px solid var(--green-line)}
-.ai-sim-metrics>div{min-width:0}
-.ai-sim-metrics p{font-size:.75rem;color:var(--ai-muted)}
-.ai-sim-metrics strong{display:block;font-size:var(--ai-title);color:var(--green-ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.ai-sim-metrics small{display:block;font-size:.75rem;font-weight:400;color:var(--ai-muted)}
-.ai-sim-chart{margin-top:20px}
+.ai-sim-value{display:flex;align-items:baseline;gap:10px;line-height:1.3;margin:8px 0;color:var(--green-ink);overflow-wrap:anywhere}
+.ai-sim-value strong{font-size:3.25rem;font-variant-numeric:tabular-nums;min-width:0}
+.ai-sim-value>span{font-size:var(--ai-body);flex-shrink:0}
+.ai-sim-chart{margin-top:22px}
 .ai-sim-chart>div+div{margin-top:12px}
 .ai-sim-chart p{display:flex;justify-content:space-between;gap:10px;font-size:.75rem;margin-bottom:5px}
 .ai-sim-chart b{font-weight:500;font-variant-numeric:tabular-nums}
 .ai-sim-bar{height:9px;background:var(--line-soft);border-radius:var(--r-pill);overflow:hidden}
 .ai-sim-bar>span{display:block;height:100%;background:var(--ai-muted);border-radius:var(--r-pill)}
 .ai-sim-bar>[data-sim-after]{background:var(--green-ink)}
-.ai-sim-breakdown{margin:20px 0 16px}
-.ai-sim-breakdown>div{display:flex;justify-content:space-between;gap:16px;font-size:var(--ai-small);padding:9px 0;border-bottom:1px solid var(--line-soft)}
-.ai-sim-breakdown dt{color:var(--ai-muted)}
-.ai-sim-breakdown dd{font-weight:700;text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere;min-width:0}
-.ai-sim-result .ai-button{width:100%;margin-top:20px}
+.ai-sim-labor{margin-top:24px;border-top:1px solid var(--green-line);padding-top:18px}
+.ai-sim-labor>p:first-child{font-size:var(--ai-small);font-weight:700}
+.ai-sim-money{display:flex;flex-wrap:wrap;align-items:baseline;gap:8px;color:var(--green-ink);line-height:1.5;overflow-wrap:anywhere}
+.ai-sim-money strong{font-size:var(--ai-title);font-variant-numeric:tabular-nums;min-width:0}
+.ai-sim-money>span{font-size:var(--ai-small);white-space:nowrap}
+.ai-sim-opportunity{margin-top:20px;padding:22px;background:var(--green-pale);border:1px solid var(--green-line);border-radius:var(--radius)}
+.ai-sim-opportunity-label{font-size:.75rem;font-weight:700;color:var(--green-ink)}
+.ai-sim-opportunity h3{margin-top:8px;font-size:var(--ai-lead)}
+.ai-sim-opportunity .ai-sim-money{margin-top:8px}
+.ai-sim-opportunity .ai-sim-money strong{font-size:2rem}
+.ai-sim-opportunity ul{display:flex;flex-wrap:wrap;gap:6px 12px;list-style:none;padding:0;margin:14px 0 0}
+.ai-sim-opportunity li{font-size:.75rem;color:var(--green-ink)}
+.ai-sim-opportunity li::before{content:'✓';margin-right:5px}
+.ai-sim-result .ai-button{width:100%;margin-top:20px;font-size:var(--ai-small);gap:12px}
 .ai-sim-cta-note{margin-top:10px}
 .ai-sim-error{color:var(--ai-emphasis);font-size:var(--ai-body)}
 .ai-sim-formula{max-width:880px;margin:16px auto 0;font-size:.75rem;color:var(--ai-muted)}
@@ -381,17 +380,12 @@
 @media(max-width:760px){
   .ai-sim{grid-template-columns:1fr;gap:20px;max-width:560px;margin:auto}
   .ai-sim-form,.ai-sim-result{padding:28px}
-  .ai-sim-value strong{font-size:2.75rem}
 }
 @media(max-width:540px){
-  .ai-sim-form,.ai-sim-result{padding:22px}
-  .ai-sim-fields{gap:12px}
-  .ai-sim-field>label{font-size:.75rem}
-  .ai-sim-input>input{padding-left:8px}
-  .ai-sim-input{padding-right:8px}
-  .ai-sim-range>label{align-items:flex-start}
-  .ai-sim-breakdown>div{gap:12px;font-size:.75rem}
-  .ai-sim-breakdown dt{flex:1}
-  .ai-sim-breakdown dd{flex:1}
-  .ai-sim-value strong{font-size:clamp(1.875rem,8vw,2.75rem)}
+  .ai-sim-form,.ai-sim-result{padding:20px}
+  .ai-sim-checklist{gap:8px}
+  .ai-sim-checklist>label{font-size:.75rem;padding:10px 8px;gap:7px}
+  .ai-sim-form>fieldset>legend{font-size:var(--ai-lead)}
+  .ai-sim-opportunity{padding:18px}
+  .ai-sim-value strong{font-size:2.75rem}
 }
