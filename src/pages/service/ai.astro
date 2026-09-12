@@ -1,11 +1,13 @@
 ---
 import Base from '../../layouts/Base.astro';
 import AiInvoiceOffer from '../../components/AiInvoiceOffer.astro';
+import AiCostSimulator from '../../components/AiCostSimulator.astro';
 import settings from '../../data/settings.json';
 import service from '../../data/service-ai.json';
 import '../../styles/service-ai.css';
 
 const [consulting, development, invoice] = service.plans;
+const displayPlans = [invoice, consulting, development];
 const brandName = `${service.brand} ${service.byline}`;
 const yen = (amount: number) => amount / 10000;
 const tax = (included: boolean) => included ? '税込' : '税別';
@@ -93,7 +95,7 @@ const jsonLd = [
           <span>残業・外注費を見直す</span><span>本業に使える時間へ</span><span>利益が残る体制へ</span>
         </div>
       </div>
-      <nav class="ai-quick-links" aria-label="知りたい内容から読む"><a href="#automation">どの業務に使える？ ↓</a><a href="#price">費用はいくら？ ↓</a><a href="#flow">どう始める？ ↓</a></nav>
+      <nav class="ai-quick-links" aria-label="知りたい内容から読む"><a href="#automation">どの業務に使える？ ↓</a><a href="#simulation">いくら減らせる？ ↓</a><a href="#flow">どう始める？ ↓</a></nav>
     </div>
   </section>
 
@@ -140,10 +142,12 @@ const jsonLd = [
     </div>
   </section>
 
+  <AiCostSimulator />
+
   <section class="ai-section ai-plans-section" id="price">
     <div class="ai-wrap">
-      <div class="ai-section-heading"><p class="ai-eyebrow">料金プラン</p><h2>相談する。つくる。<br class="ai-mobile-break" /><em>一つから試す。</em></h2><p>今の課題に合わせて、3つの入口から選べます。<br />迷う場合は、無料相談で一緒に整理します。</p></div>
-      <div class="ai-plans">{service.plans.map((plan, i) => <article class={'ai-plan ai-plan-' + plan.id} id={'plan-' + plan.id}>
+      <div class="ai-section-heading"><p class="ai-eyebrow">料金プラン</p><h2>一つから試す。相談する。<br class="ai-mobile-break" /><em>仕組みをつくる。</em></h2><p>今の課題に合わせて、3つの入口から選べます。<br />迷う場合は、無料相談で一緒に整理します。</p></div>
+      <div class="ai-plans">{displayPlans.map((plan, i) => <article class={'ai-plan ai-plan-' + plan.id} id={'plan-' + plan.id}>
         <div class="ai-plan-top"><span>PLAN {String(i + 1).padStart(2,'0')}</span><p>{plan.label}</p></div>
         <h3>{plan.name}</h3>
         <div class="ai-plan-price"><span>{plan.billing}</span><p><strong>{yen(plan.price)}</strong><b>万円</b><span> / {plan.unit}</span></p><small>（{tax(plan.taxIncluded)}）</small></div>
@@ -177,7 +181,6 @@ const jsonLd = [
   <section class="ai-section ai-consult" id="consult">
     <div class="ai-wrap"><p class="ai-eyebrow">まずは無料相談から</p><h2>御社なら、<br /><em>どの業務から減らせるか。</em></h2><p>「うちの仕事にも使える？」からで大丈夫です。<br />自動化できることと、かかる費用を整理します。</p><div class="ai-actions"><a href={consult} class="ai-button" data-ai-lead="final" data-ai-plan="general">{lineUrl ? 'LINEで無料相談する' : 'メールで無料相談する'} <span aria-hidden="true">↗</span></a>{lineUrl && <a href={generalMail} class="ai-button ai-button-outline" data-ai-lead="final-email" data-ai-plan="general">メールで相談する <span aria-hidden="true">↗</span></a>}</div><a href="#price" class="ai-text-link">料金プランをもう一度見る ↑</a></div>
   </section>
-  <p class="ai-credit">Illustrations by <a href="https://isome-lab.com/" target="_blank" rel="noopener noreferrer">ISOME LAB ↗</a></p>
 </div>
 </Base>
 <script>
