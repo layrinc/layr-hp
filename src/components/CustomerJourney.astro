@@ -57,6 +57,51 @@ const circumference = 2 * Math.PI * 177;
         <p class="journey-summary"><span>集客から販売まで</span><span>一気通貫で支援します</span></p>
         <div class="journey-legend"><span>○ お客様の現在地</span><span>スクロールで3つの支援を見る ↓</span></div>
       </div>
+
+      <div class="journey-mobile">
+        <div class="journey-mobile-viewport" aria-label="広告・LP・LINEを横にたどる導線">
+          <div class="journey-mobile-track">
+            {steps.map((step, i) => (
+              <article class="journey-mobile-card" id={`${id}-mobile-${i}`} data-journey-slide={i} aria-labelledby={`${id}-mobile-title-${i}`}>
+                <h2 id={`${id}-mobile-title-${i}`}><small>0{i + 1}</small>{step.name}<span aria-hidden="true">{i < steps.length - 1 ? '→' : '✓'}</span></h2>
+                <div class="journey-mobile-art">
+                  <img src={`/images/journey/isome-${step.asset}.svg`} alt="" width="200" height="160" decoding="async" />
+                  {step.asset === 'line' && (
+                    <div class="journey-bloom journey-mobile-bloom" role="img" aria-label="成約。桜が開花し、集客から販売までのつながりが実を結ぶ">
+                      <svg class="journey-flower" viewBox="-80 -80 160 160" aria-hidden="true">
+                        <g class="journey-flower-leaves">
+                          <path d="M-4 26C-28 19-50 33-51 53C-27 56-10 46-4 26Z" />
+                          <path d="M6 29C29 23 49 39 47 57C26 58 11 46 6 29Z" />
+                        </g>
+                        {[0, 72, 144, 216, 288].map(angle => (
+                          <g transform={`rotate(${angle})`}>
+                            <g data-bloom-petal>
+                              <path class="journey-flower-petal" d="M0 6C-15-2-35-25-24-47C-18-61-5-57 0-48C5-57 18-61 24-47C35-25 15-2 0 6Z" />
+                              <path class="journey-flower-vein" d="M0 1V-32M0-18L-8-26M0-18L8-26" />
+                            </g>
+                          </g>
+                        ))}
+                        <circle class="journey-flower-heart" r="10" />
+                        {[0, 72, 144, 216, 288].map(angle => (
+                          <circle class="journey-flower-stamen" cx="0" cy="-5" r="1.5" transform={`rotate(${angle})`} />
+                        ))}
+                      </svg>
+                      <strong aria-hidden="true">成約</strong>
+                    </div>
+                  )}
+                </div>
+                <div class="journey-mobile-description">
+                  <p>{step.mobile_body}</p>
+                  {step.asset === 'line' && <ol class="journey-mobile-messages" aria-label="LINEシナリオの流れ">
+                    {step.support.map((support, n) => <li class:list={{ 'is-message-current': n === 0 }}><span>0{n + 1}</span>{support}</li>)}
+                  </ol>}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+        <p class="journey-summary"><span>集客から販売まで</span><span>一気通貫で支援します</span></p>
+      </div>
       <div class="journey-story">
         <div class="journey-panels">
           <div class="journey-panel journey-intro" data-phase="-1">
@@ -80,6 +125,7 @@ const circumference = 2 * Math.PI * 177;
           ))}
         </div>
         <div class="journey-bottom">
+          <p class="journey-mobile-cue" aria-hidden="true">下にスクロールして、次のステップへ ↓</p>
           <nav class="journey-steps" aria-label="導線の各ステップへ">
             {steps.map((step, i) => <a href={`#${id}-stage-${i}`} data-journey-step={i}>{step.name}<span aria-hidden="true">{i < steps.length - 1 ? '→' : '✓'}</span></a>)}
           </nav>
@@ -96,6 +142,7 @@ const circumference = 2 * Math.PI * 177;
   .journey-layout{display:grid;grid-template-columns:1.08fr 1fr;gap:clamp(24px,4vw,56px);align-items:center;max-width:1280px}
   .journey-orbit-column,.journey-story{min-width:0}
   .journey-orbit-fit{display:contents}
+  .journey-mobile,.journey-mobile-cue{display:none}
   .journey-orbit{position:relative;width:100%;aspect-ratio:1;margin:auto}
   .journey-route{position:absolute;inset:0;width:100%;height:100%;overflow:visible;fill:none}
   .journey-track{stroke:var(--green-line);stroke-width:1.5;stroke-dasharray:3 7}
@@ -165,46 +212,58 @@ const circumference = 2 * Math.PI * 177;
   }
   @media(max-width:640px){
     .journey-view{padding:20px 0}
-    .journey-layout{grid-template-columns:minmax(0,1fr);gap:12px}
+    .journey-layout{grid-template-columns:minmax(0,1fr);gap:16px}
+    .journey-orbit-column{display:none}
     .journey-story{display:contents}
     .journey-panels{order:0}
-    .journey-orbit-column{order:1}
-    .journey-bottom{order:2;margin:0;padding-top:6px;gap:8px}
-    .journey-panel h1,.journey-panel h2{font-size:calc(clamp(22px,6.2vw,26px) * var(--fs,1));line-height:1.45}
+    .customer-journey .journey-panel:not(.journey-intro){display:none}
+    .journey-panel h1{font-size:calc(clamp(26px,8vw,42px) * var(--fs,1));line-height:1.45}
     .journey-eyebrow{margin-bottom:6px;gap:8px;line-height:1.5}
     .journey-body{margin:8px 0;font-size:calc(14px * var(--fs,1));line-height:1.65}
-    .journey-actions{margin:10px 0 0;gap:8px}
+    .journey-actions{margin:12px 0 0;gap:8px}
     .journey-actions .btn{padding:8px 12px;font-size:calc(14px * var(--fs,1));min-height:40px}
-    .journey-support{margin-top:8px;gap:4px 12px;font-size:calc(12px * var(--fs,1))}
-    .journey-messages li{padding:4px 8px}
-    .journey-node-label{padding:1px 7px;gap:4px;font-size:calc(12px * var(--fs,1))}
-    .journey-node-caption{gap:2px}
-    .journey-node-action{display:none}
-    .journey-summary{margin:0;font-size:calc(14px * var(--fs,1));line-height:1.6}
-    .journey-traveler{width:24px;height:24px;border-width:2px}
-    .journey-bloom{top:68%}
-    .journey-bloom strong{padding:1px 7px;font-size:calc(12px * var(--fs,1))}
+    .journey-mobile{display:grid;order:1;gap:8px;min-width:0}
+    .journey-mobile-viewport{min-width:0;touch-action:pan-y pinch-zoom}
+    .journey-mobile-track{position:relative;display:grid;gap:16px}
+    .journey-mobile-card{display:grid;grid-template-rows:auto minmax(64px,1fr) auto;gap:8px;min-width:0;padding:12px;border:1px solid var(--green-line);border-radius:var(--r-lg);background:var(--paper)}
+    .journey-mobile-card h2{display:flex;align-items:center;gap:10px;margin:0;color:var(--black);font-size:calc(20px * var(--fs,1));line-height:1.45}
+    .journey-mobile-card h2 small{color:var(--green-ink);font-size:calc(14px * var(--fs,1))}
+    .journey-mobile-card h2 span{margin-left:auto;color:var(--green-dark)}
+    .journey-mobile-card[aria-current="step"]{border-color:var(--green-dark)}
+    .journey-mobile-art{position:relative;min-height:64px;display:grid;place-items:center}
+    .journey-mobile-art img{width:100%;height:100%;min-height:0;max-height:180px;object-fit:contain}
+    .journey-mobile-description p{margin:0;color:var(--text);font-size:calc(14px * var(--fs,1));line-height:1.65}
+    .journey-mobile-messages{padding:0;margin:6px 0 0;list-style:none;display:grid;gap:4px}
+    .journey-mobile-messages li{display:flex;align-items:center;gap:6px;padding:3px 6px;border-radius:var(--radius);background:var(--tint-green);font-size:calc(12px * var(--fs,1));line-height:1.5}
+    .journey-mobile-messages li span{color:var(--green-ink)}
+    .journey-mobile-bloom{left:auto;right:0;top:auto;bottom:0;width:64px;transform:none}
+    .journey-mobile-bloom strong{padding:1px 7px;font-size:calc(12px * var(--fs,1))}
+    .journey-mobile .journey-summary{margin:0;font-size:calc(14px * var(--fs,1));line-height:1.6}
+    .journey-bottom{order:2;margin:0;padding-top:6px;gap:6px 8px}
     .journey-steps{gap:10px}
     .journey-steps a{gap:10px;font-size:calc(12px * var(--fs,1));min-height:32px}
     .journey-skip{font-size:calc(12px * var(--fs,1))}
     .customer-journey.is-enhanced{height:430svh}
-    .is-enhanced .journey-view{min-height:0;padding:10px 0 8px;align-items:stretch}
-    .is-enhanced .journey-layout{height:100%;grid-template-rows:auto minmax(0,1fr) auto;gap:8px}
-    .is-enhanced .journey-orbit-column{display:grid;grid-template-rows:minmax(160px,1fr) auto;gap:4px;min-height:0;align-self:stretch}
-    .is-enhanced .journey-orbit-fit{display:grid;place-items:center;min-height:160px;min-width:0}
-    .is-enhanced .journey-orbit{width:auto;height:100%;max-height:260px;max-width:100%;margin:0;justify-self:center;align-self:center}
-    .is-enhanced .journey-legend{display:none}
-    .is-enhanced .journey-body-wide{display:none}
-    .is-enhanced .journey-body-mobile{display:inline}
-    .is-enhanced .journey-support:not(.journey-messages){display:none}
-    .is-enhanced .journey-messages{display:grid}
-    .is-enhanced .journey-messages li{grid-area:1/1;opacity:0;visibility:hidden;width:max-content;max-width:100%}
-    .is-enhanced .journey-messages li.is-message-current{opacity:1;visibility:visible}
+    .is-enhanced .journey-view{min-height:0;padding:14px 0 8px;align-items:stretch}
+    .is-enhanced .journey-layout{width:100%;height:100%;grid-template-rows:auto minmax(0,1fr) auto;gap:12px}
+    .is-enhanced .journey-intro .journey-body{display:none}
+    .is-enhanced .journey-mobile{grid-template-rows:minmax(220px,1fr) auto;align-self:stretch;min-height:0}
+    .is-enhanced .journey-mobile-viewport{height:100%;max-height:320px;min-height:220px;overflow:hidden;align-self:center}
+    .is-enhanced .journey-mobile-track{display:flex;width:100%;height:100%;gap:16px;transform:translate3d(var(--journey-mobile-x,0px),0,0)}
+    .is-enhanced .journey-mobile-card{flex:0 0 calc(100% - 40px);height:100%;min-height:220px}
+    .is-enhanced .journey-mobile-messages li{grid-area:1/1;opacity:0;visibility:hidden}
+    .is-enhanced .journey-mobile-messages li.is-message-current{opacity:1;visibility:visible}
+    .is-enhanced .journey-mobile-cue{display:block;width:100%;margin:0;color:var(--green-ink);font-size:calc(12px * var(--fs,1));line-height:1.5}
+    .customer-journey:not(.is-enhanced) .journey-panel:not(.journey-intro){display:none}
+    .customer-journey:not(.is-enhanced) .journey-mobile-art{height:160px}
+    .customer-journey:not(.is-enhanced) .journey-steps{display:none}
   }
   @media(prefers-reduced-motion:reduce){.is-enhanced .journey-messages li{opacity:1}}
 </style>
 
 <script>
+  import { mobileJourneyState, mobileStepProgress } from '../lib/customer-journey-mobile.mjs';
+
   // One scroll value owns every visual state. No clock, damping, or autoplay.
   document.querySelectorAll<HTMLElement>('[data-customer-journey]').forEach((root) => {
     const view = root.querySelector<HTMLElement>('.journey-view')!;
@@ -215,11 +274,14 @@ const circumference = 2 * Math.PI * 177;
     const stepCount = stages.length;
     const linePhase = stages.findIndex(panel => panel.dataset.stage === 'line');
     const messages = Array.from(stages[linePhase]?.querySelectorAll<HTMLElement>('.journey-messages li') ?? []);
-    const messageCount = messages.length;
+    const mobileMessages = Array.from(root.querySelectorAll<HTMLElement>('.journey-mobile-messages li'));
+    const cards = Array.from(root.querySelectorAll<HTMLElement>('[data-journey-slide]'));
+    const cue = root.querySelector<HTMLElement>('.journey-mobile-cue')!;
     const trace = root.querySelector<SVGCircleElement>('.journey-trace')!;
     const traveler = root.querySelector<HTMLElement>('.journey-traveler')!;
-    const bloom = root.querySelector<HTMLElement>('.journey-bloom')!;
-    const petals = Array.from(root.querySelectorAll<SVGGElement>('[data-bloom-petal]'));
+    const blooms = Array.from(root.querySelectorAll<HTMLElement>('.journey-bloom')).map(element => ({
+      element, petals: Array.from(element.querySelectorAll<SVGGElement>('[data-bloom-petal]'))
+    }));
     const header = document.querySelector<HTMLElement>('.header');
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     const mobile = window.matchMedia('(max-width: 640px)');
@@ -231,60 +293,78 @@ const circumference = 2 * Math.PI * 177;
     let frame = 0;
     let active = -2;
     let headerHeight = 0;
+    let mobileStride = 0;
     let enhanced = true;
-    root.classList.add('is-enhanced');
 
+    const setPanels = (phase: number) => {
+      panels.forEach(panel => { panel.hidden = Number(panel.dataset.phase) !== (mobile.matches ? -1 : phase); });
+    };
     const draw = () => {
       frame = 0;
       if (!enhanced) return;
       const distance = Math.max(1, root.offsetHeight - view.offsetHeight);
       const progress = clamp((headerHeight - root.getBoundingClientRect().top) / distance);
-      // Complete the whole circle first; reserve the final scroll segment for blooming.
+      const phone = mobileJourneyState(progress);
       const route = clamp((progress - introEnd) / (loopEnd - introEnd));
-      const phase = progress < introEnd ? -1 : Math.min(stepCount - 1, Math.floor(route * stepCount));
+      const phase = mobile.matches ? phone.phase : progress < introEnd ? -1 : Math.min(stepCount - 1, Math.floor(route * stepCount));
       if (phase !== active) {
-        panels.forEach(panel => { panel.hidden = Number(panel.dataset.phase) !== phase; });
+        setPanels(phase);
         links.forEach(link => {
           if (Number(link.dataset.journeyStep) === phase) link.setAttribute('aria-current', 'step');
           else link.removeAttribute('aria-current');
         });
+        cards.forEach((card, i) => {
+          if (i === phase) card.setAttribute('aria-current', 'step');
+          else card.removeAttribute('aria-current');
+        });
         active = phase;
       }
-      // LINE continues back to advertising. The flower opens only after arrival.
-      const arc = route;
-      trace.setAttribute('stroke-dashoffset', String(2 * Math.PI * 177 * (1 - arc)));
-      const angle = (-90 + arc * 360) * Math.PI / 180;
+      // Desktop follows its original circle; the phone translates a single horizontal row.
+      trace.setAttribute('stroke-dashoffset', String(2 * Math.PI * 177 * (1 - route)));
+      const angle = (-90 + route * 360) * Math.PI / 180;
       traveler.style.left = `${50 + Math.cos(angle) * 177 / 620 * 100}%`;
       traveler.style.top = `${50 + Math.sin(angle) * 177 / 620 * 100}%`;
-      const messageProgress = clamp(route * stepCount - linePhase);
-      view.style.setProperty('--journey-message', String(messageProgress * (messageCount + 1)));
-      const currentMessage = Math.min(messageCount - 1, Math.floor(messageProgress * messageCount));
-      messages.forEach((message, i) => message.classList.toggle('is-message-current', i === currentMessage));
-      const bloomProgress = clamp((progress - loopEnd) / (bloomEnd - loopEnd));
-      const bloomVisible = progress > loopEnd;
-      bloom.hidden = !bloomVisible;
-      bloom.setAttribute('aria-hidden', String(!bloomVisible));
+      if (mobile.matches) {
+        const position = reduced.matches ? phone.phase : phone.position;
+        view.style.setProperty('--journey-mobile-x', `${-position * mobileStride}px`);
+        cue.textContent = phone.complete ? '成約まで、一気通貫。続きは下へ ↓' : '下にスクロールして、次のステップへ ↓';
+      }
+      const messageProgress = mobile.matches ? phone.messageProgress : clamp(route * stepCount - linePhase);
+      view.style.setProperty('--journey-message', String(messageProgress * (messages.length + 1)));
+      [messages, mobileMessages].forEach(group => {
+        const current = Math.min(group.length - 1, Math.floor(messageProgress * group.length));
+        group.forEach((message, i) => message.classList.toggle('is-message-current', i === current));
+      });
+      const bloomProgress = mobile.matches ? phone.bloomProgress : clamp((progress - loopEnd) / (bloomEnd - loopEnd));
+      const bloomVisible = bloomProgress > 0;
       const openness = reduced.matches ? Number(bloomVisible) : bloomProgress;
       view.style.setProperty('--journey-bloom-opacity', String(ease(openness * 4)));
       traveler.style.opacity = String(1 - ease(openness));
-      petals.forEach((petal, i) => {
-        const opening = ease((openness - i * .05) / .8);
-        petal.setAttribute('transform', `scale(${.28 + .72 * opening} ${.1 + .9 * opening})`);
+      blooms.forEach(({ element, petals }) => {
+        element.hidden = !bloomVisible;
+        element.setAttribute('aria-hidden', String(!bloomVisible));
+        petals.forEach((petal, i) => {
+          const opening = ease((openness - i * .05) / .8);
+          petal.setAttribute('transform', `scale(${.28 + .72 * opening} ${.1 + .9 * opening})`);
+        });
       });
     };
     const schedule = () => { if (!frame) frame = requestAnimationFrame(draw); };
     const measure = () => {
       headerHeight = header?.offsetHeight ?? 0;
       root.style.setProperty('--journey-header', `${headerHeight}px`);
-      // Measure the rendered small-viewport layout, not the changing browser chrome.
-      // Short landscape screens and enlarged text still receive the complete linear story.
       root.classList.add('is-enhanced');
-      panels.forEach(panel => { panel.hidden = Number(panel.dataset.phase) !== Math.max(-1, active); });
+      setPanels(Math.max(-1, active));
+      links.forEach(link => {
+        link.setAttribute('href', `#${root.id}-${mobile.matches ? 'mobile' : 'stage'}-${link.dataset.journeyStep}`);
+      });
       if (mobile.matches) {
         const padding = getComputedStyle(view);
         const available = view.clientHeight - parseFloat(padding.paddingTop) - parseFloat(padding.paddingBottom);
-        const orbitHeight = root.querySelector<HTMLElement>('.journey-orbit')!.getBoundingClientRect().height;
-        enhanced = layout.scrollHeight <= available + 2 && orbitHeight >= 159;
+        const viewport = root.querySelector<HTMLElement>('.journey-mobile-viewport')!;
+        mobileStride = cards[1].offsetLeft - cards[0].offsetLeft;
+        enhanced = layout.scrollHeight <= available + 2 && viewport.clientHeight >= 220 &&
+          cards.every(card => card.scrollHeight <= card.clientHeight + 2);
       } else {
         enhanced = window.innerHeight >= 650 && layout.scrollHeight + 40 <= window.innerHeight - headerHeight;
       }
@@ -292,10 +372,13 @@ const circumference = 2 * Math.PI * 177;
       if (!enhanced) {
         panels.forEach(panel => { panel.hidden = false; });
         links.forEach(link => link.removeAttribute('aria-current'));
+        cards.forEach(card => card.removeAttribute('aria-current'));
         trace.setAttribute('stroke-dashoffset', '0');
         traveler.hidden = true;
-        bloom.hidden = true;
-        bloom.setAttribute('aria-hidden', 'true');
+        blooms.forEach(({ element }) => {
+          element.hidden = true;
+          element.setAttribute('aria-hidden', 'true');
+        });
       } else {
         traveler.hidden = false;
         active = -2;
@@ -306,7 +389,7 @@ const circumference = 2 * Math.PI * 177;
       if (!enhanced || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
       const phase = Number(link.dataset.journeyStep);
-      const progress = introEnd + (loopEnd - introEnd) * ((phase + .08) / stepCount);
+      const progress = mobile.matches ? mobileStepProgress[phase] : introEnd + (loopEnd - introEnd) * ((phase + .08) / stepCount);
       const top = window.scrollY + root.getBoundingClientRect().top - headerHeight;
       window.scrollTo({ top: top + (root.offsetHeight - view.offsetHeight) * progress, behavior: reduced.matches ? 'instant' : 'smooth' });
     }));
