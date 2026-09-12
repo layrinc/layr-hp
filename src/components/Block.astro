@@ -11,11 +11,14 @@ import IllustWorry from './IllustWorry.astro';
 import IllustGrowth from './IllustGrowth.astro';
 import IllustConsult from './IllustConsult.astro';
 import HeroDevice from './HeroDevice.astro';
+import HomeIsometricArt from './HomeIsometricArt.astro';
 import { ILLUSTS } from '../lib/illusts.mjs';
 import { ISO } from '../lib/iso-illusts.mjs';
 
-interface Props { block: { id: string; type: string; p: any }; posts?: any[] }
-const { block, posts = [] } = Astro.props;
+interface Props { block: { id: string; type: string; p: any }; posts?: any[]; isometric?: boolean }
+const { block, posts = [], isometric = false } = Astro.props;
+const capabilityArt = ['account', 'scenario', 'creative', 'campaign'] as const;
+const philosophyArt = ['client', 'society', 'partnership'] as const;
 const p = block.p;
 const t = block.type;
 
@@ -178,10 +181,10 @@ const serviceIcons = [
 )}
 
 {t === 'pricing' && (
-  <section class="blk-sec">
+  <section class:list={["blk-sec", { "home-isometric": isometric } ]}>
     <div class="container">
       <div class={`price-grid reveal cols-${(p.items || []).length || 2}`}>
-        {(p.items || []).map((it: any) => (
+        {(p.items || []).map((it: any, i: number) => (
           <div class={`price-card ${it.featured ? 'is-featured' : ''}`}>
             {it.tag && <p class="price-tag">{it.tag}</p>}
             <h3 class="price-name">{it.name}</h3>
@@ -233,8 +236,9 @@ const serviceIcons = [
 )}
 
 {t === 'ctaBand' && (
-  <div class="cta-band">
+  <div class:list={["cta-band", { "home-isometric": isometric } ]}>
     <div class="container cta-band-inner">
+      {isometric && <div class="home-band-art"><HomeIsometricArt kind="industries" /></div>}
       <div>
         <h2>{p.title_before}<span>{p.title_em}</span>{p.title_after}</h2>
         <p>{p.desc}</p>
@@ -252,19 +256,22 @@ const serviceIcons = [
 )}
 
 {t === 'service' && (
-  <section id="service">
+  <section id="service" class:list={{ "home-isometric": isometric }}>
     <div class="container">
       {(p.en || p.title_jp) && <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2><p class="sec-lead">{p.lead}</p></div>}
       <div class="service-grid">
         {p.items.map((s: any, i: number) => s.featured ? (
           <div class="service-card wide reveal">
             {s.badge && <span class="service-badge">{s.badge}</span>}
+            {isometric && i < 2 && <div class="home-service-art"><HomeIsometricArt kind={i === 0 ? 'build' : 'operate'} /></div>}
             <p class="service-num">{s.number}</p><h3>{s.title}</h3><p>{s.desc}</p>
             <ul class="service-tags">{s.tags.map((tg: string) => <li>{tg}</li>)}</ul>
           </div>
         ) : (
           <div class="service-card reveal">
-            <div class="service-visual" aria-hidden="true" set:html={serviceIcons[i % serviceIcons.length]} />
+            {isometric
+              ? (i < 2 && <div class="home-service-art"><HomeIsometricArt kind={i === 0 ? 'build' : 'operate'} /></div>)
+              : <div class="service-visual" aria-hidden="true" set:html={serviceIcons[i % serviceIcons.length]} />}
             <p class="service-num">{s.number}</p><h3>{s.title}</h3><p>{s.desc}</p>
             <ul class="service-tags">{s.tags.map((tg: string) => <li>{tg}</li>)}</ul>
           </div>
@@ -277,13 +284,15 @@ const serviceIcons = [
 )}
 
 {t === 'reason' && (
-  <section class="reason" id="reason">
+  <section class:list={["reason", { "home-isometric": isometric }]} id="reason">
     <div class="container">
       {(p.en || p.title_jp) && <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>}
       <div class="reason-grid">
         {p.items.map((r: any, i: number) => (
           <div class="reason-card reveal">
-            <span class="reason-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            {isometric
+              ? (capabilityArt[i] && <div class="home-capability-art"><HomeIsometricArt kind={capabilityArt[i]} /></div>)
+              : <span class="reason-num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>}
             <h3>{r.title}</h3><p>{r.desc}</p>
           </div>
         ))}
@@ -293,16 +302,14 @@ const serviceIcons = [
 )}
 
 {t === 'cases' && (
-  <section id="case">
+  <section id="case" class:list={{ "home-isometric": isometric }}>
     <div class="container">
       {(p.en || p.title_jp) && <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>}
-      {/* 支援実績の直前には illust ブロック（iso-chart）が入る構成なので、
-          ここに固定イラストを重ねると1画面に2枚並んで冗長になる。意図的に置かない。 */}
     </div>
     {p.show_edit_note && <div class="draft-note"><p>【要編集】以下の実績はサンプルです。カスタマイザーで実案件に差し替え、この注意書きをオフにしてください（クライアント名の掲載は先方の許可を取ってから）。</p></div>}
     <div class="container">
       <div class="case-grid">
-        {p.items.map((c: any) => (
+        {p.items.map((c: any, i: number) => (
           <div class="case-card reveal">
             <div class="case-head"><span class="case-tag">{c.tag}</span><h3>{c.title}</h3></div>
             <div class="case-body">
@@ -313,7 +320,12 @@ const serviceIcons = [
             </div>
             <div class="case-result">
               <p class="label">{c.metric_label}</p>
-              <div class="case-graph" aria-hidden="true"><span class="bar b1" style={`--h:${c.graph_before}%`} data-label="Before"></span><span class="bar b2" style={`--h:${c.graph_after}%`} data-label="After"></span></div>
+              {isometric ? (
+                <div class="home-case-chart" aria-hidden="true">
+                  <span class="home-case-bar is-before" style={`--h:${c.graph_before}%`}><i></i><b>Before</b></span>
+                  <span class="home-case-bar is-after" style={`--h:${c.graph_after}%`}><i></i><b>After</b></span>
+                </div>
+              ) : (<div class="case-graph" aria-hidden="true"><span class="bar b1" style={`--h:${c.graph_before}%`} data-label="Before"></span><span class="bar b2" style={`--h:${c.graph_after}%`} data-label="After"></span></div>)}
               <div class="case-metric"><span class="before">{c.before}</span><span class="arrow">→</span><span class="after">{c.after_number}<small>{c.after_unit}</small></span></div>
             </div>
           </div>
@@ -417,13 +429,15 @@ const serviceIcons = [
 )}
 
 {t === 'mvv' && (
-  <section id="mvv" class="mvv-sec">
+  <section id="mvv" class:list={["mvv-sec", { "home-isometric": isometric } ]}>
     <div class="container">
       <div class="sec-head reveal"><p class="sec-en">PHILOSOPHY</p><h2 class="sec-jp">{p.mission}</h2><p class="sec-lead mvv-lead">{p.lead}</p></div>
       <div class="mvv-grid">
-        {(p.items || []).map((it: any) => (
+        {(p.items || []).map((it: any, i: number) => (
           <article class="mvv-card reveal">
-            <span class={`mvv-crest${it.accent ? ` is-${it.accent}` : ''}`} aria-hidden="true">{it.kanji}</span>
+            {isometric
+              ? (philosophyArt[i] && <div class="home-philosophy-art"><HomeIsometricArt kind={philosophyArt[i]} /></div>)
+              : <span class={`mvv-crest${it.accent ? ` is-${it.accent}` : ''}`} aria-hidden="true">{it.kanji}</span>}
             <h3 class="mvv-yoshi">{it.title}<small>{it.sub}</small></h3>
             <p class="mvv-text">{it.body}</p>
           </article>
@@ -461,7 +475,7 @@ const serviceIcons = [
 )}
 
 {t === 'company' && (
-  <section class="company" id="company">
+  <section class:list={["company", { "home-isometric": isometric }]} id="company">
     <div class="container">
       <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>
       <table class="company-table reveal">
@@ -522,7 +536,7 @@ const serviceIcons = [
 )}
 
 {t === 'sectionHead' && (
-  <section class="blk-sec" id={p.anchor || undefined}>
+  <section class:list={["blk-sec", { "home-isometric": isometric }]} id={p.anchor || undefined}>
     <div class="container">
       <div class={`sec-head reveal ${p.align === 'center' ? 'is-center' : ''}`}>
         {p.watermark && <span class="sec-wm" aria-hidden="true">{p.watermark}</span>}
@@ -757,8 +771,8 @@ const serviceIcons = [
 )}
 
 {/* ジグザグ2カラム（モック v4-zigzag.html の .row / .txt / .fig / .blob / .wave 相当） */}
-{t === 'zigzag' && (
-  <section class={`zz ${p.tint ? 'is-tint' : ''}`} id={p.anchor || undefined}>
+{t === 'zigzag' && (!isometric || !(p.steps || []).length) && (
+  <section class:list={["zz", { "is-tint": p.tint, "home-isometric": isometric }]} id={p.anchor || undefined}>
     {p.wave && (
       <div class="zz-wave" aria-hidden="true">
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" focusable="false">
@@ -802,12 +816,17 @@ const serviceIcons = [
           </a>
         )}
       </div>
-      {p.iso && ISO[p.iso] && (
+      {isometric ? (
+        <div class="home-feature-art">
+          <HomeIsometricArt kind="success" size="scene" />
+          <p class="home-art-credit"><a href="https://isome-lab.com/" target="_blank" rel="noopener noreferrer">Illustrations by ISOME LAB ↗</a></p>
+        </div>
+      ) : (p.iso && ISO[p.iso] && (
         <div class="zz-fig" aria-hidden="true">
           <span class="zz-blob"></span>
           <Fragment set:html={ISO[p.iso]} />
         </div>
-      )}
+      ))}
     </div>
     {p.wave && p.tint && (
       /* ティール面の下端 → 次の白面へ抜ける波。モックは全ての境目が波なので、
@@ -823,15 +842,16 @@ const serviceIcons = [
 )}
 
 {t === 'contact' && (
-  <section class="cform" id="contact">
+  <section class:list={["cform", { "home-isometric": isometric }]} id="contact">
     <div class="container cform-wrap">
       <div class="cform-head">
         {p.en && <p class="zz-eyebrow cform-eyebrow"><i></i><span>{p.en}</span></p>}
         {p.title && <h2 class="cform-title" set:html={rich(p.title)}></h2>}
         {p.lead && <p class="cform-lead" set:html={rich(p.lead)}></p>}
+        {isometric && <div class="home-contact-art"><HomeIsometricArt kind="contact" size="scene" /></div>}
         <div class="cform-linelane">
           <a class="btn btn-line cform-linebtn" href={consult}>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.2 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5 1.1-.4 5.8-3.4 7.9-5.8 1.4-1.6 2.2-3.2 2.2-5C22 6.6 17.5 3 12 3z"/></svg>
+            {!isometric && (<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.2 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5 1.1-.4 5.8-3.4 7.9-5.8 1.4-1.6 2.2-3.2 2.2-5C22 6.6 17.5 3 12 3z"/></svg>)}
             LINEで相談する
           </a>
           <p class="cform-or"><span>LINEを使っていない場合は、メールフォームからどうぞ。</span></p>
@@ -919,5 +939,27 @@ const serviceIcons = [
         });
       })();
     </script>
+  </section>
+)}
+
+{t === 'zigzag' && isometric && (p.steps || []).length > 0 && (
+  <section class="home-isometric home-flow" id={p.anchor || undefined}>
+    <div class="container">
+      <div class="sec-head">
+        {p.eyebrow && <p class="sec-en">{p.eyebrow}</p>}
+        {p.title && <h2 class="sec-jp" set:html={rich(p.title)} />}
+        {p.lead && <p class="sec-lead" set:html={rich(p.lead)} />}
+      </div>
+      <ol class="home-flow-grid">
+        {p.steps.map((step: any, i: number) => (
+          <li class="home-flow-step">
+            <p class="home-flow-number">STEP {String(i + 1).padStart(2, '0')}</p>
+            <h3>{step.t}</h3>
+            {step.d && <p class="home-flow-description" set:html={rich(step.d)} />}
+          </li>
+        ))}
+      </ol>
+      {p.btn_label && <a class="btn btn-green" href={p.btn_url === 'consult' ? consult : p.btn_url === 'contact' ? contact : (p.btn_url || '#')}>{p.btn_label}</a>}
+    </div>
   </section>
 )}
