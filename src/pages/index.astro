@@ -7,6 +7,7 @@ import Base from '../layouts/Base.astro';
 import Block from '../components/Block.astro';
 import PriceSimulator from '../components/PriceSimulator.astro';
 import CustomerJourney from '../components/CustomerJourney.astro';
+import PhilosophyRings from '../components/PhilosophyRings.astro';
 import '../styles/home-isometric.css';
 import settings from '../data/settings.json';
 import page from '../data/page-home.json';
@@ -79,6 +80,8 @@ if (faqBlock && Array.isArray(faqBlock.p?.items)) {
         <CustomerJourney hero={block.p as any} consult={simConsult} />
       </div>;
     }
+    // Express the three-way philosophy visually, without the former text cards.
+    if (block.type === 'mvv') return <PhilosophyRings />;
     const rendered = fs !== 1
       ? <div style={`--fs:${fs}`}><Block block={block} posts={posts} isometric /></div>
       : <Block block={block} posts={posts} isometric />;

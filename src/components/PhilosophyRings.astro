@@ -1,0 +1,121 @@
+---
+const rings = [
+  { key: 'buyer', cx: 300, cy: 184, iconX: 268, iconY: 130, phase: -90, label: '買い手よし' },
+  { key: 'seller', cx: 192, cy: 372, iconX: 147, iconY: 351, phase: 150, label: '売り手よし' },
+  { key: 'society', cx: 408, cy: 372, iconX: 389, iconY: 351, phase: 30, label: '世間よし' },
+];
+---
+<section id="mvv" class="three-rings" aria-label="三方よし" data-three-rings>
+  <svg class="three-rings-art" viewBox="0 0 600 556" width="600" height="556" role="img" aria-labelledby="three-rings-title three-rings-desc">
+    <title id="three-rings-title">買い手よし、売り手よし、世間よし</title>
+    <desc id="three-rings-desc">お客様、企業、社会を表す三つの輪が重なり、喜びが巡る。スクロールに合わせて光の点が輪を巡ります。</desc>
+    <defs>
+      <linearGradient id="three-rings-buyer" x1="0" y1="0" x2="1" y2="1">
+        <stop stop-color="var(--iso-teal-light)" />
+        <stop offset="1" stop-color="var(--green-dark)" />
+      </linearGradient>
+      <linearGradient id="three-rings-seller" x1="0" y1="0" x2="1" y2="1">
+        <stop stop-color="var(--green)" />
+        <stop offset="1" stop-color="var(--green-ink)" />
+      </linearGradient>
+      <linearGradient id="three-rings-society" x1="1" y1="0" x2="0" y2="1">
+        <stop stop-color="var(--iso-green-light)" />
+        <stop offset="1" stop-color="var(--green-dark)" />
+      </linearGradient>
+    </defs>
+    <g aria-hidden="true">
+      {rings.map(ring => <circle class="ring-wash" cx={ring.cx} cy={ring.cy} r="138" />)}
+      {rings.map(ring => (
+        <g class={`ring ring--${ring.key}`}>
+          <circle class="ring-edge" cx={ring.cx} cy={ring.cy} r="138" />
+          <circle class="ring-line" cx={ring.cx} cy={ring.cy} r="138" stroke={`url(#three-rings-${ring.key})`} />
+          <g transform={`translate(${ring.iconX} ${ring.iconY})`}>
+            <g class="ring-symbol">
+              {ring.key === 'buyer' && (
+                <Fragment>
+                  <circle cx="32" cy="18" r="12" class="symbol-fill" />
+                  <path d="M9 62v-9c0-13 10-21 23-21s23 8 23 21v9" class="symbol-line" />
+                  <path d="M32 56c-15-9-12-20-5-20 3 0 5 2 5 4 1-2 3-4 6-4 7 0 10 11-6 20Z" class="symbol-heart" />
+                </Fragment>
+              )}
+              {ring.key === 'seller' && (
+                <Fragment>
+                  <path d="M9 27v34h46V27M24 61V43h16v18" class="symbol-line" />
+                  <path d="M6 26 12 9h40l6 17" class="symbol-line" />
+                  <path d="M6 26c0 9 13 9 13 0 0 9 13 9 13 0 0 9 13 9 13 0 0 9 13 9 13 0" class="symbol-line" />
+                  <path d="M19 26 23 9M45 26 41 9" class="symbol-line" />
+                </Fragment>
+              )}
+              {ring.key === 'society' && (
+                <Fragment>
+                  <circle cx="32" cy="32" r="27" class="symbol-line" />
+                  <ellipse cx="32" cy="32" rx="12" ry="27" class="symbol-line" />
+                  <path d="M6 24h52M6 40h52M32 5v54" class="symbol-line" />
+                </Fragment>
+              )}
+            </g>
+          </g>
+          <g class="ring-orbit" data-ring-orbit data-cx={ring.cx} data-cy={ring.cy} data-phase={ring.phase} transform={`rotate(${ring.phase} ${ring.cx} ${ring.cy})`}>
+            <circle class="ring-trail" cx={ring.cx} cy={ring.cy} r="138" stroke-dasharray="74 793.08" />
+            <circle class="ring-halo" cx={ring.cx + 138} cy={ring.cy} r="14" />
+            <circle class="ring-dot" cx={ring.cx + 138} cy={ring.cy} r="6" />
+          </g>
+        </g>
+      ))}
+      <g class="ring-center" transform="translate(300 310)">
+        <circle r="20" />
+        <path d="M0-10C1-3 3-1 10 0 3 1 1 3 0 10-1 3-3 1-10 0-3-1-1-3 0-10Z" />
+      </g>
+    </g>
+  </svg>
+</section>
+
+<style>
+  .three-rings{padding:clamp(32px,5vw,64px) 24px;background:var(--tint-green);overflow:clip}
+  .three-rings-art{display:block;width:100%;max-width:620px;height:auto;aspect-ratio:600/556;margin-inline:auto;overflow:visible}
+  .ring-wash{fill:var(--green);opacity:.025}
+  .ring-edge{fill:none;stroke:var(--paper);stroke-width:14}
+  .ring-line{fill:none;stroke-width:6;opacity:.8;transition:opacity .24s cubic-bezier(.4,0,.2,1),stroke-width .24s cubic-bezier(.4,0,.2,1)}
+  .ring-symbol{transition:transform .24s cubic-bezier(.4,0,.2,1)}
+  .symbol-line{fill:none;stroke:var(--green-dark);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+  .symbol-fill{fill:var(--green-pale2);stroke:var(--green-dark);stroke-width:2.6}
+  .symbol-heart{fill:var(--green)}
+  .ring-trail{fill:none;stroke:var(--green);stroke-width:7;stroke-linecap:round;opacity:.35}
+  .ring-halo{fill:var(--green);opacity:.14}
+  .ring-dot{fill:var(--green-dark);stroke:var(--paper);stroke-width:3}
+  .ring-orbit,.ring-center{pointer-events:none}
+  .ring-center circle{fill:var(--paper)}
+  .ring-center path{fill:var(--green)}
+  @media(hover:hover) and (prefers-reduced-motion:no-preference){
+    .ring:hover .ring-line{opacity:1;stroke-width:9}
+    .ring:hover .ring-symbol{transform:translateY(-3px)}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .ring-line,.ring-symbol{transition:none}
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-three-rings]').forEach((root) => {
+    const orbits = Array.from(root.querySelectorAll<SVGGElement>('[data-ring-orbit]'));
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+    const render = () => {
+      frame = 0;
+      const rect = root.getBoundingClientRect();
+      const progress = motion.matches ? 0 : Math.max(0, Math.min(1, (window.innerHeight - rect.top) / (window.innerHeight + rect.height)));
+      orbits.forEach((orbit) => {
+        const angle = Number(orbit.dataset.phase) + progress * 360;
+        orbit.setAttribute('transform', `rotate(${angle.toFixed(3)} ${orbit.dataset.cx} ${orbit.dataset.cy})`);
+      });
+    };
+    const requestRender = () => {
+      if (!frame) frame = window.requestAnimationFrame(render);
+    };
+    window.addEventListener('scroll', requestRender, { passive: true });
+    window.addEventListener('resize', requestRender, { passive: true });
+    window.addEventListener('pageshow', requestRender);
+    motion.addEventListener('change', requestRender);
+    render();
+  });
+</script>
