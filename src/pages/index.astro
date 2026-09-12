@@ -7,6 +7,7 @@ import Base from '../layouts/Base.astro';
 import Block from '../components/Block.astro';
 import PriceSimulator from '../components/PriceSimulator.astro';
 import CustomerJourney from '../components/CustomerJourney.astro';
+import ClientMarquee from '../components/ClientMarquee.astro';
 import '../styles/home-isometric.css';
 import settings from '../data/settings.json';
 import page from '../data/page-home.json';
@@ -77,6 +78,7 @@ if (faqBlock && Array.isArray(faqBlock.p?.items)) {
     if (block.type === 'heroText') {
       return <div style={`--fs:${fs}`}>
         <CustomerJourney hero={block.p as any} consult={simConsult} />
+        <ClientMarquee />
       </div>;
     }
     const rendered = fs !== 1
