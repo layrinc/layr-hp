@@ -42,6 +42,13 @@ const examples = [
     ['/service/ai/shots/lscope-1.svg', '広告からLINE配信までの流れを整理する機能図'],
   ] },
 ];
+
+const strengths = [
+  { n: '01', image: 'paperless', title: '毎月の手作業から、減らす。', body: '入力・転記・集計など、くり返し発生する仕事を整理。作業時間と費用を見て、効果が見込めるところから始めます。' },
+  { n: '02', image: 'gears', title: '今の業務に、AIをつなぐ。', body: 'メール、Excel、既存ツールの使い方を確認。御社の仕事の流れに合わせて、自動化する仕組みを設計します。' },
+  { n: '03', image: 'dialogue', title: '使える状態まで、整える。', body: '担当者の確認や例外対応も含めて設計。操作方法を共有し、現場で使い始められる状態まで支援します。' },
+];
+
 const jsonLd = [
   { '@context': 'https://schema.org', '@type': 'BreadcrumbList', itemListElement: [
     { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://layr.co.jp/' },
@@ -58,127 +65,119 @@ const jsonLd = [
 <div class="ai-lp">
   <header class="ai-header">
     <div class="ai-wrap ai-header-inner">
-      <a href="/service/ai/" class="ai-brand" aria-label={brandName + ' トップへ'}><strong>{service.brand}</strong><span>{service.byline}</span></a>
-      <nav class="ai-nav" aria-label="AIサービスのページ内ナビゲーション"><a href="#automation">効率化できる業務</a><a href="#price">3つのプラン</a><a href="#works">支援実績</a></nav>
-      <a href={consult} class="ai-button ai-button-small" data-ai-lead="header" data-ai-plan="general">無料で相談する <span aria-hidden="true">↗</span></a>
+      <a href="/service/ai/" class="ai-brand" aria-label={brandName + ' トップへ'}><span class="ai-brand-mark" aria-hidden="true">AI</span><span><strong>{service.brand}</strong><small>{service.byline}</small></span></a>
+      <nav class="ai-nav" aria-label="AIサービスのページ内ナビゲーション"><a href="#about">サービスについて</a><a href="#automation">できること</a><a href="#price">料金</a><a href="#works">支援実績</a><a href="#faq">よくある質問</a></nav>
+      <a href="#consult" class="ai-button ai-button-small">無料相談する <span aria-hidden="true">↗</span></a>
     </div>
   </header>
 
   <section class="ai-hero">
-    <div class="ai-wrap ai-hero-grid">
+    <div class="ai-wrap">
       <div class="ai-hero-copy">
-        <p class="ai-hero-kicker">人件費・バックオフィス経費を見直す。</p>
-        <h1>{service.hero.line1}<em>{service.hero.emphasis}</em><br />{service.hero.line2}</h1>
-        <p class="ai-lead">{service.hero.lead.split('\n').map((line, index) => <>{index > 0 && <br />}{line}</>)}</p>
-        <div class="ai-actions"><a href={consult} class="ai-button" data-ai-lead="hero" data-ai-plan="general">経費を見直す無料相談 <span aria-hidden="true">↗</span></a><a href="#automation" class="ai-text-link">効率化できる業務を見る <span aria-hidden="true">↓</span></a></div>
-        <p class="ai-hero-note">AI導入コンサル・専用アプリ開発・業務自動化</p>
+        <p class="ai-hero-kicker">中小企業のための、AI業務効率化・自動化</p>
+        <h1><span>{service.hero.line1}<em>{service.hero.emphasis}</em></span><br />{service.hero.line2}</h1>
+        <p class="ai-lead">{service.hero.lead.split('\n').map((line, i) => <>{i > 0 && <br />}{line}</>)}</p>
+        <div class="ai-actions"><a href="#consult" class="ai-button">無料で相談する <span aria-hidden="true">↗</span></a><a href="#price" class="ai-button ai-button-outline">3つのプランを見る <span aria-hidden="true">↓</span></a></div>
       </div>
-      <figure class="ai-hero-art">
-        <img src="/service/ai/ai-office.webp" alt="AIが会社で入力・情報整理・対応を進め、人が本業に集中する様子を描いたアイソメトリックイラスト" width="1536" height="1024" fetchpriority="high" decoding="async" />
-        <figcaption>守りはAIと少数の人で。人は、売上をつくる仕事へ。</figcaption>
-      </figure>
-    </div>
-    <div class="ai-wrap ai-value-strip" aria-label="AI導入で目指すこと">
-      <p><span>守りの業務を省力化</span><strong>残業・外注費を圧縮</strong></p>
-      <p><span>人の力を活かす</span><strong>営業・顧客提案へ配置</strong></p>
-      <p><span>増収を利益につなげる</span><strong>利益率を高める体制へ</strong></p>
+      <div class="ai-system" aria-label="社内の情報をAIで整理し、人が確認。残業・外注費を見直し、人は本業へ">
+        <div class="ai-system-side ai-system-input">
+          <p class="ai-system-label">毎月くり返す仕事</p>
+          <span><small>01</small>請求書・経理</span><span><small>02</small>問い合わせ対応</span><span><small>03</small>受発注・集計</span>
+        </div>
+        <figure class="ai-hero-art">
+          <img src="/service/ai/isome/ai-partner.svg" alt="担当者とAIが協力してパソコン業務を進めるイラスト" width="637" height="1122" fetchpriority="high" decoding="async" />
+          <figcaption><strong>AIが処理、人が確認。</strong><span>会社に合う仕組みをつくる</span></figcaption>
+        </figure>
+        <div class="ai-system-side ai-system-output">
+          <p class="ai-system-label">目指すのは、この変化</p>
+          <span>残業・外注費を見直す</span><span>本業に使える時間へ</span><span>利益が残る体制へ</span>
+        </div>
+      </div>
+      <nav class="ai-quick-links" aria-label="知りたい内容から読む"><a href="#automation">どの業務に使える？ ↓</a><a href="#price">費用はいくら？ ↓</a><a href="#flow">どう始める？ ↓</a></nav>
     </div>
   </section>
 
-  <section class="ai-section ai-change" id="change">
+  <section class="ai-section ai-worries" id="change">
     <div class="ai-wrap">
-      <div class="ai-section-heading ai-heading-wide"><p class="ai-eyebrow">売上が伸びるたびに、人を増やす経営から。</p><h2>守りの業務を、軽くする。<br /><em>人の力を、売上に変える。</em></h2></div>
-      <div class="ai-comparison">
-        <article class="ai-before">
-          <p class="ai-compare-label"><span>BEFORE</span> いまの仕事</p>
-          <h3>人を増やして、<br />作業を回す。</h3>
-          <ul><li>受注が増えるほど、事務作業も増える</li><li>残業・外注・追加採用で対応する</li><li>営業や顧客提案に人を回せない</li></ul>
-          <p class="ai-before-result">売上が増えても、<br /><strong>経費が膨らみ、利益が残りにくい。</strong></p>
-        </article>
-        <article class="ai-after">
-          <p class="ai-compare-label"><span>AFTER</span> AIを業務に組み込むと</p>
-          <h3>事務は、AI。<br /><em>人は、売上へ。</em></h3>
-          <dl><div><dt>入力・集計・一次対応</dt><dd>AIで定型作業を省力化</dd></div><div><dt>確認・判断・例外対応</dt><dd>少数の担当者で管理</dd></div><div><dt>営業・提案・顧客フォロー</dt><dd>人を、売上を生む部署へ</dd></div></dl>
-          <p class="ai-after-result"><span>残業・外注・追加採用を抑え、</span><strong>同じ人員で、利益を伸ばす体制へ。</strong></p>
-        </article>
+      <div class="ai-section-heading"><p class="ai-eyebrow">こんなお悩みはありませんか？</p><h2>忙しいのに、<br class="ai-mobile-break" /><em>利益が残りにくい。</em></h2><p>その原因は、毎月の「くり返す仕事」にあるかもしれません。</p></div>
+      <div class="ai-worry-grid">
+        <article><span>01</span><h3>同じ入力を、何度も。</h3><p>メールや書類を見ながら、Excelへ転記。確認や修正にも時間がかかる。</p></article>
+        <article><span>02</span><h3>忙しいたびに、経費が増える。</h3><p>残業、外注、追加採用で対応。売上が増えても、経費も一緒に膨らむ。</p></article>
+        <article><span>03</span><h3>本業に、人を回せない。</h3><p>集計や問い合わせに追われ、営業・提案・顧客フォローが後回しになる。</p></article>
       </div>
-      <p class="ai-comparison-note">工数が減るだけで、給与総額がそのまま下がるわけではありません。残業・外注・追加採用の抑制と、既存社員の再配置を分けて、導入・運用費用を含む効果を整理します。</p>
+      <p class="ai-answer">増やすのは、手作業ではなく。<br /><strong>仕事が回る「仕組み」です。</strong></p>
+    </div>
+  </section>
+
+  <section class="ai-section ai-about" id="about">
+    <div class="ai-wrap">
+      <div class="ai-section-heading"><p class="ai-eyebrow">{service.brand}とは？</p><h2>御社の業務に、<br /><em>働くAIの仕組みを。</em></h2><p>業務の整理から、設計・開発・使い方まで。<br />現場の仕事に合わせて、AIを組み込みます。</p></div>
+      <div class="ai-strengths">{strengths.map(item => <article class="ai-strength"><p class="ai-strength-number">POINT {item.n}</p><img src={'/service/ai/isome/' + item.image + '.svg'} alt="" width="280" height="200" loading="lazy" decoding="async" /><h3>{item.title}</h3><p>{item.body}</p></article>)}</div>
     </div>
   </section>
 
   <section class="ai-section ai-automation" id="automation">
     <div class="ai-wrap">
-      <div class="ai-section-heading ai-heading-wide"><p class="ai-eyebrow">経費を見直せる、6つの業務分野</p><h2>毎月の「人がやる作業」を、<br /><em>AIに任せる仕組みへ。</em></h2><p>人数・件数・頻度が大きい業務ほど、見直す余地があります。<br />バックオフィスからCSまで、部署をまたぐ定型業務をまとめて整理します。</p></div>
-      <div class="ai-area-columns" aria-hidden="true"><span>見直す分野</span><span>AIに任せられる定型業務の例</span><span>圧縮を狙えるコスト</span></div>
-      <div class="ai-area-list">{service.automationAreas.map((area, index) => <article class="ai-area" id={'area-' + area.id}>
-        <div class="ai-area-title"><span>{String(index + 1).padStart(2, '0')}</span><h3>{area.name}</h3></div>
+      <div class="ai-section-heading"><p class="ai-eyebrow">AIで効率化できること</p><h2>まずは、御社の<br class="ai-mobile-break" /><em>身近な業務から。</em></h2><p>経理、CS、受発注、社内申請。<br />部署ごとの「毎回やっている作業」を見直します。</p></div>
+      <div class="ai-area-list">{service.automationAreas.map((area, i) => <article class="ai-area" id={'area-' + area.id}>
+        <div class="ai-area-title"><span>{String(i + 1).padStart(2,'0')}</span><h3>{area.name}</h3></div>
         <ul>{area.tasks.map(task => <li>{task}</li>)}</ul>
-        <div class="ai-area-cost"><p>圧縮を狙えるコスト</p><strong>{area.cost}</strong></div>
+        <div class="ai-area-cost"><p>減らしたいコスト</p><strong>{area.cost}</strong></div>
       </article>)}</div>
-      <p class="ai-comparison-note">上記は自動化・効率化の候補です。書式・連携先・件数によって対応範囲を設計し、会計処理の確定や人事判断、例外対応は担当者が確認します。</p>
+      <p class="ai-note">上記は効率化の候補です。書式・連携先・件数に応じて設計し、会計処理の確定や人事判断、例外対応は担当者が確認します。</p>
     </div>
   </section>
 
-  <section class="ai-section ai-hub" id="management">
+  <section class="ai-section ai-management" id="management">
     <div class="ai-wrap">
-      <div class="ai-section-heading ai-heading-wide"><p class="ai-eyebrow">部署ごとの作業を、ひとつの流れに</p><h2>散らばる事務を、<br /><em>まとめて管理。</em></h2><p>メール・PDF・Excel・既存ツールに分かれた情報をつなぎ、<br />AIの処理から担当者の確認までを、御社専用の仕組みに整えます。</p></div>
-      <ol class="ai-hub-flow">
-        <li><span class="ai-hub-number">01 / 集める</span><h3>部署の情報を集約</h3><p>請求書、注文、問い合わせ、申請データを、必要な管理先へ。</p></li>
-        <li><span class="ai-hub-number">02 / 任せる</span><h3>定型作業をAIが処理</h3><p>分類・転記・集計・下書き。担当者が毎回手を動かす工程を減らします。</p></li>
-        <li><span class="ai-hub-number">03 / 確かめる</span><h3>人は確認と例外対応へ</h3><p>進捗と確認事項を管理画面に集め、少数の担当者が判断できる状態へ。</p></li>
-      </ol>
-      <div class="ai-reallocation"><p>そこで生まれた時間と人の力を、</p><strong>営業・顧客提案・既存顧客のフォローへ。</strong><p>守りの経費を抑えながら、売上をつくる体制に変えていきます。</p></div>
-      <p class="ai-comparison-note">既存システムとの連携可否、権限、管理画面の範囲は事前に確認します。必要な業務から段階的に構築します。</p>
+      <div class="ai-section-heading"><p class="ai-eyebrow">自動化すると、仕事はこう変わる</p><h2>AIに任せる仕事と、<br /><em>人が担う仕事を分ける。</em></h2><p>全部をAIに任せるのではなく、確認と判断の工程を残して設計します。</p></div>
+      <div class="ai-comparison">
+        <article class="ai-before"><p class="ai-compare-label">BEFORE<span>これまで</span></p><h3>担当者が、ひとつずつ処理。</h3><ol><li>メール・書類を探して集める</li><li>数字を入力・転記する</li><li>集計して、抜け漏れを確認する</li></ol><p class="ai-compare-result">定型作業で一日が終わり、<br /><strong>残業や外注が増えやすい。</strong></p></article>
+        <span class="ai-compare-arrow" aria-hidden="true">→</span>
+        <article class="ai-after"><p class="ai-compare-label">AFTER<span>AIを業務に組み込むと</span></p><h3>AIが整理。人は確認と本業へ。</h3><ol><li><strong>情報を集める</strong><span>メール・PDF・既存ツールをつなぐ</span></li><li><strong>AIが定型作業を処理</strong><span>分類・転記・集計・下書きを支援</span></li><li><strong>人が確認し、次へ進める</strong><span>確認と例外対応の担当を決める</span></li></ol><p class="ai-compare-result">生まれた時間を、<br /><strong>営業・提案・顧客フォローへ。</strong></p></article>
+      </div>
+      <p class="ai-note">工数が減っても、給与総額がそのまま下がるわけではありません。残業・外注・追加採用の抑制と、社員の再配置を分けて、導入・運用費用を含む効果を整理します。</p>
     </div>
   </section>
 
   <section class="ai-section ai-plans-section" id="price">
     <div class="ai-wrap">
-      <div class="ai-section-heading ai-heading-wide"><p class="ai-eyebrow">相談から、実装まで。</p><h2>御社に合わせて選べる、<br /><em>3つのプラン。</em></h2><p>まず相談する。専用の仕組みをつくる。一つの作業から始める。<br />今の課題に合う入口を選べます。</p></div>
-      <div class="ai-plans">{service.plans.map((plan, index) => <article class={'ai-plan ai-plan-' + plan.id} id={'plan-' + plan.id}>
-        <div class="ai-plan-intro">
-          <div class="ai-plan-top"><span class="ai-plan-number">{String(index + 1).padStart(2, '0')}</span><span>{plan.label}</span></div>
-          <h3>{plan.name}</h3>
-          <p class="ai-plan-description">{plan.description}</p>
-        </div>
-        <div class="ai-plan-details">
-          <ul>{plan.features.map(feature => <li>{feature}</li>)}</ul>
-          <p class="ai-plan-note">{plan.note}</p>
-        </div>
-        <div class="ai-plan-action">
-          <div class="ai-plan-price"><span class="ai-plan-billing">{plan.billing}</span><p><strong>{yen(plan.price)}</strong><b>万円</b><span> / {plan.unit}</span><small>（{tax(plan.taxIncluded)}）</small></p></div>
-          {plan.id === 'invoice' && <p class="ai-plan-limit">通常<s>{yen(invoice.regularPrice)}万円</s> → 毎月{invoice.monthlyLimit}社限定</p>}
-          {plan.id === 'invoice' ? <a href="#invoice" class="ai-button ai-button-outline">請求書プランを見る <span aria-hidden="true">↓</span></a> : <a href={lineUrl || mailFor(plan.name)} class="ai-button ai-button-outline" data-ai-lead="plan" data-ai-plan={plan.id}>このプランを相談する <span aria-hidden="true">↗</span></a>}
-        </div>
+      <div class="ai-section-heading"><p class="ai-eyebrow">料金プラン</p><h2>相談する。つくる。<br class="ai-mobile-break" /><em>一つから試す。</em></h2><p>今の課題に合わせて、3つの入口から選べます。<br />迷う場合は、無料相談で一緒に整理します。</p></div>
+      <div class="ai-plans">{service.plans.map((plan, i) => <article class={'ai-plan ai-plan-' + plan.id} id={'plan-' + plan.id}>
+        <div class="ai-plan-top"><span>PLAN {String(i + 1).padStart(2,'0')}</span><p>{plan.label}</p></div>
+        <h3>{plan.name}</h3>
+        <div class="ai-plan-price"><span>{plan.billing}</span><p><strong>{yen(plan.price)}</strong><b>万円</b><span> / {plan.unit}</span></p><small>（{tax(plan.taxIncluded)}）</small></div>
+        {plan.id === 'invoice' && <p class="ai-plan-limit">毎月{invoice.monthlyLimit}社限定 / 通常<s>{yen(invoice.regularPrice)}万円</s></p>}
+        <p class="ai-plan-description">{plan.description}</p>
+        <ul>{plan.features.map(feature => <li>{feature}</li>)}</ul>
+        <p class="ai-plan-note">{plan.note}</p>
+        {plan.id === 'invoice' ? <a href="#invoice" class="ai-button">請求書プランの詳細 <span aria-hidden="true">↓</span></a> : <a href={lineUrl || mailFor(plan.name)} class="ai-button ai-button-outline" data-ai-lead="plan" data-ai-plan={plan.id}>このプランを相談する <span aria-hidden="true">↗</span></a>}
       </article>)}</div>
-      <p class="ai-plans-note">外部ツール・APIの利用料や継続保守が必要な場合は、対象範囲とあわせて契約前にご案内します。</p>
+      <p class="ai-note">外部ツール・APIの利用料や継続保守が必要な場合は、対象範囲とあわせて契約前にご案内します。</p>
     </div>
   </section>
 
   <AiInvoiceOffer placement="middle" />
 
-  <section class="ai-section ai-flow" id="flow">
-    <div class="ai-wrap ai-split"><div class="ai-section-heading"><p class="ai-eyebrow">導入の流れ</p><h2>毎月かかる経費から、<br /><em>見直す場所を見つける。</em></h2><p>部署ごとの業務と、かかっている時間。<br />まずは今の体制をお聞かせください。</p><a href={consult} class="ai-text-link" data-ai-lead="flow" data-ai-plan="general">まずは無料で相談 <span aria-hidden="true">↗</span></a></div><ol class="ai-flow-list">{flow.map(step => <li><span>{step.n}</span><div><h3>{step.title}</h3><p>{step.body}</p></div></li>)}</ol></div>
-  </section>
-
   <section class="ai-section ai-works" id="works">
     <div class="ai-wrap">
-      <div class="ai-section-heading ai-heading-wide"><p class="ai-eyebrow">支援実績・自社実装例</p><h2>AIはもう、<br /><em>現場で働いています。</em></h2><p>お客様のオーダー業務の自動化から、自社ツールの開発まで。<br />仕事の中で使える仕組みをつくっています。</p></div>
-      {service.clientCases.map(client => <article class="ai-client-case">
-        <div class="ai-client-story"><p class="ai-eyebrow">お客様の支援実績</p><p class="ai-client-name">{client.company}<span> 様</span></p><h3>{client.title}</h3><p class="ai-client-description">{client.description}</p></div>
-        <div class="ai-client-info"><dl><div><dt>業種</dt><dd>{client.industry}</dd></div><div><dt>支援内容</dt><dd>{client.support}</dd></div></dl><a href={client.url} class="ai-text-link" target="_blank" rel="noopener noreferrer" aria-label={client.company + 'の商品カタログを見る（新しいタブで開きます）'}>同社の商品カタログを見る <span aria-hidden="true">↗</span></a></div>
-      </article>)}
-      <div class="ai-own-heading"><p class="ai-eyebrow">LAYRの自社実装例</p><p>営業管理、制作、情報整理。自分たちの実務でも使っています。</p></div>
-      <div class="ai-example-list">{examples.map((example, i) => <details class="ai-example" open={i === 0}>
-        <summary><span class="ai-example-label">{example.label}</span><h3>{example.name}</h3><span class="ai-toggle" aria-hidden="true"></span></summary>
-        <div class="ai-example-content"><p>{example.text}</p><div class="ai-gallery" tabindex="0" role="region" aria-label={example.name + 'の画面。横にスクロールして閲覧できます。'}>{example.images.map(([src, caption]) => <figure><img src={src} alt={caption} width="1400" height="900" loading="lazy" decoding="async" /><figcaption>{caption}{src.endsWith('.svg') ? '（機能図）' : '（自社ツール）'}</figcaption></figure>)}</div>{example.images.length > 1 && <p class="ai-gallery-note">横にスクロールして、ほかの画面を見る <span aria-hidden="true">→</span></p>}</div>
-      </details>)}</div>
+      <div class="ai-section-heading"><p class="ai-eyebrow">支援実績・自社実装例</p><h2>アイデアを、<br class="ai-mobile-break" /><em>現場で使う仕組みに。</em></h2><p>お客様の業務自動化から、LAYRで毎日使う社内ツールまで。</p></div>
+      {service.clientCases.map(client => <article class="ai-client-case"><div><p class="ai-eyebrow">CLIENT CASE / お客様の支援実績</p><p class="ai-client-name">{client.company} 様</p><h3>{client.title}</h3><p class="ai-client-description">{client.description}</p></div><div class="ai-client-info"><dl><div><dt>業種</dt><dd>{client.industry}</dd></div><div><dt>支援内容</dt><dd>{client.support}</dd></div></dl><a href={client.url} class="ai-text-link" target="_blank" rel="noopener noreferrer">同社の商品カタログを見る <span aria-hidden="true">↗</span></a></div></article>)}
+      <div class="ai-own-heading"><h3>LAYRの自社実装例</h3><p>気になるツールを開くと、実際の画面をご覧いただけます。</p></div>
+      <div class="ai-example-list">{examples.map((example, i) => <details class="ai-example" open={i === 0}><summary><span class="ai-example-label">{example.label}</span><h3>{example.name}</h3><span class="ai-toggle" aria-hidden="true"></span></summary><div class="ai-example-content"><p>{example.text}</p><div class="ai-gallery" tabindex="0" role="region" aria-label={example.name + 'の画面。横にスクロールして閲覧できます。'}>{example.images.map(([src, caption]) => <figure><img src={src} alt={caption} width="1400" height="900" loading="lazy" decoding="async" /><figcaption>{caption}{src.endsWith('.svg') ? '（機能図）' : '（自社ツール）'}</figcaption></figure>)}</div>{example.images.length > 1 && <p class="ai-gallery-note">横にスクロールして、ほかの画面を見る →</p>}</div></details>)}</div>
     </div>
   </section>
 
-  <section class="ai-section ai-faq" id="faq"><div class="ai-wrap ai-split"><div class="ai-section-heading"><p class="ai-eyebrow">よくあるご質問</p><h2>導入前の<br /><em>気になること。</em></h2></div><div class="ai-faq-list">{faqs.map(f => <details><summary><span>Q</span><h3>{f.q}</h3><span class="ai-toggle" aria-hidden="true"></span></summary><p>{f.a}</p></details>)}</div></div></section>
+  <section class="ai-section ai-flow" id="flow">
+    <div class="ai-wrap"><div class="ai-section-heading"><p class="ai-eyebrow">導入の流れ</p><h2>「この作業が大変」<br class="ai-mobile-break" /><em>から始められます。</em></h2><p>AIの知識や、完成した要件書は不要です。<br />まずは現在の仕事をお聞かせください。</p></div><ol class="ai-flow-list">{flow.map(step => <li><span>{step.n}</span><h3>{step.title}</h3><p>{step.body}</p></li>)}</ol></div>
+  </section>
 
-  <AiInvoiceOffer placement="final" />
+  <section class="ai-section ai-faq" id="faq"><div class="ai-wrap"><div class="ai-section-heading"><p class="ai-eyebrow">よくあるご質問</p><h2>導入前の、<em>気になること。</em></h2></div><div class="ai-faq-list">{faqs.map(f => <details><summary><span>Q</span><h3>{f.q}</h3><span class="ai-toggle" aria-hidden="true"></span></summary><p>{f.a}</p></details>)}</div></div></section>
+
+  <section class="ai-section ai-consult" id="consult">
+    <div class="ai-wrap"><p class="ai-eyebrow">まずは無料相談から</p><h2>御社なら、<br /><em>どの業務から減らせるか。</em></h2><p>「うちの仕事にも使える？」からで大丈夫です。<br />自動化できることと、かかる費用を整理します。</p><div class="ai-actions"><a href={consult} class="ai-button" data-ai-lead="final" data-ai-plan="general">{lineUrl ? 'LINEで無料相談する' : 'メールで無料相談する'} <span aria-hidden="true">↗</span></a>{lineUrl && <a href={generalMail} class="ai-button ai-button-outline" data-ai-lead="final-email" data-ai-plan="general">メールで相談する <span aria-hidden="true">↗</span></a>}</div><a href="#price" class="ai-text-link">料金プランをもう一度見る ↑</a></div>
+  </section>
+  <p class="ai-credit">Illustrations by <a href="https://isome-lab.com/" target="_blank" rel="noopener noreferrer">ISOME LAB ↗</a></p>
 </div>
 </Base>
 <script>
