@@ -1,0 +1,129 @@
+---
+import Base from '../../layouts/Base.astro';
+import service from '../../data/service-ltori.json';
+import company from '../../data/company.json';
+import '../../styles/ltori.css';
+
+const title = `${service.name}（${service.reading}）｜採用特化LINE構築・運用支援｜株式会社LAYR`;
+const description = 'LINEで候補者との接点を育て、応募・面接・入社前フォローへ。Lトリは中小企業の採用に特化したLINE構築・運用支援サービスです。初期構築20万円、月額3万円から（税別）。';
+const consult = '/contact/?service=ltori';
+const nav = [['Lトリとは', '#about'], ['サービス内容', '#service'], ['料金プラン', '#plan'], ['導入の流れ', '#flow'], ['よくある質問', '#faq']];
+const scenarios = [
+  {label:'友だち登録', title:'「ちょっと気になる」を、\nつながるきっかけに。', body:'採用サイトやSNSからLINEへ。いきなり応募するのは不安な候補者にも、気軽に会社を知ってもらう入口をつくります。', point:'希望職種・経験・関心をアンケートで把握', message:'友だち追加ありがとうございます。みどり製作所の採用担当です！\nまずは、気になっているお仕事を教えてください。', choices:['製造スタッフ','営業・事務','まずは会社を知りたい'], tag:'登録直後'},
+  {label:'企業理解', title:'知りたい情報が届く。\n働くイメージが湧く。', body:'企業紹介、職場の様子、先輩インタビューを順番に配信。希望職種や関心に合わせて内容を分け、応募する前の疑問を解消します。', point:'5〜7日間のステップ配信で企業理解を促進', message:'今日は、製造チームの「ある一日」をご紹介します。\n入社後にどんな仕事をするのか、先輩の声と一緒に見てみませんか？', choices:['先輩インタビューを見る','働く環境・福利厚生'], tag:'登録から数日後'},
+  {label:'面談予約', title:'応募の気持ちを、\n面談につなげる。', body:'LINEから応募・面談予約へ。日程案内や事前のリマインドを整えて、候補者にも採用担当者にもスムーズな選考体験をつくります。', point:'日程案内・リマインドで連絡の負担を軽減', message:'私たちの仕事に少し興味が湧いたら、まずはカジュアルにお話ししませんか？\nご希望の日時を下のボタンからお選びいただけます。', choices:['カジュアル面談を予約','採用担当に質問する'], tag:'応募・面接の前'},
+  {label:'入社前フォロー', title:'内定のその先も、\n安心して迎えられる。', body:'入社までの準備やよくある質問をLINEで案内。聞きにくいことも相談しやすい接点を残し、入社前の不安に寄り添います。', point:'内定後も、継続したコミュニケーション', message:'入社の日が近づいてきましたね。\n当日の持ち物と集合場所をまとめました。気になることがあれば、このトークでいつでもご相談ください。', choices:['入社初日のご案内','よくある質問を見る'], tag:'内定から入社まで'}
+];
+const offerings = [
+  ['01','採用戦略・導線設計','募集職種や採用課題を整理。広告・SNS・採用サイトから、LINE登録、応募までの導線を設計します。'],
+  ['02','採用LINEの初期構築','アカウント設計、リッチメニュー、タグ・友だち情報欄を整え、採用に使える環境をつくります。'],
+  ['03','シナリオ・コンテンツ制作','企業紹介や先輩インタビューなど、候補者に届ける配信の企画・文章・画像を制作します。'],
+  ['04','候補者に合わせた配信','希望職種や経験、興味に応じた情報を届けます。Lステップの機能で、配信の出し分けを設計します。'],
+  ['05','選考・フォローの自動化','応募受付や予約案内、リマインド、よくある質問への応答を整理し、日々の対応を効率化します。'],
+  ['06','分析・運用改善','登録後の反応や予約につながる動きを確認。レポートをもとに、次の配信や導線を改善します。']
+];
+const flow = [
+  ['ヒアリング','募集職種、求める人物像、現在の採用方法とお困りごとを伺います。'],
+  ['戦略・シナリオ設計','候補者との接点から応募まで、必要な導線と配信内容を整理します。'],
+  ['アカウント構築','リッチメニュー、ステップ配信、タグなどを設定し、動作を確認します。'],
+  ['公開・配信開始','内容をご確認いただいたうえで公開。友だち登録の導線を整えます。'],
+  ['分析・改善','運用結果を振り返り、配信内容や応募までの流れを継続的に改善します。']
+];
+const jsonLd = [
+  {'@context':'https://schema.org','@type':'Service', name:service.name, serviceType:service.descriptor, description, url:new URL(service.path,Astro.site).href, provider:{'@id':'https://layr.co.jp/#organization'}, areaServed:'JP'},
+  {'@context':'https://schema.org','@type':'FAQPage',mainEntity:service.faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))},
+  {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{ '@type':'ListItem',position:1,name:'ホーム',item:'https://layr.co.jp/'},{'@type':'ListItem',position:2,name:'サービス',item:'https://layr.co.jp/service/'},{'@type':'ListItem',position:3,name:service.name}]}
+];
+---
+<Base title={title} description={description} jsonLd={jsonLd} hideHeader={true}>
+  <div class="ltori" id="ltori-top">
+    <a class="lt-skip" href="#ltori-content">本文へ移動</a>
+    <header class="lt-header">
+      <a class="lt-logo" href={service.path} aria-label="Lトリ トップ"><span><b>L</b>トリ<span class="lt-logo-dot">.</span></span><small>採用特化LINE支援 <span>by LAYR</span></small></a>
+      <nav class="lt-desktop-nav" aria-label="ページ内ナビゲーション">{nav.map(([label,href])=><a href={href}>{label}</a>)}</nav>
+      <a class="lt-button lt-header-cta" href={consult} data-lt-cta="header">無料相談<span aria-hidden="true">↗</span></a>
+      <details class="lt-mobile-menu"><summary aria-label="ナビゲーションメニュー"><span></span><span></span><span class="lt-menu-label">MENU</span></summary><nav aria-label="モバイルナビゲーション">{nav.map(([label,href])=><a href={href}>{label}<span aria-hidden="true">↗</span></a>)}<a href={consult} data-lt-cta="menu">無料相談はこちら</a></nav></details>
+    </header>
+
+    <div id="ltori-content">
+      <section class="lt-hero" aria-labelledby="lt-hero-title">
+        <div class="lt-hero-photo"><img src="/service/ltori/recruitment-hero.webp" width="1536" height="1024" alt="採用について対話する人事担当者と候補者のイメージ" fetchpriority="high" decoding="async" /></div>
+        <div class="lt-wrap lt-hero-inner">
+          <p class="lt-hero-kicker">中小企業の採用を、LINEでサポート。</p>
+          <h1 id="lt-hero-title"><span class="lt-green">LINE</span>でつながる。<br /><span class="lt-green">採用</span>が、変わる。</h1>
+          <p class="lt-hero-tag"><span>応募から入社まで、採用活動に伴走。</span></p>
+          <p class="lt-hero-copy">候補者との出会いを、一度きりで終わらせない。<br />LINEの構築・配信・改善まで、Lトリが支援します。</p>
+          <div class="lt-hero-actions"><a class="lt-button lt-button-large" href={consult} data-lt-cta="hero"><span><small>まずは採用のお悩みをお聞かせください</small>無料で相談する</span><span aria-hidden="true">↗</span></a><a class="lt-doc-link" href={service.source} target="_blank" rel="noopener" data-lt-doc>サービス資料を見る <span aria-hidden="true">↗</span></a></div>
+          <div class="lt-hero-points"><div><small>運用支援</small><strong>月<span>3</span>万円〜</strong><small>税別・初期費用別</small></div><div><small>採用に合わせた</small><strong>LINE設計</strong></div><div><small>構築から改善まで</small><strong>一貫サポート</strong></div></div>
+        </div>
+        <span class="lt-photo-note">写真はイメージです</span>
+      </section>
+
+      <div class="lt-audience"><div class="lt-wrap"><p>新卒・中途採用に。<br /><b>地域や業種に合った採用LINEを。</b></p><ul><li>建設</li><li>製造</li><li>運送</li><li>その他の中小企業</li></ul><a href="#about">Lトリを知る <span aria-hidden="true">↓</span></a></div></div>
+
+      <section class="lt-section lt-problems" id="about">
+        <div class="lt-wrap">
+          <div class="lt-section-heading"><p class="lt-eyebrow">Recruiting challenges</p><h2>こんな<span class="lt-green">採用の悩み</span>、<br />そのままになっていませんか？</h2></div>
+          <div class="lt-problem-grid">
+            <article><span class="lt-problem-label">候補者との接点</span><h3>募集のたびに、<br />ゼロからやり直し。</h3><p>求人を出しても、応募につながらなかった人との接点が残らない。次の募集でも集客に費用と手間がかかる。</p><div>LINEで接点を残し、<br /><b>将来の応募につなげる。</b></div></article>
+            <article><span class="lt-problem-label">選考の歩留まり</span><h3>応募は来るのに、<br />面接につながらない。</h3><p>メールの返信待ち、電話のすれ違い、面接前の連絡。日程調整や候補者のフォローに追われてしまう。</p><div>身近なチャットで、<br /><b>連絡・予約をスムーズに。</b></div></article>
+            <article><span class="lt-problem-label">企業への理解</span><h3>会社の魅力が、<br />伝わりきっていない。</h3><p>求人票だけでは、職場の雰囲気や働く人の魅力が伝わらない。不安を解消できず、辞退につながってしまう。</p><div>職場や先輩の声を届け、<br /><b>「ここで働きたい」を育てる。</b></div></article>
+          </div>
+          <p class="lt-closing">採用は、出会ってからの<span class="lt-green">コミュニケーション</span>で変えられる。</p>
+        </div>
+      </section>
+
+      <section class="lt-section lt-demo-section" id="scenario">
+        <div class="lt-wrap">
+          <div class="lt-section-heading"><p class="lt-eyebrow">LINE × Recruiting</p><h2>知ってもらう。その先の<br /><span class="lt-green">応募・入社まで</span>をつなぐ。</h2><p>LINEを、会社と候補者のコミュニケーションの拠点に。</p></div>
+          <div class="lt-scenario-tabs" role="tablist" aria-label="採用LINEの活用シーン">{scenarios.map((s,i)=><button type="button" role="tab" id={`lt-tab-${i}`} aria-controls={`lt-panel-${i}`} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-lt-tab={i}><span>{String(i+1).padStart(2,'0')}</span>{s.label}</button>)}</div>
+          {scenarios.map((s,i)=><div class="lt-scenario-panel" role="tabpanel" id={`lt-panel-${i}`} aria-labelledby={`lt-tab-${i}`} tabindex="0" hidden={i!==0}>
+            <div class="lt-scenario-copy"><p class="lt-eyebrow">SCENE {String(i+1).padStart(2,'0')}</p><h3>{s.title.split('\n').map((line,j)=><Fragment>{j>0&&<br/>}{line}</Fragment>)}</h3><p>{s.body}</p><div class="lt-scenario-point">{s.point}</div><a class="lt-text-link" href={consult} data-lt-cta={`scenario-${i}`}>自社での活用方法を相談する <span aria-hidden="true">↗</span></a></div>
+            <div class="lt-phone-scene"><div class="lt-phone"><div class="lt-phone-header"><span aria-hidden="true">〈</span><b>みどり製作所｜採用</b><span aria-hidden="true">···</span></div><div class="lt-phone-chat"><p class="lt-chat-time">{s.tag}</p><div class="lt-chat-bubble">{s.message.split('\n').map((line,j)=><Fragment>{j>0&&<br/>}{line}</Fragment>)}</div><div class="lt-chat-choices">{s.choices.map(c=><span>{c}<span aria-hidden="true">›</span></span>)}</div><p class="lt-chat-note">一人ひとりに合わせた情報をお届け</p></div><div class="lt-rich-menu"><div class="lt-rich-main">私たちの仕事を知る<span>WORK WITH US ↗</span></div><span>採用情報</span><span>働く環境</span><span>よくある質問</span></div></div><p class="lt-example-note">採用LINEの画面イメージ／架空の企業の作例です</p></div>
+          </div>)}
+          <div class="lt-asset-message"><b>採用活動をするほど、<br />次につながる接点が育つ。</b><p>今すぐ応募しない人とも、継続してつながれる。<br />募集が始まったとき、関心のある候補者へ再び情報を届けられます。</p></div>
+          <p class="lt-note">※配信への同意・本人の意向に配慮して運用します。配信や自動化の範囲は、利用するツールとプランによって異なります。</p>
+        </div>
+      </section>
+
+      <section class="lt-section" id="service"><div class="lt-wrap">
+        <div class="lt-service-intro"><div class="lt-section-heading"><p class="lt-eyebrow">Service</p><h2>採用LINEの<br /><span class="lt-green">構築・運用・改善</span>を、<br />ひとつのチームで。</h2></div><p>採用課題を整理するところから、日々の配信、候補者の反応をもとにした改善まで。<br /><br />「つくって終わり」にならないよう、貴社の採用活動に伴走します。</p></div>
+        <div class="lt-offering-grid">{offerings.map(([n,h,p])=><article><span class="lt-offering-number">{n}</span><h3>{h}</h3><p>{p}</p></article>)}</div>
+        <p class="lt-note">※面談予約・自動応答・配信の出し分けなどは、ご要望とシステムの仕様を確認して設計します。</p>
+      </div></section>
+
+      <section class="lt-consult-band"><div class="lt-wrap"><div><p>まだ、何から始めればいいかわからなくても大丈夫。</p><h2>まずは、採用のお悩みを<br />聞かせてください。</h2></div><a class="lt-button lt-button-large" href={consult} data-lt-cta="middle"><span><small>オンラインでご相談いただけます</small>無料相談はこちら</span><span aria-hidden="true">↗</span></a></div></section>
+
+      <section class="lt-section lt-pricing" id="plan"><div class="lt-wrap">
+        <div class="lt-section-heading"><p class="lt-eyebrow">Plan</p><h2>採用の体制に合わせて選べる、<br /><span class="lt-green">3つの運用プラン。</span></h2><p>初期構築で基盤を整え、月々の運用で育てていきます。</p></div>
+        <div class="lt-initial"><div><span class="lt-eyebrow">INITIAL SETUP</span><h3>採用LINEの初期設計・構築</h3></div><p class="lt-price"><strong>{service.initialPrice/10000}</strong>万円<small>（税別）</small></p><ul>{service.initialIncludes.map(x=><li>{x}</li>)}</ul></div>
+        <div class="lt-plan-grid">{service.plans.map((plan,i)=><article class:list={['lt-plan',{'is-recommended':plan.recommended}]}><p class="lt-plan-ribbon">{plan.recommended?'定期配信と改善をセットで':'月額運用サポート'}</p><div class="lt-plan-body"><p class="lt-eyebrow">{plan.en}</p><h3>{plan.name}プラン</h3><p class="lt-price"><span>月額</span><strong>{plan.price/10000}</strong>万円<small>（税別）</small></p><p class="lt-plan-description">{plan.description}</p><dl><div><dt>メッセージ配信</dt><dd>{plan.messages}</dd></div><div><dt>Zoomコンサル</dt><dd>{plan.consultation}</dd></div><div><dt>軽微な修正・追加</dt><dd>対応</dd></div><div><dt>配信内容の制作</dt><dd>対応</dd></div><div><dt>分析レポート</dt><dd>対応</dd></div></dl><a class:list={['lt-button',{'lt-button-outline':!plan.recommended}]} href={`${consult}&plan=${encodeURIComponent(plan.name)}`} data-lt-cta={`plan-${i}`}>このプランを相談する<span aria-hidden="true">↗</span></a></div></article>)}</div>
+        <div class="lt-pricing-notes"><p>表示価格はすべて税別です。LINE公式アカウント・Lステップの利用料は別途発生します。</p><p>配信内容の制作には、企画・ライティング・画像制作を含みます。大幅な修正や追加作業、カスタマイズ・オプションは別途お見積もりです。</p></div>
+      </div></section>
+
+      <section class="lt-section" id="flow"><div class="lt-wrap lt-flow-layout"><div class="lt-section-heading"><p class="lt-eyebrow">Flow</p><h2>ご相談から<br />運用改善まで、<br /><span class="lt-green">5つのステップ。</span></h2><p>貴社の採用状況を伺いながら、<br />一緒に進めていきます。</p></div><ol class="lt-flow-list">{flow.map(([h,p],i)=><li><span>{String(i+1).padStart(2,'0')}</span><div><h3>{h}</h3><p>{p}</p></div></li>)}</ol></div></section>
+
+      <section class="lt-section lt-faq-section" id="faq"><div class="lt-wrap lt-faq-layout"><div class="lt-section-heading"><p class="lt-eyebrow">FAQ</p><h2>よくあるご質問</h2><p>導入前の気になることに<br />お答えします。</p></div><div class="lt-faq-list">{service.faqs.map(f=><details><summary><span class="lt-q">Q.</span><span>{f.q}</span><span class="lt-faq-toggle" aria-hidden="true">+</span></summary><div class="lt-answer"><span>A.</span><p>{f.a}</p></div></details>)}</div></div></section>
+
+      <section class="lt-final" id="contact"><div class="lt-wrap"><p class="lt-eyebrow">Let’s start with a conversation.</p><h2>次の採用は、<br /><span>つながる</span>ことから。</h2><p>いま抱えている採用の課題も、これからの採用計画も。<br />貴社に合うLINEの活用方法を、一緒に考えます。</p><div class="lt-final-actions"><a class="lt-button lt-button-large" href={consult} data-lt-cta="bottom"><span><small>採用LINEについてお気軽に</small>無料で相談する</span><span aria-hidden="true">↗</span></a><a class="lt-button lt-button-outline" href={service.source} target="_blank" rel="noopener" data-lt-doc>サービス資料を見る<span aria-hidden="true">↗</span></a></div><p class="lt-operated">{service.name}は、{company.name}が運営する{service.descriptor}サービスです。</p><a class="lt-text-link" href="/service/">LAYRのサービス一覧へ <span aria-hidden="true">↗</span></a></div></section>
+    </div>
+    <div class="lt-mobile-sticky"><a href={service.source} target="_blank" rel="noopener" data-lt-doc>サービス資料</a><a href={consult} data-lt-cta="sticky">無料で相談する <span aria-hidden="true">↗</span></a></div>
+  </div>
+  <script>
+    const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-lt-tab]'));
+    function activateTab(index: number) {
+      tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;const panel=document.getElementById(`lt-panel-${i}`);if(panel)panel.hidden=i!==index;});
+    }
+    tabs.forEach((tab,i)=>{
+      tab.addEventListener('click',()=>activateTab(i));
+      tab.addEventListener('keydown',e=>{let index=i;if(e.key==='ArrowRight')index=(i+1)%tabs.length;else if(e.key==='ArrowLeft')index=(i+tabs.length-1)%tabs.length;else if(e.key==='Home')index=0;else if(e.key==='End')index=tabs.length-1;else return;e.preventDefault();activateTab(index);tabs[index].focus();});
+    });
+    const menu=document.querySelector<HTMLDetailsElement>('.lt-mobile-menu');
+    menu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.open=false));
+    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menu?.open){menu.open=false;menu.querySelector('summary')?.focus();}});
+    document.addEventListener('click',e=>{if(menu?.open&&e.target instanceof Node&&!menu.contains(e.target))menu.open=false;});
+    const track=(event:string,params:Record<string,string>)=>{const analytics=(window as Window & {gtag?:(...args:any[])=>void}).gtag;if(typeof analytics==='function')analytics('event',event,params);};
+    document.querySelectorAll<HTMLAnchorElement>('[data-lt-cta]').forEach(a=>a.addEventListener('click',()=>track('select_content',{content_type:'consultation_cta',content_id:'ltori',placement:a.dataset.ltCta||''})));
+    document.querySelectorAll<HTMLAnchorElement>('[data-lt-doc]').forEach(a=>a.addEventListener('click',()=>track('select_content',{content_type:'service_document',content_id:'ltori'})));
+  </script>
+</Base>
