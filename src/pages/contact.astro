@@ -65,6 +65,7 @@ const breadcrumbJsonLd = {
                 <option>無料相談の予約（オンライン30分）</option>
                 <option>LINE公式アカウント構築について</option>
                 <option>LINE運用支援について</option>
+                <option value="Lトリ（採用LINE）について">Lトリ（採用LINE）について</option>
                 <option>その他</option>
               </select>
             </label>
@@ -91,6 +92,16 @@ const breadcrumbJsonLd = {
       const form = document.getElementById('ctForm');
       if (!form || form.dataset.bound) return;
       form.dataset.bound = '1';
+      const query = new URLSearchParams(window.location.search);
+      if (query.get('service') === 'ltori') {
+        form.querySelector('[name="ご相談内容"]').value = 'Lトリ（採用LINE）について';
+        form.querySelector('[name="_subject"]').value = '【Lトリ】採用LINEのご相談';
+        const requestedPlan = query.get('plan');
+        if (['ライト', 'スタンダード', '戦略'].includes(requestedPlan)) {
+          const message = form.querySelector('textarea');
+          if (!message.value) message.value = requestedPlan + 'プランについて相談したいです。\n\n';
+        }
+      }
       const btn = document.getElementById('ctSubmit');
       const ok = document.getElementById('ctOk');
       const fb = document.getElementById('ctFb');
@@ -111,7 +122,7 @@ const breadcrumbJsonLd = {
           clearTimeout(timer);
           if (!res.ok) throw new Error('http ' + res.status);
           form.querySelectorAll('input:not([type="hidden"]), textarea').forEach((el) => { el.value = ''; });
-          if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'contact_form' });
+          if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'contact_form', service: query.get('service') === 'ltori' ? 'ltori' : 'general' });
           ok.hidden = false; fb.hidden = true;
           ok.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         } catch (_) {
