@@ -299,6 +299,6 @@ body:has(.ltori) .footer {background:#22271f}
 /* The shared document already reserves 92px for anchor navigation. */
 .lt-section[id],.lt-final[id],#ltori-content{scroll-margin-top:10px}
 @media(max-width:700px){.lt-section[id],.lt-final[id],#ltori-content{scroll-margin-top:0}}
-/* Keep the full figures inside the oval illustration surface. */
-.lt-consult-art img{padding:28px}
-@media(max-width:700px){.lt-consult-art img{padding:18px}}
+/* Keep the full figures visible inside the illustration surface. */
+.lt-consult-art img{width:95%;padding:15px;border-radius:24px;transform:rotate(-4deg)}
+@media(max-width:700px){.lt-consult-art img{width:88%;padding:15px;border-radius:22px}}
