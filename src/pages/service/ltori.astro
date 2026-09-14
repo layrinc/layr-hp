@@ -88,7 +88,7 @@ const jsonLd = [
 
       <section class="lt-section lt-practical" id="needs">
         <div class="lt-wrap">
-          <div class="lt-section-heading"><p class="lt-eyebrow">Practical</p><h2>こんな採用のニーズ、<br /><mark>Lトリで支援できます！</mark></h2><p>新卒・中途採用に。建設・製造・運送など、<br />業種や採用フェーズに合わせてLINEを活用します。</p></div>
+          <div class="lt-section-heading lt-practical-heading"><p class="lt-eyebrow">Practical</p><h2>こんな採用のニーズ、<br /><mark>Lトリで支援できます！</mark></h2><p>新卒・中途採用に。建設・製造・運送など、<br />業種や採用フェーズに合わせてLINEを活用します。</p><img class="lt-section-art" src="/service/ltori/isometric-support.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="" /></div>
           <div class="lt-needs-grid">
             {[
               {n:'01',title:'候補者との接点づくり',en:'Connect',bubble:['応募の前から','つながりたい！'],image:'hero',items:['採用サイト・広告・SNSからLINE登録へ','希望職種や経験をアンケートで把握','すぐに応募しない人とも接点を継続']},
@@ -137,7 +137,7 @@ const jsonLd = [
       </div></section>
 
       <section class="lt-section lt-pricing" id="plan"><div class="lt-wrap">
-        <div class="lt-section-heading lt-heading-center"><p class="lt-eyebrow">Plan</p><h2>採用の体制に合わせて選べる、<br /><mark><b>3</b>つの運用プラン。</mark></h2><p>初期構築で基盤を整え、月々の運用で育てていきます。</p></div>
+        <div class="lt-section-heading lt-heading-center"><p class="lt-eyebrow">Plan</p><h2>採用の体制に合わせて、<br /><mark><b>3</b>つの運用プラン。</mark></h2><p>初期構築で基盤を整え、月々の運用で育てていきます。</p></div>
         <div class="lt-initial"><div><span class="lt-eyebrow">INITIAL SETUP</span><h3>採用LINEの初期設計・構築</h3></div><p class="lt-price"><strong>{service.initialPrice/10000}</strong>万円<small>（税別）</small></p><ul>{service.initialIncludes.map(x=><li>{x}</li>)}</ul></div>
         <div class="lt-plan-grid">{service.plans.map((plan,i)=><article class:list={['lt-plan',{'is-recommended':plan.recommended}]}><p class="lt-plan-ribbon">{plan.recommended?'定期配信と改善をセットで':'月額運用サポート'}</p><div class="lt-plan-body"><p class="lt-eyebrow">{plan.en}</p><h3>{plan.name}プラン</h3><p class="lt-price"><span>月額</span><strong>{plan.price/10000}</strong>万円<small>（税別）</small></p><p class="lt-plan-description">{plan.description}</p><dl><div><dt>メッセージ配信</dt><dd>{plan.messages}</dd></div><div><dt>Zoomコンサル</dt><dd>{plan.consultation}</dd></div><div><dt>軽微な修正・追加</dt><dd>対応</dd></div><div><dt>配信内容の制作</dt><dd>対応</dd></div><div><dt>分析レポート</dt><dd>対応</dd></div></dl><a class:list={['lt-button',{'lt-button-outline':!plan.recommended}]} href={`${consult}&plan=${encodeURIComponent(plan.name)}`} data-lt-cta={`plan-${i}`}>このプランを相談する<span class="lt-button-arrow" aria-hidden="true">↗</span></a></div></article>)}</div>
         <div class="lt-pricing-notes"><p>表示価格はすべて税別です。LINE公式アカウント・Lステップの利用料は別途発生します。</p><p>配信内容の制作には、企画・ライティング・画像制作を含みます。大幅な修正や追加作業、カスタマイズ・オプションは別途お見積もりです。</p></div>
