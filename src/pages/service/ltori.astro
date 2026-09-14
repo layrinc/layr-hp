@@ -107,7 +107,7 @@ const jsonLd = [
             {[
               {image:'strategy',tag:'STRATEGY',title:['採用のゴールから逆算。','必要な導線を、最初に設計。'],body:'募集職種、求める人物像、今の採用課題をヒアリング。どこで出会い、何を伝え、どの行動につなげるか。採用の流れ全体を整理してから構築します。'},
               {image:'communication',tag:'COMMUNICATION',title:['候補者に合わせて届ける。','「ここで働く」を、具体的に。'],body:'企業紹介や先輩インタビューを、相手の関心に合わせて配信。求人票だけでは伝わりにくい職場の魅力や、応募前に知りたい情報を届けます。'},
-              {image:'support',tag:'AUTOMATION',title:['日程案内も、フォローも。','日々の対応を、もっと軽やかに。'],body:'応募受付、予約案内、リマインド、よくある質問への応答を整理。自動化することと人が対応することを分け、採用担当者の業務を支えます。'},
+              {image:'support',tag:'AUTOMATION',title:['日程案内も、フォローも。','日々の対応を、軽やかに。'],body:'応募受付、予約案内、リマインド、よくある質問への応答を整理。自動化することと人が対応することを分け、採用担当者の業務を支えます。'},
               {image:'hero',tag:'IMPROVEMENT',title:['配信してからがスタート。','反応を見ながら、育てていく。'],body:'登録後の反応や予約につながる動きをレポートで確認。配信内容や導線の改善を続け、貴社の採用活動に合う運用を一緒につくっていきます。'}
             ].map((item,i)=><article class="lt-feature-row"><div class="lt-feature-art"><img src={`/service/ltori/isometric-${item.image}.webp`} width="1536" height="1024" loading="lazy" decoding="async" alt="" /><span>{item.tag}</span></div><div class="lt-feature-panel"><span class="lt-number-bubble">{String(i+1).padStart(2,'0')}</span><h3><mark>{item.title[0]}</mark><br />{item.title[1]}</h3><p>{item.body}</p></div></article>)}
           </div>
