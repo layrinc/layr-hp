@@ -215,7 +215,7 @@
 .lt-plan-ribbon {background:#e5eddf;text-align:center;padding:10px;font-size:14px;font-weight:700;min-height:56px;display:grid;place-items:center}
 .is-recommended .lt-plan-ribbon {background:var(--lt-orange);color:var(--lt-ink)}
 .lt-recommend-badge {display:inline-block;background:var(--lt-white);border-radius:24px;padding:2px 18px;font-size:14px;line-height:1.9;letter-spacing:.06em}
-.lt-plan[id] {scroll-margin-top:120px}
+.lt-plan[id] {scroll-margin-top:10px}
 .lt-plan-body {padding:28px 25px 30px;display:flex;flex-direction:column;flex:1}
 .lt-plan-body>.lt-eyebrow {text-align:center;font-size:13px;margin-bottom:5px!important;letter-spacing:.11em}
 .lt-plan h3 {text-align:center;font-size:26px;margin-bottom:22px}
