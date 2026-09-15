@@ -6,6 +6,7 @@
  */
 import Base from '../layouts/Base.astro';
 import settings from '../data/settings.json';
+import ltoriService from '../data/service-ltori.json';
 
 const title = 'LINE運用のご相談・お問い合わせ｜株式会社LAYR';
 const description = 'LINE公式アカウントの構築代行・運用代行に関するご相談はこちら。LINEトークまたはメールフォームから、通常1営業日以内にご返信します。無料相談はオンライン30分、この段階での売り込みは行いません。';
@@ -65,7 +66,7 @@ const breadcrumbJsonLd = {
                 <option>無料相談の予約（オンライン30分）</option>
                 <option>LINE公式アカウント構築について</option>
                 <option>LINE運用支援について</option>
-                <option value="Lトリ（採用LINE）について">Lトリ（採用LINE）について</option>
+                <option value={`${ltoriService.name}（採用LINE）について`}>{ltoriService.name}（採用LINE）について</option>
                 <option>その他</option>
               </select>
             </label>
@@ -87,15 +88,15 @@ const breadcrumbJsonLd = {
     </div>
   </section>
 
-  <script is:inline define:vars={{ ctEmail: settings.email }}>
+  <script is:inline define:vars={{ ctEmail: settings.email, ltoriName: ltoriService.name }}>
     (function () {
       const form = document.getElementById('ctForm');
       if (!form || form.dataset.bound) return;
       form.dataset.bound = '1';
       const query = new URLSearchParams(window.location.search);
       if (query.get('service') === 'ltori') {
-        form.querySelector('[name="ご相談内容"]').value = 'Lトリ（採用LINE）について';
-        form.querySelector('[name="_subject"]').value = '【Lトリ】採用LINEのご相談';
+        form.querySelector('[name="ご相談内容"]').value = ltoriName + '（採用LINE）について';
+        form.querySelector('[name="_subject"]').value = '【' + ltoriName + '】採用LINEのご相談';
         const requestedPlan = query.get('plan');
         if (['ライト', 'スタンダード', '戦略'].includes(requestedPlan)) {
           const message = form.querySelector('textarea');
