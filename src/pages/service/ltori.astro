@@ -5,10 +5,10 @@ import company from '../../data/company.json';
 import ConsultBanner from '../../components/ltori/ConsultBanner.astro';
 import '../../styles/ltori.css';
 
-const title = `${service.name}（${service.reading}）｜採用特化LINE構築・運用支援｜株式会社LAYR`;
-const description = 'LINEで候補者との接点を育て、応募・面接・入社前フォローへ。Lトリは中小企業の採用に特化したLINE構築・運用支援サービスです。初期構築20万円、月額3万円から（税別）。';
+const title = `${service.name}｜採用特化LINE構築・運用支援｜株式会社LAYR`;
+const description = `${service.name}は、広告で出会った候補者との接点をLINEに残し、採用リストを資産として育てる採用特化LINE構築・運用支援サービスです。初期構築20万円、月額3万円から（税別）。`;
 const consult = '/contact/?service=ltori';
-const nav = [['Lトリとは', '#about'], ['サービス内容', '#service'], ['料金プラン', '#plan'], ['導入の流れ', '#flow'], ['よくある質問', '#faq']];
+const nav = [[`${service.name}とは`, '#about'], ['サービス内容', '#service'], ['料金プラン', '#plan'], ['導入の流れ', '#flow'], ['よくある質問', '#faq']];
 const scenarios = [
   {label:'友だち登録', title:'「ちょっと気になる」を、\nつながるきっかけに。', body:'採用サイトやSNSからLINEへ。いきなり応募するのは不安な候補者にも、気軽に会社を知ってもらう入口をつくります。', point:'希望職種・経験・関心をアンケートで把握', message:'友だち追加ありがとうございます。みどり製作所の採用担当です！\nまずは、気になっているお仕事を教えてください。', choices:['製造スタッフ','営業・事務','まずは会社を知りたい'], tag:'登録直後'},
   {label:'企業理解', title:'知りたい情報が届く。\n働くイメージが湧く。', body:'企業紹介、職場の様子、先輩インタビューを順番に配信。希望職種や関心に合わせて内容を分け、応募する前の疑問を解消します。', point:'5〜7日間のステップ配信で企業理解を促進', message:'今日は、製造チームの「ある一日」をご紹介します。\n入社後にどんな仕事をするのか、先輩の声と一緒に見てみませんか？', choices:['先輩インタビューを見る','働く環境・福利厚生'], tag:'登録から数日後'},
@@ -40,7 +40,7 @@ const jsonLd = [
   <div class="ltori" id="ltori-top">
     <a class="lt-skip" href="#ltori-content">本文へ移動</a>
     <header class="lt-header">
-      <a class="lt-logo" href={service.path} aria-label="Lトリ トップ"><span><b>L</b>トリ<span class="lt-logo-dot">.</span></span><small>採用特化LINE支援 <span>by LAYR</span></small></a>
+      <a class="lt-logo" href={service.path} aria-label={`${service.name} トップ`}><span>{service.name}<span class="lt-logo-dot">.</span></span><small>採用特化LINE支援 <span>by LAYR</span></small></a>
       <nav class="lt-desktop-nav" aria-label="ページ内ナビゲーション">{nav.map(([label,href])=><a href={href}>{label}</a>)}</nav>
       <a class="lt-button lt-header-cta" href={consult} data-lt-cta="header">無料相談<span class="lt-button-arrow" aria-hidden="true">↗</span></a>
       <details class="lt-mobile-menu"><summary aria-label="ナビゲーションメニュー"><span></span><span></span><span class="lt-menu-label">MENU</span></summary><nav aria-label="モバイルナビゲーション">{nav.map(([label,href])=><a href={href}>{label}<span aria-hidden="true">↗</span></a>)}<a href={consult} data-lt-cta="menu">無料相談はこちら</a></nav></details>
@@ -52,7 +52,7 @@ const jsonLd = [
             <p class="lt-hero-kicker"><span>採用 × LINE</span> 人と企業の、いい出会いを。</p>
             <h1 id="lt-hero-title"><span>LINE</span>でつながる。<br /><mark>採用が、変わる。</mark></h1>
             <p class="lt-hero-lead">応募から入社まで、<br class="lt-mobile-break" />採用活動に伴走。</p>
-            <p class="lt-hero-description">候補者との出会いを、一度きりで終わらせない。<br />構築・配信・改善まで、採用LINEはLトリに。</p>
+            <p class="lt-hero-description">候補者との出会いを、一度きりで終わらせない。<br />構築・配信・改善まで、採用LINEは{service.name}に。</p>
             <div class="lt-hero-actions">
               <a class="lt-button lt-button-large" href={consult} data-lt-cta="hero"><span><small>採用のお悩み、お聞かせください</small>無料相談をする</span><span class="lt-button-arrow" aria-hidden="true">↗</span></a>
               <a class="lt-doc-link" href={service.source} target="_blank" rel="noopener" data-lt-doc>まずはサービス資料を見る <span aria-hidden="true">↗</span></a>
@@ -76,19 +76,29 @@ const jsonLd = [
 
       <section class="lt-section lt-about" id="about">
         <div class="lt-wrap">
-          <div class="lt-section-heading lt-heading-center"><p class="lt-eyebrow">About Lトリ</p><h2>採用は、<mark>出会ってから</mark>が大切。</h2><p>求人を出して、応募を待つ。その間にもできることがある。<br />Lトリは、候補者と企業をLINEでつなぐ採用支援サービスです。</p></div>
-          <div class="lt-about-conversation">
-            <div class="lt-worry"><span>採用担当者のお悩み</span><p>応募は来るのに、<br /><b>面接につながらない…</b></p></div>
-            <div class="lt-about-illustration"><img src="/service/ltori/isometric-strategy.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="採用担当者と支援チームが、一緒に採用戦略を考えるイラスト" /></div>
-            <div class="lt-answer-bubble"><span>Lトリと一緒に</span><p>会社の魅力を届け、<br /><b>会いたくなる接点を。</b></p></div>
+          <div class="lt-section-heading lt-heading-center">
+            <p class="lt-eyebrow">About {service.name}</p>
+            <h2><span>広告費を、<mark>掛け捨てで終わらせない。</mark></span><span>LINEで、採用を<mark>「資産」</mark>に。</span></h2>
+            <p>求人広告に費用をかけても、掲載が終われば候補者との接点は途切れがち。<br />{service.name}は、その出会いをLINEの「友だち」として残し、次の採用につなげます。</p>
           </div>
-          <p class="lt-about-bottom">候補者とのコミュニケーションを、<br class="lt-mobile-break" /><strong>採用の力に変えていきます。</strong></p>
+          <div class="lt-asset-layout">
+            <div class="lt-asset-visual">
+              <p class="lt-asset-bubble">採用のたびに、<br /><strong>つながりが貯まる。</strong></p>
+              <img src="/service/ltori/isometric-strategy.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="採用担当者と支援チームが、候補者とのつながりを育てる戦略を考えるアイソメトリックイラスト" />
+            </div>
+            <ol class="lt-asset-points">
+              <li><span class="lt-asset-number" aria-hidden="true">01</span><div><h3>募集が終わっても、接点が続く</h3><p>今すぐ応募しない人とも、LINEの「友だち」としてつながる。企業の魅力を届けながら、長期的な接点を育てられます。</p></div></li>
+              <li><span class="lt-asset-number" aria-hidden="true">02</span><div><h3>追加の広告出稿に頼らず、<br class="lt-desktop-break" />再アプローチ</h3><p>新しい募集を始めるときは、登録済みの候補者へLINEでご案内。毎回ゼロから集め直す採用を変えていきます。</p></div></li>
+              <li><span class="lt-asset-number" aria-hidden="true">03</span><div><h3>自社だけの採用リストが育つ</h3><p>採用活動を重ねるほど、候補者とのつながりが蓄積。将来の募集にも活用できる、自社の採用基盤になります。</p></div></li>
+            </ol>
+          </div>
+          <p class="lt-about-bottom">一度の募集で終わらない。<br class="lt-mobile-break" /><strong>出会いを、次の採用につながる資産へ。</strong></p>
         </div>
       </section>
 
       <section class="lt-section lt-practical" id="needs">
         <div class="lt-wrap">
-          <div class="lt-section-heading lt-practical-heading"><p class="lt-eyebrow">Practical</p><h2>こんな採用のニーズ、<br /><mark>Lトリで支援できます！</mark></h2><p>新卒・中途採用に。建設・製造・運送など、<br />業種や採用フェーズに合わせてLINEを活用します。</p><img class="lt-section-art" src="/service/ltori/isometric-support.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="" /></div>
+          <div class="lt-section-heading lt-practical-heading"><p class="lt-eyebrow">Practical</p><h2>こんな採用のニーズ、<br /><mark>{service.name}で支援できます！</mark></h2><p>新卒・中途採用に。建設・製造・運送など、<br />業種や採用フェーズに合わせてLINEを活用します。</p><img class="lt-section-art" src="/service/ltori/isometric-support.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="" /></div>
           <div class="lt-needs-grid">
             {[
               {n:'01',title:'候補者との接点づくり',en:'Connect',bubble:['応募の前から','つながりたい！'],image:'hero',items:['採用サイト・広告・SNSからLINE登録へ','希望職種や経験をアンケートで把握','すぐに応募しない人とも接点を継続']},
@@ -102,13 +112,12 @@ const jsonLd = [
 
       <section class="lt-section lt-features" id="feature">
         <div class="lt-wrap">
-          <div class="lt-section-heading"><p class="lt-eyebrow">Feature</p><h2>Lトリが大切にする<mark><b>4</b>つのポイント</mark></h2><p>採用LINEを、つくるだけで終わらせない。<br />候補者の気持ちと、採用現場の動きに合わせて設計します。</p></div>
+          <div class="lt-section-heading"><p class="lt-eyebrow">Feature</p><h2>{service.name}が大切にする<mark><b>3</b>つのポイント</mark></h2><p>採用LINEを、つくるだけで終わらせない。<br />候補者の気持ちと、採用現場の動きに合わせて設計します。</p></div>
           <div class="lt-feature-list">
             {[
               {image:'strategy',tag:'STRATEGY',title:['採用のゴールから逆算。','必要な導線を、最初に設計。'],body:'募集職種、求める人物像、今の採用課題をヒアリング。どこで出会い、何を伝え、どの行動につなげるか。採用の流れ全体を整理してから構築します。'},
               {image:'communication',tag:'COMMUNICATION',title:['候補者に合わせて届ける。','「ここで働く」を、具体的に。'],body:'企業紹介や先輩インタビューを、相手の関心に合わせて配信。求人票だけでは伝わりにくい職場の魅力や、応募前に知りたい情報を届けます。'},
-              {image:'support',tag:'AUTOMATION',title:['日程案内も、フォローも。','日々の対応を、軽やかに。'],body:'応募受付、予約案内、リマインド、よくある質問への応答を整理。自動化することと人が対応することを分け、採用担当者の業務を支えます。'},
-              {image:'hero',tag:'IMPROVEMENT',title:['配信してからがスタート。','反応を見ながら、育てていく。'],body:'登録後の反応や予約につながる動きをレポートで確認。配信内容や導線の改善を続け、貴社の採用活動に合う運用を一緒につくっていきます。'}
+              {image:'support',tag:'AUTOMATION',title:['日程案内も、フォローも。','日々の対応を、軽やかに。'],body:'応募受付、予約案内、リマインド、よくある質問への応答を整理。自動化することと人が対応することを分け、採用担当者の業務を支えます。'}
             ].map((item,i)=><article class="lt-feature-row"><div class="lt-feature-art"><img src={`/service/ltori/isometric-${item.image}.webp`} width="1536" height="1024" loading="lazy" decoding="async" alt="" /><span>{item.tag}</span></div><div class="lt-feature-panel"><span class="lt-number-bubble">{String(i+1).padStart(2,'0')}</span><h3><mark>{item.title[0]}</mark><br />{item.title[1]}</h3><p>{item.body}</p></div></article>)}
           </div>
         </div>
@@ -139,7 +148,7 @@ const jsonLd = [
       <section class="lt-section lt-pricing" id="plan"><div class="lt-wrap">
         <div class="lt-section-heading lt-heading-center"><p class="lt-eyebrow">Plan</p><h2>採用の体制に合わせて、<br /><mark><b>3</b>つの運用プラン。</mark></h2><p>初期構築で基盤を整え、月々の運用で育てていきます。</p></div>
         <div class="lt-initial"><div><span class="lt-eyebrow">INITIAL SETUP</span><h3>採用LINEの初期設計・構築</h3></div><p class="lt-price"><strong>{service.initialPrice/10000}</strong>万円<small>（税別）</small></p><ul>{service.initialIncludes.map(x=><li>{x}</li>)}</ul></div>
-        <div class="lt-plan-grid">{service.plans.map((plan,i)=><article class:list={['lt-plan',{'is-recommended':plan.recommended}]}><p class="lt-plan-ribbon">{plan.recommended?'定期配信と改善をセットで':'月額運用サポート'}</p><div class="lt-plan-body"><p class="lt-eyebrow">{plan.en}</p><h3>{plan.name}プラン</h3><p class="lt-price"><span>月額</span><strong>{plan.price/10000}</strong>万円<small>（税別）</small></p><p class="lt-plan-description">{plan.description}</p><dl><div><dt>メッセージ配信</dt><dd>{plan.messages}</dd></div><div><dt>Zoomコンサル</dt><dd>{plan.consultation}</dd></div><div><dt>軽微な修正・追加</dt><dd>対応</dd></div><div><dt>配信内容の制作</dt><dd>対応</dd></div><div><dt>分析レポート</dt><dd>対応</dd></div></dl><a class:list={['lt-button',{'lt-button-outline':!plan.recommended}]} href={`${consult}&plan=${encodeURIComponent(plan.name)}`} data-lt-cta={`plan-${i}`}>このプランを相談する<span class="lt-button-arrow" aria-hidden="true">↗</span></a></div></article>)}</div>
+        <div class="lt-plan-grid">{service.plans.map((plan,i)=><article id={`plan-${plan.en.toLowerCase()}`} class:list={['lt-plan',{'is-recommended':plan.recommended}]}><p class="lt-plan-ribbon">{plan.recommended?<span class="lt-recommend-badge"><span aria-hidden="true">★</span> おすすめ</span>:'月額運用サポート'}</p><div class="lt-plan-body"><p class="lt-eyebrow">{plan.en}</p><h3>{plan.name}プラン</h3><p class="lt-price"><span>月額</span><strong>{plan.price/10000}</strong>万円<small>（税別）</small></p><p class="lt-plan-description">{plan.description}</p><dl><div><dt>メッセージ配信</dt><dd>{plan.messages}</dd></div><div><dt>Zoomコンサル</dt><dd>{plan.consultation}</dd></div><div><dt>軽微な修正・追加</dt><dd>対応</dd></div><div><dt>配信内容の制作</dt><dd>対応</dd></div><div><dt>分析レポート</dt><dd>対応</dd></div></dl><a class:list={['lt-button',{'lt-button-outline':!plan.recommended}]} href={`${consult}&plan=${encodeURIComponent(plan.name)}`} data-lt-cta={`plan-${i}`}>このプランを相談する<span class="lt-button-arrow" aria-hidden="true">↗</span></a></div></article>)}</div>
         <div class="lt-pricing-notes"><p>表示価格はすべて税別です。LINE公式アカウント・Lステップの利用料は別途発生します。</p><p>配信内容の制作には、企画・ライティング・画像制作を含みます。大幅な修正や追加作業、カスタマイズ・オプションは別途お見積もりです。</p></div>
       </div></section>
 

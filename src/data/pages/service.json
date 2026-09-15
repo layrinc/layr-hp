@@ -1,7 +1,7 @@
 {
   "title": "サービス一覧（LINE構築・運用／採用LINE／広告運用／AI導入支援）",
   "h1": "サービス",
-  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング、広告運用代行、法人向けAI導入・業務実装支援「アッシュクAI by LAYR」。 採用特化LINE構築・運用支援「Lトリ」。",
+  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング、広告運用代行、法人向けAI導入・業務実装支援「アッシュクAI by LAYR」。 採用特化LINE構築・運用支援「エルトリ」。",
   "blocks": [
     {
       "id": "sv-head",
@@ -119,7 +119,7 @@
       "type": "capBox",
       "p": {
         "color": "green",
-        "title": "採用特化LINE支援「Lトリ」",
+        "title": "採用特化LINE支援「エルトリ」",
         "body": "候補者との接点づくりから、応募・面接・入社前フォローまで。採用に特化したLINEの構築・運用・改善で、中小企業の採用活動を支援します。"
       }
     },
@@ -130,7 +130,7 @@
         "align": "center",
         "items": [
           {
-            "label": "Lトリのサービスを見る",
+            "label": "エルトリのサービスを見る",
             "url": "/service/ltori/",
             "style": "green"
           }
