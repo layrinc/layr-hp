@@ -27,3 +27,46 @@
   .lt-area-breadcrumb { font-size: 12px; }
   .lt-area-directory .lt-header-cta { display: inline-flex; }
 }
+/* City-specific sections share the existing service LP palette and typography. */
+.lt-local-prose p + p { margin-top: 24px; }
+.lt-local-prose { max-width: 1040px; }
+.lt-local-steps { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; margin-top: 40px !important; }
+.lt-local-steps li { border-top: 1px solid var(--lt-green-ink); padding-top: 24px; }
+.lt-local-steps .lt-eyebrow { display: block; font-size: 14px; }
+.lt-local-steps h3 { font-size: 24px; }
+.lt-local-steps h3 + p { margin-top: 16px; }
+.lt-local-industries { background: var(--lt-mint); }
+.lt-local-industry-nav { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-bottom: 40px; }
+.ltori .lt-local-industry-nav a { display: inline-flex; align-items: center; min-height: 44px; color: var(--lt-green-ink); text-decoration: underline; text-underline-offset: 4px; }
+.lt-local-industry-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+.lt-local-industry { background: var(--lt-white); border: 1px solid var(--lt-green-ink); border-radius: var(--radius); padding: 32px; scroll-margin-top: 112px; }
+.lt-local-roles { font-size: 14px; margin-top: 8px !important; }
+.lt-local-question { font-weight: 700; margin: 24px 0 16px !important; }
+.lt-local-menu-label { font-size: 14px; font-weight: 700; margin-top: 24px !important; }
+.lt-local-menu { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 8px !important; color: var(--lt-green-ink); font-size: 14px; }
+.lt-local-menu li { border-bottom: 1px solid var(--lt-green-ink); padding-bottom: 4px; }
+.lt-local-action { margin-top: 32px !important; }
+.lt-local-town-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 24px; margin-top: 24px !important; padding: 32px !important; background: var(--lt-white); }
+.lt-local-town-list li { overflow-wrap: anywhere; }
+.lt-local-coverage-note { margin-top: 24px !important; }
+.ltori .lt-local-source { color: var(--lt-green-ink); text-decoration: underline; text-underline-offset: 4px; }
+.lt-local-related { margin-top: 48px; }
+.lt-local-provider { background: var(--lt-mint); }
+.lt-local-provider-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center; }
+.lt-local-provider .lt-local-prose { margin-top: 32px; }
+.lt-local-provider .lt-button { max-width: 100%; }
+@media (max-width: 900px) {
+  .lt-local-steps { grid-template-columns: 1fr; }
+  .lt-local-town-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .lt-local-provider-grid { grid-template-columns: 1fr; }
+  .lt-local-provider-grid > img { width: min(560px, 100%); margin-inline: auto; }
+}
+@media (max-width: 640px) {
+  .lt-local-industry-grid { grid-template-columns: 1fr; }
+  .lt-local-industry { padding: 24px; }
+  .lt-local-town-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; padding: 24px !important; }
+}
+
+@media (max-width: 420px) {
+  .lt-local-town-list { grid-template-columns: 1fr; }
+}

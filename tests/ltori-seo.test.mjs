@@ -4,6 +4,7 @@ import {readFileSync, existsSync} from 'node:fs';
 import {regionalAreas, municipalityAreas, prefectureAreas, createMunicipalityAreas, areaPath, areaKey, consultationHref, sourceLabels} from '../src/lib/ltori-seo.mjs';
 import master from '../src/data/ltori-area-routes.json' with {type:'json'};
 import service from '../src/data/service-ltori.json' with {type:'json'};
+import {localCoverageFor, relatedAreasFor, industries, townSource} from '../src/lib/ltori-local-content.mjs';
 const root = new URL('../dist/', import.meta.url);
 const readPage = path => readFileSync(new URL(path.slice(1) + 'index.html', root), 'utf8');
 const decode = value => value.replaceAll('&amp;', '&');
@@ -48,7 +49,7 @@ test('every regional LP has its own canonical, metadata, h1, schema, sitemap and
     const svc = data.find(d => d['@type'] === 'Service');
     assert.equal(svc.url, 'https://layr.co.jp' + path); assert.equal(svc.areaServed.name, area.fullName);
     const faq = data.find(d => d['@type'] === 'FAQPage');
-    assert.equal(faq.mainEntity.length, service.faqs.length + 1);
+    assert.equal(faq.mainEntity.length, service.faqs.length + 3);
     for (const q of faq.mainEntity) { assert.ok(html.includes(q.name)); assert.ok(html.includes(q.acceptedAnswer.text)); }
     const crumbs = data.find(d => d['@type'] === 'BreadcrumbList').itemListElement;
     assert.equal(crumbs.at(-1).item, 'https://layr.co.jp' + path);
@@ -88,4 +89,39 @@ test('the contact form recognizes every route without accepting arbitrary source
   }
   assert.equal(sourceLabels['area/unknown/untrusted'], undefined);
   assert.ok(contact.includes('Object.prototype.hasOwnProperty.call'));
+});
+
+
+test('all regional LPs contain local hiring, industry examples, named coverage and a provider introduction', () => {
+  for (const area of regionalAreas) {
+    const path = areaPath(area), html = readPage(path), coverage = localCoverageFor(area);
+    for (const id of ['local-guide', 'local-industries', 'area', 'local-provider']) {
+      assert.ok(html.includes(`id="${id}"`), path + ' missing local section ' + id);
+    }
+    for (const industry of industries) {
+      assert.ok(html.includes(`id="local-industry-${industry.id}"`));
+      assert.ok(html.includes(`href="#local-industry-${industry.id}"`));
+      for (const label of industry.examples) assert.ok(html.includes(label));
+    }
+    if (coverage.kind === 'towns') {
+      assert.ok(coverage.labels.length > 0 && coverage.labels.length <= 16);
+      for (const place of coverage.labels) assert.ok(html.includes(`<li>${place}</li>`), path + ' missing named town ' + place);
+      assert.ok(html.includes(townSource.sourceUrl), path + ' source');
+    }
+    if (coverage.kind === 'wards') {
+      for (const child of coverage.children) assert.ok(html.includes(`href="${areaPath(child)}"`));
+    }
+    for (const related of relatedAreasFor(area)) {
+      assert.equal(related.prefectureSlug, area.prefectureSlug);
+      assert.notEqual(related.code, area.code);
+      assert.ok(html.includes(`href="${areaPath(related)}"`));
+    }
+    assert.ok(!html.includes('準備中'), path + ' no empty reference placeholders');
+  }
+  const base = readPage('/service/ltori/');
+  assert.ok(!base.includes('id="local-guide"'), 'generic service LP retains its original content');
+  const nabari = readPage('/service/ltori/area/mie/nabari/');
+  const hashimoto = readPage('/service/ltori/area/wakayama/hashimoto/');
+  assert.ok(nabari.includes('桔梗が丘１番町') && nabari.includes('蔵持町原出'));
+  assert.ok(hashimoto.includes('東家') && hashimoto.includes('御幸辻'));
 });

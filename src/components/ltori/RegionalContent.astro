@@ -1,0 +1,68 @@
+---
+import service from '../../data/service-ltori.json';
+import company from '../../data/company.json';
+import {industries, localPlacesFor} from '../../lib/ltori-local-content.mjs';
+import {areaKey, consultationHref} from '../../lib/ltori-seo.mjs';
+const {area, section} = Astro.props;
+const places = localPlacesFor(area);
+const consult = consultationHref(areaKey(area));
+---
+{section === 'guide' && <section class="lt-section lt-local-guide" id="local-guide" aria-labelledby="local-guide-title">
+  <div class="lt-wrap">
+    <div class="lt-section-heading">
+      <p class="lt-eyebrow">Local Recruitment</p>
+      <h2 id="local-guide-title">{area.fullName}で<br /><mark>採用LINEを活用するには？</mark></h2>
+      <p>応募前の「知りたい」に応え、見学・面談につながる接点を。</p>
+    </div>
+    <div class="lt-local-prose">
+      <p>{area.fullName}で採用LINEを導入するときは、候補者が「どこで、どのように働くのか」を判断できる情報から整えます。{places.length > 0 ? <>{places.join('・')}など、募集する勤務地が複数に分かれている場合は、勤務地ごとに仕事内容・勤務時間・応募先を整理することが大切です。</> : <>勤務地の所在地や勤務時間を明記し、募集する仕事と応募先を分かりやすく案内します。</>}</p>
+      <p>求人媒体や採用サイトで会社を知っても、すぐに応募を決められる方ばかりではありません。LINE公式アカウントを使い、職場の様子、スタッフの声、教育体制などを順番に届けることで、応募前の疑問を相談できる接点をつくります。募集が終わった後も、配信への同意を得た候補者とのつながりを次の採用に活用できます。</p>
+      <p>{service.name}では、{area.name}で働く人を採用したい企業さまに合わせて、LINEの構築・配信・運用改善を支援します。地域内の候補者にも、地域外から勤務を検討する候補者にも、必要な情報が届く導線を一緒に設計します。</p>
+    </div>
+    <ol class="lt-local-steps">
+      <li><span class="lt-eyebrow">01 / 勤務地・職種</span><h3>応募先を迷わせない</h3><p>事業所や店舗の所在地、募集職種、勤務時間を整理。希望勤務地や働き方に合わせて情報を届けます。</p></li>
+      <li><span class="lt-eyebrow">02 / 応募前の情報</span><h3>働くイメージを伝える</h3><p>職場の写真、仕事の流れ、研修や福利厚生を配信。求人票だけでは伝えきれない情報を補います。</p></li>
+      <li><span class="lt-eyebrow">03 / 見学・面談</span><h3>次の行動につなげる</h3><p>面談の予約案内、集合場所、持ち物、事前リマインドを整え、候補者と採用担当者のやり取りを支えます。</p></li>
+    </ol>
+    <p class="lt-note">この地域で採用LINEを使う場合の設計例です。募集条件や利用するツールに合わせて調整します。</p>
+  </div>
+</section>}
+
+{section === 'industries' && <section class="lt-section lt-local-industries" id="local-industries" aria-labelledby="local-industries-title">
+  <div class="lt-wrap">
+    <div class="lt-section-heading">
+      <p class="lt-eyebrow">Industries</p>
+      <h2 id="local-industries-title">{area.name}のさまざまな業種に。<br /><mark>採用LINEの活用例</mark></h2>
+      <p>募集する仕事や採用課題に合わせて、配信内容と応募までの流れを設計します。</p>
+    </div>
+    <nav class="lt-local-industry-nav" aria-label="業種別の採用LINE活用例へ">{industries.flatMap(industry=>industry.examples.map(example=><a href={`#local-industry-${industry.id}`}>{example}</a>))}</nav>
+    <div class="lt-local-industry-grid">
+      {industries.map(industry=><article class="lt-local-industry" id={`local-industry-${industry.id}`}>
+        <h3>{industry.name}</h3>
+        <p class="lt-local-roles">{industry.roles}</p>
+        <p class="lt-local-question">{industry.question}</p>
+        <p>{industry.answer}</p>
+        <p class="lt-local-menu-label">リッチメニューの構成例</p>
+        <ul class="lt-local-menu">{industry.menu.map(item=><li>{item}</li>)}</ul>
+      </article>)}
+    </div>
+    <p class="lt-note">業種別の活用提案であり、掲載業種での導入実績を示すものではありません。具体的な機能・対応範囲はご相談時に確認します。</p>
+    <p class="lt-local-action"><a class="lt-button" href={consult} data-lt-cta="local-industries">自社の業種での活用を相談する<span class="lt-button-arrow" aria-hidden="true">↗</span></a></p>
+  </div>
+</section>}
+
+{section === 'provider' && <section class="lt-section lt-local-provider" id="local-provider" aria-labelledby="local-provider-title">
+  <div class="lt-wrap lt-local-provider-grid">
+    <div>
+      <p class="lt-eyebrow">{service.name} by LAYR</p>
+      <h2 id="local-provider-title">{area.fullName}の<br />採用LINE構築・運用は<br /><mark>{service.name}へ。</mark></h2>
+      <div class="lt-local-prose">
+        <p>{service.name}は、{company.name}が運営する{service.descriptor}サービスです。{area.name}で人材採用に取り組む企業さまへ、LINE公式アカウント・Lステップを使った候補者とのコミュニケーションを設計します。</p>
+        <p>初期構築から、配信する文章・画像の制作、運用改善まで。応募を急がせるだけでなく、企業への理解を深めながら、面談・選考・入社前フォローへつながる採用の仕組みを整えます。</p>
+        <p>ご相談・打ち合わせはオンラインで対応します。募集職種、勤務地、現在の採用方法をお聞かせください。</p>
+      </div>
+      <p class="lt-local-action"><a class="lt-button" href={consult} data-lt-cta="local-provider">採用LINEについて無料相談<span class="lt-button-arrow" aria-hidden="true">↗</span></a></p>
+    </div>
+    <img src="/service/ltori/isometric-strategy.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="採用担当者と支援チームが、LINEを使った採用の進め方を相談するイラスト" />
+  </div>
+</section>}
