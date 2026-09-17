@@ -25,6 +25,9 @@ jobs:
       - name: Build（全ページが生成されること）
         run: npm run build
 
+      - name: 採用LINE地域SEO（未公開ページ・URL・内部リンクを検証）
+        run: node --test tests/ltori-seo.test.mjs
+
       - name: Design gate regression（基準値から1項目でも悪化していれば失敗）
         run: bash scripts/gate-regression.sh
 

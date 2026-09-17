@@ -1,0 +1,9 @@
+---
+import GuidePage from '../../../../components/ltori/GuidePage.astro';
+import { publishedGuides } from '../../../../lib/ltori-seo.mjs';
+export function getStaticPaths() {
+  return publishedGuides.filter(guide=>guide.kind==='area').map(guide=>({params:{slug:guide.slug},props:{guide}}));
+}
+const {guide}=Astro.props;
+---
+<GuidePage guide={guide} />

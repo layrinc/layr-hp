@@ -1,0 +1,17 @@
+---
+import Layout from '../../../../layouts/LtoriGuide.astro';
+import Pricing from '../../../../components/ltori/GuidePricing.astro';
+import service from '../../../../data/service-ltori.json';
+import { consultationHref, prefectureGroups, publishedGuides, guidePath, guideName } from '../../../../lib/ltori-seo.mjs';
+const title=`採用LINE構築・運用支援の全国対応エリア｜${service.name}｜LAYR`;
+const description='全国47都道府県の企業に、採用特化LINEの構築・運用支援をオンラインで提供。地域・業種に合わせた活用案、料金、相談から運用までの進め方をご案内します。';
+const breadcrumbs=[{name:'ホーム',path:'/'},{name:service.name,path:service.path},{name:'全国対応・活用案',path:'/service/ltori/area/'}];
+const consult=consultationHref('area');
+---
+<Layout title={title} description={description} source="area" breadcrumbs={breadcrumbs}>
+  <section class="ltg-hero ltg-wrap"><div><p class="ltg-label">全国オンライン対応</p><h1>地域の採用に、<br /><span>続くつながり</span>を。</h1><p class="ltg-lead">採用LINEの構築・運用を、全国の企業へ。</p><p>候補者との出会いを、一度きりで終わらせない。<br />求人媒体や採用サイトで生まれた関心を、企業理解、見学、応募へ。地域と仕事の特徴に合わせて設計します。</p><div class="ltg-actions"><a class="ltg-button" href={consult} data-ltg-cta="hero">採用LINEを相談する <span aria-hidden="true">↗</span></a><a href="#areas">対応エリアを見る ↓</a></div></div><aside class="ltg-brief"><p class="ltg-label">採用の入口と、その先を整理</p><ol><li><span aria-hidden="true">01</span><p>採用サイト・求人媒体・説明会で出会う</p></li><li><span aria-hidden="true">02</span><p>LINEで職場の情報を届け、質問を受け取る</p></li><li><span aria-hidden="true">03</span><p>見学・応募・面談へつなぐ</p></li></ol><p class="ltg-small">LINEへの登録を案内できる接点と、登録後の配信内容を分けて設計します。</p></aside></section>
+  <section class="ltg-section ltg-tint" id="areas"><div class="ltg-wrap"><p class="ltg-label">対応エリア</p><h2>47都道府県から、<br />オンラインでご相談いただけます。</h2><p>全国の市区町村の企業さまを対象に、打ち合わせ・構築確認・運用支援をオンラインで進めます。<br />現地での撮影・訪問が必要な場合は、対応可否と費用を個別にご相談ください。</p><div class="ltg-areas">{prefectureGroups.map(group=><div class="ltg-region"><h3>{group.name}</h3><ul>{group.prefectures.map(([slug,name])=>{const page=publishedGuides.find(g=>g.kind==='area'&&g.slug===slug);return <li>{page?<a href={guidePath(page)}>{name} <span aria-hidden="true">↗</span></a>:<span>{name}</span>}</li>})}</ul></div>)}</div><p class="ltg-small">リンクのある地域では、地域に合わせた採用LINEの活用案をご覧いただけます。</p></div></section>
+  <section class="ltg-section"><div class="ltg-wrap"><p class="ltg-label">地域別の活用案</p><h2>地域の情報を、<br />採用のコミュニケーションへ。</h2><ul class="ltg-guide-list">{publishedGuides.filter(g=>g.kind==='area').map(g=><li><a href={guidePath(g)}><span class="ltg-label">{guideName(g)}</span><h3>{g.headline}</h3><p>{g.lead}</p><span class="ltg-link-end">活用案を見る ↗</span></a></li>)}</ul></div></section>
+  <section class="ltg-section ltg-tint" id="industries"><div class="ltg-wrap"><p class="ltg-label">業種別の活用案</p><h2>仕事の特徴に合わせて、<br />届ける内容を変える。</h2><ul class="ltg-link-list">{publishedGuides.filter(g=>g.kind==='industry').map(g=><li><a href={guidePath(g)}><span>{g.label}<small>{g.headline}</small></span><span aria-hidden="true">↗</span></a></li>)}</ul></div></section>
+  <Pricing />
+</Layout>

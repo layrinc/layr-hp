@@ -7,6 +7,7 @@
 import Base from '../layouts/Base.astro';
 import settings from '../data/settings.json';
 import ltoriService from '../data/service-ltori.json';
+import { sourceLabels } from '../lib/ltori-seo.mjs';
 
 const title = 'LINE運用のご相談・お問い合わせ｜株式会社LAYR';
 const description = 'LINE公式アカウントの構築代行・運用代行に関するご相談はこちら。LINEトークまたはメールフォームから、通常1営業日以内にご返信します。無料相談はオンライン30分、この段階での売り込みは行いません。';
@@ -88,12 +89,21 @@ const breadcrumbJsonLd = {
     </div>
   </section>
 
-  <script is:inline define:vars={{ ctEmail: settings.email, ltoriName: ltoriService.name }}>
+  <script is:inline define:vars={{ ctEmail: settings.email, ltoriName: ltoriService.name, ltoriSourceLabels: sourceLabels }}>
     (function () {
       const form = document.getElementById('ctForm');
       if (!form || form.dataset.bound) return;
       form.dataset.bound = '1';
       const query = new URLSearchParams(window.location.search);
+      const requestedSource = query.get('source') || '';
+      const pageSource = query.get('service') === 'ltori' && Object.prototype.hasOwnProperty.call(ltoriSourceLabels, requestedSource) ? requestedSource : '';
+      if (pageSource) {
+        const sourceField = document.createElement('input');
+        sourceField.type = 'hidden';
+        sourceField.name = 'ご覧になったページ';
+        sourceField.value = ltoriSourceLabels[pageSource];
+        form.append(sourceField);
+      }
       if (query.get('service') === 'ltori') {
         form.querySelector('[name="ご相談内容"]').value = ltoriName + '（採用LINE）について';
         form.querySelector('[name="_subject"]').value = '【' + ltoriName + '】採用LINEのご相談';
@@ -123,13 +133,13 @@ const breadcrumbJsonLd = {
           clearTimeout(timer);
           if (!res.ok) throw new Error('http ' + res.status);
           form.querySelectorAll('input:not([type="hidden"]), textarea').forEach((el) => { el.value = ''; });
-          if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'contact_form', service: query.get('service') === 'ltori' ? 'ltori' : 'general' });
+          if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'contact_form', service: query.get('service') === 'ltori' ? 'ltori' : 'general', ...(pageSource ? { page_source: pageSource } : {}) });
           ok.hidden = false; fb.hidden = true;
           ok.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         } catch (_) {
           clearTimeout(timer);
           const g = (n) => String(data.get(n) || '');
-          const body = 'お名前: ' + g('お名前') + '\n会社名: ' + g('会社名') + '\nメール: ' + g('メールアドレス') + '\nご相談内容: ' + g('ご相談内容') + '\n\n' + g('お問い合わせ内容');
+          const body = 'お名前: ' + g('お名前') + '\n会社名: ' + g('会社名') + '\nメール: ' + g('メールアドレス') + '\nご相談内容: ' + g('ご相談内容') + (pageSource ? '\nご覧になったページ: ' + ltoriSourceLabels[pageSource] : '') + '\n\n' + g('お問い合わせ内容');
           ml.href = 'mailto:' + ctEmail + '?subject=' + encodeURIComponent('【お問い合わせ】LAYRサイトより') + '&body=' + encodeURIComponent(body);
           fb.hidden = false;
           fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
