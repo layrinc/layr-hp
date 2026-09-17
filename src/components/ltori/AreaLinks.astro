@@ -1,0 +1,20 @@
+---
+import { areaIndexPath, areaPath, municipalitiesFor, parentPrefecture } from '../../lib/ltori-seo.mjs';
+const { area } = Astro.props;
+const parent = parentPrefecture(area);
+const children = area.kind === 'prefecture' ? municipalitiesFor(area.slug) : [];
+---
+<section class="lt-section lt-area-links" id="area">
+  <div class="lt-wrap">
+    <div class="lt-section-heading">
+      <p class="lt-eyebrow">Service Area</p>
+      <h2>{area.fullName}の<br /><mark>採用LINE構築・運用支援</mark></h2>
+      <p>{area.fullName}で採用を行う企業さまへ。応募前の情報提供から、面談予約、内定後のフォローまで、オンラインで構築・運用を支援します。</p>
+    </div>
+    {children.length > 0 && <nav aria-label={`${area.name}の市区町村別ページ`}><ul class="lt-area-list">{children.map(city => <li><a href={areaPath(city)}>{city.name}</a></li>)}</ul></nav>}
+    <nav class="lt-area-back" aria-label="対応地域の一覧">
+      {area.kind === 'municipality' && <a href={areaPath(parent)}>{parent.name}の採用LINE構築・運用支援</a>}
+      <a href={areaIndexPath}>全国の都道府県・市区町村から探す <span aria-hidden="true">↗</span></a>
+    </nav>
+  </div>
+</section>

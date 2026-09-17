@@ -1,9 +1,9 @@
 ---
-import GuidePage from '../../../../components/ltori/GuidePage.astro';
-import { publishedGuides } from '../../../../lib/ltori-seo.mjs';
+import ServiceLanding from '../../../../components/ltori/ServiceLanding.astro';
+import { regionalAreas } from '../../../../lib/ltori-seo.mjs';
 export function getStaticPaths() {
-  return publishedGuides.filter(guide=>guide.kind==='area').map(guide=>({params:{slug:guide.slug},props:{guide}}));
+  return regionalAreas.map(area => ({ params: { slug: area.slug }, props: { area } }));
 }
-const {guide}=Astro.props;
+const { area } = Astro.props;
 ---
-<GuidePage guide={guide} />
+<ServiceLanding area={area} />

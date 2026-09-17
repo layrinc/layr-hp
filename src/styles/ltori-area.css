@@ -1,0 +1,29 @@
+/* The service LP remains the visual source. Regional pages only add these rules. */
+.lt-area-breadcrumb { padding-top: 20px; padding-bottom: 20px; font-size: 14px; }
+.lt-area-breadcrumb ol { display: flex; flex-wrap: wrap; gap: 8px 12px; padding: 0; margin: 0; list-style: none; }
+.lt-area-breadcrumb li + li::before { content: '›'; margin-right: 12px; }
+.lt-area-breadcrumb a, .lt-area-back a, .lt-area-list a, .lt-area-directory a { color: var(--lt-green-ink); text-underline-offset: 4px; }
+.ltori.lt-regional .lt-hero-kicker { white-space: normal; }
+.ltori.lt-regional .lt-hero h1 { white-space: normal; overflow-wrap: anywhere; }
+.lt-area-name { display: block; font-size: clamp(26px, 3vw, 44px); line-height: 1.7; }
+.ltori .lt-hero h1 .lt-area-service { display: block; color: var(--lt-ink); }
+.lt-area-service > span { display: inline-block; }
+.lt-area-links { background: var(--lt-gray); }
+.lt-area-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 24px; padding: 0; margin: 28px 0 0; list-style: none; }
+.lt-area-list a { display: flex; align-items: center; min-height: 44px; overflow-wrap: anywhere; }
+.lt-area-back { display: flex; flex-wrap: wrap; gap: 20px 32px; margin-top: 32px; }
+.lt-area-directory .lt-area-jump { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 32px; }
+.lt-area-jump a { display: flex; align-items: center; min-height: 44px; }
+.lt-area-directory h1 { font-size: clamp(28px, 4vw, 48px); line-height: 1.6; }
+.lt-area-directory h1 span { display: inline-block; }
+.lt-area-directory-group { margin-top: 64px; scroll-margin-top: 100px; }
+.lt-area-directory-pref { margin-top: 40px; }
+.lt-area-directory-pref h3 { font-size: 24px; }
+.lt-area-directory-pref .lt-area-list { margin-top: 16px; }
+.lt-area-directory-note { margin-top: 64px; }
+@media (max-width: 900px) { .lt-area-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 640px) {
+  .lt-area-list { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 16px; }
+  .lt-area-breadcrumb { font-size: 12px; }
+  .lt-area-directory .lt-header-cta { display: inline-flex; }
+}

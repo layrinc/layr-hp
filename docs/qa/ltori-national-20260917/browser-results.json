@@ -3,83 +3,185 @@
   "browser": "Chromium 153 / Playwright",
   "screenshots": [
     {
-      "name": "hub-1280",
-      "path": "/service/ltori/area/",
+      "name": "nabari-1280",
+      "path": "/service/ltori/area/mie/nabari/",
       "width": 1280,
       "scrollWidth": 1280,
-      "h1Size": "48px",
+      "h1": "三重県名張市の\n採用LINE\n構築・運用支援",
       "fontLoaded": true,
-      "minContrast": 4.542367706445787,
-      "lowContrast": [],
-      "minFont": 14
+      "minFont": 12,
+      "sectionIds": [
+        "about",
+        "needs",
+        "feature",
+        "scenario",
+        "service",
+        "plan",
+        "flow",
+        "faq",
+        "area",
+        "contact"
+      ]
     },
     {
-      "name": "hub-768",
-      "path": "/service/ltori/area/",
+      "name": "nabari-768",
+      "path": "/service/ltori/area/mie/nabari/",
       "width": 768,
       "scrollWidth": 768,
-      "h1Size": "32.256px",
+      "h1": "三重県名張市の\n採用LINE\n構築・運用支援",
       "fontLoaded": true,
-      "minContrast": 4.542367706445787,
-      "lowContrast": [],
-      "minFont": 14
+      "minFont": 12,
+      "sectionIds": [
+        "about",
+        "needs",
+        "feature",
+        "scenario",
+        "service",
+        "plan",
+        "flow",
+        "faq",
+        "area",
+        "contact"
+      ]
     },
     {
-      "name": "hub-390",
+      "name": "nabari-390",
+      "path": "/service/ltori/area/mie/nabari/",
+      "width": 390,
+      "scrollWidth": 390,
+      "h1": "三重県名張市の\n採用LINE\n構築・運用支援",
+      "fontLoaded": true,
+      "minFont": 12,
+      "sectionIds": [
+        "about",
+        "needs",
+        "feature",
+        "scenario",
+        "service",
+        "plan",
+        "flow",
+        "faq",
+        "area",
+        "contact"
+      ]
+    },
+    {
+      "name": "service-template-1280",
+      "path": "/service/ltori/",
+      "width": 1280,
+      "scrollWidth": 1280,
+      "h1": "LINEでつながる。\n採用が、変わる。",
+      "fontLoaded": true,
+      "minFont": 12,
+      "sectionIds": [
+        "about",
+        "needs",
+        "feature",
+        "scenario",
+        "service",
+        "plan",
+        "flow",
+        "faq",
+        "contact"
+      ]
+    },
+    {
+      "name": "hashimoto-1280",
+      "path": "/service/ltori/area/wakayama/hashimoto/",
+      "width": 1280,
+      "scrollWidth": 1280,
+      "h1": "和歌山県橋本市の\n採用LINE\n構築・運用支援",
+      "fontLoaded": true,
+      "minFont": 12,
+      "sectionIds": [
+        "about",
+        "needs",
+        "feature",
+        "scenario",
+        "service",
+        "plan",
+        "flow",
+        "faq",
+        "area",
+        "contact"
+      ]
+    },
+    {
+      "name": "mie-390",
+      "path": "/service/ltori/area/mie/",
+      "width": 390,
+      "scrollWidth": 390,
+      "h1": "三重県の\n採用LINE\n構築・運用支援",
+      "fontLoaded": true,
+      "minFont": 12,
+      "sectionIds": [
+        "about",
+        "needs",
+        "feature",
+        "scenario",
+        "service",
+        "plan",
+        "flow",
+        "faq",
+        "area",
+        "contact"
+      ]
+    },
+    {
+      "name": "directory-390",
       "path": "/service/ltori/area/",
       "width": 390,
       "scrollWidth": 390,
-      "h1Size": "32px",
+      "h1": "採用LINE構築・運用支援\n都道府県・市区町村一覧",
       "fontLoaded": true,
-      "minContrast": 4.542367706445787,
-      "lowContrast": [],
-      "minFont": 14
+      "minFont": 12,
+      "sectionIds": [
+        "region-0",
+        "region-1",
+        "region-2",
+        "region-3",
+        "region-4",
+        "region-5",
+        "region-6"
+      ]
     },
     {
-      "name": "nabari-1440",
-      "path": "/service/ltori/area/mie/nabari/",
-      "width": 1440,
-      "scrollWidth": 1440,
-      "h1Size": "48px",
+      "name": "long-name-390",
+      "path": "/service/ltori/area/hokkaido/sapporo-chuo/",
+      "width": 390,
+      "scrollWidth": 390,
+      "h1": "北海道札幌市中央区の\n採用LINE\n構築・運用支援",
       "fontLoaded": true,
-      "minContrast": 4.542367706445787,
-      "lowContrast": [],
-      "minFont": 14
-    },
-    {
-      "name": "nabari-375",
-      "path": "/service/ltori/area/mie/nabari/",
-      "width": 375,
-      "scrollWidth": 375,
-      "h1Size": "32px",
-      "fontLoaded": true,
-      "minContrast": 4.542367706445787,
-      "lowContrast": [],
-      "minFont": 14
-    },
-    {
-      "name": "manufacturing-1280",
-      "path": "/service/ltori/industry/manufacturing/",
-      "width": 1280,
-      "scrollWidth": 1280,
-      "h1Size": "48px",
-      "fontLoaded": true,
-      "minContrast": 4.542367706445787,
-      "lowContrast": [],
-      "minFont": 14
+      "minFont": 12,
+      "sectionIds": [
+        "about",
+        "needs",
+        "feature",
+        "scenario",
+        "service",
+        "plan",
+        "flow",
+        "faq",
+        "area",
+        "contact"
+      ]
     }
   ],
   "checks": [
-    "no viewport overflow at 1440/1280/768/390/375px",
+    "no horizontal viewport overflow at 1280/768/390px",
+    "all visible text at least 12px",
     "Noto Sans JP rendered",
-    "CTA click is not lead",
+    "original template sections retained",
+    "scenario keyboard navigation",
+    "mobile menu Escape handling",
+    "CTA click has region, is not lead",
     "mock success: lead/source recorded once",
     "mock failure: no lead, email fallback keeps source",
-    "unknown source ignored",
-    "unwritten region returns 404",
-    "content and consultation links visible without JS",
+    "unknown source ignored; additional new region source recognized",
+    "invalid route returns 404",
+    "content and consultation links visible without JavaScript",
     "no page JavaScript errors"
   ],
-  "externalRequests": "Blocked; Google font served from local official font download; FormSubmit mocked, no actual inquiry or analytics sent",
+  "externalRequests": "Blocked; Google font served from local font file; FormSubmit mocked, no actual inquiry or analytics sent",
   "errors": []
 }

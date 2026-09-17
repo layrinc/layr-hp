@@ -1,52 +1,91 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readFileSync,existsSync} from 'node:fs';
-import {publishedGuides,selectPublishedGuides,prefectureGroups,guidePath,consultationHref} from '../src/lib/ltori-seo.mjs';
+import {readFileSync, existsSync} from 'node:fs';
+import {regionalAreas, municipalityAreas, prefectureAreas, createMunicipalityAreas, areaPath, areaKey, consultationHref, sourceLabels} from '../src/lib/ltori-seo.mjs';
+import master from '../src/data/ltori-area-routes.json' with {type:'json'};
+import service from '../src/data/service-ltori.json' with {type:'json'};
+const root = new URL('../dist/', import.meta.url);
+const readPage = path => readFileSync(new URL(path.slice(1) + 'index.html', root), 'utf8');
+const decode = value => value.replaceAll('&amp;', '&');
 
-test('47 unique prefectures and city manuscripts agree with the municipal code master',()=>{
-  const prefectures=prefectureGroups.flatMap(g=>g.prefectures);
-  assert.equal(prefectures.length,47);assert.equal(new Set(prefectures.map(([s])=>s)).size,47);
-  const master=JSON.parse(readFileSync(new URL('../src/data/ltori-municipalities.json',import.meta.url)));
-  assert.equal(new Set(master.areas.map(a=>a.jisCode)).size,master.areas.length);
-  assert.equal(new Set(master.areas.map(a=>a.prefectureCode)).size,47);
-  for(const g of publishedGuides.filter(g=>g.municipalityCode)){
-    const a=master.areas.find(a=>a.jisCode===g.municipalityCode);assert.ok(a);assert.equal(a.name,g.label);assert.equal(a.prefecture,g.prefecture);
-  }
+test('all 47 prefectures and all reviewed municipality records create unique stable routes', () => {
+  assert.equal(prefectureAreas.length, 47);
+  assert.equal(municipalityAreas.length, master.areas.length);
+  assert.ok(municipalityAreas.length > 1800);
+  assert.equal(new Set(regionalAreas.map(areaPath)).size, regionalAreas.length);
+  assert.equal(new Set(municipalityAreas.map(a => a.code)).size, municipalityAreas.length);
+  assert.equal(new Set(municipalityAreas.map(a => a.prefectureSlug)).size, 47);
+  assert.equal(municipalityAreas.find(a => a.code === '24208').slug, 'mie/nabari');
+  assert.equal(municipalityAreas.find(a => a.code === '30203').slug, 'wakayama/hashimoto');
+  assert.ok(municipalityAreas.some(a => a.code === '04216'));
+  assert.ok(!municipalityAreas.some(a => a.code === '04423'));
+  const record = master.areas[0];
+  assert.throws(() => createMunicipalityAreas([record, record]), /Duplicate/);
+  assert.throws(() => createMunicipalityAreas([{...record, prefecture:'unknown'}]), /Unknown/);
+  assert.throws(() => createMunicipalityAreas([{...record, slug:'..\/escape'}]), /Invalid/);
 });
-test('drafts cannot produce routes and incomplete or orphan published records fail closed',()=>{
-  assert.deepEqual(selectPublishedGuides([{status:'draft',slug:'not-a-page'}]),[]);
-  const source=structuredClone(publishedGuides.find(g=>g.slug==='wakayama'));
-  assert.throws(()=>selectPublishedGuides([source,source]),/Duplicate/);
-  assert.throws(()=>selectPublishedGuides([{...source,sources:[]}]),/source/);
-  assert.throws(()=>selectPublishedGuides([{...source,slug:'../escape'}]),/Invalid/);
-  const city=structuredClone(publishedGuides.find(g=>g.slug==='wakayama/hashimoto'));
-  assert.throws(()=>selectPublishedGuides([city]),/parent/);
-});
-test('built pages have self canonical, one h1/main, real internal links and sitemap coverage',()=>{
-  const root=new URL('../dist/',import.meta.url);
-  const sitemap=readFileSync(new URL('sitemap-0.xml',root),'utf8');
-  const paths=['/service/ltori/area/',...publishedGuides.map(guidePath)];
-  const titles=new Set();
-  for(const path of paths){
-    const html=readFileSync(new URL(path.slice(1)+'index.html',root),'utf8');
-    assert.equal((html.match(/<h1(?:\s|>)/g)||[]).length,1,path);
-    assert.equal((html.match(/<main(?:\s|>)/g)||[]).length,1,path);
-    assert.ok(html.includes(`rel="canonical" href="https://layr.co.jp${path}"`),path+' canonical');
-    assert.ok(sitemap.includes(`https://layr.co.jp${path}`),path+' sitemap');
-    assert.ok(!html.includes('content="noindex'),path);
-    const title=html.match(/<title>(.*?)<\/title>/)[1];assert.ok(!titles.has(title));titles.add(title);
-    const jsonLd=html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s);assert.ok(jsonLd);assert.ok(!JSON.stringify(JSON.parse(jsonLd[1])).includes('LocalBusiness'));
-    for(const [,href]of html.matchAll(/href="(\/[^"#?]*)(?:[^" ]*)"/g)){
-      if(href.startsWith('//'))continue;
-      const file=new URL(href.slice(1)+(href.endsWith('/')?'index.html':''),root);
-      assert.ok(existsSync(file),`${path} broken internal link ${href}`);
+
+test('every regional LP has its own canonical, metadata, h1, schema, sitemap and trackable CTAs', () => {
+  const sitemap = readFileSync(new URL('sitemap-0.xml', root), 'utf8');
+  const titles = new Set(), descriptions = new Set(), checkedLinks = new Set();
+  const base = readPage('/service/ltori/');
+  const baseSections = [...base.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(m => m[1]);
+  for (const area of regionalAreas) {
+    const path = areaPath(area), html = readPage(path);
+    assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, path);
+    assert.equal((html.match(/<main(?:\s|>)/g) || []).length, 1, path);
+    assert.ok(html.includes(`rel="canonical" href="https://layr.co.jp${path}"`), path + ' canonical');
+    assert.ok(sitemap.includes(`<loc>https://layr.co.jp${path}</loc>`), path + ' sitemap');
+    assert.ok(!html.includes('content="noindex'), path);
+    const title = html.match(/<title>(.*?)<\/title>/)[1];
+    const description = html.match(/<meta name="description" content="([^"]*)"/)[1];
+    assert.ok(title.includes(area.fullName) && !titles.has(title), path + ' unique title');
+    assert.ok(description.includes(area.fullName) && !descriptions.has(description), path + ' unique description');
+    titles.add(title); descriptions.add(description);
+    assert.ok(html.match(/<h1\b[^>]*>(.*?)<\/h1>/s)[1].includes(area.fullName), path + ' h1');
+    const data = JSON.parse(html.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
+    assert.ok(!JSON.stringify(data).includes('LocalBusiness'), path + ' no fictitious local branch');
+    const svc = data.find(d => d['@type'] === 'Service');
+    assert.equal(svc.url, 'https://layr.co.jp' + path); assert.equal(svc.areaServed.name, area.fullName);
+    const faq = data.find(d => d['@type'] === 'FAQPage');
+    assert.equal(faq.mainEntity.length, service.faqs.length + 1);
+    for (const q of faq.mainEntity) { assert.ok(html.includes(q.name)); assert.ok(html.includes(q.acceptedAnswer.text)); }
+    const crumbs = data.find(d => d['@type'] === 'BreadcrumbList').itemListElement;
+    assert.equal(crumbs.at(-1).item, 'https://layr.co.jp' + path);
+    for (const id of baseSections) assert.ok(html.includes(`id="${id}"`), path + ' existing LP section ' + id);
+    for (const [,tag] of html.matchAll(/(<a\b[^>]*data-lt-cta[^>]*>)/g)) {
+      const url = new URL(decode(tag.match(/href="([^"]*)"/)[1]), 'https://layr.co.jp');
+      assert.equal(url.pathname, '/contact/'); assert.equal(url.searchParams.get('source'), areaKey(area));
+    }
+    for (const [,href] of html.matchAll(/(?:href|src)="(\/[^"#?]*)(?:[^" ]*)"/g)) {
+      if (href.startsWith('//') || checkedLinks.has(href)) continue;
+      checkedLinks.add(href);
+      assert.ok(existsSync(new URL(href.slice(1) + (href.endsWith('/') ? 'index.html' : ''), root)), `${path} broken link ${href}`);
     }
   }
-  assert.ok(!existsSync(new URL('service/ltori/area/tokyo/index.html',root)),'unwritten Tokyo page must not exist');
-  assert.ok(!sitemap.includes('/service/ltori/area/tokyo/'));
+  assert.ok(existsSync(new URL('service/ltori/area/tokyo/index.html', root)));
+  assert.ok(!existsSync(new URL('service/ltori/industry/manufacturing/index.html', root)), 'superseded unshipped guide removed');
 });
-test('consultation links carry only service and a stable guide key',()=>{
-  const url=new URL(consultationHref('area/mie/nabari'),'https://layr.co.jp');
-  assert.equal(url.searchParams.get('service'),'ltori');assert.equal(url.searchParams.get('source'),'area/mie/nabari');
-  assert.equal(url.pathname,'/contact/');
+
+test('the directory and every prefecture link all their children, with no hidden subset', () => {
+  const directory = readPage('/service/ltori/area/');
+  for (const area of regionalAreas) assert.ok(directory.includes(`href="${areaPath(area)}"`), areaPath(area));
+  for (const pref of prefectureAreas) {
+    const html = readPage(areaPath(pref));
+    for (const area of municipalityAreas.filter(a => a.prefectureSlug === pref.slug)) {
+      assert.ok(html.includes(`href="${areaPath(area)}"`), areaPath(area));
+    }
+  }
+});
+
+test('the contact form recognizes every route without accepting arbitrary source text', () => {
+  const contact = readPage('/contact/');
+  for (const area of regionalAreas) {
+    const url = new URL(consultationHref(areaKey(area)), 'https://layr.co.jp');
+    assert.equal(url.searchParams.get('service'), 'ltori');
+    assert.equal(sourceLabels[url.searchParams.get('source')], `${area.fullName}の採用LINE`);
+    assert.ok(contact.includes(JSON.stringify(areaKey(area))));
+  }
+  assert.equal(sourceLabels['area/unknown/untrusted'], undefined);
+  assert.ok(contact.includes('Object.prototype.hasOwnProperty.call'));
 });
