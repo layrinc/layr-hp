@@ -1,7 +1,9 @@
+import {mountAnalytics} from './analytics-app.mjs';
 import {STATUS, PRIORITY, INDEX, MAX_FILE, checkStateSize, emptyState, pageEdit, keywordsFor, validateEdit, addKeyword, createReport, putReport, reportSummary, metricLookup, queryMetric, normalizeQuery, csvString, validateBackup} from './model.mjs';
 import {openDatabase, loadState, saveState} from './storage.mjs';
 const $=id=>document.getElementById(id);
 const catalog=JSON.parse($('kw-catalog').textContent), byId=new Map(catalog.map(page=>[page.id,page]));
+let renderAnalytics=()=>{};
 let state=emptyState(), db, loaded=false, busy=false, view='pages', pageNumber=1, filtered=[], allKeywords=[], selected=new Set(), activeReport='', pendingImport, pendingRestore, editorPage='', editorCustom=[], editorPaused=new Set(), editorDirty=false, detailReport=null, detailPage=1;
 const format=value=>value==null?'—':new Intl.NumberFormat('ja-JP',{maximumFractionDigits:1}).format(value);
 const rate=row=>row?.impressions?`${(row.clicks/row.impressions*100).toFixed(1)}%`:'—';
@@ -19,14 +21,14 @@ async function commit(next) {
   if(busy)throw new Error('保存中です。少し待ってから操作してください。');
   checkStateSize(next);
   busy=true;$('kw-save-state').textContent='保存中…';
-  try {state=await saveState(db,next,state.revision);rebuild();saveLabel();render();renderHistory();return true;}
+  try {state=await saveState(db,next,state.revision);rebuild();saveLabel();render();renderHistory();renderAnalytics();return true;}
   catch(error){$('kw-save-state').textContent='未保存 · 再操作が必要です';throw error;}
   finally{busy=false;}
 }
 function option(value,label){const o=text('option',label);o.value=value;return o;}
 function reportsForView(){return state.reports.filter(r=>r.kind===(view==='keywords'?'queries':'pages')).sort((a,b)=>b.end.localeCompare(a.end)||b.importedAt.localeCompare(a.importedAt));}
 function refreshReports(){const available=reportsForView();if(!available.some(r=>r.id===activeReport))activeReport=available[0]?.id||'';$('kw-report').replaceChildren(...(available.length?available.map(r=>option(r.id,reportLabel(r))):[option('','実績は未取り込み')]));$('kw-report').value=activeReport;}
-function switchView(next){view=next;pageNumber=1;selected.clear();activeReport='';for(const node of document.querySelectorAll('[data-view]')){if(node.dataset.view===view)node.setAttribute('aria-current','page');else node.removeAttribute('aria-current');}$('kw-list-view').hidden=view==='data';$('kw-data-view').hidden=view!=='data';$('kw-enabled-wrap').hidden=view!=='keywords';$('kw-view-title').textContent={pages:'地域・ページ',keywords:'対策キーワード',tasks:'改善タスク',data:'実績・入出力'}[view];$('kw-view-hint').textContent={pages:'地域を選んで、対策キーワードと次の作業を管理します。',keywords:'候補の追加・保留は地域名から編集できます。優先度・対応状況は対象ページの設定です。',tasks:'次の作業・期限があるページと「改善中」のページを表示します。対応済みは除きます。',data:''}[view];if(view==='tasks')$('kw-sort').value='due';else $('kw-sort').value='area';render();renderHistory();}
+function switchView(next){view=next;pageNumber=1;selected.clear();activeReport='';for(const node of document.querySelectorAll('[data-view]')){if(node.dataset.view===view)node.setAttribute('aria-current','page');else node.removeAttribute('aria-current');}$('kw-list-view').hidden=['data','analytics'].includes(view);$('kw-analytics-view').hidden=view!=='analytics';$('kw-data-view').hidden=view!=='data';$('kw-enabled-wrap').hidden=view!=='keywords';$('kw-view-title').textContent={pages:'地域・ページ',keywords:'対策キーワード',tasks:'改善タスク',analytics:'アクセス・問い合わせ',data:'実績・入出力'}[view];$('kw-view-hint').textContent={pages:'地域を選んで、対策キーワードと次の作業を管理します。',keywords:'候補の追加・保留は地域名から編集できます。優先度・対応状況は対象ページの設定です。',tasks:'次の作業・期限があるページと「改善中」のページを表示します。対応済みは除きます。',analytics:'',data:''}[view];if(view==='tasks')$('kw-sort').value='due';else $('kw-sort').value='area';render();renderHistory();}
 function currentReport(){return state.reports.find(r=>r.id===activeReport);}
 function filteredRows(){
   const search=normalizeQuery($('kw-search').value),pref=$('kw-pref').value,status=$('kw-status').value,priority=$('kw-priority').value,enabled=$('kw-enabled').value,report=currentReport(),lookup=metricLookup(report),paused=new Set(state.pausedKeywords);
@@ -35,6 +37,8 @@ function filteredRows(){
     return {page,edit,keyword:view==='keywords'?row:null,metric,paused:paused.has(row.id)};
   }).filter(row=>{
     const {page,edit,keyword}=row;
+    const publication=$('kw-publication').value;
+    if(publication?page.publication!==publication:page.publication==='excluded')return false;
     if(pref&&page.prefecture!==pref||status&&edit.status!==status||priority&&edit.priority!==priority)return false;
     if(view==='keywords'&&(enabled==='active'&&row.paused||enabled==='paused'&&!row.paused))return false;
     if(view==='tasks'&&(edit.status==='done'||!edit.nextAction&&!edit.dueDate&&edit.status!=='improving'))return false;
@@ -48,10 +52,10 @@ function filteredRows(){
 }
 function render(){
   const focusedCheck=document.activeElement?.matches('#kw-thead input[type=checkbox], #kw-tbody input[type=checkbox]')?document.activeElement.getAttribute('aria-label'):null;
-  $('kw-stat-keywords').textContent=format(allKeywords.length-state.pausedKeywords.length);
-  $('kw-stat-indexed').textContent=format(Object.values(state.pages).filter(p=>p.indexStatus==='indexed').length);
-  $('kw-stat-overdue').textContent=format(Object.values(state.pages).filter(p=>p.dueDate&&p.dueDate<today()&&p.status!=='done').length);
-  if(view==='data')return;
+  $('kw-stat-keywords').textContent=format(allKeywords.filter(k=>byId.get(k.pageId).publication!=='excluded'&&!state.pausedKeywords.includes(k.id)).length);
+  $('kw-stat-indexed').textContent=format(Object.entries(state.pages).filter(([id,p])=>byId.get(id).publication!=='excluded'&&p.indexStatus==='indexed').length);
+  $('kw-stat-overdue').textContent=format(Object.entries(state.pages).filter(([id,p])=>byId.get(id).publication!=='excluded'&&p.dueDate&&p.dueDate<today()&&p.status!=='done').length);
+  if(['data','analytics'].includes(view)){renderAnalytics();return;}
   refreshReports();filtered=filteredRows();const size=Number($('kw-size').value),pages=Math.max(1,Math.ceil(filtered.length/size));pageNumber=Math.min(pageNumber,pages);const slice=filtered.slice((pageNumber-1)*size,pageNumber*size), report=currentReport();
   $('kw-scope').textContent=report?`${reportLabel(report)}。CSVにない値は「—」。${report.kind==='queries'&&!report.scopePageId?'サイト全体のクエリ実績です。対象LPの実績を示すものではありません。':'平均順位は対象期間の平均掲載順位です。'}`:'検索実績は未取り込みです。順位・クリックは「—」で表示します。';
   const tr=document.createElement('tr');
@@ -62,13 +66,13 @@ function render(){
   for(const row of slice) {
     const tr=document.createElement('tr'),{page,edit,keyword,metric}=row;
     if(!keyword){const td=document.createElement('td'),label=text('label','','kw-check'),check=document.createElement('input');check.type='checkbox';check.checked=selected.has(page.id);check.setAttribute('aria-label',`${page.fullName}を選択`);check.addEventListener('change',()=>{check.checked?selected.add(page.id):selected.delete(page.id);render();});label.append(check);td.append(label);tr.append(td);}
-    const name=text('td','','kw-name');name.append(button(keyword?keyword.query:page.fullName,()=>openEditor(page.id),''),text('small',keyword?page.fullName:page.kind==='prefecture'?'都道府県LP':`市区町村・行政区LP / ${page.id}`));tr.append(name);
+    const name=text('td','','kw-name');name.append(button(keyword?keyword.query:page.fullName,()=>openEditor(page.id),''),text('small',keyword?page.fullName:`${page.kind==='prefecture'?'都道府県LP':page.publication==='excluded'?'対象外の旧地域':'市LP'} / ${{published:'公開中',draft:'下書き',excluded:'対象外'}[page.publication]}`));tr.append(name);
     const status=text('td','','kw-status');status.append(text('span',keyword?(row.paused?'保留':'対象'):STATUS[edit.status],`kw-tag ${(keyword?!row.paused:edit.status==='improving')?'is-active':''}`));tr.append(status,text('td',PRIORITY[edit.priority]));
     tr.append(text('td',format(metric?.clicks),'kw-number'),text('td',format(metric?.impressions),'kw-number'));
     if(keyword)tr.append(text('td',rate(metric),'kw-number'));
     tr.append(text('td',format(metric?.position),'kw-number'));
     if(!keyword){const note=text('td',edit.nextAction||'未設定','kw-row-note');note.append(text('small',edit.dueDate?`${edit.dueDate}${edit.dueDate<today()&&edit.status!=='done'?' · 期限超過':''}`:'期限なし'));tr.append(note);}
-    const anchor=text('td','');anchor.append(link('確認 ↗',page.path));tr.append(anchor);fragment.append(tr);
+    const anchor=text('td','');anchor.append(page.publication==='published'?link('確認 ↗',page.path):text('span',page.publication==='excluded'?'対象外':'下書き'));tr.append(anchor);fragment.append(tr);
   }
   $('kw-tbody').replaceChildren(fragment);$('kw-empty').hidden=!!filtered.length;
   $('kw-results').textContent=`${format(filtered.length)}件中 ${filtered.length?format((pageNumber-1)*size+1):0}〜${format(Math.min(pageNumber*size,filtered.length))}件`;$('kw-page').textContent=`${pageNumber} / ${pages}`;$('kw-prev').disabled=pageNumber<=1;$('kw-next').disabled=pageNumber>=pages;
@@ -88,7 +92,7 @@ function renderEditorKeywords(){
 }
 function openEditor(id){
   editorPage=id;const page=byId.get(id),edit=pageEdit(state,id);editorCustom=structuredClone(state.customKeywords);editorPaused=new Set(state.pausedKeywords);editorDirty=false;
-  $('kw-editor-title').textContent=page.fullName;$('kw-editor-path').textContent=`https://layr.co.jp${page.path}`;$('kw-editor-links').replaceChildren(link('この環境のLPを確認 ↗',page.path),link('本番URLを確認 ↗',`https://layr.co.jp${page.path}`));
+  $('kw-editor-title').textContent=page.fullName;$('kw-editor-path').textContent=`https://layr.co.jp${page.path}`;$('kw-editor-links').replaceChildren(...(page.publication==='published'?[link('この環境のLPを確認 ↗',page.path),link('本番URLを確認 ↗',`https://layr.co.jp${page.path}`)]:[text('span',page.publication==='excluded'?'公開対象外です。以前の編集データを保管しています。':'下書きです。内容を確認し、公開台帳へ追加してから反映します。')]));
   for(const [key,field] of Object.entries({status:'status',priority:'priority',index:'indexStatus',owner:'owner',due:'dueDate',action:'nextAction',notes:'notes'}))$(`kw-edit-${key}`).value=edit[field];
   $('kw-new-query').value='';$('kw-editor-error').hidden=true;renderEditorKeywords();$('kw-editor-save').disabled=!db||!loaded;$('kw-editor').showModal();
 }
@@ -107,16 +111,16 @@ async function fileText(input){const file=input.files[0];if(!file)throw new Erro
 function clearImport(){pendingImport=null;$('kw-import-preview').hidden=true;}
 async function initialize(){
   rebuild();render();
-  try{db=await openDatabase();const saved=await loadState(db);if(saved)state=validateBackup(saved,catalog);loaded=true;rebuild();saveLabel();render();renderHistory();}
+  try{db=await openDatabase();const saved=await loadState(db);if(saved)state=validateBackup(saved,catalog);loaded=true;rebuild();saveLabel();render();renderHistory();renderAnalytics();}
   catch(error){loaded=false;$('kw-save-state').textContent='保存を利用できません';$('kw-storage-error').hidden=false;$('kw-storage-error').textContent=`${errorText(error)} 現在は閲覧のみです。保存済みデータは上書きしていません。`;$('kw-import-save').disabled=true;$('kw-restore-save').disabled=true;$('kw-bulk-apply').disabled=true;}
 }
 for(const page of catalog)$('kw-import-scope').append(option(page.id,page.fullName));
 for(const node of document.querySelectorAll('[data-view]'))node.addEventListener('click',()=>switchView(node.dataset.view));
 $('kw-open-import').addEventListener('click',()=>{switchView('data');$('kw-import-file').focus();});
-for(const id of ['kw-pref','kw-status','kw-priority','kw-sort','kw-size','kw-enabled'])$(id).addEventListener('change',()=>{pageNumber=1;selected.clear();render();});
+for(const id of ['kw-pref','kw-status','kw-priority','kw-sort','kw-size','kw-enabled','kw-publication'])$(id).addEventListener('change',()=>{pageNumber=1;selected.clear();render();});
 $('kw-search').addEventListener('input',()=>{pageNumber=1;selected.clear();render();});
 $('kw-report').addEventListener('change',()=>{activeReport=$('kw-report').value;pageNumber=1;render();});
-$('kw-reset').addEventListener('click',()=>{for(const id of ['kw-search','kw-pref','kw-status','kw-priority','kw-enabled'])$(id).value='';$('kw-sort').value=view==='tasks'?'due':'area';pageNumber=1;selected.clear();render();});
+$('kw-reset').addEventListener('click',()=>{for(const id of ['kw-search','kw-pref','kw-status','kw-priority','kw-enabled','kw-publication'])$(id).value='';$('kw-sort').value=view==='tasks'?'due':'area';pageNumber=1;selected.clear();render();});
 $('kw-prev').addEventListener('click',()=>{pageNumber--;render();});$('kw-next').addEventListener('click',()=>{pageNumber++;render();});
 $('kw-export').addEventListener('click',exportCsv);$('kw-backup').addEventListener('click',backup);$('kw-backup-data').addEventListener('click',backup);
 $('kw-deselect').addEventListener('click',()=>{selected.clear();render();});
@@ -131,8 +135,9 @@ $('kw-import-save').addEventListener('click',async()=>{if(!pendingImport)return;
 $('kw-rejected-export').addEventListener('click',()=>{if(pendingImport)download('seo-import-excluded.csv',csvString([['行','値','理由'],...pendingImport.rejected.map(row=>[row.line,row.value,row.reason])]),'text/csv;charset=utf-8');});
 $('kw-sample').addEventListener('click',()=>download('search-console-columns.csv',csvString([['上位のページ','クリック数','表示回数','CTR','掲載順位']]),'text/csv;charset=utf-8'));
 $('kw-restore-file').addEventListener('change',()=>{pendingRestore=null;$('kw-restore-preview').hidden=true;});
-$('kw-restore-form').addEventListener('submit',async event=>{event.preventDefault();pendingRestore=null;$('kw-restore-preview').hidden=true;try{const {content}=await fileText($('kw-restore-file'));pendingRestore=validateBackup(JSON.parse(content),catalog);$('kw-restore-summary').textContent=`地域編集${Object.keys(pendingRestore.pages).length}件 / 追加キーワード${pendingRestore.customKeywords.length}件 / 検索実績${pendingRestore.reports.length}件を復元します。`;$('kw-restore-preview').hidden=false;}catch(error){message(errorText(error),true);}});
+$('kw-restore-form').addEventListener('submit',async event=>{event.preventDefault();pendingRestore=null;$('kw-restore-preview').hidden=true;try{const {content}=await fileText($('kw-restore-file'));pendingRestore=validateBackup(JSON.parse(content),catalog);$('kw-restore-summary').textContent=`地域編集${Object.keys(pendingRestore.pages).length}件 / 追加キーワード${pendingRestore.customKeywords.length}件 / 検索実績${pendingRestore.reports.length}件 / アクセス実績${pendingRestore.analyticsReports.length}件を復元します。`;$('kw-restore-preview').hidden=false;}catch(error){message(errorText(error),true);}});
 $('kw-restore-save').addEventListener('click',async()=>{if(!pendingRestore)return;try{await commit(pendingRestore);pendingRestore=null;pendingImport=null;$('kw-restore-preview').hidden=true;$('kw-import-preview').hidden=true;selected.clear();message('バックアップを復元しました。');}catch(error){message(errorText(error),true);}});
 $('kw-report-close').addEventListener('click',()=>$('kw-report-dialog').close());$('kw-report-search').addEventListener('input',()=>{detailPage=1;renderReportDetail();});$('kw-report-prev').addEventListener('click',()=>{detailPage--;renderReportDetail();});$('kw-report-next').addEventListener('click',()=>{detailPage++;renderReportDetail();});
 window.addEventListener('beforeunload',event=>{if(editorDirty||busy){event.preventDefault();event.returnValue='';}});
+renderAnalytics=mountAnalytics({catalog,getState:()=>state,save:commit,download});
 initialize();

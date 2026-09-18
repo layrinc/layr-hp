@@ -1,8 +1,8 @@
 ---
 import ServiceLanding from '../../../../components/ltori/ServiceLanding.astro';
-import { regionalAreas } from '../../../../lib/ltori-seo.mjs';
+import { publishedAreas } from '../../../../lib/ltori-publication.mjs';
 export function getStaticPaths() {
-  return regionalAreas.map(area => ({ params: { slug: area.slug }, props: { area } }));
+  return publishedAreas.map(area => ({ params: { slug: area.slug }, props: { area } }));
 }
 const { area } = Astro.props;
 ---

@@ -1,3 +1,4 @@
+import {validateAnalyticsReport} from './analytics-model.mjs';
 export const VERSION = 1;
 export const PATTERNS = ['採用LINE', '採用LINE 構築', '採用LINE 運用代行', 'LINE 採用支援', 'Lステップ 採用'];
 export const STATUS = {unreviewed:'未確認', monitoring:'計測中', improving:'改善中', done:'対応済み'};
@@ -15,7 +16,7 @@ export const isDate = value => /^\d{4}-\d{2}-\d{2}$/.test(value) && Number.isFin
 export function catalogFromAreas(areas) {
   return areas.map(area => ({id:area.code || `pref-${area.slug}`, name:area.name, fullName:area.fullName, prefecture:area.prefectureSlug, prefectureName:area.prefectureName, kind:area.kind, path:`/service/ltori/area/${area.slug}/`}));
 }
-export function emptyState() { return {version:VERSION, revision:0, updatedAt:null, pages:{}, customKeywords:[], pausedKeywords:[], reports:[]}; }
+export function emptyState() { return {version:VERSION, revision:0, updatedAt:null, pages:{}, customKeywords:[], pausedKeywords:[], reports:[], analyticsReports:[]}; }
 export function pageEdit(state, id) { return {status:'unreviewed', priority:'normal', indexStatus:'unknown', owner:'', dueDate:'', nextAction:'', notes:'', ...(state.pages[id] || {})}; }
 export function keywordsFor(catalog, state) {
   return [...catalog.flatMap(page => PATTERNS.map((term, i) => ({id:`${page.id}:${i}`, pageId:page.id, query:`${page.fullName} ${term}`, custom:false}))), ...state.customKeywords.map(row=>({...row,custom:true}))];
@@ -163,6 +164,9 @@ export function validateBackup(input,catalog) {
     state.reports.push(report);
   }
   if(state.reports.length>60||state.reports.reduce((sum,r)=>sum+r.rows.length,0)>100000)fail('検索実績の保存上限を超えています。');
+  if (input.analyticsReports !== undefined && !Array.isArray(input.analyticsReports)) fail('アクセス実績の形式が正しくありません。');
+  state.analyticsReports = (input.analyticsReports || []).map(r=>validateAnalyticsReport(r,catalog));
+  if (state.analyticsReports.length>60 || state.analyticsReports.reduce((n,r)=>n+r.rows.length,0)>100000 || new Set(state.analyticsReports.map(r=>r.id)).size!==state.analyticsReports.length) fail('アクセス実績が重複または保存上限を超えています。');
   state.updatedAt=typeof input.updatedAt==='string'?input.updatedAt:null;
   state.revision=Number.isSafeInteger(input.revision)&&input.revision>=0?input.revision:0;
   return state;

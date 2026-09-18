@@ -3,9 +3,11 @@ import service from '../../data/service-ltori.json';
 import company from '../../data/company.json';
 import {industries, localPlacesFor} from '../../lib/ltori-local-content.mjs';
 import {areaKey, consultationHref} from '../../lib/ltori-seo.mjs';
+import {cityEditorial} from '../../lib/ltori-publication.mjs';
 const {area, section} = Astro.props;
 const places = localPlacesFor(area);
 const consult = consultationHref(areaKey(area));
+const editorial = cityEditorial[area.slug];
 ---
 {section === 'guide' && <section class="lt-section lt-local-guide" id="local-guide" aria-labelledby="local-guide-title">
   <div class="lt-wrap">
@@ -15,15 +17,19 @@ const consult = consultationHref(areaKey(area));
       <p>応募前の「知りたい」に応え、見学・面談につながる接点を。</p>
     </div>
     <div class="lt-local-prose">
+      {editorial && <><h3>{editorial.title}</h3><p>{editorial.context}</p></>}
       <p>{area.fullName}で採用LINEを導入するときは、候補者が「どこで、どのように働くのか」を判断できる情報から整えます。{places.length > 0 ? <>{places.join('・')}など、募集する勤務地が複数に分かれている場合は、勤務地ごとに仕事内容・勤務時間・応募先を整理することが大切です。</> : <>勤務地の所在地や勤務時間を明記し、募集する仕事と応募先を分かりやすく案内します。</>}</p>
       <p>求人媒体や採用サイトで会社を知っても、すぐに応募を決められる方ばかりではありません。LINE公式アカウントを使い、職場の様子、スタッフの声、教育体制などを順番に届けることで、応募前の疑問を相談できる接点をつくります。募集が終わった後も、配信への同意を得た候補者とのつながりを次の採用に活用できます。</p>
       <p>{service.name}では、{area.name}で働く人を採用したい企業さまに合わせて、LINEの構築・配信・運用改善を支援します。地域内の候補者にも、地域外から勤務を検討する候補者にも、必要な情報が届く導線を一緒に設計します。</p>
     </div>
     <ol class="lt-local-steps">
+      {editorial ? editorial.steps.map((step, i) => <li><span class="lt-eyebrow">0{i+1} / 設計のポイント</span><h3>{step.title}</h3><p>{step.body}</p></li>) : <>
       <li><span class="lt-eyebrow">01 / 勤務地・職種</span><h3>応募先を迷わせない</h3><p>事業所や店舗の所在地、募集職種、勤務時間を整理。希望勤務地や働き方に合わせて情報を届けます。</p></li>
       <li><span class="lt-eyebrow">02 / 応募前の情報</span><h3>働くイメージを伝える</h3><p>職場の写真、仕事の流れ、研修や福利厚生を配信。求人票だけでは伝えきれない情報を補います。</p></li>
       <li><span class="lt-eyebrow">03 / 見学・面談</span><h3>次の行動につなげる</h3><p>面談の予約案内、集合場所、持ち物、事前リマインドを整え、候補者と採用担当者のやり取りを支えます。</p></li>
+      </>}
     </ol>
+    {editorial && <div class="lt-local-prose"><h3>{area.name}の企業向け・配信文面の作例</h3><p>{editorial.message}</p><h3>構築前に用意していただきたい情報</h3><ul>{editorial.checklist.map(item=><li>{item}</li>)}</ul><p class="lt-note">企画・編集：株式会社LAYR ／ 公的情報の確認：{editorial.checkedOn}。参照：{editorial.sources.map(source=><a class="lt-local-source" href={source.url} target="_blank" rel="noopener noreferrer">{source.label} </a>)}。募集内容や運用方法は各企業の実情に合わせて確認します。</p></div>}
     <p class="lt-note">この地域で採用LINEを使う場合の設計例です。募集条件や利用するツールに合わせて調整します。</p>
   </div>
 </section>}

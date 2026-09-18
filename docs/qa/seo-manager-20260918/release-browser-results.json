@@ -1,0 +1,82 @@
+{
+  "date": "2026-09-18",
+  "passed": true,
+  "views": [
+    {
+      "name": "analytics-1280",
+      "width": 1280,
+      "scroll": 1280,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "analytics-768",
+      "width": 768,
+      "scroll": 768,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "analytics-390",
+      "width": 390,
+      "scroll": 390,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "analytics-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "analytics-375",
+      "width": 375,
+      "scroll": 375,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "analytics-connect-390",
+      "width": 390,
+      "scroll": 390,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "nabari-guide-1280",
+      "width": 1280,
+      "scroll": 1280,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "nabari-guide-768",
+      "width": 768,
+      "scroll": 768,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "nabari-guide-390",
+      "width": 390,
+      "scroll": 390,
+      "h1": 1,
+      "minFont": 12
+    }
+  ],
+  "checks": [
+    "839 eligible regions; 3 live, 836 draft, 1126 archived",
+    "Google unconnected empty state",
+    "GA CSV and exact-period GSC join",
+    "CSV export and persisted analytics backup",
+    "mock Google OAuth and all-metrics API integration; tokens memory-only",
+    "three live LPs; sampled drafts return 404",
+    "regional breadcrumbs and nationwide links absent",
+    "preview GA tag suppressed",
+    "contact HTTP 200 rejected response does not record conversion; accepted response records once"
+  ],
+  "externalRequests": "Blocked or local fixtures; no real Google data or form submissions",
+  "errors": []
+}

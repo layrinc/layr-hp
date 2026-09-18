@@ -133,10 +133,18 @@ const favicon = '/favicon-96.png';
   )}
   <script type="application/ld+json" set:html={jsonLdHtml} />
   {(settings as any).ga_id && (
-    <Fragment>
-      <script async src={`https://www.googletagmanager.com/gtag/js?id=${(settings as any).ga_id}`}></script>
-      <script is:inline set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','${(settings as any).ga_id}');`}></script>
-    </Fragment>
+    <script is:inline define:vars={{measurementId:(settings as any).ga_id}}>
+      if (location.hostname === 'layr.co.jp' || location.hostname === 'www.layr.co.jp') {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function(){ window.dataLayer.push(arguments); };
+        window.gtag('js', new Date());
+        window.gtag('config', measurementId);
+        const tag = document.createElement('script');
+        tag.async = true;
+        tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(measurementId);
+        document.head.append(tag);
+      }
+    </script>
   )}
 </head>
 <body>

@@ -1,12 +1,14 @@
 ---
 import Base from '../../../../layouts/Base.astro';
 import service from '../../../../data/service-ltori.json';
-import { prefectureGroups, areasBySlug, municipalitiesFor, areaPath, consultationHref } from '../../../../lib/ltori-seo.mjs';
+import { prefectureGroups, areaPath, consultationHref } from '../../../../lib/ltori-seo.mjs';
+import { publishedFor } from '../../../../lib/ltori-publication.mjs';
 import '../../../../styles/ltori.css';
 import '../../../../styles/ltori-area.css';
-const title = `都道府県・市区町村別の採用LINE構築・運用支援｜${service.name}｜株式会社LAYR`;
-const description = `${service.name}の採用LINE構築・運用支援を、都道府県・市区町村から探せます。各地域の企業さまをオンラインで支援。企業紹介の配信、応募・面談予約、入社前フォローまでご相談ください。`;
-const breadcrumbs = [{name:'ホーム',item:'https://layr.co.jp/'},{name:service.name,item:`https://layr.co.jp${service.path}`},{name:'都道府県・市区町村一覧',item:'https://layr.co.jp/service/ltori/area/'}];
+const liveGroups = prefectureGroups.map(group => ({...group, prefectures:group.prefectures.filter(([slug]) => publishedFor(slug).length)})).filter(group => group.prefectures.length);
+const title = `都道府県・市別の採用LINE構築・運用支援｜${service.name}｜株式会社LAYR`;
+const description = `${service.name}の採用LINE構築・運用支援を、都道府県・市から探せます。各地域の企業さまをオンラインで支援。企業紹介の配信、応募・面談予約、入社前フォローまでご相談ください。`;
+const breadcrumbs = [{name:'ホーム',item:'https://layr.co.jp/'},{name:service.name,item:`https://layr.co.jp${service.path}`},{name:'都道府県・市一覧',item:'https://layr.co.jp/service/ltori/area/'}];
 const jsonLd = {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:breadcrumbs.map((crumb,i)=>({'@type':'ListItem',position:i+1,...crumb}))};
 ---
 <Base title={title} description={description} jsonLd={jsonLd} hideHeader={true} ogImage="/service/ltori/isometric-hero.webp">
@@ -15,17 +17,16 @@ const jsonLd = {'@context':'https://schema.org','@type':'BreadcrumbList',itemLis
       <a class="lt-logo" href={service.path} aria-label={`${service.name} トップ`}><span>{service.name}<span class="lt-logo-dot">.</span></span><small>採用特化LINE支援 <span>by LAYR</span></small></a>
       <a class="lt-button lt-header-cta" href={consultationHref('area')}>無料相談<span class="lt-button-arrow" aria-hidden="true">↗</span></a>
     </header>
-    <nav class="lt-area-breadcrumb lt-wrap" aria-label="パンくずリスト"><ol><li><a href="/">ホーム</a></li><li><a href={service.path}>{service.name}</a></li><li aria-current="page">都道府県・市区町村一覧</li></ol></nav>
     <section class="lt-section"><div class="lt-wrap">
       <p class="lt-eyebrow">Service Area</p>
-      <h1><span>採用LINE構築・運用支援</span><br /><span>都道府県・市区町村一覧</span></h1>
+      <h1><span>採用LINE構築・運用支援</span><br /><span>都道府県・市一覧</span></h1>
       <p>お住まいの地域・事業所の所在地から、{service.name}のサービスをご覧いただけます。採用LINEの構築から配信・運用改善まで、全国オンラインで支援します。</p>
-      <nav class="lt-area-jump" aria-label="地方別の一覧へ移動">{prefectureGroups.map((group,i)=><a href={`#region-${i}`}>{group.name}</a>)}</nav>
-      {prefectureGroups.map((group,i)=><section class="lt-area-directory-group" id={`region-${i}`} aria-labelledby={`region-heading-${i}`}>
+      <nav class="lt-area-jump" aria-label="地方別の一覧へ移動">{liveGroups.map((group,i)=><a href={`#region-${i}`}>{group.name}</a>)}</nav>
+      {liveGroups.map((group,i)=><section class="lt-area-directory-group" id={`region-${i}`} aria-labelledby={`region-heading-${i}`}>
         <div class="lt-section-heading"><h2 id={`region-heading-${i}`}>{group.name}</h2></div>
         {group.prefectures.map(([slug,name])=><section class="lt-area-directory-pref" aria-labelledby={`pref-${slug}`}>
-          <h3 id={`pref-${slug}`}><a href={areaPath(areasBySlug.get(slug))}>{name}の採用LINE構築・運用支援</a></h3>
-          <nav aria-label={`${name}の市区町村`}><ul class="lt-area-list">{municipalitiesFor(slug).map(city=><li><a href={areaPath(city)}>{city.name}</a></li>)}</ul></nav>
+          <h3 id={`pref-${slug}`}>{name}の採用LINE構築・運用支援</h3>
+          <nav aria-label={`${name}の市`}><ul class="lt-area-list">{publishedFor(slug).map(city=><li><a href={areaPath(city)}>{city.name}</a></li>)}</ul></nav>
         </section>)}
       </section>)}
       <p class="lt-note lt-area-directory-note">地域名・行政区の情報は、<a href="https://github.com/geolonia/japanese-addresses-v2" target="_blank" rel="noopener">Geolonia Japanese Addresses</a>・<a href="https://maps.gsi.go.jp/" target="_blank" rel="noopener">国土地理院</a>の公開データをもとに整理しています。掲載地域に当社の拠点があることを示すものではありません。</p>

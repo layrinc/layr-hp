@@ -23,7 +23,7 @@
 .kw-sidebar{padding:32px 22px 22px;background:var(--paper);border-right:1px solid var(--line);display:flex;flex-direction:column;gap:22px}
 .kw-label{color:var(--muted);font-weight:500;letter-spacing:var(--track-label)}
 .kw-sidebar nav{display:grid;gap:6px}
-.kw-sidebar nav button{padding:12px;min-height:44px;border:1px solid transparent;border-radius:var(--radius);text-align:left;background:transparent;cursor:pointer;color:var(--text);font-weight:500;white-space:nowrap}
+.kw-sidebar nav button{padding:12px;min-height:44px;border:1px solid transparent;border-radius:var(--radius);text-align:left;background:transparent;cursor:pointer;color:var(--text);font-weight:500;white-space:normal}
 .kw-sidebar nav button span{font-size:var(--kw-label);margin-right:12px;color:var(--muted)}
 .kw-sidebar nav button[aria-current]{background:var(--green-pale);color:var(--green-ink);border-color:var(--green-line)}
 .kw-sidebar nav button:hover{background:var(--bg)}
@@ -122,3 +122,8 @@
 @media(max-width:900px){.kw-shell{display:block}.kw-sidebar{border-right:0;border-bottom:1px solid var(--line);padding:12px 22px;gap:12px}.kw-sidebar>p,.kw-sidebar-note,.kw-outlink{display:none}.kw-sidebar nav{display:flex;flex-wrap:wrap;gap:6px}.kw-sidebar nav button{padding-inline:12px}.kw-sidebar nav button span{margin-right:6px}.kw-main{padding-top:22px}.kw-top{padding-inline:22px}.kw-brand{gap:12px}}
 @media(max-width:600px){.kw-top{align-items:flex-start;flex-direction:column;gap:6px;padding-inline:16px}.kw-main{padding-inline:16px}.kw-sidebar{padding-inline:16px}.kw-sidebar nav{display:grid;grid-template-columns:1fr 1fr}.kw-stats{grid-template-columns:1fr 1fr;gap:22px 12px}.kw-filters{grid-template-columns:1fr 1fr}.kw-section-head{flex-direction:column;gap:12px}.kw-pagination>div{gap:6px;flex-wrap:wrap}.kw-pagination label{gap:6px}.kw-button{padding-inline:12px}.kw-form-grid{grid-template-columns:1fr}.kw-panel{padding:16px}.kw-dialog{padding:16px;width:calc(100% - 16px);max-height:calc(100dvh - 16px)}.kw-dialog-foot{flex-direction:column;align-items:stretch}.kw-dialog-head h2{font-size:var(--kw-lead)}.kw-history article{flex-wrap:wrap}.kw-history article>div{flex-basis:100%}}
 @media(prefers-reduced-motion:reduce){.seo-app *{scroll-behavior:auto!important;transition:none!important}}
+
+#kw-analytics-view .kw-help-details{margin-top:22px}
+#kw-analytics-view .kw-help-details ol,#kw-analytics-view .kw-help-details ul{padding-left:22px}
+#kw-analytics-view code{overflow-wrap:anywhere}
+#analytics-notes{padding-left:22px}

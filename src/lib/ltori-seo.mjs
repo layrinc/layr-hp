@@ -11,8 +11,8 @@ export const prefectureAreas = prefectureGroups.flatMap(group => group.prefectur
 })));
 const prefectureBySlug = new Map(prefectureAreas.map(area => [area.slug, area]));
 
-// Every validated regional record creates a full service LP in the same build.
-// JIS codes identify records; stored slugs remain stable across source updates.
+// Preserve the full master for address validation and legacy manager backups.
+// Publication is separately gated by ltori-publication.mjs.
 export function createMunicipalityAreas(records = master.areas) {
   const codes = new Set();
   const paths = new Set();
@@ -33,11 +33,14 @@ export function createMunicipalityAreas(records = master.areas) {
 }
 export const municipalityAreas = createMunicipalityAreas();
 export const regionalAreas = [...prefectureAreas, ...municipalityAreas];
+export const isEligibleArea = area => area.kind === 'prefecture' || area.locality.endsWith('市');
+export const cityAreas = municipalityAreas.filter(isEligibleArea);
+export const eligibleAreas = regionalAreas.filter(isEligibleArea);
 export const areasBySlug = new Map(regionalAreas.map(area => [area.slug, area]));
 export const municipalitiesFor = slug => municipalityAreas.filter(area => area.prefectureSlug === slug);
 export const parentPrefecture = area => prefectureBySlug.get(area.prefectureSlug);
 export const sourceLabels = Object.fromEntries([
-  ['area', '都道府県・市区町村別の採用LINE'],
+  ['area', '都道府県・市別の採用LINE'],
   ...regionalAreas.map(area => [areaKey(area), `${area.fullName}の採用LINE`]),
 ]);
 export const areaFaq = area => ({

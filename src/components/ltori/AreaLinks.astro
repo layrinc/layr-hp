@@ -1,8 +1,10 @@
 ---
+import {publicationFor} from '../../lib/ltori-publication.mjs';
 import {areaPath} from '../../lib/ltori-seo.mjs';
 import {localCoverageFor, townSource} from '../../lib/ltori-local-content.mjs';
 const {area} = Astro.props;
-const coverage = localCoverageFor(area);
+const rawCoverage = localCoverageFor(area);
+const coverage = {...rawCoverage, children:rawCoverage.children.filter(child=>publicationFor(child)==='published')};
 ---
 <section class="lt-section lt-area-links" id="area" aria-labelledby="local-area-title">
   <div class="lt-wrap">
@@ -12,7 +14,7 @@ const coverage = localCoverageFor(area);
       <p>事業所や店舗の所在地に合わせて、採用の導線を設計します。ご相談から構築・配信・運用改善まで、オンラインで対応します。</p>
     </div>
     {coverage.children.length > 0 ? <>
-      <h3>{area.name}の{coverage.kind === 'wards' ? '区別' : '市区町村別'}の対応ページ</h3>
+      <h3>{area.name}の{coverage.kind === 'wards' ? '区別' : '市別'}の対応ページ</h3>
       <nav aria-label={`${area.name}の地域別ページ`}><ul class="lt-area-list">{coverage.children.map(city=><li><a href={areaPath(city)}>{city.name}</a></li>)}</ul></nav>
     </> : coverage.labels.length > 0 ? <>
       <h3>{area.name}の対応エリア例</h3>

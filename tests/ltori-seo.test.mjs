@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync, existsSync} from 'node:fs';
 import {regionalAreas, municipalityAreas, prefectureAreas, createMunicipalityAreas, areaPath, areaKey, consultationHref, sourceLabels} from '../src/lib/ltori-seo.mjs';
+import {publishedAreas,publicationFor,cityEditorial} from '../src/lib/ltori-publication.mjs';
 import master from '../src/data/ltori-area-routes.json' with {type:'json'};
 import service from '../src/data/service-ltori.json' with {type:'json'};
 import {localCoverageFor, industries, townSource} from '../src/lib/ltori-local-content.mjs';
@@ -32,7 +33,7 @@ test('every regional LP has its own canonical, metadata, h1, schema, sitemap and
   const base = readPage('/service/ltori/');
   assert.ok(base.includes('href="/service/ltori/area/"'), 'generic service LP still links to the area directory');
   const baseSections = [...base.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(m => m[1]);
-  for (const area of regionalAreas) {
+  for (const area of publishedAreas) {
     const path = areaPath(area), html = readPage(path);
     assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, path);
     assert.equal((html.match(/<main(?:\s|>)/g) || []).length, 1, path);
@@ -67,24 +68,24 @@ test('every regional LP has its own canonical, metadata, h1, schema, sitemap and
       assert.ok(existsSync(new URL(href.slice(1) + (href.endsWith('/') ? 'index.html' : ''), root)), `${path} broken link ${href}`);
     }
   }
-  assert.ok(existsSync(new URL('service/ltori/area/tokyo/index.html', root)));
+  assert.ok(!existsSync(new URL('service/ltori/area/tokyo/index.html', root)), 'draft prefecture is not deployed');
   assert.ok(!existsSync(new URL('service/ltori/industry/manufacturing/index.html', root)), 'superseded unshipped guide removed');
 });
 
-test('the directory and every prefecture link all their children, with no hidden subset', () => {
+test('directory and sitemap contain only reviewed published pages; no stale drafts are deployable', () => {
   const directory = readPage('/service/ltori/area/');
-  for (const area of regionalAreas) assert.ok(directory.includes(`href="${areaPath(area)}"`), areaPath(area));
-  for (const pref of prefectureAreas) {
-    const html = readPage(areaPath(pref));
-    for (const area of municipalityAreas.filter(a => a.prefectureSlug === pref.slug)) {
-      assert.ok(html.includes(`href="${areaPath(area)}"`), areaPath(area));
-    }
+  const sitemap = readFileSync(new URL('sitemap-0.xml', root), 'utf8');
+  for (const area of regionalAreas) {
+    const live=publicationFor(area)==='published';
+    assert.equal(directory.includes(`href="${areaPath(area)}"`),live,areaPath(area));
+    assert.equal(sitemap.includes(`<loc>https://layr.co.jp${areaPath(area)}</loc>`),live,areaPath(area));
+    assert.equal(existsSync(new URL(areaPath(area).slice(1)+'index.html',root)),live,areaPath(area));
   }
 });
 
 test('the contact form recognizes every route without accepting arbitrary source text', () => {
   const contact = readPage('/contact/');
-  for (const area of regionalAreas) {
+  for (const area of publishedAreas) {
     const url = new URL(consultationHref(areaKey(area)), 'https://layr.co.jp');
     assert.equal(url.searchParams.get('service'), 'ltori');
     assert.equal(sourceLabels[url.searchParams.get('source')], `${area.fullName}の採用LINE`);
@@ -96,8 +97,10 @@ test('the contact form recognizes every route without accepting arbitrary source
 
 
 test('all regional LPs contain local hiring, industry examples, named coverage and a provider introduction', () => {
-  for (const area of regionalAreas) {
+  for (const area of publishedAreas) {
     const path = areaPath(area), html = readPage(path), coverage = localCoverageFor(area);
+    assert.ok(html.includes(cityEditorial[area.slug].title));
+    assert.ok(html.includes(cityEditorial[area.slug].message));
     for (const id of ['local-guide', 'local-industries', 'area', 'local-provider']) {
       assert.ok(html.includes(`id="${id}"`), path + ' missing local section ' + id);
     }

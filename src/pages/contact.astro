@@ -132,8 +132,13 @@ const breadcrumbJsonLd = {
           });
           clearTimeout(timer);
           if (!res.ok) throw new Error('http ' + res.status);
+          const submission = await res.json();
+          if (submission.success !== true && submission.success !== 'true') throw new Error('submission rejected');
           form.querySelectorAll('input:not([type="hidden"]), textarea').forEach((el) => { el.value = ''; });
           if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'contact_form', service: query.get('service') === 'ltori' ? 'ltori' : 'general', ...(pageSource ? { page_source: pageSource } : {}) });
+          if (typeof gtag === 'function' && query.get('service') === 'ltori' && pageSource?.startsWith('area/')) {
+            gtag('event', 'ltori_inquiry_complete', {page_source:pageSource, method:'contact_form'});
+          }
           ok.hidden = false; fb.hidden = true;
           ok.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         } catch (_) {

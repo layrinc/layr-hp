@@ -2,9 +2,13 @@
 import '../../../styles/style.css';
 import '../../../styles/seo-manager.css';
 import service from '../../../data/service-ltori.json';
-import {regionalAreas, prefectureAreas} from '../../../lib/ltori-seo.mjs';
+import AnalyticsPanel from '../../../components/seo-manager/AnalyticsPanel.astro';
+import {publicationFor} from '../../../lib/ltori-publication.mjs';
+import {regionalAreas, prefectureAreas, eligibleAreas, cityAreas} from '../../../lib/ltori-seo.mjs';
 import {catalogFromAreas, PATTERNS, STATUS, PRIORITY, INDEX} from '../../../lib/seo-manager/model.mjs';
-const catalog=catalogFromAreas(regionalAreas);
+const catalog=catalogFromAreas(regionalAreas).map((page,i)=>({...page,publication:publicationFor(regionalAreas[i])}));
+const eligibleCount=eligibleAreas.length;
+const liveCount=catalog.filter(page=>page.publication==='published').length;
 const options=(record)=>Object.entries(record);
 ---
 <!doctype html>
@@ -29,19 +33,20 @@ const options=(record)=>Object.entries(record);
         <button type="button" data-view="pages" aria-current="page"><span>01</span>地域・ページ</button>
         <button type="button" data-view="keywords"><span>02</span>キーワード</button>
         <button type="button" data-view="tasks"><span>03</span>改善タスク</button>
-        <button type="button" data-view="data"><span>04</span>実績・入出力</button>
+        <button type="button" data-view="analytics"><span>04</span>アクセス・問い合わせ</button>
+        <button type="button" data-view="data"><span>05</span>実績・入出力</button>
       </nav>
       <div class="kw-sidebar-note"><p>このブラウザに保存</p><p>端末を変えるときは、JSONバックアップを復元してください。</p><button type="button" class="kw-button" id="kw-backup">バックアップを保存</button><p id="kw-backup-date">まだバックアップしていません</p></div>
       <a class="kw-outlink" href="https://hub.layr.co.jp/" target="_blank" rel="noopener noreferrer">LAYR HUBへ ↗</a>
     </aside>
     <main id="kw-main" class="kw-main">
-      <header class="kw-heading"><div><p class="kw-label">NATIONAL SEARCH MANAGEMENT</p><h1>全国SEOキーワード管理</h1><p>47都道府県・{(catalog.length-47).toLocaleString('ja-JP')}市区町村／行政区の検索流入を育てる。</p></div><button class="kw-button kw-primary" type="button" id="kw-open-import">検索実績を取り込む</button></header>
+      <header class="kw-heading"><div><p class="kw-label">NATIONAL SEARCH MANAGEMENT</p><h1>全国SEOキーワード管理</h1><p>47都道府県・{cityAreas.length.toLocaleString('ja-JP')}市の検索流入を育てる。</p></div><button class="kw-button kw-primary" type="button" id="kw-open-import">検索実績を取り込む</button></header>
       <noscript><p class="kw-notice">この管理ツールにはJavaScriptが必要です。ブラウザの設定で有効にしてください。</p></noscript>
       <p id="kw-message" role="status" class="kw-notice" hidden></p>
       <p id="kw-storage-error" role="alert" class="kw-notice" hidden></p>
       <dl class="kw-stats">
-        <div><dt>登録LP</dt><dd id="kw-stat-pages">{catalog.length.toLocaleString('ja-JP')}</dd><small>公開状況は別途確認</small></div>
-        <div><dt>対策対象キーワード</dt><dd id="kw-stat-keywords">{(catalog.length*PATTERNS.length).toLocaleString('ja-JP')}</dd><small>検索需要は未調査の候補</small></div>
+        <div><dt>登録LP</dt><dd id="kw-stat-pages">{eligibleCount.toLocaleString('ja-JP')}</dd><small>公開 {liveCount} ／ 下書き {eligibleCount-liveCount}</small></div>
+        <div><dt>対策対象キーワード</dt><dd id="kw-stat-keywords">{(eligibleCount*PATTERNS.length).toLocaleString('ja-JP')}</dd><small>検索需要は未調査の候補</small></div>
         <div><dt>インデックス確認済み</dt><dd id="kw-stat-indexed">—</dd><small>手動で登録済みを記録</small></div>
         <div><dt>期限超過のタスク</dt><dd id="kw-stat-overdue">—</dd><small>対応済みを除く</small></div>
       </dl>
@@ -54,12 +59,13 @@ const options=(record)=>Object.entries(record);
           <label>優先度<select id="kw-priority"><option value="">すべて</option>{options(PRIORITY).map(([value,label])=><option value={value}>{label}</option>)}</select></label>
           <label>並び順<select id="kw-sort"><option value="area">地域順</option><option value="priority">優先度が高い順</option><option value="due">期限が近い順</option><option value="clicks">クリックが多い順</option><option value="impressions">表示回数が多い順</option><option value="position">掲載順位が高い順</option></select></label>
         </div>
-        <div class="kw-subfilters"><label>表示する検索実績<select id="kw-report"><option value="">実績は未取り込み</option></select></label><label id="kw-enabled-wrap" hidden>対策対象<select id="kw-enabled"><option value="">すべて</option><option value="active">対策対象</option><option value="paused">保留</option></select></label><button type="button" class="kw-button" id="kw-reset">条件をリセット</button></div>
+        <div class="kw-subfilters"><label>表示する検索実績<select id="kw-report"><option value="">実績は未取り込み</option></select></label><label>公開区分<select id="kw-publication"><option value="">対象の都道府県・市</option><option value="published" selected>公開中</option><option value="draft">下書き</option><option value="excluded">対象外（旧データ）</option></select></label><label id="kw-enabled-wrap" hidden>対策対象<select id="kw-enabled"><option value="">すべて</option><option value="active">対策対象</option><option value="paused">保留</option></select></label><button type="button" class="kw-button" id="kw-reset">条件をリセット</button></div>
         <p id="kw-scope" class="kw-help">未取り込みの数値は「—」で表示します。</p>
         <div id="kw-bulk" class="kw-bulk" hidden><strong id="kw-selected-count"></strong><label>対応状況<select id="kw-bulk-status"><option value="">変更しない</option>{options(STATUS).map(([v,l])=><option value={v}>{l}</option>)}</select></label><label>優先度<select id="kw-bulk-priority"><option value="">変更しない</option>{options(PRIORITY).map(([v,l])=><option value={v}>{l}</option>)}</select></label><button class="kw-button kw-primary" type="button" id="kw-bulk-apply">選択した地域に適用</button><button class="kw-button" type="button" id="kw-deselect">選択を解除</button></div>
         <div class="kw-table-wrap" tabindex="0" role="region" aria-label="管理一覧。横にスクロールできます"><table class="kw-table"><thead id="kw-thead"></thead><tbody id="kw-tbody"></tbody></table><p class="kw-empty" id="kw-empty" hidden>条件に一致するデータがありません。検索条件を変更してください。</p></div>
         <footer class="kw-pagination"><p id="kw-results" aria-live="polite">読み込み中</p><div><label>表示件数<select id="kw-size"><option value="25">25件</option><option value="50">50件</option><option value="100">100件</option></select></label><button id="kw-prev" class="kw-button" type="button">前へ</button><span id="kw-page"></span><button id="kw-next" class="kw-button" type="button">次へ</button></div></footer>
       </section>
+      <AnalyticsPanel />
       <section id="kw-data-view" aria-labelledby="kw-data-title" hidden>
         <div class="kw-section-head"><div><h2 id="kw-data-title">検索実績・データの入出力</h2><p>CSVを確認してから保存します。期間の異なる数値は合算しません。</p></div><a class="kw-button" href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer">Search Consoleを開く ↗</a></div>
         <div class="kw-data-grid">
@@ -73,13 +79,13 @@ const options=(record)=>Object.entries(record);
             </form>
             <div id="kw-import-preview" class="kw-import-preview" hidden><h3>取り込み内容</h3><p id="kw-import-summary"></p><p id="kw-import-replace" class="kw-help"></p><ul id="kw-import-rejected"></ul><button id="kw-rejected-export" type="button" class="kw-button" hidden>対象外の行をCSV出力</button><div class="kw-table-wrap"><table class="kw-table"><thead><tr><th>ページ / クエリ</th><th>クリック</th><th>表示回数</th><th>平均順位</th></tr></thead><tbody id="kw-import-rows"></tbody></table></div><p class="kw-help">確認表は先頭5行です。</p><button type="button" id="kw-import-save" class="kw-button kw-primary">この実績を保存</button></div>
           </section>
-          <section class="kw-panel"><h3>バックアップ・復元</h3><p>作業メモ、追加キーワード、検索実績を1つのJSONファイルに保存します。</p><button type="button" id="kw-backup-data" class="kw-button">JSONバックアップを保存</button><p class="kw-help">このブラウザのデータは、閲覧履歴の削除や端末の変更で失われる場合があります。編集データはサーバーへ送信されません。定期的にバックアップしてください。</p>
+          <section class="kw-panel"><h3>バックアップ・復元</h3><p>作業メモ、追加キーワード、検索・アクセス実績を1つのJSONファイルに保存します。</p><button type="button" id="kw-backup-data" class="kw-button">JSONバックアップを保存</button><p class="kw-help">このブラウザのデータは、閲覧履歴の削除や端末の変更で失われる場合があります。編集データはサーバーへ送信されません。定期的にバックアップしてください。</p>
             <form id="kw-restore-form"><label>復元するJSONファイル<input type="file" id="kw-restore-file" accept=".json,application/json" required /></label><button type="submit" class="kw-button">復元内容を確認</button></form>
             <div id="kw-restore-preview" class="kw-import-preview" hidden><p id="kw-restore-summary"></p><p>現在の編集内容と検索実績を置き換えます。必要なデータを先にバックアップしてください。</p><button type="button" class="kw-button kw-primary" id="kw-restore-save">このバックアップを復元</button></div>
           </section>
         </div>
         <section class="kw-panel"><h3>保存した検索実績</h3><p class="kw-help">同じ期間・条件・集計軸の再取り込みは置換します。数値はCSV内の行の合計で、Search Consoleの画面合計と異なる場合があります。</p><div id="kw-report-history" class="kw-history"></div></section>
-        <details class="kw-help-details"><summary>運用の進め方・数値の読み方</summary><ol><li>地域・ページから優先度、担当者、次の作業と期限を設定します。</li><li>標準5種類はキーワード候補です。地域ごとの需要を調べ、不要な候補は保留にし、実際の検索語を追加します。</li><li>公開後は同じ期間幅・条件でSearch Console CSVを取り込みます。平均掲載順位は集計値であり固定の順位ではありません。</li><li>表示回数があるのにクリックされないページ、改善中のページを絞り込み、本文や見出しを改善します。</li><li>このツールで対応済みと記録しても、LP本文や公開状態は変更されません。</li></ol><p>検索順位の自動取得・クラウド同期は未接続です。CSVにない値は未取得と扱い、インデックス状態は手動確認します。</p><a href="https://support.google.com/webmasters/answer/7576553?hl=ja" target="_blank" rel="noopener noreferrer">Googleの指標説明を読む ↗</a></details>
+        <details class="kw-help-details"><summary>運用の進め方・数値の読み方</summary><ol><li>地域・ページから優先度、担当者、次の作業と期限を設定します。</li><li>標準5種類はキーワード候補です。地域ごとの需要を調べ、不要な候補は保留にし、実際の検索語を追加します。</li><li>公開後は同じ期間幅・条件でSearch Console CSVを取り込みます。平均掲載順位は集計値であり固定の順位ではありません。</li><li>表示回数があるのにクリックされないページ、改善中のページを絞り込み、本文や見出しを改善します。</li><li>このツールで対応済みと記録しても、LP本文や公開状態は変更されません。</li></ol><p>「アクセス・問い合わせ」でGoogleの読み取り専用接続またはGA4 CSVの取り込みを利用できます。インデックス状態は手動確認です。町・村・区の旧編集データは「対象外」で保管します。下書きはサイトに公開されていません。公開は内容確認済みの台帳に基づき1日3件以内とし、この画面の作業状況を変えても公開されません。</p><a href="https://support.google.com/webmasters/answer/7576553?hl=ja" target="_blank" rel="noopener noreferrer">Googleの指標説明を読む ↗</a></details>
       </section>
     </main>
   </div>
