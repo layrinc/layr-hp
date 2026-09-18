@@ -25,7 +25,7 @@ const options=(record)=>Object.entries(record);
 </head>
 <body class="seo-app">
   <a class="kw-skip" href="#kw-main">管理一覧へ</a>
-  <header class="kw-top"><a href="/tools/ltori-seo/" class="kw-brand">LAYR <span>SEO WORKSPACE</span></a><span id="kw-save-state" role="status">データを読み込み中</span></header>
+  <header class="kw-top"><a href="/" class="kw-brand">LAYR <span>SEO WORKSPACE</span></a><div class="kw-account"><span id="kw-save-state" role="status">データを読み込み中</span><span id="kw-identity" role="status">認証を確認中</span><a id="kw-logout" class="kw-button" href="/cdn-cgi/access/logout">ログアウト</a></div></header>
   <div class="kw-shell">
     <aside class="kw-sidebar">
       <p class="kw-label">{service.name} / 採用LINE</p>
@@ -80,6 +80,7 @@ const options=(record)=>Object.entries(record);
             <div id="kw-import-preview" class="kw-import-preview" hidden><h3>取り込み内容</h3><p id="kw-import-summary"></p><p id="kw-import-replace" class="kw-help"></p><ul id="kw-import-rejected"></ul><button id="kw-rejected-export" type="button" class="kw-button" hidden>対象外の行をCSV出力</button><div class="kw-table-wrap"><table class="kw-table"><thead><tr><th>ページ / クエリ</th><th>クリック</th><th>表示回数</th><th>平均順位</th></tr></thead><tbody id="kw-import-rows"></tbody></table></div><p class="kw-help">確認表は先頭5行です。</p><button type="button" id="kw-import-save" class="kw-button kw-primary">この実績を保存</button></div>
           </section>
           <section class="kw-panel"><h3>バックアップ・復元</h3><p>作業メモ、追加キーワード、検索・アクセス実績を1つのJSONファイルに保存します。</p><button type="button" id="kw-backup-data" class="kw-button">JSONバックアップを保存</button><p class="kw-help">このブラウザのデータは、閲覧履歴の削除や端末の変更で失われる場合があります。編集データはサーバーへ送信されません。定期的にバックアップしてください。</p>
+            <p class="kw-help">以前の管理画面を使っていた場合は、<a href="https://layr.co.jp/tools/ltori-seo/" target="_blank" rel="noopener noreferrer">旧URLで移行用JSONを保存 ↗</a>し、ここで復元できます。ログインによる端末間の自動同期はありません。共有端末ではブラウザのプロファイルを分けてください。</p>
             <form id="kw-restore-form"><label>復元するJSONファイル<input type="file" id="kw-restore-file" accept=".json,application/json" required /></label><button type="submit" class="kw-button">復元内容を確認</button></form>
             <div id="kw-restore-preview" class="kw-import-preview" hidden><p id="kw-restore-summary"></p><p>現在の編集内容と検索実績を置き換えます。必要なデータを先にバックアップしてください。</p><button type="button" class="kw-button kw-primary" id="kw-restore-save">このバックアップを復元</button></div>
           </section>
@@ -98,6 +99,9 @@ const options=(record)=>Object.entries(record);
   </dialog>
   <dialog id="kw-report-dialog" class="kw-dialog kw-report-dialog" aria-labelledby="kw-report-title"><div class="kw-dialog-head"><h2 id="kw-report-title">取り込み済み実績</h2><button type="button" class="kw-button" id="kw-report-close">閉じる</button></div><p id="kw-report-detail"></p><label>実績内を検索<input type="search" id="kw-report-search" placeholder="地域名やクエリで検索" /></label><div class="kw-table-wrap" tabindex="0" role="region" aria-label="検索実績"><table class="kw-table"><thead><tr><th>地域 / クエリ</th><th>クリック</th><th>表示回数</th><th>CTR</th><th>平均順位</th></tr></thead><tbody id="kw-report-rows"></tbody></table></div><footer class="kw-pagination"><p id="kw-report-count"></p><div><button type="button" class="kw-button" id="kw-report-prev">前へ</button><button type="button" class="kw-button" id="kw-report-next">次へ</button></div></footer></dialog>
   <script is:inline type="application/json" id="kw-catalog" set:html={JSON.stringify(catalog).replaceAll('<','\\u003c')}></script>
-  <script>import '../../../lib/seo-manager/app.mjs';</script>
+  <script>
+    import {startAccessSession} from '../../../lib/seo-manager/session.mjs';
+    if (await startAccessSession()) await import('../../../lib/seo-manager/app.mjs');
+  </script>
 </body>
 </html>

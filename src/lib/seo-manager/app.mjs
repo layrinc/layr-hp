@@ -72,7 +72,7 @@ function render(){
     if(keyword)tr.append(text('td',rate(metric),'kw-number'));
     tr.append(text('td',format(metric?.position),'kw-number'));
     if(!keyword){const note=text('td',edit.nextAction||'未設定','kw-row-note');note.append(text('small',edit.dueDate?`${edit.dueDate}${edit.dueDate<today()&&edit.status!=='done'?' · 期限超過':''}`:'期限なし'));tr.append(note);}
-    const anchor=text('td','');anchor.append(page.publication==='published'?link('確認 ↗',page.path):text('span',page.publication==='excluded'?'対象外':'下書き'));tr.append(anchor);fragment.append(tr);
+    const anchor=text('td','');anchor.append(page.publication==='published'?link('確認 ↗',`https://layr.co.jp${page.path}`):text('span',page.publication==='excluded'?'対象外':'下書き'));tr.append(anchor);fragment.append(tr);
   }
   $('kw-tbody').replaceChildren(fragment);$('kw-empty').hidden=!!filtered.length;
   $('kw-results').textContent=`${format(filtered.length)}件中 ${filtered.length?format((pageNumber-1)*size+1):0}〜${format(Math.min(pageNumber*size,filtered.length))}件`;$('kw-page').textContent=`${pageNumber} / ${pages}`;$('kw-prev').disabled=pageNumber<=1;$('kw-next').disabled=pageNumber>=pages;
@@ -92,7 +92,7 @@ function renderEditorKeywords(){
 }
 function openEditor(id){
   editorPage=id;const page=byId.get(id),edit=pageEdit(state,id);editorCustom=structuredClone(state.customKeywords);editorPaused=new Set(state.pausedKeywords);editorDirty=false;
-  $('kw-editor-title').textContent=page.fullName;$('kw-editor-path').textContent=`https://layr.co.jp${page.path}`;$('kw-editor-links').replaceChildren(...(page.publication==='published'?[link('この環境のLPを確認 ↗',page.path),link('本番URLを確認 ↗',`https://layr.co.jp${page.path}`)]:[text('span',page.publication==='excluded'?'公開対象外です。以前の編集データを保管しています。':'下書きです。内容を確認し、公開台帳へ追加してから反映します。')]));
+  $('kw-editor-title').textContent=page.fullName;$('kw-editor-path').textContent=`https://layr.co.jp${page.path}`;$('kw-editor-links').replaceChildren(...(page.publication==='published'?[link('公開中のLPを確認 ↗',`https://layr.co.jp${page.path}`)]:[text('span',page.publication==='excluded'?'公開対象外です。以前の編集データを保管しています。':'下書きです。内容を確認し、公開台帳へ追加してから反映します。')]));
   for(const [key,field] of Object.entries({status:'status',priority:'priority',index:'indexStatus',owner:'owner',due:'dueDate',action:'nextAction',notes:'notes'}))$(`kw-edit-${key}`).value=edit[field];
   $('kw-new-query').value='';$('kw-editor-error').hidden=true;renderEditorKeywords();$('kw-editor-save').disabled=!db||!loaded;$('kw-editor').showModal();
 }

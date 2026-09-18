@@ -25,7 +25,7 @@ export function mountAnalytics({catalog,getState,save,download}) {
     $('analytics-scope').textContent=r?`${r.start}〜${r.end} / GA4：${r.gaTimezone} / GSC：America/Los_Angeles。取得：${new Date(r.importedAt).toLocaleString('ja-JP')}。${comparison()?`検索条件：${comparison().searchType} / ${comparison().filter}`:'検索条件：ウェブ・全デバイス・全ての国（API取得時）'}`:'実績は未取得です。公開直後や行が返らない地域を0件と表示しません。';
     const rows=joinedMetrics(r,comparison(),catalog);
     $('analytics-rows').replaceChildren(...rows.map(row=>{
-      const tr=document.createElement('tr'),name=node('td',''),a=node('a',row.page.fullName);a.href=row.page.path;a.target='_blank';a.rel='noopener noreferrer';name.append(a);tr.append(name);
+      const tr=document.createElement('tr'),name=node('td',''),a=node('a',row.page.fullName);a.href=`https://layr.co.jp${row.page.path}`;a.target='_blank';a.rel='noopener noreferrer';name.append(a);tr.append(name);
       for(const key of ['clicks','impressions','position','views','users','sessions','inquiries']){const td=node('td',number(row[key]));td.className='kw-number';tr.append(td);}return tr;
     }));
     $('analytics-notes').replaceChildren(...(r?.notes||[]).map(n=>node('li',n)));

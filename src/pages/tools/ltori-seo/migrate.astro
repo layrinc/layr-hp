@@ -1,0 +1,59 @@
+---
+import '../../../styles/style.css';
+import '../../../styles/seo-manager.css';
+---
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <title>SEO管理データの移行｜LAYR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body class="seo-app">
+  <header class="kw-top"><a href="https://seo.layr.co.jp/" class="kw-brand">LAYR <span>SEO WORKSPACE</span></a><div class="kw-account"><span id="kw-identity" role="status">認証を確認中</span><a id="kw-logout" class="kw-button" href="/cdn-cgi/access/logout">ログアウト</a></div></header>
+  <main class="kw-main kw-access-page">
+    <p class="kw-label">WORKSPACE TRANSFER</p>
+    <h1>新しい管理画面へ移行</h1>
+    <p class="kw-help">以前と同じブラウザでデータを保存し、新しい管理画面に復元してください。</p>
+    <ol class="kw-transfer-steps">
+      <li>この画面で「移行用JSONを保存」を押します。作業メモ・追加キーワード・取り込み済み実績をまとめて保存します。</li>
+      <li>新しい管理画面でメール認証を行います。</li>
+      <li>「実績・入出力」→「バックアップ・復元」でJSONを選び、内容を確認して復元します。</li>
+    </ol>
+    <div class="kw-account"><button id="kw-migrate-export" type="button" class="kw-button kw-primary" disabled>移行用JSONを保存</button><a class="kw-button" href="https://seo.layr.co.jp/">新しい管理画面を開く ↗</a></div>
+    <p id="kw-migrate-message" class="kw-notice" role="status">認証後に保存済みデータを確認します。</p>
+    <p class="kw-help">元のデータは削除しません。Googleの接続設定と認証は新しい管理画面で設定し直してください。ログアウト後も作業データはブラウザに残るため、共有端末ではブラウザのプロファイルを分けてください。</p>
+  </main>
+  <script>
+    import {startAccessSession} from '../../../lib/seo-manager/session.mjs';
+    import {openDatabase, loadState} from '../../../lib/seo-manager/storage.mjs';
+    if (await startAccessSession()) {
+      const message = document.getElementById('kw-migrate-message');
+      const button = document.getElementById('kw-migrate-export');
+      try {
+        const db = await openDatabase();
+        const initial = await loadState(db);
+        if (!initial) message.textContent = 'このブラウザには旧URLの保存データがありません。新しい管理画面から開始できます。';
+        else {
+          message.textContent = '保存済みデータが見つかりました。移行用JSONを保存してください。';
+          button.removeAttribute('disabled');
+          button.addEventListener('click', async () => {
+            try {
+              const state = await loadState(db);
+              if (!state) throw new Error('保存データが見つかりません。空のファイルは出力していません。');
+              const url = URL.createObjectURL(new Blob([JSON.stringify({...state, exportedAt: new Date().toISOString()})], {type: 'application/json'}));
+              const a = document.createElement('a'); a.href = url; a.download = `eltori-seo-transfer-${new Date().toISOString().slice(0,10)}.json`;
+              document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(url), 10000);
+              message.textContent = '移行用JSONを保存しました。新しい管理画面で復元してください。';
+            } catch (error) { message.textContent = error instanceof Error ? error.message : '保存できませんでした。'; }
+          });
+        }
+      } catch { message.textContent = 'ブラウザの保存データを読み込めませんでした。以前使用していたブラウザ・プロファイルで開き直してください。'; }
+    }
+  </script>
+</body>
+</html>
