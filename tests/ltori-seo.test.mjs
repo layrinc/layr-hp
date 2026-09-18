@@ -30,6 +30,7 @@ test('every regional LP has its own canonical, metadata, h1, schema, sitemap and
   const sitemap = readFileSync(new URL('sitemap-0.xml', root), 'utf8');
   const titles = new Set(), descriptions = new Set(), checkedLinks = new Set();
   const base = readPage('/service/ltori/');
+  assert.ok(base.includes('href="/service/ltori/area/"'), 'generic service LP still links to the area directory');
   const baseSections = [...base.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(m => m[1]);
   for (const area of regionalAreas) {
     const path = areaPath(area), html = readPage(path);
@@ -51,8 +52,10 @@ test('every regional LP has its own canonical, metadata, h1, schema, sitemap and
     const faq = data.find(d => d['@type'] === 'FAQPage');
     assert.equal(faq.mainEntity.length, service.faqs.length + 3);
     for (const q of faq.mainEntity) { assert.ok(html.includes(q.name)); assert.ok(html.includes(q.acceptedAnswer.text)); }
-    const crumbs = data.find(d => d['@type'] === 'BreadcrumbList').itemListElement;
-    assert.equal(crumbs.at(-1).item, 'https://layr.co.jp' + path);
+    assert.ok(!data.some(d => d['@type'] === 'BreadcrumbList'), path + ' removed regional breadcrumb schema');
+    assert.ok(!html.includes('lt-area-breadcrumb'), path + ' removed breadcrumb row');
+    assert.ok(!html.includes('都道府県・市区町村一覧'), path + ' removed nationwide breadcrumb label');
+    assert.ok(!html.includes('href="/service/ltori/area/"'), path + ' no nationwide links in final CTA or footer');
     for (const id of baseSections) assert.ok(html.includes(`id="${id}"`), path + ' existing LP section ' + id);
     for (const [,tag] of html.matchAll(/(<a\b[^>]*data-lt-cta[^>]*>)/g)) {
       const url = new URL(decode(tag.match(/href="([^"]*)"/)[1]), 'https://layr.co.jp');

@@ -6,7 +6,7 @@ import ConsultBanner from './ConsultBanner.astro';
 import AreaLinks from './AreaLinks.astro';
 import RegionalContent from './RegionalContent.astro';
 import {regionalFaqsFor} from '../../lib/ltori-local-content.mjs';
-import { areaPath, areaKey, areaIndexPath, parentPrefecture, consultationHref } from '../../lib/ltori-seo.mjs';
+import { areaPath, areaKey, consultationHref } from '../../lib/ltori-seo.mjs';
 import '../../styles/ltori.css';
 import '../../styles/ltori-area.css';
 
@@ -19,9 +19,6 @@ const description = area ? `${area.fullName}で採用LINEの構築・運用支�
 const consult = consultationHref(pageSource);
 const breadcrumbs = [
   {name:'ホーム', path:'/'}, {name:'サービス', path:'/service/'}, {name:service.name, path:service.path},
-  ...(area ? [{name:'都道府県・市区町村一覧',path:areaIndexPath},
-    ...(area.kind === 'municipality' ? [{name:area.prefectureName,path:areaPath(parentPrefecture(area))}] : []),
-    {name:area.name,path:pagePath}] : []),
 ];
 const nav = [[`${service.name}とは`, '#about'], ['サービス内容', '#service'], ['料金プラン', '#plan'], ['導入の流れ', '#flow'], ['よくある質問', '#faq']];
 const scenarios = [
@@ -48,10 +45,10 @@ const flow = [
 const jsonLd = [
   {'@context':'https://schema.org','@type':'Service', name:area ? `${area.fullName}の${service.descriptor}｜${service.name}` : service.name, serviceType:service.descriptor, description, url:new URL(pagePath,Astro.site).href, provider:{'@id':'https://layr.co.jp/#organization'}, areaServed:area ? {'@type':'AdministrativeArea',name:area.fullName} : 'JP'},
   {'@context':'https://schema.org','@type':'FAQPage',mainEntity:faqs.map(f=>({'@type':'Question',name:f.q,acceptedAnswer:{'@type':'Answer',text:f.a}}))},
-  {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:breadcrumbs.map((crumb,i)=>({'@type':'ListItem',position:i+1,name:crumb.name,item:new URL(crumb.path,Astro.site).href}))}
+  ...(!area ? [{'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:breadcrumbs.map((crumb,i)=>({'@type':'ListItem',position:i+1,name:crumb.name,item:new URL(crumb.path,Astro.site).href}))}] : [])
 ];
 ---
-<Base title={title} description={description} jsonLd={jsonLd} hideHeader={true} ogImage="/service/ltori/isometric-hero.webp">
+<Base title={title} description={description} jsonLd={jsonLd} hideHeader={true} hideLtoriAreaLink={Boolean(area)} ogImage="/service/ltori/isometric-hero.webp">
   <div class:list={['ltori', {'lt-regional': area}]} id="ltori-top" data-lt-source={pageSource}>
     <a class="lt-skip" href="#ltori-content">本文へ移動</a>
     <header class="lt-header">
@@ -61,7 +58,6 @@ const jsonLd = [
       <details class="lt-mobile-menu"><summary aria-label="ナビゲーションメニュー"><span></span><span></span><span class="lt-menu-label">MENU</span></summary><nav aria-label="モバイルナビゲーション">{nav.map(([label,href])=><a href={href}>{label}<span aria-hidden="true">↗</span></a>)}<a href={consult} data-lt-cta="menu">無料相談はこちら</a></nav></details>
     </header>
     <div id="ltori-content">
-      {area && <nav class="lt-area-breadcrumb lt-wrap" aria-label="パンくずリスト"><ol>{breadcrumbs.map((crumb,i)=><li>{i === breadcrumbs.length-1 ? <span aria-current="page">{crumb.name}</span> : <a href={crumb.path}>{crumb.name}</a>}</li>)}</ol></nav>}
       <section class="lt-hero" aria-labelledby="lt-hero-title">
         <div class="lt-hero-grid lt-wrap">
           <div class="lt-hero-copy">
@@ -174,7 +170,7 @@ const jsonLd = [
       <section class="lt-section lt-flow" id="flow"><div class="lt-wrap"><div class="lt-section-heading"><p class="lt-eyebrow">Flow</p><h2>ご相談から運用改善まで、<br /><mark><b>5</b>つのステップ。</mark></h2></div><ol class="lt-flow-list">{flow.map(([h,p],i)=><li><span class="lt-flow-number">0{i+1}</span><div><h3>{h}</h3><p>{p}</p></div></li>)}</ol></div></section>
       <section class="lt-section lt-faq-section" id="faq"><div class="lt-wrap lt-faq-layout"><div class="lt-section-heading"><p class="lt-eyebrow">FAQ</p><h2>{area && <>{area.fullName}の採用LINE<br /></>}よくある<br class="lt-desktop-break" />ご質問</h2><img src="/service/ltori/isometric-support.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="" /></div><div class="lt-faq-list">{faqs.map(f=><details><summary><span class="lt-q">Q.</span><span>{f.q}</span><span class="lt-faq-toggle" aria-hidden="true">+</span></summary><div class="lt-answer"><span>A.</span><p>{f.a}</p></div></details>)}</div></div></section>
       {area && <RegionalContent area={area} section="provider" />}
-      <section class="lt-final" id="contact"><div class="lt-wrap"><ConsultBanner placement="bottom" consultHref={consult} areaName={area?.fullName} /><p class="lt-operated">{service.name}は、{company.name}が運営する{service.descriptor}サービスです。</p><p><a class="lt-text-link" href="/service/ltori/area/">都道府県・市区町村別の採用LINE構築・運用支援 <span aria-hidden="true">↗</span></a></p><a class="lt-text-link" href="/service/">LAYRのサービス一覧へ <span aria-hidden="true">↗</span></a></div></section>
+      <section class="lt-final" id="contact"><div class="lt-wrap"><ConsultBanner placement="bottom" consultHref={consult} areaName={area?.fullName} /><p class="lt-operated">{service.name}は、{company.name}が運営する{service.descriptor}サービスです。</p>{!area && <p><a class="lt-text-link" href="/service/ltori/area/">都道府県・市区町村別の採用LINE構築・運用支援 <span aria-hidden="true">↗</span></a></p>}<a class="lt-text-link" href="/service/">LAYRのサービス一覧へ <span aria-hidden="true">↗</span></a></div></section>
     </div>
     <div class="lt-mobile-sticky"><a href={service.source} target="_blank" rel="noopener" data-lt-doc>サービス資料</a><a href={consult} data-lt-cta="sticky">無料相談をする <span aria-hidden="true">↗</span></a></div>
   </div>

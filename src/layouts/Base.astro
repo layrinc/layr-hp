@@ -23,9 +23,11 @@ interface Props {
   jsonLd?: object | object[] | null;
   /** trueで共通ヘッダーを出さない（独立LP用。ページ側で専用ヘッダーを持つ） */
   hideHeader?: boolean;
+  /** 地域別の採用LINE LPでは全国一覧へのフッターリンクを出さない */
+  hideLtoriAreaLink?: boolean;
 }
 
-const { title, description, ogType = 'website', ogImage, robots, jsonLd = null, hideHeader = false } = Astro.props;
+const { title, description, ogType = 'website', ogImage, robots, jsonLd = null, hideHeader = false, hideLtoriAreaLink = false } = Astro.props;
 
 // ===== デザイン設定（/admin →「サイト設定 → デザイン設定」） =====
 // 英字見出しフォントの選択肢。追加したい場合はここにマッピングを足す。
@@ -213,7 +215,7 @@ const favicon = '/favicon-96.png';
         <!-- 各サービスは「サービス一覧」の下位。段差（インデント）で階層を示す -->
         <li class="ft-child"><a href="/service/line/">LINE構築・運用マーケティング</a></li>
         <li class="ft-child"><a href="/service/ltori/">採用特化LINE支援「{ltoriService.name}」</a></li>
-        <li class="ft-child"><a href="/service/ltori/area/">採用LINEの全国対応エリア</a></li>
+        {!hideLtoriAreaLink && <li class="ft-child"><a href="/service/ltori/area/">採用LINEの全国対応エリア</a></li>}
         <li class="ft-child"><a href="/service/ad/">広告運用代行</a></li>
         <li class="ft-child"><a href="/service/ai/">{aiService.brand} {aiService.byline}</a></li>
       </ul>
