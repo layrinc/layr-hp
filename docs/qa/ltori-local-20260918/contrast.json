@@ -1,0 +1,32 @@
+[
+  {
+    "text": "--lt-green-ink",
+    "background": "--lt-white",
+    "ratio": 5.29
+  },
+  {
+    "text": "--lt-green-ink",
+    "background": "--lt-gray",
+    "ratio": 4.88
+  },
+  {
+    "text": "--lt-green-ink",
+    "background": "--lt-mint",
+    "ratio": 4.84
+  },
+  {
+    "text": "--lt-ink",
+    "background": "--lt-white",
+    "ratio": 15.24
+  },
+  {
+    "text": "--lt-ink",
+    "background": "--lt-gray",
+    "ratio": 14.05
+  },
+  {
+    "text": "--lt-ink",
+    "background": "--lt-mint",
+    "ratio": 13.94
+  }
+]

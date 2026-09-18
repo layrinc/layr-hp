@@ -1,0 +1,27 @@
+[
+  {
+    "foreground": "ink",
+    "background": "paper",
+    "ratio": 14.79
+  },
+  {
+    "foreground": "muted",
+    "background": "bg",
+    "ratio": 8.62
+  },
+  {
+    "foreground": "greenInk",
+    "background": "paper",
+    "ratio": 5.36
+  },
+  {
+    "foreground": "greenInk",
+    "background": "pale",
+    "ratio": 4.87
+  },
+  {
+    "foreground": "paper",
+    "background": "cta",
+    "ratio": 4.81
+  }
+]

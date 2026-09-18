@@ -1,0 +1,34 @@
+<section id="kw-analytics-view" aria-labelledby="analytics-title" hidden>
+  <div class="kw-section-head"><div><h2 id="analytics-title">アクセス・問い合わせ</h2><p>検索から訪問、相談フォームの送信完了まで。同じ期間で地域別に確認します。</p></div></div>
+  <section class="kw-panel">
+    <h3>期間を指定して取得</h3>
+    <div class="kw-subfilters"><label>開始日<input id="analytics-start" type="date" required /></label><label>終了日<input id="analytics-end" type="date" required /></label><button type="button" class="kw-button kw-primary" id="analytics-sync" disabled>Googleから一括取得</button></div>
+    <p id="analytics-connection-status" class="kw-help" role="status">Google未接続。接続設定を開くか、下のCSV取り込みを利用してください。</p>
+    <details id="analytics-settings" class="kw-help-details"><summary>Googleの接続設定</summary>
+      <div class="kw-form-grid"><label>Google OAuthクライアントID<input id="analytics-client-id" type="text" autocomplete="off" placeholder="…apps.googleusercontent.com" /></label><label>GA4プロパティID（数字）<input id="analytics-property" inputmode="numeric" placeholder="例：123456789" /></label><label>Search Consoleプロパティ<select id="analytics-site"><option value="sc-domain:layr.co.jp">ドメイン：layr.co.jp</option><option value="https://layr.co.jp/">URL：https://layr.co.jp/</option></select></label></div>
+      <div class="kw-subfilters"><button type="button" class="kw-button" id="analytics-connect">設定を保存してGoogleに接続</button><button type="button" class="kw-button" id="analytics-disconnect" disabled>接続を終了</button></div>
+      <p class="kw-help">このサイトの測定IDは G-J7EENJ6QV2 です。プロパティIDはGA4の管理画面で確認します。接続するGoogleアカウントにGA4とSearch Consoleの閲覧権限が必要です。</p>
+      <ol><li>Google Cloudのプロジェクトで「Google Analytics Data API」「Google Search Console API」を有効にします。</li><li>Google Auth Platformで同意画面とウェブアプリ用OAuthクライアントを設定します。承認済みJavaScript生成元は <code>https://layr.co.jp</code> です。テスト公開中は使用するアカウントをテストユーザーに追加します。</li><li>クライアントIDとGA4プロパティIDを入力し、読み取り権限でGoogleに接続します。クライアントシークレットの入力は不要です。</li></ol>
+      <p class="kw-help">Googleへ直接読み取りリクエストを送ります。アクセストークンはこのタブのメモリ内にのみ保持し、バックアップには含めません。再読み込み・期限切れ時は再接続してください。取得結果はこのブラウザに保存します。</p>
+      <a href="https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid" target="_blank" rel="noopener noreferrer">Googleの初期設定ガイド ↗</a>
+    </details>
+  </section>
+  <p id="analytics-message" class="kw-notice" role="status" hidden></p>
+  <div class="kw-subfilters"><label>保存したアクセス実績<select id="analytics-report"><option value="">実績は未取得</option></select></label><label>組み合わせるSearch Console実績<select id="analytics-gsc"><option value="">一括取得した検索実績を使用</option></select></label><button type="button" id="analytics-export" class="kw-button">一覧をCSV出力</button><button type="button" id="analytics-delete" class="kw-button">選択した実績を削除</button></div>
+  <p id="analytics-scope" class="kw-help">未取得は「—」。ゼロ件として扱いません。</p>
+  <div class="kw-table-wrap" tabindex="0" role="region" aria-label="地域別アクセス・問い合わせ。横にスクロールできます"><table class="kw-table"><thead><tr><th>公開中の地域LP</th><th>検索クリック</th><th>検索表示回数</th><th>平均順位</th><th>PV</th><th>総ユーザー数</th><th>流入セッション</th><th>問い合わせ完了</th></tr></thead><tbody id="analytics-rows"></tbody></table></div>
+  <ul id="analytics-notes" class="kw-help"></ul>
+  <details class="kw-help-details"><summary>指標の意味・問い合わせの数え方</summary><ul>
+    <li>検索クリック・表示回数・平均順位：Google Search Consoleのウェブ検索実績。検索順位は期間内の平均です。</li>
+    <li>PV：GA4の表示回数。同じ人の複数回閲覧を含みます。総ユーザー数：そのページを利用した人数。地域をまたいだ人数は重複するため合計しません。</li>
+    <li>流入セッション：その地域LPを入口にした訪問数。Google検索以外からの流入も含み、検索クリックとは一致しません。</li>
+    <li>問い合わせ完了：地域LPの相談ボタンから進み、フォームの送信が成功した回数。LINEボタンのクリックやメールの送信は含みません。専用イベント <code>ltori_inquiry_complete</code> を使い、設置前の件数を遡って取得することはできません。</li>
+    <li>同じ人が再度送信した場合は別の送信として記録します。CRMの有効商談数・契約数とは異なります。</li>
+    <li>GSCの日付は太平洋時間、GA4はプロパティのタイムゾーンです。同じ日付指定でも時間の区切りが異なります。反映待ち・計測拒否・広告ブロックなどにより、実際のアクセスと差が生じます。</li>
+  </ul></details>
+  <section class="kw-panel"><h3>GA4のCSVを取り込む</h3><p class="kw-help">API接続前でも使用できます。GA4の探索で、行に「ページパスとスクリーンクラス」、値に「表示回数」「総ユーザー数」を設定し、日付・端末別の内訳を外してCSV出力してください。期間は上の開始日・終了日と揃えます。一般のイベント数を問い合わせ件数として取り込むことはありません。</p>
+    <form id="analytics-csv-form"><label>CSVファイル（UTF-8・20MBまで）<input id="analytics-csv-file" type="file" accept=".csv,text/csv" required /></label><button type="submit" class="kw-button">取り込み内容を確認</button><button type="button" id="analytics-csv-template" class="kw-button">追加指標を含むCSV書式</button></form>
+    <div id="analytics-csv-preview" class="kw-import-preview" hidden><p id="analytics-csv-summary"></p><button type="button" id="analytics-csv-save" class="kw-button kw-primary">このアクセス実績を保存</button></div>
+    <p class="kw-help">書式の Sessions はLPを入口にしたセッション、Inquiries は専用イベントの送信完了数です。未取得の列は空欄にしてください。同じ期間・プロパティのCSV再取り込みは置換します。取得結果は「バックアップを保存」のJSONに含まれます。</p>
+  </section>
+</section>

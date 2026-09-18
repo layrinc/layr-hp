@@ -1,0 +1,74 @@
+[
+  {
+    "gate": "G1",
+    "before": 200,
+    "after": 200,
+    "pass": true
+  },
+  {
+    "gate": "G2",
+    "before": 165,
+    "after": 165,
+    "pass": true
+  },
+  {
+    "gate": "G3",
+    "before": 72,
+    "after": 72,
+    "pass": true
+  },
+  {
+    "gate": "G4",
+    "before": 0,
+    "after": 0,
+    "pass": true
+  },
+  {
+    "gate": "G5",
+    "before": 39,
+    "after": 39,
+    "pass": true
+  },
+  {
+    "gate": "G6",
+    "before": 41,
+    "after": 41,
+    "pass": true
+  },
+  {
+    "gate": "G7",
+    "before": 151,
+    "after": 151,
+    "pass": true
+  },
+  {
+    "gate": "G8",
+    "before": 47,
+    "after": 47,
+    "pass": true
+  },
+  {
+    "gate": "G9",
+    "before": 24,
+    "after": 24,
+    "pass": true
+  },
+  {
+    "gate": "G10",
+    "before": 29,
+    "after": 29,
+    "pass": true
+  },
+  {
+    "gate": "G16",
+    "before": 2,
+    "after": 2,
+    "pass": true
+  },
+  {
+    "gate": "G17",
+    "before": 0,
+    "after": 0,
+    "pass": true
+  }
+]

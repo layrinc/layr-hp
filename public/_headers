@@ -1,0 +1,7 @@
+/tools/ltori-seo
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store
+
+/tools/ltori-seo/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+  Cache-Control: no-store

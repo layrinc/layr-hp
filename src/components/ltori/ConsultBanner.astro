@@ -1,7 +1,7 @@
 ---
 import service from '../../data/service-ltori.json';
-interface Props { placement: string; }
-const { placement } = Astro.props;
+interface Props { placement: string; consultHref?: string; areaName?: string; }
+const { placement, consultHref = '/contact/?service=ltori', areaName } = Astro.props;
 ---
 <div class="lt-consult-card">
   <div class="lt-consult-art" aria-hidden="true">
@@ -10,10 +10,10 @@ const { placement } = Astro.props;
     <span class="lt-consult-stamp">採用のこと、<br />一緒に考えます。</span>
   </div>
   <div class="lt-consult-bubble">
-    <p class="lt-consult-kicker">まずは、お気軽に。</p>
+    <p class="lt-consult-kicker">{areaName ? `${areaName}の採用担当者さまへ` : 'まずは、お気軽に。'}</p>
     <h2><mark>貴社に合う採用LINE</mark>を<br />一緒につくりませんか？</h2>
     <p>お悩みの整理から、{service.name}がお手伝いします。</p>
-    <a class="lt-button lt-button-large" href="/contact/?service=ltori" data-lt-cta={placement}>
+    <a class="lt-button lt-button-large" href={consultHref} data-lt-cta={placement}>
       <span><small>オンラインでご相談いただけます</small>無料相談をする</span><span class="lt-button-arrow" aria-hidden="true">↗</span>
     </a>
     <a class="lt-doc-link" href={service.source} target="_blank" rel="noopener" data-lt-doc>サービス資料を見る <span aria-hidden="true">↗</span></a>

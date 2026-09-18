@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
+    "prebuild": "node scripts/clean-build.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
