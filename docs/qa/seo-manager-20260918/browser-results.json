@@ -1,0 +1,83 @@
+[
+  {
+    "name": "seo-manager-1280",
+    "width": 1280,
+    "scroll": 1280,
+    "h1": 1,
+    "minFont": 12
+  },
+  {
+    "name": "seo-manager-768",
+    "width": 768,
+    "scroll": 768,
+    "h1": 1,
+    "minFont": 12
+  },
+  {
+    "name": "seo-manager-390",
+    "width": 390,
+    "scroll": 390,
+    "h1": 1,
+    "minFont": 12
+  },
+  {
+    "name": "seo-manager-1440",
+    "width": 1440,
+    "scroll": 1440,
+    "h1": 1,
+    "minFont": 12
+  },
+  {
+    "name": "seo-manager-375",
+    "width": 375,
+    "scroll": 375,
+    "h1": 1,
+    "minFont": 12
+  },
+  {
+    "name": "seo-data-1280",
+    "width": 1280,
+    "scroll": 1280,
+    "h1": 1,
+    "minFont": 12
+  },
+  {
+    "name": "seo-data-768",
+    "width": 768,
+    "scroll": 768,
+    "h1": 1,
+    "minFont": 12
+  },
+  {
+    "name": "seo-data-390",
+    "width": 390,
+    "scroll": 390,
+    "h1": 1,
+    "minFont": 12
+  },
+  {
+    "name": "seo-keywords-1280",
+    "width": 1280,
+    "scroll": 1280,
+    "h1": 1,
+    "minFont": 12
+  },
+  {
+    "name": "seo-editor-1280",
+    "width": 1280,
+    "scroll": 1280,
+    "h1": 1,
+    "minFont": 12
+  },
+  {
+    "name": "seo-editor-390",
+    "width": 390,
+    "scroll": 390,
+    "h1": 1,
+    "minFont": 12
+  },
+  {
+    "behavior": "search/filter/paging, editor persistence, custom/duplicate/paused keywords, bulk edits, stale-tab conflict, page/query CSV scope, repeat-import replacement, JSON restoration, CSV export, empty states, blocked storage, local LP link removal",
+    "passed": true
+  }
+]

@@ -2,7 +2,7 @@
 .lt-area-breadcrumb { padding-top: 20px; padding-bottom: 20px; font-size: 14px; }
 .lt-area-breadcrumb ol { display: flex; flex-wrap: wrap; gap: 8px 12px; padding: 0; margin: 0; list-style: none; }
 .lt-area-breadcrumb li + li::before { content: '›'; margin-right: 12px; }
-.lt-area-breadcrumb a, .lt-area-back a, .lt-area-list a, .lt-area-directory a { color: var(--lt-green-ink); text-underline-offset: 4px; }
+.lt-area-breadcrumb a, .lt-area-list a, .lt-area-directory a { color: var(--lt-green-ink); text-underline-offset: 4px; }
 .ltori.lt-regional .lt-hero-kicker { white-space: normal; }
 .ltori.lt-regional .lt-hero h1 { white-space: normal; overflow-wrap: anywhere; }
 .lt-area-name { display: block; font-size: clamp(26px, 3vw, 44px); line-height: 1.7; }
@@ -11,7 +11,6 @@
 .lt-area-links { background: var(--lt-gray); }
 .lt-area-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 24px; padding: 0; margin: 28px 0 0; list-style: none; }
 .lt-area-list a { display: flex; align-items: center; min-height: 44px; overflow-wrap: anywhere; }
-.lt-area-back { display: flex; flex-wrap: wrap; gap: 20px 32px; margin-top: 32px; }
 .lt-area-directory .lt-area-jump { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 32px; }
 .lt-area-jump a { display: flex; align-items: center; min-height: 44px; }
 .lt-area-directory h1 { font-size: clamp(28px, 4vw, 48px); line-height: 1.6; }
@@ -50,7 +49,6 @@
 .lt-local-town-list li { overflow-wrap: anywhere; }
 .lt-local-coverage-note { margin-top: 24px !important; }
 .ltori .lt-local-source { color: var(--lt-green-ink); text-decoration: underline; text-underline-offset: 4px; }
-.lt-local-related { margin-top: 48px; }
 .lt-local-provider { background: var(--lt-mint); }
 .lt-local-provider-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 48px; align-items: center; }
 .lt-local-provider .lt-local-prose { margin-top: 32px; }

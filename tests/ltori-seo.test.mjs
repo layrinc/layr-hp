@@ -4,7 +4,7 @@ import {readFileSync, existsSync} from 'node:fs';
 import {regionalAreas, municipalityAreas, prefectureAreas, createMunicipalityAreas, areaPath, areaKey, consultationHref, sourceLabels} from '../src/lib/ltori-seo.mjs';
 import master from '../src/data/ltori-area-routes.json' with {type:'json'};
 import service from '../src/data/service-ltori.json' with {type:'json'};
-import {localCoverageFor, relatedAreasFor, industries, townSource} from '../src/lib/ltori-local-content.mjs';
+import {localCoverageFor, industries, townSource} from '../src/lib/ltori-local-content.mjs';
 const root = new URL('../dist/', import.meta.url);
 const readPage = path => readFileSync(new URL(path.slice(1) + 'index.html', root), 'utf8');
 const decode = value => value.replaceAll('&amp;', '&');
@@ -111,11 +111,8 @@ test('all regional LPs contain local hiring, industry examples, named coverage a
     if (coverage.kind === 'wards') {
       for (const child of coverage.children) assert.ok(html.includes(`href="${areaPath(child)}"`));
     }
-    for (const related of relatedAreasFor(area)) {
-      assert.equal(related.prefectureSlug, area.prefectureSlug);
-      assert.notEqual(related.code, area.code);
-      assert.ok(html.includes(`href="${areaPath(related)}"`));
-    }
+    assert.ok(!html.includes('ほかの対応地域'), path + ' removed sibling links');
+    assert.ok(!html.includes('class="lt-area-back"'), path + ' removed trailing directory links');
     assert.ok(!html.includes('準備中'), path + ' no empty reference placeholders');
   }
   const base = readPage('/service/ltori/');

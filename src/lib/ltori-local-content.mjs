@@ -36,14 +36,6 @@ export function localPlacesFor(area) {
   return coverage.labels.slice(0,3);
 }
 
-// These are other pages in the same prefecture, not a geographic-neighbor claim.
-export function relatedAreasFor(area) {
-  if (area.kind === 'prefecture') return [];
-  const peers = municipalitiesFor(area.prefectureSlug);
-  const index = peers.findIndex(peer => peer.code === area.code);
-  return Array.from({length:Math.min(6, peers.length - 1)}, (_, offset) => peers[(index + offset + 1) % peers.length]);
-}
-
 export function regionalFaqsFor(area) {
   const places = localPlacesFor(area);
   return [areaFaq(area), {

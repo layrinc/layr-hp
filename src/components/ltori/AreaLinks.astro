@@ -1,10 +1,8 @@
 ---
-import {areaIndexPath, areaPath, parentPrefecture} from '../../lib/ltori-seo.mjs';
-import {localCoverageFor, relatedAreasFor, townSource} from '../../lib/ltori-local-content.mjs';
+import {areaPath} from '../../lib/ltori-seo.mjs';
+import {localCoverageFor, townSource} from '../../lib/ltori-local-content.mjs';
 const {area} = Astro.props;
-const parent = parentPrefecture(area);
 const coverage = localCoverageFor(area);
-const related = relatedAreasFor(area);
 ---
 <section class="lt-section lt-area-links" id="area" aria-labelledby="local-area-title">
   <div class="lt-wrap">
@@ -22,10 +20,5 @@ const related = relatedAreasFor(area);
     </> : <p>町域名の記載がない場合も、勤務地と募集内容をお知らせください。ご希望の運用方法をオンラインで伺います。</p>}
     <p class="lt-local-coverage-note">掲載している地域以外も、{area.fullName}での採用をご相談いただけます。現地での撮影・訪問が必要な場合は、対応可否と費用を個別に確認します。</p>
     {coverage.kind === 'towns' && <p class="lt-note">町域表記の出典：<a class="lt-local-source" href={townSource.sourceUrl} target="_blank" rel="noopener">日本郵便「住所の郵便番号」</a>（{townSource.sourceUpdatedAt}更新）。町域表記の一部を例示しています。</p>}
-    {related.length > 0 && <nav class="lt-local-related" aria-label={`${area.prefectureName}のほかの地域ページ`}><h3>{area.prefectureName}のほかの対応地域</h3><ul class="lt-area-list">{related.map(city=><li><a href={areaPath(city)}>{city.name}の採用LINE</a></li>)}</ul></nav>}
-    <nav class="lt-area-back" aria-label="対応地域の一覧">
-      {area.kind === 'municipality' && <a href={areaPath(parent)}>{parent.name}の採用LINE構築・運用支援</a>}
-      <a href={areaIndexPath}>全国の都道府県・市区町村から探す <span aria-hidden="true">↗</span></a>
-    </nav>
   </div>
 </section>
