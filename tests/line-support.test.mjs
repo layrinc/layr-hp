@@ -42,16 +42,19 @@ for (const route of ['index.html', 'service/line/index.html']) {
       assert.match(markup, /loading="lazy"/);
       assert.match(markup, /decoding="async"/);
     }
-    const zoomLinks = [...html.matchAll(/<a\b[^>]*class="line-support-zoom"[^>]*>/g)];
-    assert.equal(zoomLinks.length, 6);
-    for (const [index, [markup]] of zoomLinks.entries()) {
-      assert.ok(markup.includes(`href="${cards[index].image.src}"`));
-      assert.match(markup, /target="_blank"/);
-      assert.match(markup, /rel="noopener"/);
+    const cardMarkup = [...html.matchAll(/<details class="line-support-card">([\s\S]*?)<\/details>/g)];
+    for (const [index, [, markup]] of cardMarkup.entries()) {
+      assert.ok(markup.includes(`<h3 class="line-support-label">${cards[index].title}</h3>`));
+      assert.ok(markup.includes(cards[index].desc));
+      assert.ok(!markup.includes(cards[index].benefit));
+      assert.match(markup, /詳しく見る/);
     }
+    assert.doesNotMatch(html, /line-support-zoom|掲載画像を拡大/);
     assert.doesNotMatch(html, /class="support-device/);
     assert.doesNotMatch(html, /support-capture-caption/);
     assert.doesNotMatch(html, /資料掲載例｜/);
+    assert.match(html, /class="line-support-grid"[^>]*tabindex="0"[^>]*role="region"[^>]*aria-label="LINE支援内容のカード一覧"/);
+    assert.match(html, /class="line-support-swipe-hint"/);
     assert.equal((html.match(/class="category-faq-item"/g) || []).length, faqs.length);
     assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1);
     const data = [...html.matchAll(/<script\b[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)]
@@ -78,4 +81,17 @@ test('New CSS references only tokens supplied by the site or its local component
   const references = [...css.matchAll(/var\((--[\w-]+)\s*([,)])/g)];
   for (const [, name, delimiter] of references) assert.ok(delimiter === ',' || definitions.has(name), `Undefined token: ${name}`);
   assert.doesNotMatch(css, /#[\da-f]{3,8}\b/i);
+});
+
+test('Only the smartphone layout uses native horizontal scrolling and scroll snap', () => {
+  const css = read('src/styles/line-support.css');
+  const mobile = css.slice(css.indexOf('@media(max-width:600px)'));
+  assert.match(mobile, /grid-auto-flow:column/);
+  assert.match(mobile, /grid-auto-columns:90%/);
+  assert.match(mobile, /overflow-x:auto/);
+  assert.match(mobile, /scroll-snap-type:x mandatory/);
+  assert.match(mobile, /scroll-snap-align:start/);
+  assert.match(css, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
+  assert.match(css, /@media\(max-width:1000px\)\{\.line-support-grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)\}\}/);
+  assert.doesNotMatch(css, /touch-action:pan-x/);
 });
