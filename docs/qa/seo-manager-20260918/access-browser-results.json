@@ -1,0 +1,71 @@
+{
+  "date": "2026-09-18",
+  "passed": true,
+  "views": [
+    {
+      "name": "manager-access-1280",
+      "width": 1280,
+      "scroll": 1280,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "manager-access-768",
+      "width": 768,
+      "scroll": 768,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "manager-access-390",
+      "width": 390,
+      "scroll": 390,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "manager-access-1440",
+      "width": 1440,
+      "scroll": 1440,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "manager-access-375",
+      "width": 375,
+      "scroll": 375,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "manager-transfer-1280",
+      "width": 1280,
+      "scroll": 1280,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "manager-transfer-768",
+      "width": 768,
+      "scroll": 768,
+      "h1": 1,
+      "minFont": 12
+    },
+    {
+      "name": "manager-transfer-390",
+      "width": 390,
+      "scroll": 390,
+      "h1": 1,
+      "minFont": 12
+    }
+  ],
+  "checks": [
+    "signed-in email and logout link",
+    "all LP links use public layr.co.jp domain",
+    "Google OAuth origin updated",
+    "old workspace export and isolated-browser restore preserve work notes",
+    "expired session closes UI; reauthentication retains saved state"
+  ],
+  "authentication": "Local session fixture only. Actual Cloudflare OTP, allowlist and custom domain remain unverified.",
+  "errors": []
+}

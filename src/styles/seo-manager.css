@@ -16,7 +16,12 @@
 .seo-app :focus-visible{outline:2px solid var(--green-ink);outline-offset:3px}
 .kw-skip{position:fixed;top:6px;left:6px;z-index:100;background:var(--paper);padding:12px;transform:translateY(-160%)}
 .kw-skip:focus-visible{transform:none}
-.kw-top{min-height:66px;padding:12px 32px;display:flex;align-items:center;justify-content:space-between;gap:22px;background:var(--paper);border-bottom:1px solid var(--line);font-size:var(--kw-label)}
+.kw-top{min-height:66px;padding:12px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:22px;background:var(--paper);border-bottom:1px solid var(--line);font-size:var(--kw-label)}
+.kw-account{display:flex;align-items:center;flex-wrap:wrap;gap:12px;min-width:0}
+.kw-account>span{overflow-wrap:anywhere;min-width:0;max-width:100%}
+.kw-account .kw-button{font-size:var(--kw-label)}
+.kw-access-page{max-width:800px;margin-inline:auto;display:grid;gap:22px}
+.kw-transfer-steps{padding-left:22px;display:grid;gap:12px;margin:0;list-style:decimal}
 .kw-brand{display:flex;gap:22px;align-items:center;font-size:var(--kw-h2);font-weight:700;text-decoration:none;letter-spacing:var(--track-brand)}
 .kw-brand span{font-size:var(--kw-label);font-weight:500;letter-spacing:var(--track-label);color:var(--muted)}
 .kw-shell{display:grid;grid-template-columns:216px minmax(0,1fr);min-height:calc(100vh - 66px)}
