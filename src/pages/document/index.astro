@@ -3,16 +3,18 @@
  * 資料ダウンロードの一覧ページ（リード獲得用）。
  * 「サービス資料」と「お役立ち資料」をタブで切り替える。
  * 資料の追加・編集は src/data/materials.json を編集する（category: 'service' | 'useful'）。
+ * listed: false の資料は一覧と構造化データから除外するが、個別URLは維持する。
  * file が空の資料は「準備中」として出し、リンクを踏ませない。
  */
 import Base from '../../layouts/Base.astro';
 import materials from '../../data/materials.json';
 import { ISO } from '../../lib/iso-illusts.mjs';
 
-type Material = { id: string; title: string; desc: string; thumb?: string; file?: string; category?: string };
+type Material = { id: string; title: string; desc: string; thumb?: string; file?: string; category?: string; listed?: boolean };
 const all = materials as Material[];
-const service = all.filter((m) => (m.category ?? 'service') === 'service');
-const useful = all.filter((m) => m.category === 'useful');
+const listed = all.filter((m) => m.listed !== false);
+const service = listed.filter((m) => (m.category ?? 'service') === 'service');
+const useful = listed.filter((m) => m.category === 'useful');
 
 const TABS = [
   { key: 'service', label: 'サービス資料', note: '各サービスの内容・料金・進め方をまとめた資料です。', items: service },
@@ -23,7 +25,7 @@ const TABS = [
 const isoFor = (m: Material) => (m.category === 'useful' ? ISO.report : ISO.phone);
 
 const title = 'サービス資料＆お役立ち資料 無料ダウンロード｜株式会社LAYR';
-const description = 'LINE公式アカウントの構築・運用、広告運用代行のサービス資料と、LINEマーケティングの実務で使えるお役立ち資料を無料配布中。フォーム送信後、その場でPDFをダウンロードいただけます。';
+const description = 'LINE公式アカウントの構築・運用、採用特化LINE支援「エルトリ」、AI導入支援「アッシュクAI by LAYR」のサービス資料と、LINEマーケティングの実務で使えるお役立ち資料を無料配布中。フォーム送信後、その場でPDFをダウンロードいただけます。';
 
 const jsonLd = [
   {
@@ -38,7 +40,7 @@ const jsonLd = [
     '@context': 'https://schema.org',
     '@type': 'ItemList',
     name: 'LAYRの配布資料',
-    itemListElement: all
+    itemListElement: listed
       .filter((m) => m.file)
       .map((m, i) => ({ '@type': 'ListItem', position: i + 1, name: m.title })),
   },

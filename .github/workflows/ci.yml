@@ -25,6 +25,9 @@ jobs:
       - name: Build（全ページが生成されること）
         run: npm run build
 
+      - name: LINE支援カード・FAQ（表示内容・構造化データ・JSなしの閲覧を検証）
+        run: node --test tests/line-support.test.mjs
+
       - name: 採用LINE地域SEO（公開範囲・コンテンツ・計測・内部リンクを検証）
         run: node --test tests/ltori-seo.test.mjs tests/seo-manager.test.mjs tests/ltori-analytics.test.mjs tests/seo-access.test.mjs
 

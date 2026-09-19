@@ -8,12 +8,29 @@
     "category": "service"
   },
   {
+    "id": "ltori-service",
+    "title": "エルトリ サービス資料（採用特化LINE構築・運用支援）",
+    "desc": "候補者との接点づくりから、応募・面接・入社前フォローまで。採用に特化したLINEの構築・運用・改善をまとめたサービス資料です。",
+    "thumb": "/materials/ltori-service.png",
+    "file": "/docs/layr-ltori-service.pdf",
+    "category": "service"
+  },
+  {
+    "id": "ashuku-ai",
+    "title": "アッシュクAI by LAYR サービス資料",
+    "desc": "バックオフィス・CS・月次の定型業務をAIで効率化。業務整理から専用ツール開発、運用定着までの支援内容をまとめた資料です。",
+    "thumb": "/materials/ashuku-ai.png",
+    "file": "/docs/layr-ashuku-ai.pdf",
+    "category": "service"
+  },
+  {
     "id": "ad-service",
     "title": "広告運用代行 サービス資料",
     "desc": "Meta・Google・LINEヤフー広告の3媒体の使い分け、初期設定と日々の運用業務、LP改善、料金（初期55,000円＋月額55,000円〜・税込）までをまとめた15ページの資料です。",
     "thumb": "/materials/ad-service.png",
     "file": "/docs/layr-ad-service.pdf",
-    "category": "service"
+    "category": "service",
+    "listed": false
   },
   {
     "id": "yorozuya-bpo",
@@ -21,7 +38,8 @@
     "desc": "月10万円で、LINE・広告・LP改善・AI業務効率化までWebマーケティングの実務をまるっと担当する月額BPOサービスの紹介資料です。",
     "thumb": "/materials/yorozuya-bpo.png",
     "file": "/yorozuya/docs/yorozuya-marke-kun-service.pdf",
-    "category": "service"
+    "category": "service",
+    "listed": false
   },
   {
     "id": "line-start-guide",

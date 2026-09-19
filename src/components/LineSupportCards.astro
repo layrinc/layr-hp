@@ -1,0 +1,43 @@
+---
+import LineSupportScreen, { type SupportImage } from './LineSupportScreen.astro';
+import '../styles/line-support.css';
+export interface SupportItem {
+  title: string;
+  benefit?: string;
+  desc: string;
+  screen?: string;
+  image?: SupportImage;
+}
+interface Props {
+  id?: string;
+  title: string;
+  eyebrow?: string;
+  lead?: string;
+  items: SupportItem[];
+}
+const { id = 'line-support', title, eyebrow, lead, items } = Astro.props;
+---
+<section class="line-support" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <header class="line-support-head">
+      {eyebrow && <p class="line-support-eyebrow">{eyebrow}</p>}
+      <h2 id={`${id}-title`}>{title}</h2>
+      {lead && <p class="line-support-lead">{lead}</p>}
+    </header>
+    <div class="line-support-grid">
+      {items.map((item) => <details class="line-support-card">
+        <summary aria-label={`${item.title}の詳細`}>
+          {item.image && <LineSupportScreen image={item.image} />}
+          <span class="line-support-label">{item.title}</span>
+          <h3>{item.benefit || item.title}</h3>
+          <span class="line-support-more"><span class="support-when-closed">詳しく見る</span><span class="support-when-open">閉じる</span><i class="support-plus" aria-hidden="true"></i></span>
+        </summary>
+        <div class="line-support-description">
+          <p>{item.desc}</p>
+          {item.image && <a class="line-support-zoom" href={item.image.src} target="_blank" rel="noopener" aria-label={`${item.image.caption}の掲載画像を拡大する（新しいタブ）`}>掲載画像を拡大する <span aria-hidden="true">↗</span></a>}
+        </div>
+      </details>)}
+    </div>
+    <p class="line-support-note">画像は当社サービス資料に掲載している制作例・デモ画面です。対応範囲・利用機能は、ご契約プランやアカウントの環境により異なります。</p>
+  </div>
+</section>
