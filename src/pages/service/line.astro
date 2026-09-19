@@ -9,6 +9,9 @@ import settings from '../../data/settings.json';
 import lineService from '../../data/pages/service/line.json';
 import { ISO } from '../../lib/iso-illusts.mjs';
 import PriceSimulator from '../../components/PriceSimulator.astro';
+import LineSupportCards, { type SupportItem } from '../../components/LineSupportCards.astro';
+import CategoryFaq from '../../components/CategoryFaq.astro';
+import homePage from '../../data/page-home.json';
 
 const { construction, operation } = lineService.pricing;
 
@@ -19,12 +22,11 @@ const consult = settings.line_url?.trim()
   ? settings.line_url
   : `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
 
-const faqs = [
-  { q: '運用費用以外に発生する費用はありますか？', a: '本サービスへの報酬とは別に、LINE公式アカウントの月額利用料と、Lステップの月額システム利用料（配信通数に応じたプラン料金）が、それぞれの運営会社に対して発生します。' },
-  { q: 'すでにLINE公式アカウントやLステップを導入していても依頼できますか？', a: '問題ありません。すでに運用中のアカウントの改修や、既存の友だちリストを保持したままのLステップ導入も可能です。' },
-  { q: 'クリエイティブ（画像制作や文章作成）も任せられますか？', a: 'はい。リッチメニューのデザイン制作や、配信メッセージのライティング、シナリオ設計までワンストップで対応いたします。' },
-  { q: '構築だけ・運用だけの依頼もできますか？', a: '可能です。構築のみ・運用のみ、どちらも承ります。構築後に社内運用へ引き継ぐ形にも対応します。' },
-];
+// Shared CMS content keeps both pages and their FAQ structured data in sync.
+const support = homePage.blocks.find(block => block.id === 'b-dekiru')!.p;
+const supportItems = support.items as SupportItem[];
+const faq = homePage.blocks.find(block => block.id === 'b-faq')!.p;
+const faqs = faq.items as { q: string; a: string; category: string }[];
 
 const jsonLd = [
   {
@@ -124,34 +126,7 @@ const jsonLd = [
   </section>
 
   <!-- 04 PDCA / できること -->
-  <section class="lp-sec lp-tint">
-    <div class="container">
-      <div class="lp-head"><p class="lp-num">04</p><h2>標準機能で「土台」、Lステップで「成果」を最大化</h2></div>
-      <p class="lp-sub">LINE公式アカウントの基本機能で情報発信の土台を整え、Lステップの拡張機能で「誰が・いつ・どのボタンを押したか」を可視化。データに基づくPDCAを高速で回します。</p>
-      <div class="lp-two">
-        <div class="lp-feat">
-          <p class="lp-feat-h">LINE公式アカウント</p>
-          <ul>
-            <li><b>1対1チャット</b>顧客と直接メッセージをやり取り</li>
-            <li><b>自動応答メッセージ</b>特定キーワードに自動で即答</li>
-            <li><b>リッチメニュー</b>トーク下の画像ボタンでサイト・クーポンへ誘導</li>
-            <li><b>クーポン・カード</b>割引券やポイントカードをデジタル発行</li>
-            <li><b>LINE広告</b>アプリ内で友だち登録を促す広告</li>
-          </ul>
-        </div>
-        <div class="lp-feat is-green">
-          <p class="lp-feat-h">Lステップ</p>
-          <ul>
-            <li><b>アンケートパネル</b>自由度の高いフォームで顧客情報を収集</li>
-            <li><b>高度なセグメンテーション</b>行動履歴や属性で絞った精密配信</li>
-            <li><b>ステップシナリオ配信</b>登録日からの日数で複数メッセージを自動送信</li>
-            <li><b>詳細な分析レポート</b>流入経路や反応率を可視化</li>
-            <li><b>カレンダー予約機能</b>予約受付からリマインドまでLINEで完結</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
+  <LineSupportCards id="line-support" eyebrow="04 / LINE SUPPORT" title="構築から運用まで、LAYRに。" lead={support.lead} items={supportItems} />
 
   <!-- 05 3つのサービス -->
   <section class="lp-sec">
@@ -247,16 +222,7 @@ const jsonLd = [
   </section>
 
   <!-- 10 FAQ -->
-  <section class="lp-sec lp-tint">
-    <div class="container lp-narrow">
-      <div class="lp-head"><p class="lp-num">10</p><h2>よくあるご質問</h2></div>
-      <div class="lp-faq">
-        {faqs.map((f) => (
-          <details class="lp-q"><summary><span class="lp-qmark">Q</span>{f.q}</summary><p>{f.a}</p></details>
-        ))}
-      </div>
-    </div>
-  </section>
+  <CategoryFaq id="line-faq" eyebrow="10 / FAQ" title={faq.title_jp} lead={faq.lead} items={faqs} />
 
 
   <!-- CTA -->
@@ -316,15 +282,6 @@ const jsonLd = [
   .lp-ic{display:block;width:96px;margin:0 auto 8px}
   .lp-ic :global(svg){width:100%;height:auto}
   .lp-card.up h3{text-align:center}
-  /* できること 2col */
-  .lp-two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-  .lp-feat{background:#fff;border:2px solid var(--line);border-radius:18px;padding:26px 26px 12px}
-  .lp-feat.is-green{border-color:var(--green)}
-  .lp-feat-h{font-size:17px;font-weight:700;text-align:center;margin:0 0 18px;color:var(--black)}
-  .lp-feat.is-green .lp-feat-h{color:var(--green-dark)}
-  .lp-feat ul{list-style:none;margin:0;padding:0}
-  .lp-feat li{position:relative;padding:0 0 16px 0;font-size:13px;line-height:1.8;color:var(--muted)}
-  .lp-feat li b{display:block;color:var(--black);font-size:14px;margin-bottom:2px}
   /* svc */
   .lp-svc{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 24px;position:relative}
   .lp-svc-n{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--green-dark);color:#fff;font-family:var(--font-en);font-weight:700;font-size:14px;margin-bottom:14px}
@@ -368,14 +325,8 @@ const jsonLd = [
   .lp-optable tbody th{text-align:left;background:#FAFCFC;font-weight:700;color:var(--black);white-space:nowrap}
   .lp-optable td.mid{background:color-mix(in srgb,var(--green) 6%,#fff)}
   .lp-optable tbody tr:last-child th,.lp-optable tbody tr:last-child td{border-bottom:0}
-  /* faq */
+  /* simulator width */
   .lp-narrow{max-width:820px}
-  .lp-faq{display:flex;flex-direction:column;gap:12px;margin-top:24px}
-  .lp-q{background:#fff;border:1px solid var(--line);border-radius:12px;padding:2px 20px}
-  .lp-q summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:16px 0;font-weight:700;font-size:14.5px;color:var(--black)}
-  .lp-q summary::-webkit-details-marker{display:none}
-  .lp-qmark{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff;font-family:var(--font-en);font-weight:700;font-size:13px;flex:none}
-  .lp-q p{padding:0 0 18px 38px;font-size:13.5px;line-height:1.95;color:var(--muted)}
   /* final */
   .lp-final{background:var(--green-dark);color:#fff;padding:clamp(52px,7vw,84px) 0;text-align:center}
   .lp-final-t{font-size:clamp(20px,3vw,28px);font-weight:700;margin-bottom:10px}
@@ -387,7 +338,7 @@ const jsonLd = [
     .lp-hero-in{grid-template-columns:1fr}
     .lp-hero-fig{order:-1;max-width:300px;margin:0 auto}
     .lp-stat-grid{grid-template-columns:1fr 1fr}
-    .lp-cards3,.lp-two,.lp-cases,.lp-plans{grid-template-columns:1fr}
+    .lp-cards3,.lp-cases,.lp-plans{grid-template-columns:1fr}
   }
 </style>
 </Base>

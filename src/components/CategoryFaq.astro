@@ -1,0 +1,77 @@
+---
+import '../styles/line-support.css';
+interface Props {
+  id?: string;
+  title?: string;
+  lead?: string;
+  eyebrow?: string;
+  items: { q: string; a: string; category?: string }[];
+}
+const { id = 'faq', title = 'ご質問・ご相談、\nいつでも。', lead, eyebrow, items } = Astro.props;
+const categories = ['料金・契約', '相談・構築', '配信・運用'];
+// Unknown/missing categories remain readable, rather than silently dropping CMS items.
+const groups = categories.map(category => ({ category, items: items.filter(item =>
+  (categories.includes(item.category || '') ? item.category : '相談・構築') === category
+)})).filter(group => group.items.length);
+---
+{groups.length > 0 && <section class="category-faq" id={id} aria-labelledby={`${id}-title`}>
+  <div class="container">
+    <header class="category-faq-head">
+      {eyebrow && <p class="line-support-eyebrow">{eyebrow}</p>}
+      <h2 id={`${id}-title`}>{title}</h2>
+      {lead && <p class="line-support-lead">{lead}</p>}
+    </header>
+    <layr-category-faq>
+      <div class="category-faq-tabs" role="tablist" aria-label="質問のカテゴリ" hidden>
+        {groups.map((group, i) => <button type="button" role="tab" id={`${id}-tab-${i}`} aria-controls={`${id}-panel-${i}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{group.category}</button>)}
+      </div>
+      {groups.map((group, i) => <div class="category-faq-panel" id={`${id}-panel-${i}`} data-faq-panel>
+        <h3 class="category-faq-fallback">{group.category}</h3>
+        {group.items.map(item => <details class="category-faq-item">
+          <summary><span>{item.q}</span><i class="support-plus" aria-hidden="true"></i></summary>
+          <div class="category-faq-answer"><p>{item.a}</p></div>
+        </details>)}
+      </div>)}
+    </layr-category-faq>
+  </div>
+</section>}
+
+<script>
+  class LayrCategoryFaq extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.enhanced) return;
+      const tablist = this.querySelector<HTMLElement>('[role="tablist"]');
+      const tabs = Array.from(this.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+      const panels = Array.from(this.querySelectorAll<HTMLElement>('[data-faq-panel]'));
+      if (!tablist || !tabs.length || tabs.length !== panels.length) return;
+      const select = (index: number, focus = false) => {
+        tabs.forEach((tab, i) => {
+          tab.setAttribute('aria-selected', String(i === index));
+          tab.tabIndex = i === index ? 0 : -1;
+          panels[i].hidden = i !== index;
+        });
+        if (focus) tabs[index].focus();
+      };
+      tabs.forEach((tab, i) => {
+        panels[i].setAttribute('role', 'tabpanel');
+        panels[i].setAttribute('aria-labelledby', tab.id);
+        panels[i].tabIndex = 0;
+        tab.addEventListener('click', () => select(i));
+        tab.addEventListener('keydown', event => {
+          let next = i;
+          if (event.key === 'ArrowRight') next = (i + 1) % tabs.length;
+          else if (event.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+          else if (event.key === 'Home') next = 0;
+          else if (event.key === 'End') next = tabs.length - 1;
+          else return;
+          event.preventDefault();
+          select(next, true);
+        });
+      });
+      this.dataset.enhanced = 'true';
+      select(0);
+      tablist.hidden = false;
+    }
+  }
+  if (!customElements.get('layr-category-faq')) customElements.define('layr-category-faq', LayrCategoryFaq);
+</script>

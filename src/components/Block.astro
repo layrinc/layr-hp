@@ -13,6 +13,8 @@ import IllustGrowth from './IllustGrowth.astro';
 import IllustConsult from './IllustConsult.astro';
 import HeroDevice from './HeroDevice.astro';
 import HomeIsometricArt from './HomeIsometricArt.astro';
+import LineSupportCards from './LineSupportCards.astro';
+import CategoryFaq from './CategoryFaq.astro';
 import { ILLUSTS } from '../lib/illusts.mjs';
 import { ISO } from '../lib/iso-illusts.mjs';
 
@@ -283,7 +285,11 @@ const serviceIcons = [
   </section>
 )}
 
-{t === 'reason' && (
+{t === 'reason' && p.layout === 'support-cards' && (
+  <LineSupportCards id="reason" title={p.title_jp} eyebrow={p.en} lead={p.lead} items={p.items || []} />
+)}
+
+{t === 'reason' && p.layout !== 'support-cards' && (
   <section class:list={["reason", { "home-isometric": isometric }]} id="reason">
     <div class="container">
       {(p.en || p.title_jp) && <div class="sec-head reveal"><p class="sec-en">{p.en}</p><h2 class="sec-jp">{p.title_jp}</h2></div>}
@@ -614,7 +620,11 @@ const serviceIcons = [
   </section>
 )}
 
-{t === 'accordion' && (
+{t === 'accordion' && p.layout === 'category-tabs' && (
+  <CategoryFaq id="faq" title={p.title_jp} lead={p.lead} items={p.items || []} />
+)}
+
+{t === 'accordion' && p.layout !== 'category-tabs' && (
   <section class="blk-sec">
     <div class="container">
       <div class="faq-list">

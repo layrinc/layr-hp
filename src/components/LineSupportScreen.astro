@@ -1,0 +1,15 @@
+---
+/** Cropped screenshots from the user-provided Canva service deck. */
+export interface SupportImage {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+  caption: string;
+}
+interface Props { image: SupportImage }
+const { image } = Astro.props;
+---
+<span class="support-visual">
+  <img class="support-capture" src={image.src} alt={image.alt} width={image.width} height={image.height} loading="lazy" decoding="async" />
+</span>
