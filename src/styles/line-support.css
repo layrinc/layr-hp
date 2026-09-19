@@ -7,12 +7,12 @@
 .line-support h2,.category-faq h2{margin:0;color:var(--black);font-size:clamp(28px,3.4vw,44px);font-weight:700;line-height:1.5;letter-spacing:var(--track-tight);white-space:pre-line}
 .line-support-lead{margin:16px 0 0;font-size:calc(16px * var(--fs,1));line-height:1.9;color:var(--muted)}
 .line-support-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:start}
+.line-support-swipe-hint{display:none}
 .line-support-card{min-width:0;background:var(--paper);border:1px solid var(--line);border-radius:var(--r-lg);overflow:hidden;transition:border-color .2s cubic-bezier(.4,0,.2,1)}
 .line-support-card:hover,.line-support-card[open]{border-color:var(--green-dark)}
-.line-support-card summary{display:flex;flex-direction:column;align-items:center;min-height:466px;padding:24px 22px 12px;cursor:pointer;list-style:none;text-align:center}
+.line-support-card summary{display:flex;flex-direction:column;align-items:center;min-height:380px;padding:24px 22px 12px;cursor:pointer;list-style:none;text-align:center}
 .line-support-card summary::-webkit-details-marker,.category-faq-item summary::-webkit-details-marker{display:none}
-.line-support-label{margin-top:20px;font-size:calc(15px * var(--fs,1));font-weight:700;color:var(--muted);line-height:1.6}
-.line-support-card h3{margin:12px 0 16px;font-size:calc(24px * var(--fs,1));line-height:1.65;font-weight:700;color:var(--black);letter-spacing:var(--track-tight);white-space:pre-line;overflow-wrap:anywhere}
+.line-support-label{margin:20px 0 16px;font-size:calc(15px * var(--fs,1));font-weight:700;color:var(--muted);line-height:1.6;overflow-wrap:anywhere}
 .line-support-more{margin-top:auto;display:flex;align-items:center;justify-content:center;gap:16px;min-height:48px;color:var(--green-ink);font-size:calc(15px * var(--fs,1));font-weight:700}
 .support-when-open{display:none}
 .line-support-card[open] .support-when-closed{display:none}
@@ -24,7 +24,6 @@ details[open]>summary .support-plus::after{transform:rotate(0)}
 .line-support-description{padding:22px;border-top:1px solid var(--line);font-size:calc(15px * var(--fs,1));line-height:1.9;text-align:left}
 .line-support-description p{margin:0}
 .line-support-note{margin:22px 0 0;color:var(--muted);font-size:calc(12px * var(--fs,1));line-height:1.8}
-.line-support-zoom{display:inline-flex;align-items:center;gap:8px;min-height:44px;margin-top:12px;color:var(--green-ink);font-weight:700;text-decoration:underline;text-underline-offset:4px}
 .support-visual{height:240px;width:100%;display:flex;align-items:center;justify-content:center;pointer-events:none}
 .support-capture{display:block;width:100%;height:210px;object-fit:contain}
 .category-faq-head{text-align:center;margin-bottom:40px}
@@ -44,12 +43,14 @@ layr-category-faq[data-enhanced] .category-faq-fallback{display:none}
 .category-faq-item summary .support-plus{color:var(--muted)}
 .category-faq-answer{padding:0 56px 28px 8px;font-size:calc(16px * var(--fs,1));line-height:1.9;color:var(--muted);overflow-wrap:anywhere}
 .category-faq-answer p{margin:0;white-space:pre-line}
-.line-support :is(summary,a):focus-visible,.category-faq :is(button,summary,[role="tabpanel"]):focus-visible{outline:2px solid var(--green-dark);outline-offset:-4px}
+.line-support :is(summary,a,.line-support-grid):focus-visible,.category-faq :is(button,summary,[role="tabpanel"]):focus-visible{outline:2px solid var(--green-dark);outline-offset:-4px}
 @media(max-width:1000px){.line-support-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){
-  .line-support-grid{grid-template-columns:minmax(0,1fr);gap:22px}
+  .line-support-grid{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:90%;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;scrollbar-width:thin;scrollbar-color:var(--green-dark) var(--line);padding-bottom:12px}
+  .line-support-card{scroll-snap-align:start;scroll-snap-stop:always}
+  .line-support-swipe-hint{display:flex;align-items:center;gap:12px;margin:0 0 12px;color:var(--muted);font-size:calc(12px * var(--fs,1));line-height:1.8}
   .line-support-head,.category-faq-head{margin-bottom:28px}
-  .line-support-card summary{min-height:466px;padding-inline:22px}
+  .line-support-card summary{padding-inline:22px}
   .category-faq-tabs{gap:6px;margin-bottom:22px}
   .category-faq-tabs button{padding:12px 4px;min-height:48px;font-size:calc(13px * var(--fs,1))}
   .category-faq-item summary{padding:22px 0;gap:22px;font-size:calc(16px * var(--fs,1))}
