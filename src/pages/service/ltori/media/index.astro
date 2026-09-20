@@ -1,0 +1,15 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../../layouts/LtoriMedia.astro';
+import { articlePath, mediaPath, topics, isPublished } from '../../../../lib/ltori-media.mjs';
+const posts = (await getCollection('recruitment', isPublished)).sort((a,b)=>b.data.date.valueOf()-a.data.date.valueOf());
+const title = '採用LINE・採用導線の実務メディア';
+const description = '応募不足、面接までの離脱、採用LINEの外注検討。採用担当者が自社の課題を整理するための実務ガイドをお届けします。';
+const jsonLd = {'@context':'https://schema.org','@type':'CollectionPage',name:title,url:new URL(mediaPath,Astro.site).href,description};
+---
+<Layout title={title} description={description} jsonLd={jsonLd}>
+  <header class="lm-intro"><p class="lm-kicker">エルトリ / 採用の実務ガイド</p><h1>応募を待つだけから、<br />つながりを育てる採用へ。</h1><p>{description}</p></header>
+  <nav class="lm-stages" aria-label="課題から記事を探す">{topics.map((topic,i)=><a href={`#topic-${i}`}><span>{['01 集める・つながる','02 面接へ進む','03 体制を整える'][i]}</span>{topic} →</a>)}</nav>
+  {topics.map((topic,i)=><section class="lm-topic" id={`topic-${i}`}><h2>{topic}</h2><div class="lm-list">{posts.filter(p=>p.data.category===topic).map(p=><article class="lm-card"><small>{p.data.category}</small><h3><a href={articlePath(p.id)}>{p.data.title}</a></h3><p>{p.data.description}</p><a href={articlePath(p.id)}>記事を読む →</a></article>)}</div></section>)}
+  <p class="lm-meta">運営：株式会社LAYR。自社サービスの紹介を含みます。記事は一般的な検討の手順であり、採用成果を保証するものではありません。</p>
+</Layout>

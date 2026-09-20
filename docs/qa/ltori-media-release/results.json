@@ -1,0 +1,89 @@
+[
+  {
+    "name": "index",
+    "width": 1280,
+    "overflow": false,
+    "h1": 1,
+    "main": 1,
+    "errors": []
+  },
+  {
+    "name": "article",
+    "width": 1280,
+    "overflow": false,
+    "h1": 1,
+    "main": 1,
+    "errors": []
+  },
+  {
+    "name": "service",
+    "width": 1280,
+    "overflow": false,
+    "h1": 1,
+    "main": 1,
+    "errors": []
+  },
+  {
+    "name": "contact-selection",
+    "width": 1280,
+    "value": "エルトリ（採用LINE）について"
+  },
+  {
+    "name": "index",
+    "width": 768,
+    "overflow": false,
+    "h1": 1,
+    "main": 1,
+    "errors": []
+  },
+  {
+    "name": "article",
+    "width": 768,
+    "overflow": false,
+    "h1": 1,
+    "main": 1,
+    "errors": []
+  },
+  {
+    "name": "service",
+    "width": 768,
+    "overflow": false,
+    "h1": 1,
+    "main": 1,
+    "errors": []
+  },
+  {
+    "name": "contact-selection",
+    "width": 768,
+    "value": "エルトリ（採用LINE）について"
+  },
+  {
+    "name": "index",
+    "width": 390,
+    "overflow": false,
+    "h1": 1,
+    "main": 1,
+    "errors": []
+  },
+  {
+    "name": "article",
+    "width": 390,
+    "overflow": false,
+    "h1": 1,
+    "main": 1,
+    "errors": []
+  },
+  {
+    "name": "service",
+    "width": 390,
+    "overflow": false,
+    "h1": 1,
+    "main": 1,
+    "errors": []
+  },
+  {
+    "name": "contact-selection",
+    "width": 390,
+    "value": "エルトリ（採用LINE）について"
+  }
+]

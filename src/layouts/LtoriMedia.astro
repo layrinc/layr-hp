@@ -1,0 +1,31 @@
+---
+import Base from './Base.astro';
+import service from '../data/service-ltori.json';
+import { mediaPath } from '../lib/ltori-media.mjs';
+import '../styles/ltori-media.css';
+const { title, description, jsonLd } = Astro.props;
+---
+<Base title={`${title}｜${service.name}`} description={description} jsonLd={jsonLd} hideHeader={true}>
+  <div class="lm">
+    <header class="lm-header container">
+      <a class="lm-brand" href={mediaPath}>{service.name}<small>採用のつながりを育てるメディア</small></a>
+      <nav aria-label="エルトリメディア"><a href={service.path}>サービス・料金</a><a href={mediaPath}>記事一覧</a><a href="/contact/?service=ltori" data-lm-cta="header">無料相談</a></nav>
+    </header>
+    <div class="container lm-main"><slot /></div>
+    <section class="lm-end container" aria-labelledby="lm-cta-title">
+      <p>採用のお悩みを、次の一手に。</p>
+      <h2 id="lm-cta-title">自社の採用導線を、一緒に整理しませんか。</h2>
+      <p>{service.name}は、候補者との接点から応募・面談までを支援します。</p>
+      <div class="lm-actions"><a class="lm-button" href="/contact/?service=ltori" data-lm-cta="consultation">採用LINEを無料相談</a><a href="/document/ltori-service/" data-lm-cta="document">サービス資料を受け取る →</a></div>
+      <a href={service.path}>サービス内容・料金を確認する</a>
+    </section>
+  </div>
+  <script>
+    document.querySelectorAll('[data-lm-cta]').forEach(link => link.addEventListener('click', () => {
+      const analytics = (window as any).gtag;
+      if (typeof analytics === 'function') analytics('event', 'ltori_media_cta_click', {
+        cta: (link as HTMLElement).dataset.lmCta, page_path: location.pathname, service: 'ltori',
+      });
+    }));
+  </script>
+</Base>
