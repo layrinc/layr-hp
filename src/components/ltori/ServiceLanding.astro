@@ -20,7 +20,7 @@ const consult = consultationHref(pageSource);
 const breadcrumbs = [
   {name:'ホーム', path:'/'}, {name:'サービス', path:'/service/'}, {name:service.name, path:service.path},
 ];
-const nav = [[`${service.name}とは`, '#about'], ['サービス内容', '#service'], ['料金プラン', '#plan'], ['導入の流れ', '#flow'], ['よくある質問', '#faq']];
+const nav = [[`${service.name}とは`, '#about'], ['サービス内容', '#service'], ['料金プラン', '#plan'], ['導入の流れ', '#flow'], ['よくある質問', '#faq'], ['採用コラム', '/service/ltori/media/']];
 const scenarios = [
   {label:'友だち登録', title:'「ちょっと気になる」を、\nつながるきっかけに。', body:'採用サイトやSNSからLINEへ。いきなり応募するのは不安な候補者にも、気軽に会社を知ってもらう入口をつくります。', point:'希望職種・経験・関心をアンケートで把握', message:'友だち追加ありがとうございます。みどり製作所の採用担当です！\nまずは、気になっているお仕事を教えてください。', choices:['製造スタッフ','営業・事務','まずは会社を知りたい'], tag:'登録直後'},
   {label:'企業理解', title:'知りたい情報が届く。\n働くイメージが湧く。', body:'企業紹介、職場の様子、先輩インタビューを順番に配信。希望職種や関心に合わせて内容を分け、応募する前の疑問を解消します。', point:'5〜7日間のステップ配信で企業理解を促進', message:'今日は、製造チームの「ある一日」をご紹介します。\n入社後にどんな仕事をするのか、先輩の声と一緒に見てみませんか？', choices:['先輩インタビューを見る','働く環境・福利厚生'], tag:'登録から数日後'},

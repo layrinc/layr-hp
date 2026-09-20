@@ -49,4 +49,12 @@ const cases = defineCollection({
   }),
 });
 
-export const collections = { blog, cases };
+const recruitment = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/recruitment' }),
+  schema: z.object({
+    title: z.string(), description: z.string(), date: z.coerce.date(),
+    category: z.enum(['採用導線', '応募後フォロー', '外注・比較']),
+    target_keyword: z.string(), draft: z.boolean().default(true),
+  }),
+});
+export const collections = { blog, cases, recruitment };

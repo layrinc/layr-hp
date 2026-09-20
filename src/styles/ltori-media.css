@@ -1,0 +1,17 @@
+.lm{color:var(--text);background:var(--paper);line-height:var(--lh-body)}
+.lm a{color:var(--green-ink);text-underline-offset:4px;overflow-wrap:anywhere}
+.lm a:focus-visible,.lm input:focus-visible{outline:2px solid var(--green-ink);outline-offset:4px}
+.lm-header{display:flex;align-items:center;justify-content:space-between;gap:22px;padding-block:22px;border-bottom:1px solid var(--line)}
+.lm-brand{font-size:24px;font-weight:700;text-decoration:none}.lm-brand small{display:block;font-size:12px;color:var(--text)}
+.lm-header nav,.lm-actions{display:flex;flex-wrap:wrap;gap:22px;align-items:center}
+.lm-header nav{font-size:14px}.lm-main{padding-block:56px}.lm h1{font-size:clamp(30px,5vw,52px);line-height:1.4;margin-block:22px}
+.lm h2{font-size:24px;line-height:1.5;margin-block:22px}.lm h3{font-size:20px}
+.lm-kicker{color:var(--green-ink);font-size:12px;font-weight:700;letter-spacing:var(--track-label)}
+.lm-intro{max-width:760px}.lm-stages{display:flex;flex-wrap:wrap;gap:22px;border-block:1px solid var(--line);padding-block:22px;margin-block:56px}
+.lm-stages a{flex:1;min-width:180px;text-decoration:none;font-weight:700}.lm-stages span{display:block;font-size:12px;color:var(--text)}
+.lm-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.lm-card{padding:22px;border:1px solid var(--line);border-radius:var(--r-lg)}
+.lm-card p{margin-block:22px}.lm-card small,.lm-meta{font-size:12px}.lm-end{border-top:1px solid var(--line);padding-block:56px 22px;background:var(--tint-green)}
+.lm-actions{margin-block:22px}.lm .lm-button{padding:14px 22px;border-radius:var(--radius);background:var(--green-ink);color:var(--paper);text-decoration:none;font-weight:700}
+.lm-article{max-width:760px;margin-inline:auto;overflow-wrap:anywhere}.lm-article p,.lm-article ul,.lm-article ol{margin-block:22px}.lm-article ul,.lm-article ol{padding-left:22px}
+.lm-article h2{margin-top:56px}.lm-toc{padding:22px;background:var(--tint);border-radius:var(--radius);margin-block:22px}.lm-topic{scroll-margin-top:22px;margin-bottom:56px}
+@media(max-width:768px){.lm-header{align-items:flex-start;flex-direction:column}.lm-list{grid-template-columns:1fr}.lm-stages a{min-width:0;flex-basis:100%}}
