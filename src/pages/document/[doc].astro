@@ -8,12 +8,14 @@
 import Base from '../../layouts/Base.astro';
 import settings from '../../data/settings.json';
 import materials from '../../data/materials.json';
+import { leadSourceLabels } from '../../lib/ltori-lead-sources';
 
 export function getStaticPaths() {
   return materials.map((m) => ({ params: { doc: m.id }, props: { m } }));
 }
 
 const { m } = Astro.props;
+const sourceLabels = m.id === 'ltori-service' ? await leadSourceLabels() : {};
 const title = `${m.title}｜資料ダウンロード`;
 const description = `${m.desc} フォーム送信後、その場でPDFをダウンロードいただけます。`;
 
@@ -87,7 +89,7 @@ const jsonLd = [
   </section>
 </Base>
 
-<script is:inline define:vars={{ docId: m.id, docTitle: m.title }}>
+<script is:inline define:vars={{ docId: m.id, docTitle: m.title, ltoriSourceLabels: sourceLabels }}>
   // 送信成功 → サンクスページ（ダウンロード提供）へ。失敗時はメール下書きへフォールバック。
   (function () {
     const form = document.getElementById('ddForm');
@@ -96,9 +98,19 @@ const jsonLd = [
     const btn = document.getElementById('ddSubmit');
     const fb = document.getElementById('ddFallback');
     const ml = document.getElementById('ddMailto');
+    const requestedSource = new URLSearchParams(location.search).get('source') || '';
+    const pageSource = docId === 'ltori-service' && Object.prototype.hasOwnProperty.call(ltoriSourceLabels, requestedSource) ? requestedSource : '';
+    if (pageSource) {
+      const input = document.createElement('input');
+      input.type = 'hidden'; input.name = 'ご覧になったページ'; input.value = ltoriSourceLabels[pageSource];
+      form.append(input);
+    }
+    let submitting = false;
+    let submitted = false;
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      if (form.querySelector('[name="_honey"]').value) return;
+      if (submitting || submitted || form.querySelector('[name="_honey"]').value) return;
+      submitting = true;
       btn.disabled = true;
       btn.textContent = '送信中…';
       const fd = new FormData(form);
@@ -108,19 +120,38 @@ const jsonLd = [
         const res = await fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
           method: 'POST', body: fd, headers: { Accept: 'application/json' }, signal: ctrl.signal,
         });
-        clearTimeout(timer);
         if (!res.ok) throw new Error('http ' + res.status);
-        location.href = '/document/thanks/?d=' + encodeURIComponent(docId);
+        const submission = await res.json();
+        if (submission.success !== true && submission.success !== 'true') throw new Error('submission rejected');
+        clearTimeout(timer);
+        submitted = true;
+        let redirected = false;
+        const redirect = () => {
+          if (redirected) return;
+          redirected = true;
+          location.href = '/document/thanks/?d=' + encodeURIComponent(docId);
+        };
+        // A blocked/queued Google tag must never block the requested download.
+        const redirectTimer = setTimeout(redirect, 1000);
+        const finish = () => { clearTimeout(redirectTimer); redirect(); };
+        try {
+          if (typeof gtag === 'function') {
+            if (pageSource === 'media' || pageSource.startsWith('media/')) gtag('event', 'ltori_media_document_complete', {page_source: pageSource, method: 'document_download'});
+            gtag('event', 'generate_lead', { method: 'document_download', document_id: docId, service: docId === 'ltori-service' ? 'ltori' : 'general', ...(pageSource ? {page_source: pageSource} : {}), event_callback: finish, event_timeout: 1000 });
+          } else finish();
+        } catch (_) { finish(); }
       } catch (_) {
         clearTimeout(timer);
         const v = (k) => String(fd.get(k) || '');
-        const body = ['資料のダウンロードを希望します。', '', 'ご希望の資料: ' + docTitle, '氏名: ' + v('お名前'), '会社・組織名: ' + v('会社名'), 'メールアドレス: ' + v('メールアドレス'), '電話番号: ' + v('電話番号')].join('\n');
+        const body = ['資料のダウンロードを希望します。', '', 'ご希望の資料: ' + docTitle, '氏名: ' + v('お名前'), '会社・組織名: ' + v('会社名'), 'メールアドレス: ' + v('メールアドレス'), '電話番号: ' + v('電話番号'), ...(pageSource ? ['ご覧になったページ: ' + ltoriSourceLabels[pageSource]] : [])].join('\n');
         const base = ml.href.split('?')[0];
         ml.href = base + '?subject=' + encodeURIComponent('【資料請求】' + docTitle) + '&body=' + encodeURIComponent(body);
         fb.hidden = false;
         fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         btn.disabled = false;
         btn.textContent = '送信して資料をダウンロード';
+      } finally {
+        submitting = false;
       }
     });
   })();

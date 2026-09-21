@@ -1,0 +1,83 @@
+{
+  "checks": [
+    {
+      "h1": 1,
+      "main": 1,
+      "page": "/service/ltori/media/interview-followup/",
+      "scrollWidth": 1265,
+      "width": 1280
+    },
+    {
+      "h1": 1,
+      "main": 1,
+      "page": "/service/ltori/media/interview-followup/",
+      "scrollWidth": 753,
+      "width": 768
+    },
+    {
+      "h1": 1,
+      "main": 1,
+      "page": "/service/ltori/media/interview-followup/",
+      "scrollWidth": 375,
+      "width": 390
+    },
+    {
+      "h1": 1,
+      "page": "/contact/",
+      "scrollWidth": 1265,
+      "service": "エルトリ（採用LINE）について",
+      "width": 1280
+    },
+    {
+      "h1": 1,
+      "page": "/contact/",
+      "scrollWidth": 753,
+      "service": "エルトリ（採用LINE）について",
+      "width": 768
+    },
+    {
+      "h1": 1,
+      "page": "/contact/",
+      "scrollWidth": 375,
+      "service": "エルトリ（採用LINE）について",
+      "width": 390
+    },
+    {
+      "h1": 1,
+      "page": "/document/ltori-service/",
+      "scrollWidth": 1265,
+      "sourceFieldPresent": true,
+      "width": 1280
+    },
+    {
+      "h1": 1,
+      "page": "/document/ltori-service/",
+      "scrollWidth": 753,
+      "sourceFieldPresent": true,
+      "width": 768
+    },
+    {
+      "h1": 1,
+      "page": "/document/ltori-service/",
+      "scrollWidth": 375,
+      "sourceFieldPresent": true,
+      "width": 390
+    },
+    {
+      "h1": 1,
+      "page": "/service/ltori/media/interview-followup/",
+      "scrollWidth": 1425,
+      "width": 1440
+    },
+    {
+      "h1": 1,
+      "page": "/service/ltori/media/interview-followup/",
+      "scrollWidth": 360,
+      "width": 375
+    }
+  ],
+  "notes": [
+    "フォーム通信はVMで模擬。実メール送信なし。",
+    "記事source付きURLへの遷移と流入元フィールドの存在を確認。"
+  ]
+}

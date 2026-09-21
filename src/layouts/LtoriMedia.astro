@@ -2,29 +2,44 @@
 import Base from './Base.astro';
 import service from '../data/service-ltori.json';
 import { mediaPath } from '../lib/ltori-media.mjs';
+import { consultationHref } from '../lib/ltori-seo.mjs';
 import '../styles/ltori-media.css';
 const { title, description, jsonLd } = Astro.props;
+const source = Astro.params.slug ? `media/${Astro.params.slug}` : 'media';
+const consultHref = consultationHref(source);
+const documentHref = `/document/ltori-service/?${new URLSearchParams({ source })}`;
 ---
 <Base title={`${title}｜${service.name}`} description={description} jsonLd={jsonLd} hideHeader={true}>
-  <div class="lm">
+  <div class="lm" data-lm-source={source}>
     <header class="lm-header container">
       <a class="lm-brand" href={mediaPath}>{service.name}<small>採用のつながりを育てるメディア</small></a>
-      <nav aria-label="エルトリメディア"><a href={service.path}>サービス・料金</a><a href={mediaPath}>記事一覧</a><a href="/contact/?service=ltori" data-lm-cta="header">無料相談</a></nav>
+      <nav aria-label="エルトリメディア"><a href={service.path}>サービス・料金</a><a href={mediaPath}>記事一覧</a><a href={consultHref} data-lm-cta="header">無料相談</a></nav>
     </header>
     <div class="container lm-main"><slot /></div>
     <section class="lm-end container" aria-labelledby="lm-cta-title">
       <p>採用のお悩みを、次の一手に。</p>
       <h2 id="lm-cta-title">自社の採用導線を、一緒に整理しませんか。</h2>
       <p>{service.name}は、候補者との接点から応募・面談までを支援します。</p>
-      <div class="lm-actions"><a class="lm-button" href="/contact/?service=ltori" data-lm-cta="consultation">採用LINEを無料相談</a><a href="/document/ltori-service/" data-lm-cta="document">サービス資料を受け取る →</a></div>
+      <div class="lm-actions"><a class="lm-button" href={consultHref} data-lm-cta="consultation">採用LINEを無料相談</a><a href={documentHref} data-lm-cta="document">サービス資料を受け取る →</a></div>
       <a href={service.path}>サービス内容・料金を確認する</a>
     </section>
   </div>
   <script>
+    const source = document.querySelector<HTMLElement>('[data-lm-source]')?.dataset.lmSource;
+    // Article-body links use the same attribution as the surrounding CTAs.
+    document.querySelectorAll<HTMLAnchorElement>('.lm-article a[href]').forEach(link => {
+      const url = new URL(link.href);
+      if (url.origin !== location.origin || !source) return;
+      if ((url.pathname === '/contact/' && url.searchParams.get('service') === 'ltori') || url.pathname === '/document/ltori-service/') {
+        url.searchParams.set('source', source);
+        link.href = url.pathname + url.search + url.hash;
+        link.dataset.lmCta = 'article_body';
+      }
+    });
     document.querySelectorAll('[data-lm-cta]').forEach(link => link.addEventListener('click', () => {
       const analytics = (window as any).gtag;
       if (typeof analytics === 'function') analytics('event', 'ltori_media_cta_click', {
-        cta: (link as HTMLElement).dataset.lmCta, page_path: location.pathname, service: 'ltori',
+        cta: (link as HTMLElement).dataset.lmCta, page_path: location.pathname, page_source: source, service: 'ltori',
       });
     }));
   </script>
