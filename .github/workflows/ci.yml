@@ -34,6 +34,9 @@ jobs:
       - name: 採用コラム（公開条件・SEO・相談導線を検証）
         run: node --test tests/ltori-media.test.mjs tests/lead-attribution.test.mjs tests/media-contact.test.mjs
 
+      - name: メディア管理（検索需要・Google連携・保存を検証）
+        run: node --test tests/media-manager-*.test.mjs
+
       - name: Design gate regression（基準値から1項目でも悪化していれば失敗）
         run: bash scripts/gate-regression.sh
 

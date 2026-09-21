@@ -119,3 +119,48 @@ test('asset auth runs first and both manager pages stay outside sitemap', () => 
   const map = readFileSync(new URL('../dist/sitemap-0.xml', import.meta.url), 'utf8');
   assert.doesNotMatch(map, /tools\/ltori-seo|seo\.layr/);
 });
+
+test('media manager and its encoded or HTML aliases require authentication', async () => {
+  for (const path of ['/media/', '/media', '/media/index.html', '/media.html', '/%6dedia/', '/%256dedia/', '/tools/ltori-seo/media/', '/tools%2fltori-seo%2fmedia%2f']) {
+    const e = assetEnvironment();
+    const res = await handleRequest(request(`https://seo.layr.co.jp${path}`), e, verify);
+    assert.equal(res.status, 401, path);
+    assert.equal(e.requests.length, 0);
+  }
+  for (const host of ['preview.example.test', 'layr-hp.example.workers.dev']) {
+    const e = assetEnvironment();
+    assert.equal((await handleRequest(request(`https://${host}/tools/ltori-seo/media/`, await token()), e, verify)).status, 403);
+    assert.equal(e.requests.length, 0);
+  }
+});
+
+test('signed media route rewrites only to protected HTML and preserves secure headers', async () => {
+  const e = assetEnvironment();
+  const res = await handleRequest(request('https://seo.layr.co.jp/media/?period=test', await token()), e, verify);
+  assert.equal(await res.text(), 'asset:/tools/ltori-seo/media/');
+  assert.equal(new URL(e.requests[0].url).search, '');
+  assert.match(res.headers.get('Cache-Control'), /no-store/);
+  assert.match(res.headers.get('X-Robots-Tag'), /noindex/);
+  assert.equal(res.headers.get('X-Frame-Options'), 'DENY');
+  assert.equal(res.headers.has('ETag'), false);
+  const head = assetEnvironment();
+  await handleRequest(request('https://seo.layr.co.jp/media/', await token(), {method: 'HEAD'}), head, verify);
+  assert.equal(head.requests[0].method, 'HEAD');
+  const write = assetEnvironment();
+  assert.equal((await handleRequest(request('https://seo.layr.co.jp/media/', await token(), {method: 'POST'}), write, verify)).status, 405);
+  assert.equal(write.requests.length, 0);
+});
+
+test('media aliases redirect after authentication and public media remains public', async () => {
+  for (const path of ['/media', '/media/index.html', '/media.html', '/tools/ltori-seo/media/', '/tools/ltori-seo/media', '/tools/ltori-seo/media/index.html', '/tools/ltori-seo/media.html']) {
+    const e = assetEnvironment();
+    const res = await handleRequest(request(`https://seo.layr.co.jp${path}`, await token()), e, verify);
+    assert.equal(res.status, 302, path);
+    assert.equal(res.headers.get('Location'), 'https://seo.layr.co.jp/media/');
+    assert.equal(e.requests.length, 0);
+  }
+  const e = assetEnvironment();
+  assert.equal(await (await handleRequest(request('https://layr.co.jp/tools/ltori-seo/media/', await token()), e, verify)).text(), 'asset:/tools/ltori-seo/migrate/');
+  assert.equal(await (await handleRequest(request('https://layr.co.jp/service/ltori/media/'), e, verify)).text(), 'asset:/service/ltori/media/');
+  assert.equal((await handleRequest(request('https://seo.layr.co.jp/service/ltori/media/', await token()), e, verify)).status, 404);
+});

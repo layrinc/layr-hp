@@ -2,6 +2,7 @@ import {createRemoteJWKSet, jwtVerify} from 'jose';
 
 export const MANAGER_ORIGIN = 'https://seo.layr.co.jp';
 export const MANAGER_PATH = '/tools/ltori-seo/';
+export const MEDIA_MANAGER_PATH = `${MANAGER_PATH}media/`;
 const PUBLIC_HOSTS = new Set(['layr.co.jp', 'www.layr.co.jp']);
 const keySets = new Map();
 
@@ -87,15 +88,20 @@ export async function handleRequest(request, env, verify = verifyAccessToken) {
     return protectedResponse(request.method === 'HEAD' ? null : JSON.stringify({...identity, managerOrigin: MANAGER_ORIGIN, legacy: !dedicated}), 200, {'Content-Type': 'application/json; charset=utf-8'});
   }
   if (dedicated && path.startsWith(MANAGER_PATH)) {
-    return protectedResponse(null, 302, {Location: `${MANAGER_ORIGIN}/`});
+    const mediaAlias = [MEDIA_MANAGER_PATH, MEDIA_MANAGER_PATH.slice(0, -1), `${MEDIA_MANAGER_PATH}index.html`, `${MANAGER_PATH}media.html`].includes(path);
+    return protectedResponse(null, 302, {Location: `${MANAGER_ORIGIN}${mediaAlias ? '/media/' : '/'}`});
+  }
+  if (dedicated && ['/media', '/media/index.html', '/media.html'].includes(path)) {
+    return protectedResponse(null, 302, {Location: `${MANAGER_ORIGIN}/media/`});
   }
   // Only manager assets are served on the dedicated host. In particular the
   // public LPs, sitemap and contact form must not acquire duplicate URLs here.
-  if (dedicated && path !== '/' && path !== '/index.html' && !path.startsWith('/_astro/') && path !== '/favicon.svg') {
+  if (dedicated && path !== '/' && path !== '/index.html' && path !== '/media/' && !path.startsWith('/_astro/') && path !== '/favicon.svg') {
     return protectedResponse('ページが見つかりません。', 404);
   }
   const assetUrl = new URL(request.url);
   if (dedicated && (path === '/' || path === '/index.html')) assetUrl.pathname = MANAGER_PATH;
+  if (dedicated && path === '/media/') assetUrl.pathname = MEDIA_MANAGER_PATH;
   if (!dedicated) assetUrl.pathname = `${MANAGER_PATH}migrate/`;
   assetUrl.search = '';
   // Avoid a 304 replay of an HTML page from a previously authenticated session.
