@@ -15,6 +15,7 @@ const source = Astro.props.articleId ? `media/${Astro.props.articleId}` : 'media
       <div class="container lm-masthead"><Brand />
         <nav class="lm-desktop-nav" aria-label="採用LINEのカテゴリー">{topicGuides.map(guide=><a href={categoryPath(guide.slug)} aria-current={Astro.url.pathname===categoryPath(guide.slug) ? 'page' : undefined}>{guide.category}</a>)}<a href={mediaPath}>記事一覧</a><a class="lm-about-link" href={mediaInfo.aboutPath} aria-current={Astro.url.pathname===mediaInfo.aboutPath ? 'page' : undefined}>このメディアについて</a></nav>
         <details class="lm-mobile-nav"><summary>メニュー <span aria-hidden="true">＋</span></summary><nav aria-label="モバイルメニュー">{topicGuides.map(guide=><a href={categoryPath(guide.slug)} aria-current={Astro.url.pathname===categoryPath(guide.slug) ? 'page' : undefined}>{guide.category}<span aria-hidden="true">→</span></a>)}<a href={mediaPath}>記事一覧</a><a href={mediaInfo.aboutPath}>このメディアについて</a></nav></details>
+        <a class="lm-button lm-header-contact" href={mediaInfo.contactPath} aria-current={Astro.url.pathname===mediaInfo.contactPath ? 'page' : undefined}>お問い合わせ</a>
       </div>
     </header>
     <div class="container lm-main" id="lm-content" tabindex="-1"><slot /></div>
