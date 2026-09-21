@@ -16,9 +16,15 @@ test('generated media has article links, canonical, schema and recruitment CTAs'
   assert.ok(html.includes('BlogPosting'));
   assert.ok(html.includes('/document/ltori-service/'));
   assert.ok(html.includes('/contact/?service=ltori'));
+  assert.ok(html.includes(`source=media%2F${id}`));
   assert.ok(readFileSync('dist/sitemap-0.xml','utf8').includes(articlePath(id)));
   assert.ok(readFileSync(`dist${mediaPath}index.html`,'utf8').includes(articlePath(id)));
  }
+});
+test('media index has its own source instead of borrowing an article',()=>{
+ const html=readFileSync(`dist${mediaPath}index.html`,'utf8');
+ assert.ok(html.includes('source=media"'));
+ assert.ok(!html.includes('source=media%2Fundefined'));
 });
 test('CTA clicks are not reported as leads',()=>{
  const layout=readFileSync('src/layouts/LtoriMedia.astro','utf8');

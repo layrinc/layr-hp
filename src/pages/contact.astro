@@ -7,7 +7,8 @@
 import Base from '../layouts/Base.astro';
 import settings from '../data/settings.json';
 import ltoriService from '../data/service-ltori.json';
-import { sourceLabels } from '../lib/ltori-seo.mjs';
+import { leadSourceLabels } from '../lib/ltori-lead-sources';
+const sourceLabels = await leadSourceLabels();
 
 const title = 'LINE運用のご相談・お問い合わせ｜株式会社LAYR';
 const description = 'LINE公式アカウントの構築代行・運用代行に関するご相談はこちら。LINEトークまたはメールフォームから、通常1営業日以内にご返信します。無料相談はオンライン30分、この段階での売り込みは行いません。';
@@ -117,9 +118,12 @@ const breadcrumbJsonLd = {
       const ok = document.getElementById('ctOk');
       const fb = document.getElementById('ctFb');
       const ml = document.getElementById('ctMailto');
+      let submitting = false;
+      let submitted = false;
       form.addEventListener('submit', async (e) => {
         e.preventDefault();
-        if (form.querySelector('[name="_honey"]').value) return;
+        if (submitting || submitted || form.querySelector('[name="_honey"]').value) return;
+        submitting = true;
         btn.disabled = true;
         const prev = btn.firstChild.textContent;
         btn.firstChild.textContent = '送信中… ';
@@ -130,17 +134,20 @@ const breadcrumbJsonLd = {
           const res = await fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
             method: 'POST', body: data, headers: { Accept: 'application/json' }, signal: ctrl.signal,
           });
-          clearTimeout(timer);
           if (!res.ok) throw new Error('http ' + res.status);
           const submission = await res.json();
           if (submission.success !== true && submission.success !== 'true') throw new Error('submission rejected');
+          clearTimeout(timer);
+          submitted = true;
           form.querySelectorAll('input:not([type="hidden"]), textarea').forEach((el) => { el.value = ''; });
-          if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'contact_form', service: query.get('service') === 'ltori' ? 'ltori' : 'general', ...(pageSource ? { page_source: pageSource } : {}) });
-          if (typeof gtag === 'function' && query.get('service') === 'ltori' && pageSource?.startsWith('area/')) {
-            gtag('event', 'ltori_inquiry_complete', {page_source:pageSource, method:'contact_form'});
-          }
           ok.hidden = false; fb.hidden = true;
           ok.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+          // Analytics failures must not turn an accepted submission into a retry.
+          try {
+            if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'contact_form', service: query.get('service') === 'ltori' ? 'ltori' : 'general', ...(pageSource ? { page_source: pageSource } : {}) });
+            if (typeof gtag === 'function' && pageSource.startsWith('area/')) gtag('event', 'ltori_inquiry_complete', {page_source:pageSource, method:'contact_form'});
+            if (typeof gtag === 'function' && (pageSource === 'media' || pageSource.startsWith('media/'))) gtag('event', 'ltori_media_inquiry_complete', {page_source:pageSource, method:'contact_form'});
+          } catch (_) {}
         } catch (_) {
           clearTimeout(timer);
           const g = (n) => String(data.get(n) || '');
@@ -149,7 +156,8 @@ const breadcrumbJsonLd = {
           fb.hidden = false;
           fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
         } finally {
-          btn.disabled = false;
+          submitting = false;
+          btn.disabled = submitted;
           btn.firstChild.textContent = prev;
         }
       });
