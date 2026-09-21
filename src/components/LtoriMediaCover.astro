@@ -1,0 +1,12 @@
+---
+import { mediaArtwork, articleVisuals, topicGuides, mediaInfo } from '../lib/ltori-media.mjs';
+const { post, hero = false } = Astro.props;
+const guide = topicGuides.find(guide => guide.category === post.data.category);
+const visual = mediaArtwork[guide?.slug || 'overview'];
+const copy = articleVisuals[post.id] || { title: post.data.title, subtitle: post.data.category };
+---
+<div class:list={['lm-cover', 'lm-artwork', { 'lm-cover-hero': hero }]} data-tone={visual.tone} aria-hidden="true">
+  <div class="lm-cover-top"><strong>{copy.title}</strong><span>{copy.subtitle}</span></div>
+  <img src={visual.image} alt="" width="500" height="500" loading={hero ? 'eager' : 'lazy'} decoding="async" />
+  <div class="lm-cover-brand">{mediaInfo.name}</div>
+</div>

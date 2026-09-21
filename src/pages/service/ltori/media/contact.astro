@@ -1,0 +1,37 @@
+---
+import Layout from '../../../../layouts/LtoriMedia.astro';
+import Heading from '../../../../components/LtoriMediaHeading.astro';
+import settings from '../../../../data/settings.json';
+import { mediaInfo, mediaPath } from '../../../../lib/ltori-media.mjs';
+const title = 'お問い合わせ';
+const description = `${mediaInfo.name}へのお問い合わせ窓口です。記事の内容、訂正のご連絡、取材・掲載などについてお送りください。`;
+const jsonLd = {'@context':'https://schema.org','@type':'ContactPage',name:`${title}｜${mediaInfo.name}`,description,url:new URL(mediaInfo.contactPath,Astro.site).href};
+---
+<Layout title={title} description={description} jsonLd={jsonLd}>
+  <Heading title={title} description="記事の内容や訂正、取材・掲載など、メディアに関するご連絡はこちらからお送りください。" artwork="follow-up" />
+  <div class="lm-contact-layout">
+    <section class="lm-contact-info"><h2>編集部へのご連絡</h2><p>内容を確認のうえ、ご入力のメールアドレスへ返信します。</p><p>記事に関するお問い合わせは、記事URLと該当箇所もお知らせください。</p><a class="lm-text-link" href={mediaInfo.aboutPath}>編集方針・運営会社を見る →</a><div class="lm-contact-direct"><h3>メールでのお問い合わせ</h3><a href={`mailto:${settings.email}`}>{settings.email}</a></div></section>
+    <form id="lmContactForm" class="lm-contact-form" action={`https://formsubmit.co/${settings.email}`} method="POST">
+      <input type="hidden" name="_subject" value={`【${mediaInfo.name}】お問い合わせ`} />
+      <input type="hidden" name="_captcha" value="false" />
+      <input type="hidden" name="_template" value="table" />
+      <input type="text" name="_honey" hidden tabindex="-1" autocomplete="off" />
+      <label>お問い合わせの種類 <span>必須</span><select name="お問い合わせの種類" required><option value="">選択してください</option><option>記事に関するご質問・訂正</option><option>取材・掲載について</option><option>メディア運営について</option><option>その他</option></select></label>
+      <div class="lm-form-pair"><label>お名前 <span>必須</span><input name="お名前" autocomplete="name" required maxlength="100" /></label><label>会社名・団体名 <span class="lm-optional">任意</span><input name="会社名・団体名" autocomplete="organization" maxlength="200" /></label></div>
+      <label>メールアドレス <span>必須</span><input name="email" type="email" autocomplete="email" inputmode="email" required maxlength="254" /></label>
+      <label>対象の記事URL <span class="lm-optional">任意</span><input name="対象の記事URL" type="url" inputmode="url" maxlength="2048" placeholder="https://" /></label>
+      <label>お問い合わせ内容 <span>必須</span><textarea name="お問い合わせ内容" rows="7" required maxlength="5000" aria-describedby="contact-message-help"></textarea></label><p class="lm-form-help" id="contact-message-help">候補者の氏名や履歴書など、第三者の個人情報は記載しないでください。</p>
+      <label class="lm-consent"><input name="個人情報の取り扱いへの同意" type="checkbox" value="同意する" required /><span><a href="/privacy/" target="_blank" rel="noopener">プライバシーポリシー（別タブ）</a>を確認し、個人情報の取り扱いに同意します。</span></label>
+      <button class="lm-button" type="submit">お問い合わせを送る</button>
+      <p class="lm-contact-status" data-contact-status role="status" aria-live="polite" hidden></p>
+      <p class="lm-form-help">フォームが使えない場合は、<a href={`mailto:${settings.email}`}>{settings.email}</a>へご連絡ください。</p>
+      <noscript><p class="lm-form-help">送信後、フォーム受付サービスの画面へ移動します。</p></noscript>
+    </form>
+  </div>
+  <nav class="lm-breadcrumb" aria-label="パンくず"><a href={mediaPath}>{mediaInfo.name}</a><span aria-hidden="true">/</span><span aria-current="page">お問い合わせ</span></nav>
+</Layout>
+<script>
+  import { bindMediaContact } from '../../../../lib/media-contact.mjs';
+  const form = document.querySelector<HTMLFormElement>('#lmContactForm');
+  if (form) bindMediaContact(form);
+</script>

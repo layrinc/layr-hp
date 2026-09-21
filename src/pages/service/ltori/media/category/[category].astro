@@ -1,0 +1,28 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../../../layouts/LtoriMedia.astro';
+import Card from '../../../../../components/LtoriMediaCard.astro';
+import Sidebar from '../../../../../components/LtoriMediaSidebar.astro';
+import Heading from '../../../../../components/LtoriMediaHeading.astro';
+import { mediaPath, mediaInfo, articlePath, categoryPath, topicGuides, isPublished, newestFirst } from '../../../../../lib/ltori-media.mjs';
+export function getStaticPaths(){ return topicGuides.map(guide=>({params:{category:guide.slug},props:{guide}})); }
+const { guide } = Astro.props;
+const allPosts = (await getCollection('recruitment',isPublished)).sort(newestFirst);
+const posts = allPosts.filter(post=>post.data.category===guide.category);
+const title = `${guide.category}の記事`;
+const jsonLd = [
+  {'@context':'https://schema.org','@type':'CollectionPage',name:title,description:guide.introduction,url:new URL(categoryPath(guide.slug),Astro.site).href,mainEntity:{'@type':'ItemList',numberOfItems:posts.length,itemListElement:posts.map((post,i)=>({'@type':'ListItem',position:i+1,url:new URL(articlePath(post.id),Astro.site).href,name:post.data.title}))}},
+  {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:mediaInfo.name,item:new URL(mediaPath,Astro.site).href},{'@type':'ListItem',position:2,name:guide.category}]},
+];
+---
+<Layout title={title} description={guide.introduction} jsonLd={jsonLd}>
+  <Heading title={guide.category} description={guide.description} kicker="カテゴリー" artwork={guide.slug} />
+  <div class="lm-content-grid">
+    <div>
+      <section id="articles" aria-labelledby="articles-title"><div class="lm-list-heading"><h2 id="articles-title">{guide.category}の記事一覧</h2><p class="lm-meta">{posts.length}件 / 公開日の新しい順</p></div><div class="lm-list">{posts.map(post=><Card post={post} />)}</div>{posts.length===0&&<p>このカテゴリーの記事は現在準備中です。</p>}</section>
+      <section class="lm-category-intro" aria-labelledby="category-guide-title"><h2 id="category-guide-title">{guide.question}</h2><p>{guide.introduction}</p><h3>記事を読むときの確認ポイント</h3><ul>{guide.checks.map(check=><li>{check}</li>)}</ul></section>
+    </div>
+    <Sidebar posts={allPosts} />
+  </div>
+  <nav class="lm-breadcrumb" aria-label="パンくず"><a href={mediaPath}>{mediaInfo.name}</a><span aria-hidden="true">/</span><span aria-current="page">{guide.category}</span></nav>
+</Layout>

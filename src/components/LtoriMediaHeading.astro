@@ -1,0 +1,16 @@
+---
+import { mediaInfo, mediaArtwork } from '../lib/ltori-media.mjs';
+interface Props {
+  title: string;
+  description?: string;
+  kicker?: string;
+  artwork?: keyof typeof mediaArtwork;
+  home?: boolean;
+}
+const { title, description, kicker = mediaInfo.name, artwork = 'overview', home = false } = Astro.props;
+const visual = mediaArtwork[artwork];
+---
+<header class:list={['lm-page-heading', 'lm-illustrated-heading', 'lm-artwork', { 'lm-heading-home': home }]} data-tone={visual.tone}>
+  <div class="lm-heading-copy"><p class="lm-kicker">{kicker}</p><h1>{title}</h1>{description && <p class="lm-heading-description">{description}</p>}</div>
+  <div class="lm-heading-art" aria-hidden="true"><img src={visual.image} alt="" width="1536" height="1024" decoding="async" fetchpriority={home ? 'high' : 'auto'} /></div>
+</header>
