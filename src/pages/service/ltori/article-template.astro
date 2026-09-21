@@ -1,0 +1,21 @@
+---
+import Layout from '../../../layouts/LtoriMedia.astro';
+import service from '../../../data/service-ltori.json';
+// Internal asset only: worker rejects direct requests and injects reviewed content.
+// Existing media typography, header, footer and CTA are deliberately reused.
+---
+<Layout title="採用コラム" description="採用LINEの活用と運用の考え方" articleId="runtime">
+  <article class="lm-article">
+    <header class="lm-article-head">
+      <p class="lm-kicker">採用担当者のための実践ガイド</p>
+      <h1 data-seo-title>採用コラム</h1>
+      <p class="lm-lead" data-seo-lead></p>
+      <p class="lm-meta">制作：株式会社LAYR ／ 公開 <time data-seo-published-at></time></p>
+    </header>
+    <div class="lm-article-body" data-seo-editorial-slot></div>
+    <aside class="lm-article-end">
+      <div class="lm-editor"><div><h2>自社の採用に合わせたLINE運用を相談する</h2><p>募集職種や応募後の課題を伺い、必要な配信と面談までの導線をご提案します。</p><a class="lm-button" href="/contact/?service=ltori" data-lm-cta="runtime_consult">無料相談をする</a></div></div>
+      <p><a href={service.path} data-lm-cta="service_site">エルトリのサービス内容・料金を見る</a></p>
+    </aside>
+  </article>
+</Layout>

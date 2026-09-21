@@ -1,5 +1,5 @@
 {
-  "dailyLimit": 3,
+  "dailyLimit": 10,
   "releases": [
     {"slug":"mie/nabari","publishOn":"2026-09-18","reviewedOn":"2026-09-18"},
     {"slug":"mie/toba","publishOn":"2026-09-18","reviewedOn":"2026-09-18"},

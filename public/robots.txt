@@ -7,3 +7,4 @@ Disallow: /yorozuya/thanks/
 Disallow: /yorozuya/docs/
 
 Sitemap: https://layr.co.jp/sitemap-index.xml
+Sitemap: https://layr.co.jp/sitemap-ltori-growth.xml

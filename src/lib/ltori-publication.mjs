@@ -3,7 +3,7 @@ import content from '../data/ltori-city-editorial.json' with {type:'json'};
 import {regionalAreas, isEligibleArea} from './ltori-seo.mjs';
 
 export function validateReleases(input, areas, editorial) {
-  if (input.dailyLimit !== 3 || !Array.isArray(input.releases)) throw new Error('Publication limit must be 3 reviewed pages/day');
+  if (input.dailyLimit !== 10 || !Array.isArray(input.releases)) throw new Error('Publication limit must be 10 reviewed pages/day');
   const bySlug = new Map(areas.map(area => [area.slug, area])), seen = new Set(), counts = new Map();
   const validDate = value => /^\d{4}-\d{2}-\d{2}$/.test(value) && new Date(value).toISOString().slice(0,10) === value;
   for (const release of input.releases) {

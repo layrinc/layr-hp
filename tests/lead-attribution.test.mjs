@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
+import { bindLtoriContact } from '../src/lib/ltori-contact.mjs';
 
 // Execute the actual built form scripts, with outbound requests replaced by fixtures.
 const scriptFor = (path, marker) => {
@@ -26,15 +27,26 @@ function formHarness(kind, {source='media/interview-followup', service='ltori', 
   nodes.get(prefix+'Mailto').href='mailto:info@layr.co.jp';
   const context = {
     document:{getElementById:id=>nodes.get(id),createElement:node},location,window:{location},URLSearchParams,AbortController,
-    FormData:class {constructor(){this.values=new Map([...fields].map(([k,v])=>[k,v.value]));}get(k){return this.values.get(k);}},
+    FormData:class {constructor(){this.values=new Map([...fields].map(([k,v])=>[k,v.value]));}get(k){return this.values.get(k);}set(k,v){this.values.set(k,v);}},
     setTimeout(fn,ms){const id=++timerId;timers.set(id,{fn,ms});return id;},clearTimeout(id){timers.delete(id);},
     fetch:async(url,options)=>{requests.push({url,body:options.body});return fetcher ? fetcher(options) : {ok:status===200,status,json:async()=>{if(response==='invalid-json')throw new Error('Invalid JSON');return response;}};},
   };
   if(analytics!=='absent')context.gtag=(...args)=>{if(analytics==='throw')throw new Error('Tag blocked');events.push(args);if(analytics==='callback')args[2]?.event_callback?.();};
   const path = kind === 'contact' ? 'contact' : `document/${docId}`;
-  const script=scriptFor(path,`getElementById('${prefix}Form')`);
-  assert.ok(script, 'Built form script must exist');
-  vm.runInNewContext(script, context);
+  if(kind === 'contact') {
+    const html = readFileSync('dist/contact/index.html','utf8');
+    const attribute = name => (html.match(new RegExp(`${name}="([^"]*)"`))?.[1] || '').replace(/&quot;/g,'"').replace(/&#39;/g,"'").replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>');
+    const sourceLabels = JSON.parse(attribute('data-ltori-source-labels'));
+    bindLtoriContact(form, {email:attribute('data-ct-email'),ltoriName:attribute('data-ltori-name'),sourceLabels}, {
+      document:context.document, search:location.search, fetcher:context.fetch,
+      makeData:()=>new context.FormData(), makeSubmissionId:()=> '00000000-0000-4000-8000-000000000001',
+      track:(...args)=>context.gtag?.(...args), setTimer:context.setTimeout, clearTimer:context.clearTimeout,
+    });
+  } else {
+    const script=scriptFor(path,`getElementById('${prefix}Form')`);
+    assert.ok(script, 'Built form script must exist');
+    vm.runInNewContext(script, context);
+  }
   return {nodes,fields,events,requests,location,timers,submit:()=>form.submit({preventDefault(){}}),flushTimers:()=>{for(const {fn} of [...timers.values()])fn();timers.clear();}};
 }
 

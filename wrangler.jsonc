@@ -5,6 +5,9 @@
   "main": "worker/index.mjs",
   "account_id": "970414d67575a1afb2eb889748741af7",
   "compatibility_date": "2026-08-01",
+  "keep_vars": true,
+  "d1_databases": [{ "binding": "SEO_DB" }],
+  "triggers": { "crons": ["0 0 * * *", "15 21 * * *"] },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",

@@ -1,0 +1,143 @@
+---
+import Base from '../../../layouts/Base.astro';
+import service from '../../../data/service-ltori.json';
+import { diagnosisQuestions } from '../../../lib/ltori-diagnosis.mjs';
+import '../../../styles/ltori-diagnosis.css';
+
+// Design plan: mode A. signature: a numbered answer sheet becomes a practical LINE flow.
+// Keep public LP tokens, one heading hierarchy and no estimated savings or invented outcomes.
+const title = `採用LINE活用診断｜5つの質問で導線を整理｜${service.name}`;
+const description = '業種・採用予定・応募経路・お困りの工程に合わせて、採用LINEで最初に整える導線、配信の作例、確認する指標をご案内します。メールアドレスの登録は不要です。';
+---
+<Base title={title} description={description} hideHeader={true} hideLtoriAreaLink={true}>
+  <div class="ld-page">
+    <header class="ld-header ld-wrap">
+      <a class="ld-brand" href={service.path}>{service.name}<small>採用特化LINE支援 by LAYR</small></a>
+      <a class="ld-text-link" href={service.path}>サービス内容を見る <span aria-hidden="true">↗</span></a>
+    </header>
+    <div class="ld-wrap">
+      <section class="ld-intro" aria-labelledby="diagnosis-title">
+        <p class="ld-eyebrow">採用担当者のための、導線づくり</p>
+        <h1 id="diagnosis-title">採用LINE、<br />どこから整える？</h1>
+        <p class="ld-lead">5つの質問から、<strong>自社に合う始め方</strong>を。</p>
+        <p>現在の採用活動を選ぶと、最初に整える導線と配信の作例をご覧いただけます。<br />メールアドレスの登録は不要です。</p>
+      </section>
+      <noscript><p class="ld-note">診断の表示にはJavaScriptが必要です。<a href="/contact/?service=ltori&source=diagnosis">採用LINEの活用について相談する</a>こともできます。</p></noscript>
+      <form id="ld-form" aria-label="採用LINE活用診断の質問">
+        {diagnosisQuestions.map((question, index) => (
+          <fieldset class="ld-question">
+            <legend><span class="ld-number">0{index + 1}</span><span>{question.title}</span></legend>
+            <div class="ld-options">
+              {question.choices.map(([value, label]) => (
+                <label class="ld-option"><input type="radio" name={question.key} value={value} required /><span>{label}</span></label>
+              ))}
+            </div>
+          </fieldset>
+        ))}
+        <div class="ld-form-end"><p>すべて選択すると、結果を確認できます。</p><button class="ld-button" type="submit">活用プランを見る <span aria-hidden="true">↗</span></button></div>
+      </form>
+      <p id="ld-status" class="ld-status" role="status" aria-live="polite"></p>
+
+      <section class="ld-result" id="ld-result" aria-labelledby="ld-result-title" hidden>
+        <div class="ld-result-heading">
+          <p class="ld-eyebrow">あなたの回答から考える、最初の一歩</p>
+          <h2 id="ld-result-title" tabindex="-1"></h2>
+          <p id="ld-result-reason"></p>
+        </div>
+        <div class="ld-result-block"><h3>最初に整えるLINEの流れ</h3><ol class="ld-flow" id="ld-flow"></ol></div>
+        <div class="ld-result-columns">
+          <div class="ld-result-block"><h3>業種に合わせた準備</h3><p id="ld-industry"></p><p class="ld-topic"><strong>先にそろえる情報</strong><span id="ld-topic"></span></p></div>
+          <div class="ld-result-block"><h3>取り組む順番</h3><ol class="ld-list" id="ld-first"></ol></div>
+        </div>
+        <div class="ld-result-block ld-example">
+          <div><p class="ld-eyebrow">配信メッセージの作例</p><h3 id="ld-message-title"></h3><p>実績や実在企業の配信ではありません。募集条件と実際の対応体制に合わせて調整してください。</p></div>
+          <div class="ld-message"><p id="ld-message"></p><p id="ld-question-message"></p><ul id="ld-buttons" class="ld-message-buttons" aria-label="設置するボタンの例"></ul></div>
+        </div>
+        <div class="ld-result-columns">
+          <div class="ld-result-block"><h3>始める前の確認</h3><ul class="ld-list" id="ld-preparation"></ul></div>
+          <div class="ld-result-block"><h3>運用後に確認する指標</h3><ul class="ld-list" id="ld-metrics"></ul><p class="ld-note">クリック・応募・面接実施は別の指標です。予約や配信の機能は、利用するツールとプランにより異なります。</p></div>
+        </div>
+        <div class="ld-result-block ld-consult">
+          <h3>このプランを、自社の採用に合わせる。</h3>
+          <p>診断結果を引き継いで、実際の応募経路や運用体制についてご相談いただけます。ご相談内容はフォームで確認・編集できます。</p>
+          <div class="ld-actions"><a id="ld-consult-link" class="ld-button" href="/contact/?service=ltori&source=diagnosis">この結果について無料相談する <span aria-hidden="true">↗</span></a><a id="ld-guide-link" class="ld-text-link" href="/service/ltori/media/">関連する採用コラムを読む <span aria-hidden="true">↗</span></a></div>
+          <details class="ld-summary"><summary>相談に引き継ぐ内容を確認する</summary><label for="ld-summary-text">診断結果の要約</label><textarea id="ld-summary-text" rows="9" readonly></textarea><button id="ld-copy" class="ld-secondary" type="button">要約をコピーする</button><p id="ld-copy-status" role="status"></p></details>
+        </div>
+        <p class="ld-note">この診断は、選択された状況から活用方法を整理するものです。応募数や採用成果を予測・保証するものではありません。LINEの導入とあわせて、求人の内容や応募の入口も確認します。</p>
+        <button class="ld-secondary" id="ld-restart" type="button">回答を変更する</button>
+      </section>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import { createDiagnosis, diagnosisQuestions, diagnosisSummary, diagnosisContactHref, safeDiagnosisSource } from '../../../lib/ltori-diagnosis.mjs';
+  const form = document.querySelector<HTMLFormElement>('#ld-form');
+  const resultSection = document.querySelector<HTMLElement>('#ld-result');
+  const status = document.querySelector<HTMLElement>('#ld-status');
+  const source = safeDiagnosisSource(new URLSearchParams(location.search).get('source'));
+  const analytics = window as typeof window & { gtag?: (...args: unknown[]) => void };
+  let lastCode = '';
+  let currentResult: ReturnType<typeof createDiagnosis> = null;
+  const emit = (event: string, extra: Record<string, string> = {}) => analytics.gtag?.('event', event, { service: 'ltori', page_source: source, ...extra });
+  const setText = (id: string, text: string) => { const element = document.getElementById(id); if (element) element.textContent = text; };
+  const setList = (id: string, items: string[]) => {
+    const parent = document.getElementById(id);
+    if (!parent) return;
+    parent.replaceChildren(...items.map(text => { const item = document.createElement('li'); item.textContent = text; return item; }));
+  };
+  let started = false;
+  form?.addEventListener('change', () => {
+    if (!started) { emit('ltori_diagnosis_start'); started = true; }
+    if (resultSection) resultSection.hidden = true;
+    if (status) status.textContent = '';
+  });
+  form?.addEventListener('submit', event => {
+    event.preventDefault();
+    const data = new FormData(form);
+    const answers = Object.fromEntries(diagnosisQuestions.map(question => [question.key, data.get(question.key)]));
+    const result = createDiagnosis(answers);
+    if (!result || !resultSection) return;
+    currentResult = result;
+    setText('ld-result-title', result.title);
+    setText('ld-result-reason', result.reason);
+    setText('ld-industry', result.industry);
+    setText('ld-topic', result.topic);
+    setText('ld-message-title', result.timing);
+    setText('ld-message', result.message);
+    setText('ld-question-message', result.question);
+    setList('ld-flow', result.flow);
+    setList('ld-first', result.first);
+    setList('ld-buttons', result.buttons);
+    setList('ld-preparation', result.preparation);
+    setList('ld-metrics', result.metrics);
+    const summary = document.querySelector<HTMLTextAreaElement>('#ld-summary-text');
+    if (summary) summary.value = diagnosisSummary(result.answers);
+    const consult = document.querySelector<HTMLAnchorElement>('#ld-consult-link');
+    if (consult) consult.href = diagnosisContactHref(result.answers, source);
+    const guide = document.querySelector<HTMLAnchorElement>('#ld-guide-link');
+    if (guide) guide.href = `/service/ltori/media/category/${result.guide}/`;
+    setText('ld-copy-status', '');
+    resultSection.hidden = false;
+    if (status) status.textContent = '回答に合わせた活用プランを表示しました。';
+    document.getElementById('ld-result-title')?.focus();
+    if (result.code !== lastCode) {
+      emit('ltori_diagnosis_complete', { diagnosis_stage: result.answers.bottleneck, diagnosis_industry: result.answers.industry });
+      lastCode = result.code;
+    }
+  });
+  document.getElementById('ld-consult-link')?.addEventListener('click', () => {
+    if (currentResult) emit('ltori_diagnosis_consultation_click', { diagnosis_stage: currentResult.answers.bottleneck });
+  });
+  document.getElementById('ld-copy')?.addEventListener('click', async () => {
+    const summary = document.querySelector<HTMLTextAreaElement>('#ld-summary-text');
+    if (!summary) return;
+    try { await navigator.clipboard.writeText(summary.value); setText('ld-copy-status', '要約をコピーしました。'); }
+    catch { summary.focus(); summary.select(); setText('ld-copy-status', '要約を選択しました。端末のコピー操作で保存できます。'); }
+  });
+  document.getElementById('ld-restart')?.addEventListener('click', () => {
+    if (resultSection) resultSection.hidden = true;
+    if (status) status.textContent = '回答を変更して、もう一度プランを表示できます。';
+    form?.querySelector<HTMLInputElement>('input')?.focus();
+  });
+</script>

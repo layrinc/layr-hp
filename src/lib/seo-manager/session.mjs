@@ -4,7 +4,7 @@ function lockWorkspace() {
   const main = document.createElement('main'); main.className = 'kw-main kw-access-page';
   const title = document.createElement('h1'); title.textContent = 'メール認証を確認してください';
   const description = document.createElement('p'); description.className = 'kw-help';
-  description.textContent = '認証の有効期限または接続状態を確認できませんでした。再読み込みしてログインしてください。保存済みの作業データはこのブラウザに残っています。';
+  description.textContent = '認証の有効期限または接続状態を確認できませんでした。再読み込みしてログインしてください。保存済みの作業データは再ログイン後に確認できます。';
   const button = document.createElement('button'); button.className = 'kw-button'; button.textContent = '再読み込みしてログイン';
   button.addEventListener('click', () => location.reload());
   main.append(title, description, button); document.body.replaceChildren(main);
