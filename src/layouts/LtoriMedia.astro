@@ -1,29 +1,30 @@
 ---
 import Base from './Base.astro';
+import Brand from '../components/LtoriMediaBrand.astro';
 import service from '../data/service-ltori.json';
-import { mediaPath } from '../lib/ltori-media.mjs';
-import { consultationHref } from '../lib/ltori-seo.mjs';
+import { mediaPath, mediaInfo, topicGuides, categoryPath } from '../lib/ltori-media.mjs';
 import '../styles/ltori-media.css';
 const { title, description, jsonLd } = Astro.props;
-const source = Astro.params.slug ? `media/${Astro.params.slug}` : 'media';
-const consultHref = consultationHref(source);
-const documentHref = `/document/ltori-service/?${new URLSearchParams({ source })}`;
+// Non-article routes use the media source; category slugs are not article IDs.
+const source = Astro.props.articleId ? `media/${Astro.props.articleId}` : 'media';
 ---
-<Base title={`${title}｜${service.name}`} description={description} jsonLd={jsonLd} hideHeader={true}>
+<Base title={`${title}｜${mediaInfo.name}`} description={description} jsonLd={jsonLd} hideHeader={true}>
   <div class="lm" data-lm-source={source}>
-    <header class="lm-header container">
-      <a class="lm-brand" href={mediaPath}>{service.name}<small>採用のつながりを育てるメディア</small></a>
-      <nav aria-label="エルトリメディア"><a href={service.path}>サービス・料金</a><a href={mediaPath}>記事一覧</a><a href={consultHref} data-lm-cta="header">無料相談</a></nav>
+    <a class="lm-skip" href="#lm-content">本文へ移動</a>
+    <header class="lm-header">
+      <div class="container lm-masthead"><Brand />
+        <nav class="lm-desktop-nav" aria-label="採用LINEのカテゴリー">{topicGuides.map(guide=><a href={categoryPath(guide.slug)} aria-current={Astro.url.pathname===categoryPath(guide.slug) ? 'page' : undefined}>{guide.category}</a>)}<a href={mediaPath}>記事一覧</a><a class="lm-about-link" href={mediaInfo.aboutPath} aria-current={Astro.url.pathname===mediaInfo.aboutPath ? 'page' : undefined}>このメディアについて</a></nav>
+        <details class="lm-mobile-nav"><summary>メニュー <span aria-hidden="true">＋</span></summary><nav aria-label="モバイルメニュー">{topicGuides.map(guide=><a href={categoryPath(guide.slug)} aria-current={Astro.url.pathname===categoryPath(guide.slug) ? 'page' : undefined}>{guide.category}<span aria-hidden="true">→</span></a>)}<a href={mediaPath}>記事一覧</a><a href={mediaInfo.aboutPath}>このメディアについて</a></nav></details>
+      </div>
     </header>
-    <div class="container lm-main"><slot /></div>
-    <section class="lm-end container" aria-labelledby="lm-cta-title">
-      <p>採用のお悩みを、次の一手に。</p>
-      <h2 id="lm-cta-title">自社の採用導線を、一緒に整理しませんか。</h2>
-      <p>{service.name}は、候補者との接点から応募・面談までを支援します。</p>
-      <div class="lm-actions"><a class="lm-button" href={consultHref} data-lm-cta="consultation">採用LINEを無料相談</a><a href={documentHref} data-lm-cta="document">サービス資料を受け取る →</a></div>
-      <a href={service.path}>サービス内容・料金を確認する</a>
-    </section>
+    <div class="container lm-main" id="lm-content" tabindex="-1"><slot /></div>
   </div>
+  <footer slot="footer" class="lm lm-footer">
+    <div class="container">
+      <div class="lm-footer-top"><div><Brand /><p>採用の疑問を、次の行動につなげる。</p></div><nav aria-label="メディアの運営情報"><a href={mediaInfo.aboutPath}>このメディアについて</a><a href={`${mediaInfo.aboutPath}#operator`}>運営会社</a><a href={mediaInfo.contactPath}>お問い合わせ</a><a href="/privacy/">プライバシーポリシー</a><a href={service.path} data-lm-cta="service_site">サービスサイトを見てみる <span aria-hidden="true">↗</span></a></nav></div>
+      <p class="lm-footer-copy">運営：株式会社LAYR <span aria-hidden="true">／</span> © 2026 LAYR Inc.</p>
+    </div>
+  </footer>
   <script>
     const source = document.querySelector<HTMLElement>('[data-lm-source]')?.dataset.lmSource;
     // Article-body links use the same attribution as the surrounding CTAs.
@@ -33,7 +34,7 @@ const documentHref = `/document/ltori-service/?${new URLSearchParams({ source })
       if ((url.pathname === '/contact/' && url.searchParams.get('service') === 'ltori') || url.pathname === '/document/ltori-service/') {
         url.searchParams.set('source', source);
         link.href = url.pathname + url.search + url.hash;
-        link.dataset.lmCta = 'article_body';
+        link.dataset.lmCta ||= 'article_body';
       }
     });
     document.querySelectorAll('[data-lm-cta]').forEach(link => link.addEventListener('click', () => {

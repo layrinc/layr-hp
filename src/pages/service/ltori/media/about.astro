@@ -1,0 +1,22 @@
+---
+import Layout from '../../../../layouts/LtoriMedia.astro';
+import Heading from '../../../../components/LtoriMediaHeading.astro';
+import company from '../../../../data/company.json';
+import service from '../../../../data/service-ltori.json';
+import { mediaInfo, mediaPath, topicGuides, categoryPath } from '../../../../lib/ltori-media.mjs';
+const title = 'このメディアについて';
+const description = `${mediaInfo.name}の目的、扱うテーマ、編集方針と運営会社をご紹介します。採用LINEの活用と応募から面接までのコミュニケーションを扱う実務メディアです。`;
+const jsonLd = {'@context':'https://schema.org','@type':'AboutPage',name:`${title}｜${mediaInfo.name}`,description,url:new URL(mediaInfo.aboutPath,Astro.site).href,publisher:{'@id':'https://layr.co.jp/#organization'}};
+---
+<Layout title={title} description={description} jsonLd={jsonLd}>
+  <Heading title={title} artwork="outsourcing" />
+  <article class="lm-about">
+    <section><h2>採用LINEを、現場で使える知識に。</h2><p>{mediaInfo.name}は、地方企業の経営者・採用担当者に向けて、採用LINEの活用と候補者とのコミュニケーションを解説する実務メディアです。</p><p>LINEを導入すること自体を目的にせず、求人を知ってもらう入口、応募後の連絡、日々の運用体制を分けて考えます。読者が自社の状況を整理し、次に行うことを判断できる情報をお届けします。</p></section>
+    <section><h2>扱うテーマ</h2><dl class="lm-about-topics">{topicGuides.map(guide=><div><dt><a href={categoryPath(guide.slug)}>{guide.category} →</a></dt><dd>{guide.description}</dd></div>)}</dl></section>
+    <section><h2>編集方針</h2><ol class="lm-editorial-policy"><li><h3>確認できる情報を根拠にする</h3><p>制度・ツールの仕様・料金などは、公式資料を優先して確認します。時点や条件で変わる情報には、参照先や適用条件を示します。</p></li><li><h3>事実と作例を分ける</h3><p>説明のための架空の設定や試算は、作例・仮定であることを明記します。実在企業の成果や導入実績として紹介しません。</p></li><li><h3>向かないケースも伝える</h3><p>LINEだけでは解決できない採用課題や、企業側に残る作業も扱います。比較では条件を揃え、確認できない情報を推測で補いません。</p></li><li><h3>公開後も内容を見直す</h3><p>記事には公開日を表示します。情報の変更や誤りが分かった場合は内容を確認し、重要な更新では記事内に変更点と更新日を記載します。</p></li></ol></section>
+    <section><h2>制作・確認について</h2><p>{company.name}が記事の企画・制作・公開時の内容確認を担当します。外部の専門家による監修を受けた場合は、対象記事に氏名と担当範囲を明示します。監修者の記載がない記事について、専門家の監修を受けているとは表示しません。</p><p>記載内容に誤りや古い情報を見つけた場合は、記事URLと該当箇所をお知らせください。取材・掲載に関するご連絡も受け付けています。</p><a class="lm-button" href={mediaInfo.contactPath}>編集部へお問い合わせ <span aria-hidden="true">→</span></a></section>
+    <section><h2>運営元とサービスの関係</h2><p>運営会社の{company.name}は、採用LINE支援サービス「{service.name}」も提供しています。本メディアの記事で自社サービスを取り上げる場合は、運営元との関係が分かるように記載します。</p><p>記事は一般的な情報提供を目的としており、特定の採用成果を保証するものではありません。サービスの提供範囲や料金は、<a href={service.path} data-lm-cta="about_service">サービスサイト</a>で確認できます。</p></section>
+    <section id="operator"><h2>運営会社</h2><dl class="lm-company"><div><dt>会社名</dt><dd>{company.name}</dd></div><div><dt>代表者</dt><dd>{company.representative}</dd></div><div><dt>所在地</dt><dd>{company.address}</dd></div><div><dt>設立</dt><dd>{company.founded}</dd></div><div><dt>コーポレートサイト</dt><dd><a href="/">株式会社LAYR</a></dd></div><div><dt>個人情報の取り扱い</dt><dd><a href="/privacy/">プライバシーポリシー</a></dd></div></dl></section>
+  </article>
+  <nav class="lm-breadcrumb" aria-label="パンくず"><a href={mediaPath}>{mediaInfo.name}</a><span aria-hidden="true">/</span><span aria-current="page">このメディアについて</span></nav>
+</Layout>

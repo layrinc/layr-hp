@@ -1,0 +1,23 @@
+---
+import service from '../data/service-ltori.json';
+import company from '../data/company.json';
+import { mediaInfo, articlePath, displayDate, categoryPath } from '../lib/ltori-media.mjs';
+const { post, guide, related } = Astro.props;
+const copy = {
+  'recruitment-flow': {label:'応募までの導線を整えたい企業へ', title:'求人を見た、その先の接点を。', body:'求人媒体や採用サイトで興味を持った方に、何を届けて応募へつなげるか。エルトリでは、採用LINEの入口から情報提供までを設計します。', points:['求人からLINEへの案内を整理','候補者の疑問に答える情報を準備','応募につながる配信・メニューを設計']},
+  'follow-up': {label:'応募後のやり取りを見直したい企業へ', title:'応募から面接まで、迷わない連絡へ。', body:'初回連絡、日程調整、面接前の案内。エルトリでは、採用LINEで整える範囲と、担当者が対応する範囲を一緒に整理します。', points:['応募後の連絡フローを確認','予約・リマインドの要件を整理','個別対応への引き継ぎを設計']},
+  outsourcing: {label:'採用LINEの導入・外注を検討中の企業へ', title:'必要な支援と、社内に残る仕事を明確に。', body:'構築だけでなく、日々の配信や改善まで。エルトリの支援内容を見ながら、自社に必要な運用体制と費用の内訳を確認できます。', points:['初期構築と運用の担当範囲を確認','ツール費を含めて費用を整理','公開後の改善・相談体制を確認']},
+}[guide.slug];
+const contact = `/contact/?service=ltori&source=${encodeURIComponent(`media/${post.id}`)}`;
+---
+<div class="lm-article-end">
+  <section class="lm-editor" aria-labelledby="editor-title">
+    <div class="lm-editor-avatar" aria-hidden="true"><img src="/service/ltori/media/artwork/book.svg" alt="" width="44" height="44" loading="lazy" /></div>
+    <div><div class="lm-editor-heading"><h2 id="editor-title">{mediaInfo.name}編集部</h2><span class="lm-editor-label">採用LINEの実務メディア</span></div><p>{company.name}が運営する採用LINEの情報メディアです。採用導線、応募後の連絡、構築・運用体制を、採用担当者の実務に沿って整理します。</p><div class="lm-editor-meta"><a href={mediaInfo.aboutPath}>編集方針・運営会社</a><span>公開：<time datetime={post.data.date.toISOString()}>{displayDate(post.data.date)}</time></span></div></div>
+  </section>
+  <section class="lm-service-guide" aria-labelledby="service-guide-title">
+    <div class="lm-service-copy"><p class="lm-kicker">運営会社のサービス「{service.name}」</p><span class="lm-service-label">{copy.label}</span><h2 id="service-guide-title">{copy.title}</h2><p>{copy.body}</p><div class="lm-button-row"><a class="lm-button" href={service.path} data-lm-cta="article_service">支援内容を見る <span aria-hidden="true">→</span></a><a class="lm-button lm-button-secondary" href={contact} data-lm-cta="article_consultation">導入を相談する <span aria-hidden="true">↗</span></a></div><a class="lm-text-link" href={categoryPath(guide.slug)}>「{guide.category}」の記事を読む <span aria-hidden="true">→</span></a></div>
+    <div class="lm-service-checks"><h3>ご相談時に整理できること</h3><ul>{copy.points.map(point=><li><span aria-hidden="true">✓</span>{point}</li>)}</ul><p>利用するツール・プランによって対応できる機能が異なります。</p></div>
+  </section>
+  {related.length > 0 && <aside class="lm-recommendations" aria-labelledby="recommended-title"><h2 id="recommended-title">この記事を読んだ方におすすめ</h2><div class="lm-compact-grid">{related.map(item=><a class="lm-compact-card" href={articlePath(item.id)}><span>{item.data.category}</span><h3>{item.data.title}</h3><p>{item.data.description}</p></a>)}</div></aside>}
+</div>

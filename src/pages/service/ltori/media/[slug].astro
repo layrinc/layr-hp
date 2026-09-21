@@ -1,20 +1,31 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../../../layouts/LtoriMedia.astro';
-import { articlePath, mediaPath, isPublished } from '../../../../lib/ltori-media.mjs';
+import Card from '../../../../components/LtoriMediaCard.astro';
+import Cover from '../../../../components/LtoriMediaCover.astro';
+import ArticleEnd from '../../../../components/LtoriMediaArticleEnd.astro';
+import { articlePath, mediaPath, mediaInfo, topicGuides, categoryPath, isPublished, newestFirst, displayDate } from '../../../../lib/ltori-media.mjs';
 export async function getStaticPaths(){return (await getCollection('recruitment',isPublished)).map(post=>({params:{slug:post.id},props:{post}}));}
 const { post } = Astro.props;
 const { Content, headings } = await render(post);
-const related = (await getCollection('recruitment',isPublished)).filter(p=>p.id!==post.id).slice(0,3);
+const related = (await getCollection('recruitment',isPublished)).filter(p=>p.id!==post.id).sort((a,b)=>Number(b.data.category===post.data.category)-Number(a.data.category===post.data.category)||newestFirst(a,b)).slice(0,3);
+const contents = headings.filter(h=>h.depth===2);
+const guide = topicGuides.find(guide=>guide.category===post.data.category);
+const categoryHref = categoryPath(guide.slug);
 const jsonLd = [
   {'@context':'https://schema.org','@type':'BlogPosting',headline:post.data.title,description:post.data.description,datePublished:post.data.date.toISOString(),author:{'@type':'Organization',name:'株式会社LAYR'},mainEntityOfPage:new URL(articlePath(post.id),Astro.site).href},
-  {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{ '@type':'ListItem',position:1,name:'エルトリ',item:new URL('/service/ltori/',Astro.site).href},{'@type':'ListItem',position:2,name:'メディア',item:new URL(mediaPath,Astro.site).href},{'@type':'ListItem',position:3,name:post.data.title}]},
+  {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{ '@type':'ListItem',position:1,name:mediaInfo.name,item:new URL(mediaPath,Astro.site).href},{'@type':'ListItem',position:2,name:post.data.category,item:new URL(categoryHref,Astro.site).href},{'@type':'ListItem',position:3,name:post.data.title}]},
 ];
 ---
-<Layout title={post.data.title} description={post.data.description} jsonLd={jsonLd}>
-  <article class="lm-article"><a href={mediaPath}>← エルトリメディア</a><p class="lm-kicker">{post.data.category}</p><h1>{post.data.title}</h1><p>{post.data.description}</p><p class="lm-meta">制作：株式会社LAYR ／ <time datetime={post.data.date.toISOString()}>{post.data.date.toISOString().slice(0,10)}</time> ／ 自社サービスの紹介を含みます。</p>
-    <nav class="lm-toc" aria-label="この記事の目次"><strong>この記事でわかること</strong><ol>{headings.filter(h=>h.depth===2).map(h=><li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol></nav>
-    <Content />
-    <aside><h2>次に読む</h2><ul>{related.map(p=><li><a href={articlePath(p.id)}>{p.data.title}</a></li>)}</ul></aside>
+<Layout title={post.data.title} description={post.data.description} jsonLd={jsonLd} articleId={post.id}>
+  <article class="lm-article">
+    <nav class="lm-breadcrumb" aria-label="パンくず"><a href={mediaPath}>{mediaInfo.name}</a><span aria-hidden="true">/</span><a href={categoryHref}>{post.data.category}</a></nav>
+    <header class="lm-article-head"><a class="lm-tag" href={categoryHref}>{post.data.category}</a><h1>{post.data.title}</h1><p class="lm-lead">{post.data.description}</p><p class="lm-meta">制作：株式会社LAYR ／ 公開 <time datetime={post.data.date.toISOString()}>{displayDate(post.data.date)}</time></p></header>
+    <div class="lm-reading-grid">
+      {contents.length > 0 && <nav class="lm-toc" aria-label="この記事の目次"><strong>この記事でわかること</strong><ol>{contents.map(h=><li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol></nav>}
+      <div class="lm-article-body"><Cover post={post} hero /><Content /></div>
+    </div>
+    <ArticleEnd post={post} guide={guide} related={related} />
+    {related.length > 0 && <aside class="lm-related" aria-labelledby="related-title"><h2 id="related-title">関連する記事</h2><div class="lm-related-grid">{related.map(p=><Card post={p} />)}</div><a class="lm-text-link" href={`${mediaPath}#articles`}>記事一覧に戻る <span aria-hidden="true">→</span></a></aside>}
   </article>
 </Layout>

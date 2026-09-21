@@ -1,0 +1,12 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { articlePath, displayDate, topicGuides, categoryPath, readingMinutes } from '../lib/ltori-media.mjs';
+import Cover from './LtoriMediaCover.astro';
+interface Props { post: CollectionEntry<'recruitment'> }
+const { post } = Astro.props;
+const guide = topicGuides.find(guide=>guide.category===post.data.category);
+---
+<article class="lm-card" data-lm-article data-category={post.data.category}>
+  <a class="lm-cover-link" href={articlePath(post.id)} aria-label={`${post.data.title}を読む`} tabindex="-1"><Cover post={post} /></a>
+  <div class="lm-card-content"><a class="lm-card-category" href={categoryPath(guide.slug)}>{post.data.category}</a><h3><a href={articlePath(post.id)}>{post.data.title}</a></h3><p class="lm-card-description">{post.data.description}</p><p class="lm-card-date"><time datetime={post.data.date.toISOString()}>{displayDate(post.data.date)}</time><span>読了 約{readingMinutes(post)}分</span><span class="lm-card-arrow" aria-hidden="true">→</span></p></div>
+</article>

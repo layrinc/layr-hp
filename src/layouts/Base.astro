@@ -190,6 +190,7 @@ const favicon = '/favicon-96.png';
   <slot />
 </main>
 
+<slot name="footer">
 <footer class="footer">
   <div class="footer-inner">
     <div>
@@ -244,6 +245,7 @@ const favicon = '/favicon-96.png';
   </div>
   <p class="footer-copy">© 2026 LAYR Inc. All Rights Reserved.</p>
 </footer>
+</slot>
 
 <script is:inline>
   // カスタマイザー（/admin/customize/）のライブプレビュー受信ブリッジ。
