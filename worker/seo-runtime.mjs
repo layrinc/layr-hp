@@ -1,14 +1,14 @@
 import {normalizedPath} from './seo-access.mjs';
 import {ensureDatabase,createStore,getPublished,getDocument,activity,publishDue,HttpError} from './seo-store.mjs';
 import {renderDocument,renderPublishedCards,renderPublishedCityLinks,renderPublicationSitemap,ARTICLE_TEMPLATE_PATH,escapeHtml} from './seo-publication.mjs';
-import {publicPath} from '../src/lib/seo-manager/editorial-model.mjs';
-import {publishedAreas} from '../src/lib/ltori-publication.mjs';
+import {publicPath,resolveCity} from '../src/lib/seo-manager/editorial-model.mjs';
+import {getPublishedAreas} from '../src/lib/ltori-publication.mjs';
 import {runAnalyticsSync,runInspections} from './seo-analytics.mjs';
 import {runHealthChecks,acquireJob,releaseJob} from './seo-health.mjs';
 import {contactRelay} from './seo-leads.mjs';
 
-export const staticPages=[
-  ...publishedAreas.map(area=>({path:`/service/ltori/area/${area.slug}/`,title:`${area.fullName}の採用LINE構築・運用支援`,type:'city'})),
+export const getStaticPages=(now=new Date())=>[
+  ...getPublishedAreas(now).map(area=>({path:`/service/ltori/area/${area.slug}/`,title:`${area.fullName}の採用LINE構築・運用支援`,type:'city'})),
   ...['interview-followup','recruitment-funnel','recruitment-line-agency'].map(slug=>({path:`/service/ltori/media/${slug}/`,title:slug,type:'article'})),
 ];
 const response=(body,status=200,headers={})=>new Response(body,{status,headers:{'Content-Type':'text/plain; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...headers}});
@@ -17,7 +17,7 @@ export async function resolveSource(env,key) {
   if(key==='diagnosis')return {key,label:'採用LINE活用診断',path:'/service/ltori/diagnosis/'};
   if(['area','media'].includes(key))return {key,label:key==='area'?'採用LINEの対応地域':'エルトリ採用ノート',path:`/service/ltori/${key}/`};
   if(!/^(area\/[a-z0-9-]+\/[a-z0-9-]+|media\/[a-z0-9-]+)$/.test(key))return null;
-  const path=`/service/ltori/${key}/`,known=staticPages.find(page=>page.path===path);if(known)return {key,label:known.title,path};
+  const path=`/service/ltori/${key}/`,known=getStaticPages().find(page=>page.path===path);if(known)return {key,label:known.title,path};
   if(!env.SEO_DB)return null;await ensureDatabase(env.SEO_DB);
   const row=await env.SEO_DB.prepare('SELECT value FROM seo_published WHERE path=?').bind(path).first();if(!row)return null;const doc=JSON.parse(row.value);return {key,label:doc.title,path};
 }
@@ -45,27 +45,48 @@ export async function publicFetch(request,env) {
   if(!['GET','HEAD'].includes(request.method))return response('Method not allowed',405);
   if(!env.SEO_DB){if(path==='/sitemap-ltori-growth.xml')return response('Database unavailable',503);return env.ASSETS.fetch(request);}
   await ensureDatabase(env.SEO_DB);
-  const published=await getPublished(env.SEO_DB);
-  if(path==='/sitemap-ltori-growth.xml')return response(request.method==='HEAD'?null:renderPublicationSitemap(published),200,{'Content-Type':'application/xml; charset=utf-8'});
+  const listing=path==='/sitemap-ltori-growth.xml'||path==='/service/ltori/area/'||path==='/service/ltori/media/';
+  if(listing) {
+    const published=await getPublished(env.SEO_DB);
+    if(path==='/sitemap-ltori-growth.xml')return response(request.method==='HEAD'?null:renderPublicationSitemap(published),200,{'Content-Type':'application/xml; charset=utf-8'});
+    const asset=await env.ASSETS.fetch(request);
+    if(!asset.ok||request.method==='HEAD')return asset;
+    return path==='/service/ltori/media/'
+      ?rewrittenAsset(asset,'#articles .lm-list',renderPublishedCards(published))
+      :rewrittenAsset(asset,'[data-seo-city-directory]',renderPublishedCityLinks(published));
+  }
+  // Individual visits read one indexed public snapshot, never the nationwide
+  // catalogue of full article bodies. Drafts remain in a separate table.
   const canonicalPath=path.replace(/\/(?:index\.html)?$/,'')+'/';
-  const doc=published.find(row=>publicPath(row)===canonicalPath);
-  if(doc) {
+  const row=await env.SEO_DB.prepare('SELECT value,version,published_at FROM seo_published WHERE path=?').bind(canonicalPath).first();
+  const doc=row?{...JSON.parse(row.value),version:row.version,publishedAt:row.published_at,status:'published'}:null;
+  if(doc&&publicPath(doc)===canonicalPath) {
     if(url.pathname!==canonicalPath)return response(null,301,{Location:`https://layr.co.jp${canonicalPath}${url.search}`});
-    const result=await previewDocument(env,doc,{publishedCitySlugs:[...publishedAreas.map(a=>a.slug),...published.filter(d=>d.type==='city').map(d=>d.slug)]});
+    let publishedCitySlugs=[];
+    if(doc.type==='article') {
+      const selected=[...new Set(Array.isArray(doc.relatedCitySlugs)?doc.relatedCitySlugs:[])].slice(0,3).filter(slug=>resolveCity(slug));
+      const staticSlugs=new Set(getPublishedAreas().map(area=>area.slug));
+      publishedCitySlugs=selected.filter(slug=>staticSlugs.has(slug));
+      const dynamic=selected.filter(slug=>!staticSlugs.has(slug));
+      if(dynamic.length) {
+        // Only existence/path is needed for the at-most-three contextual links.
+        const paths=dynamic.map(slug=>`/service/ltori/area/${slug}/`);
+        const {results}=await env.SEO_DB.prepare(`SELECT path FROM seo_published WHERE path IN (${paths.map(()=>'?').join(',')})`).bind(...paths).all();
+        const available=new Set(results.map(result=>result.path));
+        publishedCitySlugs.push(...dynamic.filter((slug,index)=>available.has(paths[index])));
+      }
+    }
+    const result=await previewDocument(env,doc,{publishedCitySlugs});
     return request.method==='HEAD'?new Response(null,{status:result.status,headers:result.headers}):result;
   }
-  const asset=await env.ASSETS.fetch(request);
-  if(!asset.ok||request.method==='HEAD')return asset;
-  if(path==='/service/ltori/media/')return rewrittenAsset(asset,'#articles .lm-list',renderPublishedCards(published));
-  if(path==='/service/ltori/area/')return rewrittenAsset(asset,'[data-seo-city-directory]',renderPublishedCityLinks(published));
-  return asset;
+  return env.ASSETS.fetch(request);
 }
 export async function runJob(env,kind,{now=new Date()}={}) {
   await ensureDatabase(env.SEO_DB);const db=env.SEO_DB,store=createStore(db),token=await acquireJob(db,kind,now);
   if(!token)return {status:'running',message:'同じ処理を実行中です。'};
   try {
     await store.upsert('jobs',kind,{status:'running',startedAt:now.toISOString()});
-    const published=await getPublished(db),paths=[...staticPages.map(row=>row.path),...published.map(publicPath)];
+    const published=await getPublished(db),paths=[...getStaticPages(now).map(row=>row.path),...published.map(publicPath)];
     let result;
     if(kind==='publish')result=await publishDue(db,now);
     else if(kind==='analytics')result=await runAnalyticsSync(env,{store,publishedPaths:paths,now});

@@ -18,9 +18,16 @@ export function validateReleases(input, areas, editorial) {
   return input.releases;
 }
 const releases = validateReleases(policy, regionalAreas, content);
-const today = new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Tokyo'}).format(new Date());
-const live = new Set(releases.filter(row => row.publishOn <= today).map(row => row.slug));
-export const publishedAreas = regionalAreas.filter(area => live.has(area.slug));
+// Workers evaluate module-global clocks before handling a request (epoch time).
+// Runtime callers must resolve publication against the request/scheduled time.
+export function getPublishedAreas(now = new Date()) {
+  const today = new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Tokyo'}).format(new Date(now));
+  const live = new Set(releases.filter(row => row.publishOn <= today).map(row => row.slug));
+  return regionalAreas.filter(area => live.has(area.slug));
+}
+// Keep build-time snapshots for Astro's existing static page generation.
+export const publishedAreas = getPublishedAreas();
+const live = new Set(publishedAreas.map(area => area.slug));
 export const publicationFor = area => !isEligibleArea(area) ? 'excluded' : live.has(area.slug) ? 'published' : 'draft';
 export const publishedFor = slug => publishedAreas.filter(area => area.kind !== 'prefecture' && area.prefectureSlug === slug);
 export const cityEditorial = content;

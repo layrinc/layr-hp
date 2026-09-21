@@ -1,7 +1,7 @@
 import {handleRequest} from './seo-access.mjs';
 
 import {handleManagerApi} from './seo-manager-api.mjs';
-import {publicFetch,previewDocument,runJob,staticPages} from './seo-runtime.mjs';
+import {publicFetch,previewDocument,runJob,getStaticPages} from './seo-runtime.mjs';
 import {initializeGrowth} from './seo-bootstrap.mjs';
 
 export default {
@@ -13,7 +13,7 @@ export default {
           if(identity.email.toLowerCase()!=='biz.oneservice@gmail.com') return new Response('この操作を行う権限がありません。',{status:403,headers:{'Cache-Control':'no-store','X-Robots-Tag':'noindex'}});
           await initializeGrowth(bindings);
           return handleManagerApi(req,bindings,identity,path,{
-            staticPages,
+            staticPages:getStaticPages(),
             preview:doc=>previewDocument(bindings,doc,{preview:true}),
             runJob:async kind=>{ctx.waitUntil(runJob(bindings,kind).catch(()=>{}));return {status:'queued',message:'処理を開始しました。少し待ってから更新してください。'};},
           });
@@ -23,7 +23,8 @@ export default {
   },
   async scheduled(controller,env,ctx) {
     await initializeGrowth(env);
-    if(controller.cron==='0 0 * * *')ctx.waitUntil(runJob(env,'publish'));
-    else ctx.waitUntil(Promise.allSettled([runJob(env,'analytics'),runJob(env,'inspection')]));
+    const now=new Date(controller.scheduledTime??Date.now());
+    if(controller.cron==='0 0 * * *')ctx.waitUntil(runJob(env,'publish',{now}));
+    else ctx.waitUntil(Promise.allSettled([runJob(env,'analytics',{now}),runJob(env,'inspection',{now})]));
   },
 };
