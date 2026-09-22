@@ -131,11 +131,11 @@ function loadIdentity(){
 async function authorize(scope,clientId){
   if(oauthPending)throw new Error('Google接続画面を操作中です。');oauthPending=true;renderConnection();
   try{await loadIdentity();return await new Promise((resolve,reject)=>{
-    const client=window.google.accounts.oauth2.initTokenClient({client_id:clientId,scope,include_granted_scopes:true,
+    const client=window.google.accounts.oauth2.initTokenClient({client_id:clientId,scope,include_granted_scopes:false,
       callback:response=>{if(response.error||!response.access_token){reject(new Error('Googleとの接続が完了しませんでした。権限とOAuth設定を確認してください。'));return;}
         if(!window.google.accounts.oauth2.hasGrantedAllScopes(response,...scope.split(' '))){reject(new Error('必要な読み取り権限が許可されていません。再接続してください。'));return;}
         resolve({token:response.access_token,expires:Date.now()+Number(response.expires_in||3600)*1000});},
-      error_callback:()=>reject(new Error('接続画面が閉じられたか開けませんでした。ポップアップを許可して再操作してください。'))});client.requestAccessToken({prompt:'consent'});
+      error_callback:()=>reject(new Error('接続画面が閉じられたか開けませんでした。ポップアップを許可して再操作してください。'))});client.requestAccessToken({prompt:'consent',include_granted_scopes:false});
   });}finally{oauthPending=false;renderConnection();}
 }
 function selectedFile(id){const file=$(id).files[0];if(!file||file.size>MAX_FILE)throw new Error('20MB以内のファイルを指定してください。');return file;}
