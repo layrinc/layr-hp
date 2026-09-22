@@ -131,11 +131,11 @@ function loadIdentity(){
 async function authorize(scope,clientId){
   if(oauthPending)throw new Error('Google接続画面を操作中です。');oauthPending=true;renderConnection();
   try{await loadIdentity();return await new Promise((resolve,reject)=>{
-    const client=window.google.accounts.oauth2.initTokenClient({client_id:clientId,scope,include_granted_scopes:true,
+    const client=window.google.accounts.oauth2.initTokenClient({client_id:clientId,scope,include_granted_scopes:false,
       callback:response=>{if(response.error||!response.access_token){reject(new Error('Googleとの接続が完了しませんでした。権限とOAuth設定を確認してください。'));return;}
         if(!window.google.accounts.oauth2.hasGrantedAllScopes(response,...scope.split(' '))){reject(new Error('必要な読み取り権限が許可されていません。再接続してください。'));return;}
         resolve({token:response.access_token,expires:Date.now()+Number(response.expires_in||3600)*1000});},
-      error_callback:()=>reject(new Error('接続画面が閉じられたか開けませんでした。ポップアップを許可して再操作してください。'))});client.requestAccessToken({prompt:'consent'});
+      error_callback:()=>reject(new Error('接続画面が閉じられたか開けませんでした。ポップアップを許可して再操作してください。'))});client.requestAccessToken({prompt:'consent',include_granted_scopes:false});
   });}finally{oauthPending=false;renderConnection();}
 }
 function selectedFile(id){const file=$(id).files[0];if(!file||file.size>MAX_FILE)throw new Error('20MB以内のファイルを指定してください。');return file;}
@@ -278,7 +278,7 @@ $('mm-backup-apply').addEventListener('click',async()=>{if(!pendingBackup)return
 
 async function initialize(){
   const end=new Date(`${today()}T00:00:00Z`);end.setUTCDate(end.getUTCDate()-3);const start=new Date(end);start.setUTCDate(start.getUTCDate()-27);$('mm-analytics-start').value=start.toISOString().slice(0,10);$('mm-analytics-end').value=end.toISOString().slice(0,10);$('mm-volume-fetched').value=today();
-  try{const saved=JSON.parse(localStorage.getItem('layr-ltori-google-config')||'null');if(saved){const values=validateConnection(saved);$('mm-client-id').value=values.clientId;$('mm-property').value=values.property;$('mm-site').value=values.site;}}catch{/* Invalid or absent nonsecret connection settings remain empty. */}
+  try{const saved=JSON.parse(localStorage.getItem('layr-ltori-google-config')||'null');if(saved){const values=validateConnection(saved);$('mm-client-id').value=values.clientId;$('mm-property').value=values.property;$('mm-site').value=values.site;}}catch{/* Invalid or absent saved settings retain the HTML defaults; valid saved settings take priority. */}
   try{
     db=await openDatabase();const saved=await loadState(db);
     if(saved){if(!Number.isSafeInteger(saved.revision)||saved.revision<0)throw new Error('保存データの更新番号が正しくありません。');state={...validateMediaBackup(saved,catalog),revision:saved.revision,updatedAt:saved.updatedAt};}
