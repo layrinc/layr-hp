@@ -82,10 +82,21 @@ function switchTab(tab) {
   }
 }
 function pathFor(doc) { return doc.path || (doc.type === 'city' ? `/service/ltori/area/${doc.slug}/` : `/service/ltori/media/${doc.slug}/`); }
+function publicationDetail(state) {
+  if (state.settings.paused) return '公開待ちの原稿は保持しています。再開するまで自動公開しません。';
+  const schedule = state.scheduler?.publish;
+  const successAt = Date.parse(schedule?.lastSuccessAt), serverNow = Date.parse(state.serverTime);
+  const parts = [`毎日${state.settings.publishTime || '09:17'}（日本時間）に公開を確認し、10:17にも再確認します。合計で1日最大10本。実行時刻は遅れる場合があります。承認済み原稿がない日は追加しません。`];
+  parts.push(Number.isFinite(successAt) ? `公開処理の最終成功：${date(schedule.lastSuccessAt)}。` : '自動公開の実行成功はまだ確認できていません。');
+  if (schedule?.status === 'error') parts.push('直近の処理でエラーがありました。GitHub Actionsの実行履歴を確認してください。');
+  else if (schedule?.status === 'running') parts.push('公開処理を実行中です。しばらくして最新の情報に更新してください。');
+  if (Number.isFinite(successAt) && Number.isFinite(serverNow) && serverNow - successAt > 36 * 60 * 60 * 1000) parts.push('前回の成功から36時間以上経過しています。自動処理が停止していないかGitHub Actionsで確認してください。');
+  return parts.join(' ');
+}
 function render() {
   const stats = data.publicationStats || {}, queued = array(data.documents).filter(doc => ['approved', 'scheduled'].includes(doc.status)).length;
   $('growth-publication-state').textContent = data.settings.paused ? '自動公開を一時停止中' : '承認済みの原稿を順次公開';
-  $('growth-publication-detail').textContent = data.settings.paused ? '公開待ちの原稿は保持しています。再開するまで自動公開しません。' : `毎日${data.settings.publishTime || '09:00'}（日本時間）に最大10本。承認済み原稿がない日は追加しません。`;
+  $('growth-publication-detail').textContent = publicationDetail(data);
   $('growth-daily-count').textContent = `${number(stats.todayPublished)} / ${number(data.settings.dailyLimit ?? 10)}`;
   $('growth-queue-count').textContent = `${number(stats.queued ?? queued)}本`;
   $('growth-pause').textContent = data.settings.paused ? '自動公開を再開' : '自動公開を一時停止';
