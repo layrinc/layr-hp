@@ -1,4 +1,3 @@
-import {startAccessSession} from './session.mjs';
 import {formatNumber, node, workspaceApi, validateOverview, sourceDescription} from './workspace-client.mjs';
 import {CORPORATE_STATUS, CORPORATE_PRIORITY, corporateEdit, filterCorporateArticles, validateCorporateState} from './corporate-model.mjs';
 import {csvString} from './model.mjs';
@@ -59,7 +58,10 @@ function exportRows() {
   const matrix = [['記事URL', 'タイトル', '管理キーワード', '優先度', '改善状況', 'PV', '検索クリック', '検索表示', '平均順位', '追加する根拠', '次の作業', 'GA4対象期間', 'GSC対象期間'], ...rows().map(article => [`https://layr.co.jp${article.path}`, article.title, article.edit.keyword, CORPORATE_PRIORITY[article.edit.priority], CORPORATE_STATUS[article.edit.status], ...['views', 'clicks', 'impressions', 'position'].map(key => article.metrics[key] ?? ''), article.edit.evidence, article.edit.notes, report ? sourceDescription(report, 'ga4') : '', report ? sourceDescription(report, 'gsc') : ''])];
   const url = URL.createObjectURL(new Blob(['\uFEFF', csvString(matrix)], {type: 'text/csv;charset=utf-8'})); const link = node('a'); link.href = url; link.download = 'layr-media-seo.csv'; document.body.append(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-if (await startAccessSession()) {
+let mounted = false;
+export async function mountCorporate() {
+  if (mounted) return;
+  mounted = true;
   for (const id of ['cp-search', 'cp-status', 'cp-category', 'cp-sort']) $(id).addEventListener(id === 'cp-search' ? 'input' : 'change', () => { page = 1; render(); });
   $('cp-refresh').addEventListener('click', () => void refresh()); $('cp-prev').addEventListener('click', () => { page--; render(); }); $('cp-next').addEventListener('click', () => { page++; render(); });
   $('cp-close').addEventListener('click', closeEditor); $('cp-editor').addEventListener('cancel', event => { event.preventDefault(); closeEditor(); });
