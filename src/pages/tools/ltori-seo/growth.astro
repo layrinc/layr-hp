@@ -1,6 +1,7 @@
 ---
 import '../../../styles/style.css';
 import '../../../styles/seo-manager.css';
+import WorkspaceNav from '../../../components/seo-manager/WorkspaceNav.astro';
 import '../../../styles/seo-growth.css';
 import service from '../../../data/service-ltori.json';
 ---
@@ -11,7 +12,7 @@ import service from '../../../data/service-ltori.json';
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex, nofollow, noarchive" />
   <meta name="referrer" content="same-origin" />
-  <title>集客・公開の運用管理｜{service.name}｜LAYR</title>
+  <title>共通の公開・運用｜{service.name}｜LAYR</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
@@ -19,28 +20,30 @@ import service from '../../../data/service-ltori.json';
 <body class="seo-app growth-app">
   <a class="kw-skip" href="#growth-main">運用管理へ</a>
   <header class="kw-top"><a href="/" class="kw-brand">LAYR <span>SEO WORKSPACE</span></a><div class="kw-account"><span id="growth-saved" role="status">サーバーへの接続を確認中</span><span id="kw-identity">認証を確認中</span><a id="kw-logout" class="kw-button" href="/cdn-cgi/access/logout">ログアウト</a></div></header>
+  <WorkspaceNav active="growth" />
   <div class="kw-shell">
     <aside class="kw-sidebar">
-      <p class="kw-label">{service.name} / 採用LINE</p>
+      <p class="kw-label">共通の公開・運用</p>
       <nav aria-label="運用メニュー">
         <button type="button" data-growth-tab="overview" aria-current="page"><span>01</span>成果・改善</button>
         <button type="button" data-growth-tab="documents"><span>02</span>原稿・公開予約</button>
         <button type="button" data-growth-tab="leads"><span>03</span>問い合わせ・商談</button>
         <button type="button" data-growth-tab="health"><span>04</span>接続・サイト点検</button>
       </nav>
-      <a class="kw-button" href="/">地域・キーワード管理へ</a>
+      <a class="kw-button" href="/regional/">全国SEOの地域・キーワード管理へ</a>
       <div class="kw-sidebar-note"><p>端末間で共有する運用データ</p><p>原稿・公開予約・商談記録・地域のメモをサーバーに保存します。旧ブラウザデータは地域管理の初回利用時に移行します。</p><button class="kw-button" type="button" id="growth-backup" data-requires-data disabled>バックアップを保存</button></div>
       <a class="kw-outlink" href="https://hub.layr.co.jp/" target="_blank" rel="noopener noreferrer">LAYR HUBへ ↗</a>
     </aside>
     <main class="kw-main" id="growth-main">
-      <header class="kw-heading"><div><p class="kw-label">継続する、全国SEO</p><h1>集客・公開の運用管理</h1><p>確認した原稿を公開し、問い合わせから受注まで育てる。</p></div><button type="button" class="kw-button" id="growth-refresh">最新の情報に更新</button></header>
+      <header class="kw-heading"><div><p class="kw-label">全施策に共通する運用</p><h1>共通の公開・運用</h1><p>確認した原稿を公開し、問い合わせから受注まで育てる。</p></div><button type="button" class="kw-button" id="growth-refresh">最新の情報に更新</button></header>
       <noscript><p class="kw-notice">この管理画面にはJavaScriptが必要です。</p></noscript>
       <p class="kw-notice" id="growth-message" role="status" hidden></p>
       <section class="growth-publishing" aria-labelledby="growth-publishing-title">
-        <div><p class="kw-label" id="growth-publishing-title">自動公開の状態</p><strong id="growth-publication-state">確認中</strong><p id="growth-publication-detail">承認済みの原稿だけが公開対象です。</p></div>
+        <div><p class="kw-label" id="growth-publishing-title">自動公開の状態（全施策共通）</p><strong id="growth-publication-state">確認中</strong><p id="growth-publication-detail">承認済みの原稿だけが公開対象です。</p></div>
         <dl><div><dt>今日の新規公開</dt><dd id="growth-daily-count">— / 10</dd></div><div><dt>公開待ち</dt><dd id="growth-queue-count">—</dd></div></dl>
         <button class="kw-button" type="button" id="growth-pause" data-requires-data disabled>自動公開を一時停止</button>
       </section>
+      <p class="kw-help">公開上限と一時停止・再開は、この公開機能を利用する全施策に共通です。原稿の種類を絞り込んでも、上限や停止の対象範囲は変わりません。</p>
       <section data-growth-view="overview" aria-labelledby="growth-overview-title">
         <div class="kw-section-head"><div><h2 id="growth-overview-title">成果を確認する</h2><p id="growth-report-period">検索・アクセスの集計期間は取得後に表示します。</p></div><button class="kw-button" id="growth-sync" type="button" data-requires-data disabled>Googleデータを取得</button></div>
         <dl class="kw-stats growth-stats">
@@ -60,7 +63,7 @@ import service from '../../../data/service-ltori.json';
       <section data-growth-view="documents" aria-labelledby="growth-documents-title" hidden>
         <div class="kw-section-head"><div><h2 id="growth-documents-title">原稿・公開予約</h2><p>本文を保存し、プレビューと根拠を確認してから公開待ちに追加します。</p></div><button class="kw-button kw-primary" type="button" id="growth-new-document" data-requires-data disabled>原稿を作成</button></div>
         <div class="growth-filters"><label>原稿を検索<input id="growth-document-search" type="search" placeholder="市名・タイトルで検索" /></label><label>公開状況<select id="growth-document-status"><option value="">すべて</option><option value="draft">下書き</option><option value="approved">承認済み</option><option value="scheduled">公開予約</option><option value="published">公開中</option><option value="paused">公開停止</option></select></label><label>種類<select id="growth-document-type"><option value="">すべて</option><option value="city">市のLP</option><option value="article">採用コラム</option></select></label></div>
-        <p class="kw-help">1日の公開上限は10本です。承認済み原稿が10本に満たない日は、承認された分だけ公開します。公開時刻は日本時間です。</p>
+        <p class="kw-help">1日の公開上限は、すべての原稿を合わせて10本です。承認済み原稿が10本に満たない日は、承認された分だけ公開します。公開時刻は日本時間です。</p>
         <div class="kw-table-wrap" role="region" aria-label="原稿と公開予約。横にスクロールできます" tabindex="0"><table class="kw-table"><thead><tr><th scope="col">原稿</th><th scope="col">状態</th><th scope="col">確認事項</th><th scope="col">公開予定・更新</th><th scope="col">操作</th></tr></thead><tbody id="growth-document-rows"></tbody></table><p id="growth-document-empty" class="growth-empty" hidden>該当する原稿がありません。原稿を作成するか、検索条件を変更してください。</p></div>
         <div class="kw-pagination"><p class="kw-help" id="growth-document-count"></p><div><button class="kw-button" id="growth-documents-prev" type="button">前へ</button><span id="growth-documents-page">1 / 1</span><button class="kw-button" id="growth-documents-next" type="button">次へ</button></div></div>
       </section>

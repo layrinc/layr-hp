@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "prebuild": "node scripts/clean-build.mjs",
+    "prebuild": "node scripts/clean-build.mjs && node scripts/build-seo-corporate-catalog.mjs",
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",

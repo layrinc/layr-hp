@@ -5,6 +5,9 @@ import {getAnalyticsConfiguration} from './seo-analytics.mjs';
 import {readMediaAnalytics} from './seo-media-analytics.mjs';
 import {buildGrowthReport} from '../src/lib/seo-manager/growth-model.mjs';
 import {saveLead} from './seo-leads.mjs';
+import corporateCatalog from '../src/data/seo-corporate-catalog.json' with {type: 'json'};
+import {projectWorkspace, ltoriGrowthSnapshots} from './seo-workspace.mjs';
+import {canonicalWorkspacePath} from '../src/lib/seo-manager/workspace-projects.mjs';
 
 const json=(value,status=200)=>protectedResponse(JSON.stringify(value),status,{'Content-Type':'application/json; charset=utf-8'});
 const allowedEmail='biz.oneservice@gmail.com';
@@ -15,13 +18,53 @@ function schedulerStatus(value) {
   const identifier=input=>/^\d{1,30}$/.test(String(input??''))?String(input):null;
   return {status:['completed','running','error'].includes(value.status)?value.status:null,lastAttemptAt:timestamp(value.lastAttemptAt),lastSuccessAt:timestamp(value.lastSuccessAt),runId:identifier(value.runId),runAttempt:identifier(value.runAttempt)};
 }
-async function body(request){if(!request.headers.get('Content-Type')?.startsWith('application/json'))throw new HttpError(415,'JSON形式で送信してください。');const raw=await request.text();if(new TextEncoder().encode(raw).length>20*1024*1024)throw new HttpError(413,'データが大きすぎます。');try{return JSON.parse(raw);}catch{throw new HttpError(400,'JSON形式を確認してください。');}}
+async function body(request, maxBytes=20*1024*1024){if(!request.headers.get('Content-Type')?.startsWith('application/json'))throw new HttpError(415,'JSON形式で送信してください。');const raw=await request.text();if(new TextEncoder().encode(raw).length>maxBytes)throw new HttpError(413,'データが大きすぎます。');try{return JSON.parse(raw);}catch{throw new HttpError(400,'JSON形式を確認してください。');}}
+const corporatePaths=new Set(corporateCatalog.map(row=>canonicalWorkspacePath(row.path)));
+function corporateEdits(input) {
+  if(!input||typeof input!=='object'||Array.isArray(input))throw new HttpError(400,'改善管理の入力内容を確認してください。');
+  const edits={};
+  for(const [path,edit] of Object.entries(input)) {
+    if(!corporatePaths.has(path)||canonicalWorkspacePath(path)!==path||!edit||typeof edit!=='object'||Array.isArray(edit))throw new HttpError(400,'公開記事一覧にあるURLを指定してください。');
+    if(!['high','normal','low'].includes(edit.priority)||!['unreviewed','research','rewrite','review','done'].includes(edit.status))throw new HttpError(400,'優先度・進行状況を確認してください。');
+    for(const [key,limit] of [['keyword',200],['evidence',2000],['notes',4000]])if(typeof edit[key]!=='string'||edit[key].length>limit)throw new HttpError(400,'キーワード・根拠・メモの長さを確認してください。');
+    edits[path]={priority:edit.priority,status:edit.status,keyword:edit.keyword,evidence:edit.evidence,notes:edit.notes};
+  }
+  return edits;
+}
+async function readCorporateState(db) {
+  const row=await db.prepare("SELECT value,version FROM seo_kv WHERE namespace='corporate' AND key='state'").first();
+  if(!row)return {revision:0,edits:{}};
+  try {const saved=JSON.parse(row.value);return {revision:row.version,edits:corporateEdits(Object.fromEntries(Object.entries(saved.edits||{}).filter(([path])=>corporatePaths.has(path))))};}
+  catch {throw new HttpError(503,'公式メディアの改善メモを読み出せませんでした。再読み込みしてください。');}
+}
 export async function handleManagerApi(request,env,identity,path,services={}) {
   try {
     if(identity.email.toLowerCase()!==allowedEmail)throw new HttpError(403,'この管理画面を編集する権限がありません。');
     if(!['GET','POST','PUT'].includes(request.method))throw new HttpError(405,'この操作には対応していません。');
     if(request.method!=='GET'&&request.headers.get('Origin')!==MANAGER_ORIGIN)throw new HttpError(403,'管理画面を開き直して操作してください。');
     await ensureDatabase(env.SEO_DB);const db=env.SEO_DB,store=createStore(db),url=new URL(request.url),now=new Date();
+    if(path==='/api/seo/overview') {
+      if(request.method!=='GET')throw new HttpError(405,'GETで取得してください。');
+      const [published,pending,snapshots,integrations,publishSchedule,maintenanceSchedule]=await Promise.all([
+        db.prepare("SELECT path,json_extract(value,'$.title') AS title,json_extract(value,'$.type') AS type,published_at AS publishedAt FROM seo_published").all(),
+        db.prepare("SELECT path,status FROM seo_documents WHERE status IN ('approved','scheduled')").all(),
+        store.list('analytics'),store.list('integrations'),store.get('scheduler','publish'),store.get('scheduler','maintenance'),
+      ]);
+      return json(projectWorkspace({catalog:[...(services.staticPages||[]),...corporateCatalog,...published.results],pending:pending.results,snapshots,integrations,configuration:getAnalyticsConfiguration(env),scheduler:{publish:publishSchedule,maintenance:maintenanceSchedule},now}));
+    }
+    if(path==='/api/seo/corporate/state') {
+      if(request.method==='GET')return json({state:await readCorporateState(db)});
+      if(request.method!=='PUT')throw new HttpError(405,'PUTで保存してください。');
+      const payload=await body(request,512*1024);
+      if(!payload||typeof payload!=='object'||Array.isArray(payload))throw new HttpError(400,'保存内容を確認してください。');
+      const expectedRevision=version(payload.expectedRevision),edits=corporateEdits(payload.state?.edits);
+      const value=JSON.stringify({edits}),updatedAt=now.toISOString();
+      const statement=expectedRevision===0
+        ?db.prepare("INSERT INTO seo_kv(namespace,key,value,version,updated_at) VALUES('corporate','state',?,1,?) ON CONFLICT DO NOTHING").bind(value,updatedAt)
+        :db.prepare("UPDATE seo_kv SET value=?,version=version+1,updated_at=? WHERE namespace='corporate' AND key='state' AND version=?").bind(value,updatedAt,expectedRevision);
+      if(!(await statement.run()).meta.changes)throw new HttpError(409,'別の端末で更新されました。再読み込みしてから保存してください。');
+      return json({state:{revision:expectedRevision+1,edits}});
+    }
     if(path==='/api/seo/media/analytics') {
       if(request.method!=='GET')throw new HttpError(405,'GETで取得してください。');
       // Read public article identities only, not drafts, lead records or full bodies.
@@ -42,7 +85,7 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
       ]);
       const flat=rows=>rows.map(row=>row.value);
       const pages=[...(services.staticPages||[]),...published.map(doc=>({path:publicPath(doc),title:doc.title,type:doc.type,publishedAt:doc.publishedAt}))];
-      return json({settings:{dailyLimit:10,paused:settings?.paused===true,timezone:'Asia/Tokyo',publishTime:'09:17'},scheduler:{publish:schedulerStatus(publishSchedule),maintenance:schedulerStatus(maintenanceSchedule)},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots,integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
+      return json({settings:{dailyLimit:10,paused:settings?.paused===true,timezone:'Asia/Tokyo',publishTime:'09:17'},scheduler:{publish:schedulerStatus(publishSchedule),maintenance:schedulerStatus(maintenanceSchedule)},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots:ltoriGrowthSnapshots(snapshots),integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
     }
     if(path==='/api/seo/publication'&&request.method==='GET') {
       const [docs,live]=await Promise.all([getDocuments(db),getPublished(db)]);const liveIds=new Set(live.map(doc=>doc.id));

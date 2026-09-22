@@ -132,7 +132,7 @@ async function initialize(){
   catch(error){loaded=false;$('kw-save-state').textContent='保存を利用できません';$('kw-storage-error').hidden=false;$('kw-storage-error').textContent=`${errorText(error)} 現在は閲覧のみです。保存済みデータは上書きしていません。`;$('kw-import-save').disabled=true;$('kw-restore-save').disabled=true;$('kw-bulk-apply').disabled=true;}
 }
 for(const page of catalog)$('kw-import-scope').append(option(page.id,page.fullName));
-for(const node of document.querySelectorAll('[data-view]'))node.addEventListener('click',()=>switchView(node.dataset.view));
+for(const node of document.querySelectorAll('[data-view]'))node.addEventListener('click',()=>{switchView(node.dataset.view);history.replaceState(null,'',`#${node.dataset.view}`);});
 $('kw-open-import').addEventListener('click',()=>{switchView('data');$('kw-import-file').focus();});
 for(const id of ['kw-pref','kw-status','kw-priority','kw-sort','kw-size','kw-enabled','kw-publication'])$(id).addEventListener('change',()=>{pageNumber=1;selected.clear();render();});
 $('kw-search').addEventListener('input',()=>{pageNumber=1;selected.clear();render();});
@@ -157,4 +157,6 @@ $('kw-restore-save').addEventListener('click',async()=>{if(!pendingRestore)retur
 $('kw-report-close').addEventListener('click',()=>$('kw-report-dialog').close());$('kw-report-search').addEventListener('input',()=>{detailPage=1;renderReportDetail();});$('kw-report-prev').addEventListener('click',()=>{detailPage--;renderReportDetail();});$('kw-report-next').addEventListener('click',()=>{detailPage++;renderReportDetail();});
 window.addEventListener('beforeunload',event=>{if(editorDirty||busy){event.preventDefault();event.returnValue='';}});
 renderAnalytics=mountAnalytics({catalog,getState:()=>state,save:commit,download});
+const initialView=location.hash.slice(1);
+if(['pages','keywords','tasks','analytics','data'].includes(initialView))switchView(initialView);
 initialize();

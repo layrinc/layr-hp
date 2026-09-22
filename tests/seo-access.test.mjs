@@ -81,7 +81,7 @@ test('manager stays closed on alternate hosts even with a signed token', async (
 test('authenticated dedicated root serves only manager HTML and removes cache validators', async () => {
   const e = assetEnvironment();
   const res = await handleRequest(request('https://seo.layr.co.jp/?utm_source=test', await token(), {headers: {'If-None-Match': 'old', 'If-Modified-Since': 'yesterday'}}), e, verify);
-  assert.equal(res.status, 200); assert.equal(await res.text(), 'asset:/tools/ltori-seo/');
+  assert.equal(res.status, 200); assert.equal(await res.text(), 'asset:/tools/ltori-seo/overview/');
   assert.equal(e.requests[0].headers.has('If-None-Match'), false);
   assert.equal(new URL(e.requests[0].url).search, '');
   assert.match(res.headers.get('Cache-Control'), /no-store/); assert.equal(res.headers.has('ETag'), false);
@@ -96,11 +96,14 @@ test('signed session endpoint returns verified identity and rejects writes', asy
   assert.equal((await handleRequest(request('https://seo.layr.co.jp/', await token(), {method: 'POST'}), e, verify)).status, 405);
 });
 
-test('legacy authenticated URL opens migration and dedicated legacy links return to root', async () => {
+test('legacy public URLs preserve same-origin migration while dedicated aliases redirect', async () => {
   const e = assetEnvironment();
-  assert.equal(await (await handleRequest(request('https://layr.co.jp/tools/ltori-seo/', await token()), e, verify)).text(), 'asset:/tools/ltori-seo/migrate/');
+  const migration = await handleRequest(request('https://layr.co.jp/tools/ltori-seo/', await token()), e, verify);
+  assert.equal(migration.status, 200); assert.equal(migration.headers.get('Location'), null);
+  assert.equal(await migration.text(), 'asset:/tools/ltori-seo/migrate/');
+  assert.equal(new URL(e.requests[0].url).origin, 'https://layr.co.jp');
   const r = await handleRequest(request('https://seo.layr.co.jp/tools/ltori-seo/', await token()), e, verify);
-  assert.equal(r.status, 302); assert.equal(r.headers.get('Location'), 'https://seo.layr.co.jp/');
+  assert.equal(r.status, 302); assert.equal(r.headers.get('Location'), 'https://seo.layr.co.jp/regional/');
 });
 
 test('public LPs stay public and are not duplicated under seo host', async () => {
@@ -163,4 +166,27 @@ test('media aliases redirect after authentication and public media remains publi
   assert.equal(await (await handleRequest(request('https://layr.co.jp/tools/ltori-seo/media/', await token()), e, verify)).text(), 'asset:/tools/ltori-seo/migrate/');
   assert.equal(await (await handleRequest(request('https://layr.co.jp/service/ltori/media/'), e, verify)).text(), 'asset:/service/ltori/media/');
   assert.equal((await handleRequest(request('https://seo.layr.co.jp/service/ltori/media/', await token()), e, verify)).status, 404);
+});
+
+
+test('workspace routes and HTML aliases preserve authentication and exact project mapping', async () => {
+  for (const [route, asset] of [['regional', '/tools/ltori-seo/'], ['articles', '/tools/ltori-seo/articles/'], ['strategy', '/tools/ltori-seo/strategy/'], ['growth', '/tools/ltori-seo/growth/']]) {
+    for (const alias of [`/${route}/`, `/${route}`, `/${route}.html`, `/${route}/index.html`, `/tools/ltori-seo/${route}/`]) {
+      const anonymous = assetEnvironment();
+      assert.equal((await handleRequest(request(`https://seo.layr.co.jp${alias}`), anonymous, verify)).status, 401);
+      assert.equal(anonymous.requests.length, 0);
+      const signed = assetEnvironment(), res = await handleRequest(request(`https://seo.layr.co.jp${alias}`, await token()), signed, verify);
+      if (alias === `/${route}/`) assert.equal(await res.text(), `asset:${asset}`);
+      else {assert.equal(res.status, 302); assert.equal(res.headers.get('Location'), `https://seo.layr.co.jp/${route}/`);}
+    }
+    const publicLegacy = assetEnvironment();
+    const res = await handleRequest(request(`https://layr.co.jp/tools/ltori-seo/${route}/`, await token()), publicLegacy, verify);
+    assert.equal(res.status, 200); assert.equal(res.headers.get('Location'), null);
+    assert.equal(await res.text(), 'asset:/tools/ltori-seo/migrate/');
+    assert.equal(new URL(publicLegacy.requests[0].url).origin, 'https://layr.co.jp');
+  }
+  for (const alias of ['/overview/', '/overview', '/overview.html', '/overview/index.html', '/index.html', '/tools/ltori-seo/overview/']) {
+    const e = assetEnvironment(), res = await handleRequest(request(`https://seo.layr.co.jp${alias}`, await token()), e, verify);
+    assert.equal(res.headers.get('Location'), 'https://seo.layr.co.jp/');
+  }
 });
