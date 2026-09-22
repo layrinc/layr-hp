@@ -1,0 +1,11 @@
+---
+const tabs = [['dash','概要'],['keywords','キーワード'],['queue','確認・公開'],['drafts','原稿'],['metrics','計測'],['settings','設定'],['improve','公開記事の改善']];
+---
+<aside class="kw-sidebar kiji-sidebar">
+  <p class="kw-label">公式メディア</p>
+  <nav id="kiji-navigation" role="tablist" aria-label="公式メディアの画面" aria-orientation="vertical">
+    {tabs.map(([id,label],index) => <button type="button" role="tab" id={`kiji-tab-${id}`} aria-controls={`kiji-panel-${id}`} aria-selected={index === 0 ? 'true' : 'false'} tabindex={index === 0 ? 0 : -1} data-kiji-tab={id}><span aria-hidden="true">{String(index + 1).padStart(2,'0')}</span>{label}{id === 'queue' && <span id="kiji-queue-count" class="kw-tag" hidden></span>}</button>)}
+  </nav>
+  <div class="kw-sidebar-note"><p>企画から、公開後の改善まで。</p><p>キーワード・原稿・検索実績を切り替えて確認できます。</p></div>
+  <div class="kw-outlink"><a href="https://layr.co.jp/media/" target="_blank" rel="noopener noreferrer">公開メディアを開く ↗</a></div>
+</aside>

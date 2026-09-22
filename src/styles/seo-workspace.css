@@ -1,4 +1,5 @@
 .workspace-main{max-width:1400px;margin-inline:auto;padding-block:32px 40px}
+.kw-shell>.workspace-main{max-width:1700px;margin-inline:0}
 .workspace-main>section+section{margin-top:32px}
 .workspace-main .kw-panel{margin-top:22px}
 .workspace-main .kw-heading{margin-bottom:22px}

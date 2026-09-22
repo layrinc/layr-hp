@@ -20,7 +20,7 @@ class Element {
   replaceChildren(...nodes){this._text='';this.children=[];this.append(...nodes);}
   setAttribute(key,value){this.attrs[key]=String(value);} getAttribute(key){return this.attrs[key]??null;} hasAttribute(key){return key in this.attrs;}
   addEventListener(type,handler){(this.listeners[type] ||= []).push(handler);}
-  async fire(type){const event={target:this,key:'',preventDefault(){}};for(let current=this;current;current=current.parentNode){for(const handler of current.listeners[type]||[])await handler(event);}}
+  async fire(type,details={}){const event={target:this,key:'',defaultPrevented:false,preventDefault(){this.defaultPrevented=true;},...details};for(let current=this;current;current=current.parentNode){for(const handler of current.listeners[type]||[])await handler(event);}return event;}
   matches(selector){const parts=selector.trim().split(/\s+/),last=parts.pop(),match=last.match(/^([a-z]+)?(?:\[([^=\]]+)(?:="([^"]*)")?\])?$/i);if(!match)return false;if(match[1]&&this.tagName!==match[1])return false;if(match[2]&&(!this.hasAttribute(match[2])||(match[3]!==undefined&&this.getAttribute(match[2])!==match[3])))return false;if(!parts.length)return true;let parent=this.parentNode;while(parent){if(parent.matches(parts.join(' ')))return true;parent=parent.parentNode;}return false;}
   querySelectorAll(selector){const matches=[];const alternatives=selector.split(',');const visit=parent=>{for(const child of parent.children){if(alternatives.some(item=>child.matches(item)))matches.push(child);visit(child);}};visit(this);return matches;}
   showModal(){this.attrs.open='';} close(){delete this.attrs.open;} focus(){globalThis.document.activeElement=this;} reportValidity(){return true;}
@@ -31,11 +31,50 @@ const flush=async()=>{for(let i=0;i<5;i++)await new Promise(resolve=>setImmediat
 const deferred=()=>{let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});return {promise,resolve,reject};};
 const draft={id:7,title:'採用LINEの費用',description:'元の説明',slug:'line-price',category:'採用',body_md:'## 元の本文\n本文',status:'pending_approval',keyword:'採用LINE 費用',gate_score:7,gate_json:'[]',svg_json:'[]'};
 function fixture(){const root=convert(parse(readFileSync(new URL('../dist/tools/ltori-seo/articles/index.html',import.meta.url),'utf8')));const doc={getElementById:id=>{let found;const visit=node=>{if(node.id===id)found=node;for(const child of node.children)visit(child);};visit(root);return found;},querySelectorAll:selector=>root.querySelectorAll(selector),createElement:tag=>new Element(tag),createTextNode:text=>new Element('#text',{},text),activeElement:null};return doc;}
-async function harness(overrides={}){
-  const original=Object.fromEntries(['document','window','location','history','confirm'].map(key=>[key,globalThis[key]]));const document=fixture();globalThis.document=document;globalThis.window={addEventListener(){}};globalThis.location={pathname:'/articles/',search:'',hash:''};globalThis.history={replaceState(){}};globalThis.confirm=()=>true;
+async function harness(overrides={},options={}){
+  const original=Object.fromEntries(['document','window','location','history','confirm'].map(key=>[key,globalThis[key]]));const document=fixture();const mediaListeners=[];const media={matches:options.compact??false,addEventListener(type,handler){if(type==='change')mediaListeners.push(handler);}};const history=[];globalThis.document=document;globalThis.window=Object.assign(new EventTarget(),{matchMedia:()=>media});globalThis.location={pathname:'/articles/',search:'',hash:options.hash??''};globalThis.history={replaceState(_state,_title,url){history.push(url);}};globalThis.confirm=()=>true;
   const calls=[];const api=async(path,options={})=>{calls.push({path,...options});if(overrides[path])return overrides[path](options);if(path==='/overview')return {articles:{byStatus:[{status:'pending_approval',n:1}],publishedThisWeek:0,weeklyTarget:3},keywords:{byLayer:[],total:10,consumed:0},apiKeys:{anthropic:true,github:true},autopilot:'approval',recentLog:[]};if(path.startsWith('/articles?status=pending_approval'))return {items:[{...draft}]};if(path.startsWith('/articles?'))return {items:[]};if(path==='/articles/7')return {article:{...draft},keyword:{keyword:draft.keyword}};if(path.startsWith('/keywords?'))return {items:[{id:5,keyword:'採用LINE',layer:'収益',experience_fit:1,intent_explicit:'費用',intent_latent:'工数削減',status:'new'}]};throw new Error('unexpected '+path);};
-  const app=await mountKijiWorkbench({api,mountImprovement:async()=>{}});const $=id=>document.getElementById('kiji-'+id);return {app,$,calls,api,cleanup:()=>{for(const [key,value] of Object.entries(original)){if(value===undefined)delete globalThis[key];else globalThis[key]=value;}}};
+  let improvementsMounted=0;const app=await mountKijiWorkbench({api,mountImprovement:async()=>{improvementsMounted++;}});const $=id=>document.getElementById('kiji-'+id);return {app,$,calls,api,document,history,get improvementsMounted(){return improvementsMounted;},setCompact(value){media.matches=value;mediaListeners.forEach(handler=>handler());},cleanup:()=>{for(const [key,value] of Object.entries(original)){if(value===undefined)delete globalThis[key];else globalThis[key]=value;}}};
 }
+
+function assertSelection(h,key){const tabs=h.$('navigation').querySelectorAll('[data-kiji-tab]');assert.equal(tabs.filter(tab=>tab.getAttribute('aria-selected')==='true').length,1);assert.equal(tabs.filter(tab=>tab.tabIndex===0).length,1);for(const tab of tabs){const selected=tab.dataset.kijiTab===key;assert.equal(tab.getAttribute('aria-selected'),String(selected));const panel=h.document.getElementById(tab.getAttribute('aria-controls'));assert.equal(panel.hidden,!selected);assert.equal(panel.getAttribute('aria-labelledby'),tab.id);}assert.equal(h.history.at(-1),`/articles/#${key}`);}
+
+test('sidebar navigation controls all seven panels outside the workbench and keeps the queue badge and lazy improvement panel',async()=>{
+  const h=await harness();try{
+    assert.equal(h.document.querySelectorAll('main').length,1);assert.equal(h.$('workbench').querySelectorAll('[data-kiji-tab]').length,0);assert.equal(h.$('navigation').querySelectorAll('[data-kiji-tab]').length,7);assert.equal(h.$('queue-count').textContent,'1');assert.equal(h.$('queue-count').hidden,false);assertSelection(h,'dash');
+    await h.$('tab-keywords').fire('click');assertSelection(h,'keywords');const keywordReads=h.calls.filter(call=>call.path.startsWith('/keywords?')).length;
+    await h.$('tab-improve').fire('click');assertSelection(h,'improve');assert.equal(h.improvementsMounted,1);
+    await h.$('tab-keywords').fire('click');await h.$('tab-improve').fire('click');assert.equal(h.improvementsMounted,1);assert.equal(h.calls.filter(call=>call.path.startsWith('/keywords?')).length,keywordReads);assert.ok(h.calls.every(call=>!call.method));
+  }finally{h.cleanup();}
+});
+
+test('sidebar follows vertical or horizontal keyboard orientation, wraps, and preserves focus through resize',async()=>{
+  const h=await harness();try{
+    assert.equal(h.$('navigation').getAttribute('aria-orientation'),'vertical');
+    let event=await h.$('tab-dash').fire('keydown',{key:'ArrowDown'});await flush();assert.equal(event.defaultPrevented,true);assertSelection(h,'keywords');assert.equal(h.document.activeElement,h.$('tab-keywords'));
+    event=await h.$('tab-keywords').fire('keydown',{key:'ArrowRight'});assert.equal(event.defaultPrevented,false);assertSelection(h,'keywords');
+    await h.$('tab-keywords').fire('keydown',{key:'Home'});await flush();assertSelection(h,'dash');await h.$('tab-dash').fire('keydown',{key:'ArrowUp'});await flush();assertSelection(h,'improve');assert.equal(h.document.activeElement,h.$('tab-improve'));
+    h.setCompact(true);assert.equal(h.$('navigation').getAttribute('aria-orientation'),'horizontal');assert.equal(h.document.activeElement,h.$('tab-improve'));
+    await h.$('tab-improve').fire('keydown',{key:'ArrowRight'});await flush();assertSelection(h,'dash');assert.equal(h.document.activeElement,h.$('tab-dash'));
+    await h.$('tab-dash').fire('keydown',{key:'ArrowLeft'});await flush();assertSelection(h,'improve');
+    event=await h.$('tab-improve').fire('keydown',{key:'ArrowDown'});assert.equal(event.defaultPrevented,false);assertSelection(h,'improve');
+    await h.$('tab-improve').fire('keydown',{key:'Home'});await flush();assertSelection(h,'dash');await h.$('tab-dash').fire('keydown',{key:'End'});await flush();assertSelection(h,'improve');assert.ok(h.calls.every(call=>!call.method));
+  }finally{h.cleanup();}
+});
+
+test('initial deep links select the requested sidebar panel without loading unrelated data',async()=>{
+  for(const key of ['keywords','improve']){const h=await harness({},{hash:`#${key}`,compact:true});try{assertSelection(h,key);assert.equal(h.calls.some(call=>call.path==='/overview'),false);assert.equal(h.$('navigation').getAttribute('aria-orientation'),'horizontal');if(key==='improve'){assert.equal(h.improvementsMounted,1);assert.equal(h.calls.length,0);}}finally{h.cleanup();}}
+});
+
+test('hash changes select known tabs without intercepting skip links or inherited object keys',async()=>{
+  const h=await harness();try{
+    globalThis.location.hash='#keywords';globalThis.window.dispatchEvent(new Event('hashchange'));await flush();assertSelection(h,'keywords');const keywordReads=h.calls.filter(call=>call.path.startsWith('/keywords?')).length;
+    const historyCount=h.history.length;for(const hash of ['#workspace-main','#unknown','#constructor','#__proto__']){globalThis.location.hash=hash;globalThis.window.dispatchEvent(new Event('hashchange'));await flush();assertSelection(h,'keywords');assert.equal(h.history.length,historyCount);assert.equal(globalThis.location.hash,hash);}
+    globalThis.location.hash='#improve';globalThis.window.dispatchEvent(new Event('hashchange'));await flush();assertSelection(h,'improve');assert.equal(h.improvementsMounted,1);
+    globalThis.location.hash='#keywords';globalThis.window.dispatchEvent(new Event('hashchange'));await flush();assertSelection(h,'keywords');assert.equal(h.calls.filter(call=>call.path.startsWith('/keywords?')).length,keywordReads);assert.ok(h.calls.every(call=>!call.method));
+  }finally{h.cleanup();}
+  for(const hash of ['#unknown','#constructor','#__proto__']){const invalid=await harness({},{hash});try{assertSelection(invalid,'dash');assert.equal(invalid.calls.filter(call=>call.path==='/overview').length,1);}finally{invalid.cleanup();}}
+});
 
 test('opening the workbench and visiting production tabs never starts generation or publication',async()=>{const h=await harness();try{await h.app.selectTab('queue');await h.app.selectTab('keywords');await h.app.selectTab('drafts');assert.ok(h.calls.every(call=>!call.method));assert.equal(h.$('tick').disabled,false);assert.match(h.$('generation-status').textContent,/設定あり.*未確認/);}finally{h.cleanup();}});
 
