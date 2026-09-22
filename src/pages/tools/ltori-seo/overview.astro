@@ -16,7 +16,7 @@ import mediaPlan from '../../../data/ltori-media-plan.json';
   <section aria-labelledby="ws-projects-title">
     <div class="kw-section-head"><div><h2 id="ws-projects-title">施策ごとの状況</h2><p>管理したい施策を選んで、地域一覧や記事計画へ移動します。</p></div><a class="kw-button" href="/strategy/">共通戦略を確認</a></div>
     <div class="kw-table-wrap" role="region" aria-label="施策別の状況。横にスクロールできます" tabindex="0"><table class="kw-table workspace-table"><thead><tr><th scope="col">施策・対象範囲</th><th scope="col">公開数</th><th scope="col">PV</th><th scope="col">検索クリック</th><th scope="col">検索表示</th><th scope="col">問い合わせ完了</th><th scope="col">公開待ち</th></tr></thead><tbody>{WORKSPACE_PROJECTS.map(project => <tr><th scope="row"><strong>{project.name}</strong><span class="workspace-path">{project.prefix}</span><a class="kw-button" href={project.href}>{project.shortName}を管理</a></th><td id={`ws-${project.id}-published`}>—</td><td id={`ws-${project.id}-views`}>—</td><td id={`ws-${project.id}-clicks`}>—</td><td id={`ws-${project.id}-impressions`}>—</td><td id={`ws-${project.id}-inquiries`}>—</td><td id={`ws-${project.id}-pending`}>—</td></tr>)}</tbody></table></div>
-    <p class="kw-help">「—」は未取得・未計測・反映待ちなどを含みます。数値のあるページだけの集計であり、未取得を0として補っていません。公式メディアの公開待ちは、現在このツールでは管理していません。</p>
+    <p class="kw-help">「—」は未取得・未計測・反映待ちなどを含みます。数値のあるページだけの集計であり、未取得を0として補っていません。公式メディアの承認待ち・公開確認待ちは「公式メディア」の「確認・公開」「原稿」で管理します。この概要の公開待ち数には含めません。</p>
     <div class="workspace-actions"><a class="kw-button" href="/growth/">共通の公開・運用を開く</a><a class="kw-button" href="/media/#plans">採用ノートの記事計画を開く</a></div>
     <p class="kw-help" id="ws-local-plans" data-seed-count={mediaPlan.articles.length}>採用ノートの記事計画：この端末の保存状態を確認しています。</p>
   </section>
