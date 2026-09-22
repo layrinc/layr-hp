@@ -1,0 +1,62 @@
+.kiji-workbench { min-width:0; }
+.kiji-workbench section:not(.kw-panel), #kiji-panel-improve > section:not(.kw-panel) { padding:0; }
+.kiji-tabs { display:flex; flex-wrap:wrap; gap:6px; padding-bottom:16px; margin-bottom:24px; border-bottom:1px solid var(--line); }
+.kiji-tabs [aria-selected="true"] { color:var(--green-ink); border-color:var(--green-ink); background:var(--paper); }
+.kiji-tabs .kw-tag { margin-left:6px; }
+.kiji-workbench h3 { font-size:var(--kw-lead); font-weight:700; margin:0 0 16px; }
+.kiji-actions { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:16px 0; }
+.kiji-actions .kiji-actions { margin:0; }
+.kiji-workbench .kw-section-head > *, .kiji-workbench .workspace-columns > * { min-width:0; }
+.kiji-workbench .kw-form-grid, .kiji-workbench .workspace-filter { margin:16px 0; }
+.kiji-workbench form > label, .kiji-workbench form > .kw-button { margin-top:16px; }
+.kiji-workbench form > label:first-child { margin-top:0; }
+.kiji-workbench .kiji-check { display:flex; flex-direction:row; align-items:center; gap:12px; min-height:44px; font-weight:400; }
+.kiji-workbench .kiji-check input { width:20px; height:20px; min-height:20px; flex:none; margin:0; }
+.kiji-filter { display:block; max-width:320px; margin:16px 0; }
+.kiji-table { min-width:960px; }
+.kiji-table td { vertical-align:top; overflow-wrap:anywhere; white-space:normal; max-width:400px; }
+.kiji-table td:first-child { min-width:240px; }
+.kiji-table .kw-help { font-size:var(--kw-label); margin:6px 0 0; }
+.kiji-table .kw-button { white-space:normal; text-align:left; min-width:88px; }
+.kiji-publication { display:flex; flex-direction:column; align-items:flex-start; gap:6px; margin-bottom:16px; }
+.kiji-table .kiji-zero { background:var(--black); color:var(--paper); }
+.kiji-table .kiji-zero .kw-help { color:var(--paper); }
+.kiji-list-row { display:flex; align-items:flex-start; flex-wrap:wrap; gap:16px; padding:16px 0; border-bottom:1px solid var(--line); }
+.kiji-list-row > div { flex:1; min-width:180px; }
+.kiji-list-row > p { flex:1; min-width:180px; }
+.kiji-list-row:last-child { border-bottom:0; }
+.kiji-connection { margin:0 0 16px; }
+.kiji-connection > div { display:flex; gap:16px; justify-content:space-between; margin:12px 0; }
+.kiji-connection dd { margin:0; }
+.kiji-workbench fieldset { min-width:0; border:0; padding:0; margin:0; }
+.kiji-workbench legend { font-size:var(--kw-lead); font-weight:700; padding:0; }
+.kiji-workbench details { border-top:1px solid var(--line); margin-top:16px; padding-top:12px; }
+.kiji-workbench summary { min-height:44px; cursor:pointer; padding:12px 0; }
+.kiji-dialog { width:min(800px,calc(100% - 32px)); }
+.kiji-article-dialog { width:min(1040px,calc(100% - 32px)); }
+.kiji-dialog .kw-section-head { align-items:flex-start; }
+.kiji-dialog .kw-section-head h2 { min-width:0; overflow-wrap:anywhere; }
+.kiji-dialog textarea { line-height:1.8; }
+.kiji-gates { padding-left:24px; margin:16px 0 24px; }
+.kiji-gates li { margin-bottom:6px; overflow-wrap:anywhere; }
+.kiji-preview { font-size:var(--kw-lead); line-height:1.9; overflow-wrap:anywhere; }
+.kiji-preview h2 { font-size:var(--kw-h2); margin:24px 0 16px; }
+.kiji-preview h3, .kiji-preview h4, .kiji-preview h5, .kiji-preview h6 { font-size:var(--kw-lead); margin:24px 0 16px; }
+.kiji-preview p, .kiji-preview ul, .kiji-preview ol { margin:16px 0; }
+.kiji-preview ul, .kiji-preview ol { padding-left:24px; }
+.kiji-preview figure { margin:24px 0; }
+.kiji-preview img { display:block; max-width:100%; height:auto; }
+.kiji-preview pre { max-width:100%; overflow:auto; padding:16px; background:var(--bg); border:1px solid var(--line); border-radius:var(--radius); }
+.kiji-preview-note, .kiji-preview blockquote { padding:16px; margin:24px 0; border:1px solid var(--line); background:var(--bg); }
+.kiji-preview mark { background:var(--bg); color:inherit; font-weight:700; }
+.kiji-workbench :focus-visible { outline:2px solid var(--green-ink); outline-offset:3px; }
+@media (max-width:600px) {
+  .kiji-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .kiji-tabs .kw-button { justify-content:flex-start; text-align:left; }
+  .kiji-dialog { padding:16px; }
+  .kiji-workbench .kw-section-head { align-items:stretch; }
+  .kiji-workbench .kiji-actions { gap:6px; }
+  .kiji-list-row { display:block; }
+  .kiji-list-row > * { margin-bottom:12px; }
+}
+@media (prefers-reduced-motion:reduce) { .kiji-workbench * { scroll-behavior:auto; } }

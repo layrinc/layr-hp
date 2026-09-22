@@ -1,3 +1,4 @@
+import {handleKijiWorkspace} from './kiji-workspace.mjs';
 import {protectedResponse,MANAGER_ORIGIN} from './seo-access.mjs';
 import {ensureDatabase,createStore,HttpError,getDocuments,getDocument,getPublished,getWorkspace,saveWorkspace,saveDocument,approveDocument,pauseDocument,publicationStats,activity,backup} from './seo-store.mjs';
 import {validateDocument,qualityIssues,publicPath,cityCatalog} from '../src/lib/seo-manager/editorial-model.mjs';
@@ -40,6 +41,7 @@ async function readCorporateState(db) {
 export async function handleManagerApi(request,env,identity,path,services={}) {
   try {
     if(identity.email.toLowerCase()!==allowedEmail)throw new HttpError(403,'この管理画面を編集する権限がありません。');
+    if(path.startsWith('/api/seo/kiji/'))return handleKijiWorkspace(request,env);
     if(!['GET','POST','PUT'].includes(request.method))throw new HttpError(405,'この操作には対応していません。');
     if(request.method!=='GET'&&request.headers.get('Origin')!==MANAGER_ORIGIN)throw new HttpError(403,'管理画面を開き直して操作してください。');
     await ensureDatabase(env.SEO_DB);const db=env.SEO_DB,store=createStore(db),url=new URL(request.url),now=new Date();
