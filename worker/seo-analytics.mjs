@@ -66,11 +66,16 @@ function safeError(error) {
 async function requestJson(fetchImpl, url, options) {
   let response;
   try {
-    response = await fetchImpl(url, {...options, redirect: 'error', signal: AbortSignal.timeout(GOOGLE_TIMEOUT)});
+    // workerd supports only follow/manual. Reject redirects ourselves so neither
+    // a signed assertion nor a bearer token can be forwarded to another origin.
+    response = await fetchImpl(url, {...options, redirect: 'manual', signal: AbortSignal.timeout(GOOGLE_TIMEOUT)});
   } catch (error) {
     throw new GoogleRequestError(error?.name === 'TimeoutError' || error?.name === 'AbortError' ? 'GOOGLE_TIMEOUT' : 'GOOGLE_RESPONSE');
   }
-  if (!response.ok) throw new GoogleRequestError(response.status === 401 ? 'GOOGLE_AUTH' : response.status === 403 ? 'GOOGLE_PERMISSION' : response.status === 429 ? 'GOOGLE_QUOTA' : 'GOOGLE_RESPONSE');
+  if (!response.ok) {
+    await response.body?.cancel().catch(() => {});
+    throw new GoogleRequestError(response.status === 401 ? 'GOOGLE_AUTH' : response.status === 403 ? 'GOOGLE_PERMISSION' : response.status === 429 ? 'GOOGLE_QUOTA' : 'GOOGLE_RESPONSE');
+  }
   try { return await response.json(); } catch { throw new GoogleRequestError('GOOGLE_RESPONSE'); }
 }
 

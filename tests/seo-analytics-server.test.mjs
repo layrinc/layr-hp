@@ -26,7 +26,7 @@ function fakeGoogle({failGsc = false, verifyAssertion = false, inspectFailure = 
   const requests = [];
   const fetchImpl = async (url, options) => {
     requests.push({url, options});
-    assert.equal(options.redirect, 'error');
+    assert.equal(options.redirect, 'manual');
     if (url === 'https://oauth2.googleapis.com/token') {
       if (verifyAssertion) {
         const assertion = new URLSearchParams(options.body).get('assertion');
@@ -76,6 +76,23 @@ test('missing credentials never call Google or fabricate zero traffic', async ()
   assert.deepEqual(result.statuses.map(status => status.status), ['not_configured', 'not_configured']);
   assert.equal((await store.list('analytics')).length, 0);
   assert.equal(JSON.stringify(result).includes('private_key'), false);
+});
+
+test('redirects and other non-success responses are canceled without reading or exposing the body', async () => {
+  for (const [status, code] of [[302, 'GOOGLE_RESPONSE'], [307, 'GOOGLE_RESPONSE'], [401, 'GOOGLE_AUTH'], [429, 'GOOGLE_QUOTA']]) {
+    const store = memoryStore(); let canceled = 0, calls = 0;
+    const fetchImpl = async (_url, options) => {
+      calls++; assert.equal(options.redirect, 'manual');
+      const body = new ReadableStream({start(controller) {controller.enqueue(new TextEncoder().encode('PRIVATE-UPSTREAM-BODY'));}, cancel() {canceled++;}});
+      return new Response(body, {status, headers: {Location: 'https://must-not-follow.invalid/'}});
+    };
+    const result = await runAnalyticsSync(env, {store, now, fetchImpl});
+    assert.equal(calls, 1, 'a failed token exchange never reaches reporting endpoints');
+    assert.equal(canceled, 1, 'unused upstream bodies must release their connection');
+    assert.ok(result.statuses.every(row => row.status === 'error' && row.code === code));
+    assert.equal((await store.list('analytics')).length, 0);
+    assert.doesNotMatch(JSON.stringify(result), /PRIVATE-UPSTREAM-BODY|must-not-follow/);
+  }
 });
 
 test('configuration refuses external OAuth destinations, unrelated GSC properties, measurement IDs', () => {
