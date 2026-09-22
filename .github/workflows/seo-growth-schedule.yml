@@ -1,0 +1,57 @@
+name: SEO growth schedule
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/seo-growth-schedule.yml
+      - scripts/run-seo-growth-job.mjs
+      - worker/seo-scheduler.mjs
+  schedule:
+    - cron: '17 0 * * *' # 09:17 JST: publish up to the remaining daily limit.
+    - cron: '17 1 * * *' # 10:17 JST: recovery run; the server enforces the same daily limit.
+    - cron: '17 21 * * *' # 06:17 JST: analytics, index inspection, and health checks.
+  workflow_dispatch:
+    inputs:
+      kind:
+        description: Job to run
+        type: choice
+        required: true
+        default: publish
+        options:
+          - publish
+          - maintenance
+
+permissions: {}
+
+concurrency:
+  group: seo-growth-jobs
+  cancel-in-progress: false
+
+jobs:
+  run:
+    if: >-
+      github.repository == 'layrinc/layr-hp' &&
+      github.ref == 'refs/heads/main' &&
+      github.workflow_ref == 'layrinc/layr-hp/.github/workflows/seo-growth-schedule.yml@refs/heads/main' &&
+      (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out the trusted workflow commit
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: '24'
+      - name: Run the authenticated SEO job
+        env:
+          SEO_JOB_KIND: ${{ inputs.kind || (github.event.schedule == '17 21 * * *' && 'maintenance' || 'publish') }}
+        run: node scripts/run-seo-growth-job.mjs "$SEO_JOB_KIND"

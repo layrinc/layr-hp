@@ -11,7 +11,7 @@
     "SEO_GA4_PROPERTY_ID": "550092764",
     "SEO_GSC_SITE_URL": "sc-domain:layr.co.jp"
   },
-  "triggers": { "crons": ["0 0 * * *", "15 21 * * *"] },
+  "triggers": { "crons": [] },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",

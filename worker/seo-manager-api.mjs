@@ -9,6 +9,12 @@ import {saveLead} from './seo-leads.mjs';
 const json=(value,status=200)=>protectedResponse(JSON.stringify(value),status,{'Content-Type':'application/json; charset=utf-8'});
 const allowedEmail='biz.oneservice@gmail.com';
 const version=value=>{if(!Number.isInteger(value)||value<0)throw new HttpError(400,'保存版を確認してください。');return value;};
+function schedulerStatus(value) {
+  if(!value||typeof value!=='object')return null;
+  const timestamp=input=>typeof input==='string'&&Number.isFinite(Date.parse(input))?new Date(input).toISOString():null;
+  const identifier=input=>/^\d{1,30}$/.test(String(input??''))?String(input):null;
+  return {status:['completed','running','error'].includes(value.status)?value.status:null,lastAttemptAt:timestamp(value.lastAttemptAt),lastSuccessAt:timestamp(value.lastSuccessAt),runId:identifier(value.runId),runAttempt:identifier(value.runAttempt)};
+}
 async function body(request){if(!request.headers.get('Content-Type')?.startsWith('application/json'))throw new HttpError(415,'JSON形式で送信してください。');const raw=await request.text();if(new TextEncoder().encode(raw).length>20*1024*1024)throw new HttpError(413,'データが大きすぎます。');try{return JSON.parse(raw);}catch{throw new HttpError(400,'JSON形式を確認してください。');}}
 export async function handleManagerApi(request,env,identity,path,services={}) {
   try {
@@ -31,12 +37,12 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
       return json({state:await saveWorkspace(db,payload.state,version(payload.expectedRevision),now)});
     }
     if(path==='/api/seo/dashboard'&&request.method==='GET') {
-      const [documents,published,leads,snapshots,integrations,inspections,health,statistics,settings,events]=await Promise.all([
-        getDocuments(db),getPublished(db),store.list('leads'),store.list('analytics'),store.list('integrations'),store.list('inspections'),store.list('health'),publicationStats(db),store.get('settings','publication'),db.prepare('SELECT kind,message,created_at AS createdAt FROM seo_activity ORDER BY created_at DESC LIMIT 50').all(),
+      const [documents,published,leads,snapshots,integrations,inspections,health,statistics,settings,events,publishSchedule,maintenanceSchedule]=await Promise.all([
+        getDocuments(db),getPublished(db),store.list('leads'),store.list('analytics'),store.list('integrations'),store.list('inspections'),store.list('health'),publicationStats(db),store.get('settings','publication'),db.prepare('SELECT kind,message,created_at AS createdAt FROM seo_activity ORDER BY created_at DESC LIMIT 50').all(),store.get('scheduler','publish'),store.get('scheduler','maintenance'),
       ]);
       const flat=rows=>rows.map(row=>row.value);
       const pages=[...(services.staticPages||[]),...published.map(doc=>({path:publicPath(doc),title:doc.title,type:doc.type,publishedAt:doc.publishedAt}))];
-      return json({settings:{dailyLimit:10,paused:settings?.paused===true,timezone:'Asia/Tokyo',publishTime:'09:00'},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots,integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
+      return json({settings:{dailyLimit:10,paused:settings?.paused===true,timezone:'Asia/Tokyo',publishTime:'09:17'},scheduler:{publish:schedulerStatus(publishSchedule),maintenance:schedulerStatus(maintenanceSchedule)},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots,integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
     }
     if(path==='/api/seo/publication'&&request.method==='GET') {
       const [docs,live]=await Promise.all([getDocuments(db),getPublished(db)]);const liveIds=new Set(live.map(doc=>doc.id));
