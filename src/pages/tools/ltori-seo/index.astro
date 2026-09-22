@@ -30,13 +30,14 @@ const options=(record)=>Object.entries(record);
     <aside class="kw-sidebar">
       <p class="kw-label">{service.name} / 採用LINE</p>
       <nav aria-label="管理メニュー" id="kw-tabs">
+        <a class="kw-button" href="/growth/">集客・公開の運用管理へ</a>
         <button type="button" data-view="pages" aria-current="page"><span>01</span>地域・ページ</button>
         <button type="button" data-view="keywords"><span>02</span>キーワード</button>
         <button type="button" data-view="tasks"><span>03</span>改善タスク</button>
         <button type="button" data-view="analytics"><span>04</span>アクセス・問い合わせ</button>
         <button type="button" data-view="data"><span>05</span>実績・入出力</button>
       </nav>
-      <div class="kw-sidebar-note"><p>このブラウザに保存</p><p>端末を変えるときは、JSONバックアップを復元してください。</p><button type="button" class="kw-button" id="kw-backup">バックアップを保存</button><p id="kw-backup-date">まだバックアップしていません</p></div>
+      <div class="kw-sidebar-note"><p>共通データベースに保存</p><p>同じメールでログインすると、別の端末でも作業を続けられます。</p><button type="button" class="kw-button" id="kw-backup">バックアップを保存</button><p id="kw-backup-date">まだバックアップしていません</p></div>
       <a class="kw-outlink" href="/media/">エルトリ採用ノート管理 →</a>
       <a class="kw-outlink" href="https://hub.layr.co.jp/" target="_blank" rel="noopener noreferrer">LAYR HUBへ ↗</a>
     </aside>
@@ -80,14 +81,14 @@ const options=(record)=>Object.entries(record);
             </form>
             <div id="kw-import-preview" class="kw-import-preview" hidden><h3>取り込み内容</h3><p id="kw-import-summary"></p><p id="kw-import-replace" class="kw-help"></p><ul id="kw-import-rejected"></ul><button id="kw-rejected-export" type="button" class="kw-button" hidden>対象外の行をCSV出力</button><div class="kw-table-wrap"><table class="kw-table"><thead><tr><th>ページ / クエリ</th><th>クリック</th><th>表示回数</th><th>平均順位</th></tr></thead><tbody id="kw-import-rows"></tbody></table></div><p class="kw-help">確認表は先頭5行です。</p><button type="button" id="kw-import-save" class="kw-button kw-primary">この実績を保存</button></div>
           </section>
-          <section class="kw-panel"><h3>バックアップ・復元</h3><p>作業メモ、追加キーワード、検索・アクセス実績を1つのJSONファイルに保存します。</p><button type="button" id="kw-backup-data" class="kw-button">JSONバックアップを保存</button><p class="kw-help">このブラウザのデータは、閲覧履歴の削除や端末の変更で失われる場合があります。編集データはサーバーへ送信されません。定期的にバックアップしてください。</p>
-            <p class="kw-help">以前の管理画面を使っていた場合は、<a href="https://layr.co.jp/tools/ltori-seo/" target="_blank" rel="noopener noreferrer">旧URLで移行用JSONを保存 ↗</a>し、ここで復元できます。ログインによる端末間の自動同期はありません。共有端末ではブラウザのプロファイルを分けてください。</p>
+          <section class="kw-panel"><h3>バックアップ・復元</h3><p>作業メモ、追加キーワード、検索・アクセス実績を1つのJSONファイルに保存します。</p><button type="button" id="kw-backup-data" class="kw-button">JSONバックアップを保存</button><p class="kw-help">編集データは認証付きの共通データベースに保存します。旧ブラウザのデータは共通データが空の場合に移行します。JSONバックアップも保存できます。</p>
+            <p class="kw-help">以前の管理画面を使っていた場合は、<a href="https://layr.co.jp/tools/ltori-seo/" target="_blank" rel="noopener noreferrer">旧URLで移行用JSONを保存 ↗</a>し、ここで復元できます。保存した作業データは、同じメールでログインした別の端末でも読み込めます。共有端末では利用後にログアウトしてください。</p>
             <form id="kw-restore-form"><label>復元するJSONファイル<input type="file" id="kw-restore-file" accept=".json,application/json" required /></label><button type="submit" class="kw-button">復元内容を確認</button></form>
             <div id="kw-restore-preview" class="kw-import-preview" hidden><p id="kw-restore-summary"></p><p>現在の編集内容と検索実績を置き換えます。必要なデータを先にバックアップしてください。</p><button type="button" class="kw-button kw-primary" id="kw-restore-save">このバックアップを復元</button></div>
           </section>
         </div>
         <section class="kw-panel"><h3>保存した検索実績</h3><p class="kw-help">同じ期間・条件・集計軸の再取り込みは置換します。数値はCSV内の行の合計で、Search Consoleの画面合計と異なる場合があります。</p><div id="kw-report-history" class="kw-history"></div></section>
-        <details class="kw-help-details"><summary>運用の進め方・数値の読み方</summary><ol><li>地域・ページから優先度、担当者、次の作業と期限を設定します。</li><li>標準5種類はキーワード候補です。地域ごとの需要を調べ、不要な候補は保留にし、実際の検索語を追加します。</li><li>公開後は同じ期間幅・条件でSearch Console CSVを取り込みます。平均掲載順位は集計値であり固定の順位ではありません。</li><li>表示回数があるのにクリックされないページ、改善中のページを絞り込み、本文や見出しを改善します。</li><li>このツールで対応済みと記録しても、LP本文や公開状態は変更されません。</li></ol><p>「アクセス・問い合わせ」でGoogleの読み取り専用接続またはGA4 CSVの取り込みを利用できます。インデックス状態は手動確認です。町・村・区の旧編集データは「対象外」で保管します。下書きはサイトに公開されていません。公開は内容確認済みの台帳に基づき1日3件以内とし、この画面の作業状況を変えても公開されません。</p><a href="https://support.google.com/webmasters/answer/7576553?hl=ja" target="_blank" rel="noopener noreferrer">Googleの指標説明を読む ↗</a></details>
+        <details class="kw-help-details"><summary>運用の進め方・数値の読み方</summary><ol><li>地域・ページから優先度、担当者、次の作業と期限を設定します。</li><li>標準5種類はキーワード候補です。地域ごとの需要を調べ、不要な候補は保留にし、実際の検索語を追加します。</li><li>公開後は同じ期間幅・条件でSearch Console CSVを取り込みます。平均掲載順位は集計値であり固定の順位ではありません。</li><li>表示回数があるのにクリックされないページ、改善中のページを絞り込み、本文や見出しを改善します。</li><li>このツールで対応済みと記録しても、LP本文や公開状態は変更されません。</li></ol><p>「アクセス・問い合わせ」でGoogleの読み取り専用接続またはGA4 CSVの取り込みを利用できます。インデックス状態は手動確認です。町・村・区の旧編集データは「対象外」で保管します。下書きはサイトに公開されていません。原稿・成果の運用画面で承認・予約した原稿を、日本時間9時に1日最大10件公開します。この画面の作業メモだけを変更しても公開されません。</p><a href="https://support.google.com/webmasters/answer/7576553?hl=ja" target="_blank" rel="noopener noreferrer">Googleの指標説明を読む ↗</a></details>
       </section>
     </main>
   </div>

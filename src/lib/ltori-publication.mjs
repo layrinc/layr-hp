@@ -3,7 +3,7 @@ import content from '../data/ltori-city-editorial.json' with {type:'json'};
 import {regionalAreas, isEligibleArea} from './ltori-seo.mjs';
 
 export function validateReleases(input, areas, editorial) {
-  if (input.dailyLimit !== 3 || !Array.isArray(input.releases)) throw new Error('Publication limit must be 3 reviewed pages/day');
+  if (input.dailyLimit !== 10 || !Array.isArray(input.releases)) throw new Error('Publication limit must be 10 reviewed pages/day');
   const bySlug = new Map(areas.map(area => [area.slug, area])), seen = new Set(), counts = new Map();
   const validDate = value => /^\d{4}-\d{2}-\d{2}$/.test(value) && new Date(value).toISOString().slice(0,10) === value;
   for (const release of input.releases) {
@@ -18,9 +18,16 @@ export function validateReleases(input, areas, editorial) {
   return input.releases;
 }
 const releases = validateReleases(policy, regionalAreas, content);
-const today = new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Tokyo'}).format(new Date());
-const live = new Set(releases.filter(row => row.publishOn <= today).map(row => row.slug));
-export const publishedAreas = regionalAreas.filter(area => live.has(area.slug));
+// Workers evaluate module-global clocks before handling a request (epoch time).
+// Runtime callers must resolve publication against the request/scheduled time.
+export function getPublishedAreas(now = new Date()) {
+  const today = new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Tokyo'}).format(new Date(now));
+  const live = new Set(releases.filter(row => row.publishOn <= today).map(row => row.slug));
+  return regionalAreas.filter(area => live.has(area.slug));
+}
+// Keep build-time snapshots for Astro's existing static page generation.
+export const publishedAreas = getPublishedAreas();
+const live = new Set(publishedAreas.map(area => area.slug));
 export const publicationFor = area => !isEligibleArea(area) ? 'excluded' : live.has(area.slug) ? 'published' : 'draft';
 export const publishedFor = slug => publishedAreas.filter(area => area.kind !== 'prefecture' && area.prefectureSlug === slug);
 export const cityEditorial = content;

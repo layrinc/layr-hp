@@ -64,7 +64,7 @@ function secureAsset(response) {
   return result;
 }
 
-export async function handleRequest(request, env, verify = verifyAccessToken) {
+export async function handleRequest(request, env, verify = verifyAccessToken, handlers = {}) {
   const url = new URL(request.url);
   let path;
   try { path = normalizedPath(url.pathname); }
@@ -73,7 +73,7 @@ export async function handleRequest(request, env, verify = verifyAccessToken) {
   const management = path.toLowerCase().startsWith(MANAGER_PATH.slice(0, -1));
 
   // Public LPs use the original asset binding and require no authentication.
-  if (!dedicated && !management) return env.ASSETS.fetch(request);
+  if (!dedicated && !management) return handlers.publicFetch ? handlers.publicFetch(request, env) : env.ASSETS.fetch(request);
   if (!dedicated && !PUBLIC_HOSTS.has(url.hostname)) return protectedResponse('管理画面は専用ドメインから開いてください。', 403);
   if (url.protocol !== 'https:') return protectedResponse('HTTPSでアクセスしてください。', 400);
 
@@ -82,25 +82,26 @@ export async function handleRequest(request, env, verify = verifyAccessToken) {
   let identity;
   try { identity = await verify(request.headers.get('Cf-Access-Jwt-Assertion'), config); }
   catch { return protectedResponse('ログインを確認できませんでした。専用ドメインでメール認証をやり直してください。', 401); }
+  if (dedicated && path.startsWith('/api/seo/') && handlers.authenticated) return handlers.authenticated(request, env, identity, path);
   if (!['GET', 'HEAD'].includes(request.method)) return protectedResponse('この操作には対応していません。', 405, {Allow: 'GET, HEAD'});
 
   if (path === `${MANAGER_PATH}session.json`) {
     return protectedResponse(request.method === 'HEAD' ? null : JSON.stringify({...identity, managerOrigin: MANAGER_ORIGIN, legacy: !dedicated}), 200, {'Content-Type': 'application/json; charset=utf-8'});
   }
   if (dedicated && path.startsWith(MANAGER_PATH)) {
-    const mediaAlias = [MEDIA_MANAGER_PATH, MEDIA_MANAGER_PATH.slice(0, -1), `${MEDIA_MANAGER_PATH}index.html`, `${MANAGER_PATH}media.html`].includes(path);
-    return protectedResponse(null, 302, {Location: `${MANAGER_ORIGIN}${mediaAlias ? '/media/' : '/'}`});
+    const mediaAlias=[MEDIA_MANAGER_PATH,MEDIA_MANAGER_PATH.slice(0,-1),`${MEDIA_MANAGER_PATH}index.html`,`${MANAGER_PATH}media.html`].includes(path);
+    return protectedResponse(null, 302, {Location: `${MANAGER_ORIGIN}${path.startsWith(`${MANAGER_PATH}growth`) ? '/growth/' : mediaAlias ? '/media/' : '/'}`});
   }
-  if (dedicated && ['/media', '/media/index.html', '/media.html'].includes(path)) {
-    return protectedResponse(null, 302, {Location: `${MANAGER_ORIGIN}/media/`});
-  }
+  if (dedicated && ['/media', '/media/index.html', '/media.html'].includes(path)) return protectedResponse(null,302,{Location:`${MANAGER_ORIGIN}/media/`});
+  if (dedicated && ['/growth', '/growth/index.html', '/growth.html'].includes(path)) return protectedResponse(null, 302, {Location:`${MANAGER_ORIGIN}/growth/`});
   // Only manager assets are served on the dedicated host. In particular the
   // public LPs, sitemap and contact form must not acquire duplicate URLs here.
-  if (dedicated && path !== '/' && path !== '/index.html' && path !== '/media/' && !path.startsWith('/_astro/') && path !== '/favicon.svg') {
+  if (dedicated && path !== '/' && path !== '/index.html' && path !== '/growth/' && path !== '/media/' && !path.startsWith('/_astro/') && path !== '/favicon.svg') {
     return protectedResponse('ページが見つかりません。', 404);
   }
   const assetUrl = new URL(request.url);
   if (dedicated && (path === '/' || path === '/index.html')) assetUrl.pathname = MANAGER_PATH;
+  if (dedicated && path === '/growth/') assetUrl.pathname = `${MANAGER_PATH}growth/`;
   if (dedicated && path === '/media/') assetUrl.pathname = MEDIA_MANAGER_PATH;
   if (!dedicated) assetUrl.pathname = `${MANAGER_PATH}migrate/`;
   assetUrl.search = '';

@@ -49,7 +49,7 @@ const breadcrumbJsonLd = {
       <!-- ② メールで問い合わせる -->
       <div class="ct-card is-mail">
         <h2>メールで問い合わせる</h2>
-        <form class="ct-form" id="ctForm" action={`https://formsubmit.co/${settings.email}`} method="POST">
+        <form class="ct-form" id="ctForm" data-ct-email={settings.email} data-ltori-name={ltoriService.name} data-ltori-source-labels={JSON.stringify(sourceLabels)} action={`https://formsubmit.co/${settings.email}`} method="POST">
           <input type="hidden" name="_subject" value="【LAYRサイト】お問い合わせ" />
           <input type="hidden" name="_captcha" value="false" />
           <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off" />
@@ -90,78 +90,16 @@ const breadcrumbJsonLd = {
     </div>
   </section>
 
-  <script is:inline define:vars={{ ctEmail: settings.email, ltoriName: ltoriService.name, ltoriSourceLabels: sourceLabels }}>
-    (function () {
-      const form = document.getElementById('ctForm');
-      if (!form || form.dataset.bound) return;
-      form.dataset.bound = '1';
-      const query = new URLSearchParams(window.location.search);
-      const requestedSource = query.get('source') || '';
-      const pageSource = query.get('service') === 'ltori' && Object.prototype.hasOwnProperty.call(ltoriSourceLabels, requestedSource) ? requestedSource : '';
-      if (pageSource) {
-        const sourceField = document.createElement('input');
-        sourceField.type = 'hidden';
-        sourceField.name = 'ご覧になったページ';
-        sourceField.value = ltoriSourceLabels[pageSource];
-        form.append(sourceField);
-      }
-      if (query.get('service') === 'ltori') {
-        form.querySelector('[name="ご相談内容"]').value = ltoriName + '（採用LINE）について';
-        form.querySelector('[name="_subject"]').value = '【' + ltoriName + '】採用LINEのご相談';
-        const requestedPlan = query.get('plan');
-        if (['ライト', 'スタンダード', '戦略'].includes(requestedPlan)) {
-          const message = form.querySelector('textarea');
-          if (!message.value) message.value = requestedPlan + 'プランについて相談したいです。\n\n';
-        }
-      }
-      const btn = document.getElementById('ctSubmit');
-      const ok = document.getElementById('ctOk');
-      const fb = document.getElementById('ctFb');
-      const ml = document.getElementById('ctMailto');
-      let submitting = false;
-      let submitted = false;
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        if (submitting || submitted || form.querySelector('[name="_honey"]').value) return;
-        submitting = true;
-        btn.disabled = true;
-        const prev = btn.firstChild.textContent;
-        btn.firstChild.textContent = '送信中… ';
-        const data = new FormData(form);
-        const ctrl = new AbortController();
-        const timer = setTimeout(() => ctrl.abort(), 8000);
-        try {
-          const res = await fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), {
-            method: 'POST', body: data, headers: { Accept: 'application/json' }, signal: ctrl.signal,
-          });
-          if (!res.ok) throw new Error('http ' + res.status);
-          const submission = await res.json();
-          if (submission.success !== true && submission.success !== 'true') throw new Error('submission rejected');
-          clearTimeout(timer);
-          submitted = true;
-          form.querySelectorAll('input:not([type="hidden"]), textarea').forEach((el) => { el.value = ''; });
-          ok.hidden = false; fb.hidden = true;
-          ok.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-          // Analytics failures must not turn an accepted submission into a retry.
-          try {
-            if (typeof gtag === 'function') gtag('event', 'generate_lead', { method: 'contact_form', service: query.get('service') === 'ltori' ? 'ltori' : 'general', ...(pageSource ? { page_source: pageSource } : {}) });
-            if (typeof gtag === 'function' && pageSource.startsWith('area/')) gtag('event', 'ltori_inquiry_complete', {page_source:pageSource, method:'contact_form'});
-            if (typeof gtag === 'function' && (pageSource === 'media' || pageSource.startsWith('media/'))) gtag('event', 'ltori_media_inquiry_complete', {page_source:pageSource, method:'contact_form'});
-          } catch (_) {}
-        } catch (_) {
-          clearTimeout(timer);
-          const g = (n) => String(data.get(n) || '');
-          const body = 'お名前: ' + g('お名前') + '\n会社名: ' + g('会社名') + '\nメール: ' + g('メールアドレス') + '\nご相談内容: ' + g('ご相談内容') + (pageSource ? '\nご覧になったページ: ' + ltoriSourceLabels[pageSource] : '') + '\n\n' + g('お問い合わせ内容');
-          ml.href = 'mailto:' + ctEmail + '?subject=' + encodeURIComponent('【お問い合わせ】LAYRサイトより') + '&body=' + encodeURIComponent(body);
-          fb.hidden = false;
-          fb.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        } finally {
-          submitting = false;
-          btn.disabled = submitted;
-          btn.firstChild.textContent = prev;
-        }
+  <script>
+    import { bindLtoriContact } from '../lib/ltori-contact.mjs';
+    const form = document.getElementById('ctForm') as HTMLFormElement | null;
+    if (form) {
+      bindLtoriContact(form, {
+        email: form.dataset.ctEmail || '',
+        ltoriName: form.dataset.ltoriName || '',
+        sourceLabels: JSON.parse(form.dataset.ltoriSourceLabels || '{}'),
       });
-    })();
+    }
   </script>
 
   <style>

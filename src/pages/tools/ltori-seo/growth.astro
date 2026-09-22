@@ -1,0 +1,108 @@
+---
+import '../../../styles/style.css';
+import '../../../styles/seo-manager.css';
+import '../../../styles/seo-growth.css';
+import service from '../../../data/service-ltori.json';
+---
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow, noarchive" />
+  <meta name="referrer" content="same-origin" />
+  <title>集客・公開の運用管理｜{service.name}｜LAYR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body class="seo-app growth-app">
+  <a class="kw-skip" href="#growth-main">運用管理へ</a>
+  <header class="kw-top"><a href="/" class="kw-brand">LAYR <span>SEO WORKSPACE</span></a><div class="kw-account"><span id="growth-saved" role="status">サーバーへの接続を確認中</span><span id="kw-identity">認証を確認中</span><a id="kw-logout" class="kw-button" href="/cdn-cgi/access/logout">ログアウト</a></div></header>
+  <div class="kw-shell">
+    <aside class="kw-sidebar">
+      <p class="kw-label">{service.name} / 採用LINE</p>
+      <nav aria-label="運用メニュー">
+        <button type="button" data-growth-tab="overview" aria-current="page"><span>01</span>成果・改善</button>
+        <button type="button" data-growth-tab="documents"><span>02</span>原稿・公開予約</button>
+        <button type="button" data-growth-tab="leads"><span>03</span>問い合わせ・商談</button>
+        <button type="button" data-growth-tab="health"><span>04</span>接続・サイト点検</button>
+      </nav>
+      <a class="kw-button" href="/">地域・キーワード管理へ</a>
+      <div class="kw-sidebar-note"><p>端末間で共有する運用データ</p><p>原稿・公開予約・商談記録・地域のメモをサーバーに保存します。旧ブラウザデータは地域管理の初回利用時に移行します。</p><button class="kw-button" type="button" id="growth-backup" data-requires-data disabled>バックアップを保存</button></div>
+      <a class="kw-outlink" href="https://hub.layr.co.jp/" target="_blank" rel="noopener noreferrer">LAYR HUBへ ↗</a>
+    </aside>
+    <main class="kw-main" id="growth-main">
+      <header class="kw-heading"><div><p class="kw-label">継続する、全国SEO</p><h1>集客・公開の運用管理</h1><p>確認した原稿を公開し、問い合わせから受注まで育てる。</p></div><button type="button" class="kw-button" id="growth-refresh">最新の情報に更新</button></header>
+      <noscript><p class="kw-notice">この管理画面にはJavaScriptが必要です。</p></noscript>
+      <p class="kw-notice" id="growth-message" role="status" hidden></p>
+      <section class="growth-publishing" aria-labelledby="growth-publishing-title">
+        <div><p class="kw-label" id="growth-publishing-title">自動公開の状態</p><strong id="growth-publication-state">確認中</strong><p id="growth-publication-detail">承認済みの原稿だけが公開対象です。</p></div>
+        <dl><div><dt>今日の新規公開</dt><dd id="growth-daily-count">— / 10</dd></div><div><dt>公開待ち</dt><dd id="growth-queue-count">—</dd></div></dl>
+        <button class="kw-button" type="button" id="growth-pause" data-requires-data disabled>自動公開を一時停止</button>
+      </section>
+      <section data-growth-view="overview" aria-labelledby="growth-overview-title">
+        <div class="kw-section-head"><div><h2 id="growth-overview-title">成果を確認する</h2><p id="growth-report-period">検索・アクセスの集計期間は取得後に表示します。</p></div><button class="kw-button" id="growth-sync" type="button" data-requires-data disabled>Googleデータを取得</button></div>
+        <dl class="kw-stats growth-stats">
+          <div><dt>検索からのクリック</dt><dd id="growth-clicks">—</dd><small>Search Console</small></div>
+          <div><dt>ページ表示数</dt><dd id="growth-views">—</dd><small>GA4</small></div>
+          <div><dt>問い合わせ完了</dt><dd id="growth-conversions">—</dd><small>GA4の計測イベント</small></div>
+          <div><dt>受注済みの記録</dt><dd id="growth-won">—</dd><small>商談管理の全期間</small></div>
+        </dl>
+        <p class="kw-help">未取得の指標は「—」です。LINEボタンのクリックと問い合わせ完了は区別します。検索語句と個々の問い合わせは直接紐づきません。</p>
+        <details class="growth-metric-details"><summary>アクセス・商談の内訳を確認</summary><dl id="growth-metric-details" class="growth-metric-list"></dl><ul id="growth-report-notes" class="growth-issues"></ul></details>
+        <div class="growth-columns">
+          <section class="kw-panel" aria-labelledby="growth-actions-title"><h3 id="growth-actions-title">次に改善するページ</h3><p class="kw-help">取得したデータや点検結果をもとに、確認する理由と次の作業を表示します。</p><div id="growth-recommendations" class="growth-list"><p class="growth-empty">データを読み込み中です。</p></div></section>
+          <section class="kw-panel" aria-labelledby="growth-activity-title"><h3 id="growth-activity-title">最近の運用履歴</h3><div id="growth-activity" class="growth-list"><p class="growth-empty">データを読み込み中です。</p></div></section>
+        </div>
+        <section class="kw-panel" aria-labelledby="growth-pages-title"><h3 id="growth-pages-title">ページ別の成果</h3><p class="kw-help">地域LPと採用コラムを同じ一覧で確認します。数値のないページは未取得です。</p><div class="kw-table-wrap" role="region" aria-label="ページ別成果。横にスクロールできます" tabindex="0"><table class="kw-table"><thead><tr><th scope="col">ページ</th><th scope="col">検索クリック</th><th scope="col">検索表示</th><th scope="col">PV</th><th scope="col">問い合わせ完了</th><th scope="col">商談記録</th></tr></thead><tbody id="growth-page-metrics"></tbody></table><p class="growth-empty" id="growth-page-empty">計測データを取得すると表示します。</p></div></section>
+      </section>
+      <section data-growth-view="documents" aria-labelledby="growth-documents-title" hidden>
+        <div class="kw-section-head"><div><h2 id="growth-documents-title">原稿・公開予約</h2><p>本文を保存し、プレビューと根拠を確認してから公開待ちに追加します。</p></div><button class="kw-button kw-primary" type="button" id="growth-new-document" data-requires-data disabled>原稿を作成</button></div>
+        <div class="growth-filters"><label>原稿を検索<input id="growth-document-search" type="search" placeholder="市名・タイトルで検索" /></label><label>公開状況<select id="growth-document-status"><option value="">すべて</option><option value="draft">下書き</option><option value="approved">承認済み</option><option value="scheduled">公開予約</option><option value="published">公開中</option><option value="paused">公開停止</option></select></label><label>種類<select id="growth-document-type"><option value="">すべて</option><option value="city">市のLP</option><option value="article">採用コラム</option></select></label></div>
+        <p class="kw-help">1日の公開上限は10本です。承認済み原稿が10本に満たない日は、承認された分だけ公開します。公開時刻は日本時間です。</p>
+        <div class="kw-table-wrap" role="region" aria-label="原稿と公開予約。横にスクロールできます" tabindex="0"><table class="kw-table"><thead><tr><th scope="col">原稿</th><th scope="col">状態</th><th scope="col">確認事項</th><th scope="col">公開予定・更新</th><th scope="col">操作</th></tr></thead><tbody id="growth-document-rows"></tbody></table><p id="growth-document-empty" class="growth-empty" hidden>該当する原稿がありません。原稿を作成するか、検索条件を変更してください。</p></div>
+        <div class="kw-pagination"><p class="kw-help" id="growth-document-count"></p><div><button class="kw-button" id="growth-documents-prev" type="button">前へ</button><span id="growth-documents-page">1 / 1</span><button class="kw-button" id="growth-documents-next" type="button">次へ</button></div></div>
+      </section>
+      <section data-growth-view="leads" aria-labelledby="growth-leads-title" hidden>
+        <div class="kw-section-head"><div><h2 id="growth-leads-title">問い合わせ・商談</h2><p>流入ページと進行状況を記録し、有効な相談・商談・受注を区別します。</p></div><button class="kw-button kw-primary" id="growth-new-lead" type="button" data-requires-data disabled>商談記録を追加</button></div>
+        <div class="growth-filters"><label>記録を検索<input id="growth-lead-search" type="search" placeholder="管理番号・流入ページで検索" /></label><label>進行状況<select id="growth-lead-stage"><option value="">すべて</option><option value="inquiry">新規相談</option><option value="qualified">有効な相談</option><option value="meeting">商談中</option><option value="won">受注</option><option value="lost">見送り</option></select></label></div>
+        <p class="kw-help">問い合わせメールの管理番号と照合できます。氏名・メールアドレス・相談内容はこの一覧に保存しません。</p>
+        <div class="kw-table-wrap" role="region" aria-label="問い合わせと商談。横にスクロールできます" tabindex="0"><table class="kw-table"><thead><tr><th scope="col">管理番号・受付日</th><th scope="col">進行状況</th><th scope="col">流入ページ</th><th scope="col">受注額</th><th scope="col">粗利益</th><th scope="col">操作</th></tr></thead><tbody id="growth-lead-rows"></tbody></table><p id="growth-lead-empty" class="growth-empty" hidden>記録はまだありません。問い合わせの対応状況を追加できます。</p></div>
+      </section>
+      <section data-growth-view="health" aria-labelledby="growth-health-title" hidden>
+        <div class="kw-section-head"><div><h2 id="growth-health-title">接続・サイト点検</h2><p>最終取得時刻と設定状況を確認します。データが取れない状態を「0件」とは表示しません。</p></div><button class="kw-button" id="growth-inspect" type="button" data-requires-data disabled>公開ページを点検</button></div>
+        <div id="growth-integrations" class="growth-connection-grid"></div>
+        <section class="kw-panel"><h3>公開ページの点検</h3><div id="growth-technical-checks" class="growth-list"><p class="growth-empty">点検結果を読み込み中です。</p></div></section>
+        <section class="kw-panel"><h3>Googleのインデックス状況</h3><div id="growth-inspections" class="growth-list"><p class="growth-empty">点検結果を読み込み中です。</p></div></section>
+        <details class="kw-panel"><summary>設定と運用の確認方法</summary><div id="growth-configuration" class="growth-list"></div><p class="kw-help">Googleの連携用認証情報はCloudflareのサーバー設定に保存します。この画面に秘密鍵やトークンを入力する必要はありません。</p><p class="kw-help">JSONバックアップには原稿・商談記録が含まれます。社内で管理してください。</p></details>
+      </section>
+    </main>
+  </div>
+  <dialog id="growth-editor" class="growth-dialog" aria-labelledby="growth-editor-title">
+    <header class="growth-dialog-header"><div><p class="kw-label">原稿の編集</p><h2 id="growth-editor-title">原稿を作成</h2></div><button type="button" class="kw-button" id="growth-editor-close">閉じる</button></header>
+    <form id="growth-editor-form">
+      <p class="kw-notice" id="growth-editor-error" role="alert" hidden></p>
+      <div class="kw-form-grid"><label>ページの種類<select id="growth-edit-type"><option value="city">市のLP</option><option value="article">採用コラム</option></select></label><label id="growth-edit-city-wrap">対象の市<select id="growth-edit-city"><option value="">市を選んでください</option></select></label><label id="growth-edit-slug-wrap" hidden>URLの末尾（半角英数字・ハイフン）<input id="growth-edit-slug" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxlength="100" placeholder="interview-follow-up" /></label></div>
+      <p class="kw-help" id="growth-edit-url">URLは保存すると確定します。</p>
+      <label>検索結果のタイトル<input id="growth-edit-title" maxlength="160" required /></label>
+      <label>検索結果の説明文<textarea id="growth-edit-description" rows="3" maxlength="500"></textarea></label>
+      <label>ページの主見出し<input id="growth-edit-heading" maxlength="160" /></label>
+      <label>導入文<textarea id="growth-edit-lead" rows="4" maxlength="3000"></textarea></label>
+      <div class="kw-form-grid"><label>検索する人の目的<select id="growth-edit-intent"><option value="employer">企業の採用担当者向け</option><option value="unknown">まだ確認していない</option><option value="jobseeker">求職者向け</option></select></label><label>公開希望日時（日本時間）<input id="growth-edit-scheduled" type="datetime-local" /><span class="kw-help">未指定なら、承認後の次回公開処理から対象になります。</span></label></div>
+      <section class="growth-form-section"><div class="kw-section-head"><div><h3>そのページで伝える内容</h3><p>地域の根拠、採用課題、具体的な提案を、それぞれの見出しで記載します。</p></div><button type="button" class="kw-button" id="growth-add-section">見出しを追加</button></div><div id="growth-edit-sections" class="growth-edit-list"></div></section>
+      <section class="growth-form-section"><h3>LINE活用の作例</h3><p class="kw-help">実際の導入実績と混同されないよう「作例」と表示します。</p><label>作例のタイトル<input id="growth-edit-example-title" maxlength="200" /></label><label>配信・運用の具体例<textarea id="growth-edit-example-body" rows="5" maxlength="5000"></textarea></label></section>
+      <section class="growth-form-section"><div class="kw-section-head"><div><h3>出典と確認日</h3><p>市・都道府県・全国など、資料が対象とする範囲も記録します。</p></div><button type="button" class="kw-button" id="growth-add-source">出典を追加</button></div><div id="growth-edit-sources" class="growth-edit-list"></div></section>
+      <section class="growth-form-section" id="growth-related-cities" hidden><h3>記事から紹介する市のLP</h3><p class="kw-help">記事の内容に関係する市を3市まで選べます。公開済みの市だけが記事内に表示されます。</p><div class="kw-form-grid" id="growth-edit-related"></div></section>
+      <section class="growth-form-section"><h3>公開前の確認</h3><ul id="growth-edit-issues" class="growth-issues"><li>保存後に確認事項を表示します。</li></ul><p class="kw-help">地名の差し替えだけになっていないか、地域情報の根拠と企業に役立つ提案をプレビューで確認してください。</p></section>
+      <footer class="growth-editor-actions"><button class="kw-button kw-primary" type="submit" id="growth-editor-save">下書きを保存</button><a class="kw-button" id="growth-editor-preview" href="#" target="_blank" rel="noopener noreferrer" hidden>保存した原稿をプレビュー ↗</a><button class="kw-button" id="growth-editor-approve" type="button" disabled>内容を確認して公開待ちに追加</button></footer>
+      <p class="kw-help" id="growth-editor-save-hint">編集内容を保存してから、プレビュー・承認に進みます。</p>
+    </form>
+  </dialog>
+  <dialog id="growth-lead-editor" class="growth-dialog growth-dialog-small" aria-labelledby="growth-lead-editor-title">
+    <header class="growth-dialog-header"><h2 id="growth-lead-editor-title">商談記録を追加</h2><button class="kw-button" type="button" id="growth-lead-close">閉じる</button></header>
+    <form id="growth-lead-form"><p class="kw-notice" id="growth-lead-error" role="alert" hidden></p><label>社内の管理番号（任意）<input id="growth-lead-reference" maxlength="80" placeholder="案件を識別する番号" /><span class="kw-help">氏名やメールアドレスは入力しないでください。</span></label><div class="kw-form-grid"><label>進行状況<select id="growth-lead-status"><option value="inquiry">新規相談</option><option value="qualified">有効な相談</option><option value="meeting">商談中</option><option value="won">受注</option><option value="lost">見送り</option></select></label><label>問い合わせ日<input id="growth-lead-date" type="date" required /></label></div><label>流入ページ<input id="growth-lead-path" maxlength="500" placeholder="/service/ltori/area/mie/nabari/" /><span class="kw-help">確認できない場合は空欄にします。</span></label><div class="kw-form-grid"><label>受注額（円・任意）<input id="growth-lead-value" type="number" min="0" max="1000000000" step="1" /></label><label>粗利益（円・任意）<input id="growth-lead-profit" type="number" min="0" max="1000000000" step="1" /></label></div><button type="submit" class="kw-button kw-primary" id="growth-lead-save">商談記録を保存</button></form>
+  </dialog>
+  <script>import '../../../lib/seo-manager/growth-app.mjs';</script>
+</body>
+</html>

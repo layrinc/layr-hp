@@ -29,6 +29,7 @@ const jsonLd = {'@context':'https://schema.org','@type':'BreadcrumbList',itemLis
           <nav aria-label={`${name}の市`}><ul class="lt-area-list">{publishedFor(slug).map(city=><li><a href={areaPath(city)}>{city.name}</a></li>)}</ul></nav>
         </section>)}
       </section>)}
+      <ul class="lt-area-list" data-seo-city-directory></ul>
       <p class="lt-note lt-area-directory-note">地域名・行政区の情報は、<a href="https://github.com/geolonia/japanese-addresses-v2" target="_blank" rel="noopener">Geolonia Japanese Addresses</a>・<a href="https://maps.gsi.go.jp/" target="_blank" rel="noopener">国土地理院</a>の公開データをもとに整理しています。掲載地域に当社の拠点があることを示すものではありません。</p>
       <p><a class="lt-text-link" href={service.path}>{service.name}のサービス詳細へ <span aria-hidden="true">↗</span></a></p>
     </div></section>

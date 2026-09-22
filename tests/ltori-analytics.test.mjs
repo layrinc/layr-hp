@@ -18,8 +18,11 @@ test('scope is 792 cities and 47 prefectures; only three reviewed pages release,
   for(const area of regionalAreas.filter(a=>a.kind!=='prefecture'&&!a.locality.endsWith('市')))assert.equal(publicationFor(area),'excluded');
   const invalid=structuredClone(policy);invalid.releases[0].slug='unknown/no-town';assert.throws(()=>validateReleases(invalid,regionalAreas,cityEditorial));
   assert.throws(()=>validateReleases({...policy,releases:[...policy.releases,policy.releases[0]]},regionalAreas,cityEditorial),/duplicate/);
-  const fourth=eligibleAreas.find(a=>!cityEditorial[a.slug]);
-  assert.throws(()=>validateReleases({...policy,releases:[...policy.releases,{...policy.releases[0],slug:fourth.slug}]},regionalAreas,{...cityEditorial,[fourth.slug]:cityEditorial['mie/nabari']}),/Daily/);
+  const extra=eligibleAreas.filter(a=>!cityEditorial[a.slug]).slice(0,8);
+  const extraCopy=Object.fromEntries(extra.map(a=>[a.slug,cityEditorial['mie/nabari']]));
+  const extraReleases=extra.map(a=>({...policy.releases[0],slug:a.slug}));
+  assert.equal(validateReleases({...policy,releases:[...policy.releases,...extraReleases.slice(0,7)]},regionalAreas,{...cityEditorial,...extraCopy}).length,10);
+  assert.throws(()=>validateReleases({...policy,releases:[...policy.releases,...extraReleases]},regionalAreas,{...cityEditorial,...extraCopy}),/Daily/);
   assert.throws(()=>validateReleases(policy,regionalAreas,{}),/Editorial/);
 });
 test('GA CSV preserves missing versus zero, drops foreign URLs, rejects duplicated users and generic events',()=>{

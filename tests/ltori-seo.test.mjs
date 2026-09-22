@@ -89,10 +89,12 @@ test('the contact form recognizes every route without accepting arbitrary source
     const url = new URL(consultationHref(areaKey(area)), 'https://layr.co.jp');
     assert.equal(url.searchParams.get('service'), 'ltori');
     assert.equal(sourceLabels[url.searchParams.get('source')], `${area.fullName}の採用LINE`);
-    assert.ok(contact.includes(JSON.stringify(areaKey(area))));
+    assert.ok(decode(contact).replaceAll('&quot;', '"').includes(areaKey(area)));
   }
   assert.equal(sourceLabels['area/unknown/untrusted'], undefined);
-  assert.ok(contact.includes('Object.prototype.hasOwnProperty.call'));
+  const contactModule=readFileSync(new URL('../src/lib/ltori-contact.mjs',import.meta.url),'utf8');
+  assert.ok(contactModule.includes('Object.prototype.hasOwnProperty.call'));
+  assert.ok(contactModule.includes('/api/ltori/source'));
 });
 
 

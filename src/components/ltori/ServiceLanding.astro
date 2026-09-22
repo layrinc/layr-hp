@@ -17,6 +17,7 @@ const faqs = area ? [...regionalFaqsFor(area), ...service.faqs] : service.faqs;
 const title = area ? `${area.fullName}の採用LINE構築・運用支援｜${service.name}｜株式会社LAYR` : `${service.name}｜採用特化LINE構築・運用支援｜株式会社LAYR`;
 const description = area ? `${area.fullName}で採用LINEの構築・運用支援なら${service.name}。企業紹介の配信、応募・面談予約、入社前フォローまでオンラインで支援します。初期構築${service.initialPrice/10000}万円、月額${service.plans[0].price/10000}万円から（税別）。` : `${service.name}は、広告で出会った候補者との接点をLINEに残し、採用リストを資産として育てる採用特化LINE構築・運用支援サービスです。初期構築20万円、月額3万円から（税別）。`;
 const consult = consultationHref(pageSource);
+const diagnosis = `/service/ltori/diagnosis/?source=${encodeURIComponent(pageSource || 'diagnosis')}`;
 const breadcrumbs = [
   {name:'ホーム', path:'/'}, {name:'サービス', path:'/service/'}, {name:service.name, path:service.path},
 ];
@@ -108,7 +109,7 @@ const jsonLd = [
         </div>
       </section>
 
-      {area && <RegionalContent area={area} section="guide" />}
+      <div data-seo-editorial-slot>{area && <RegionalContent area={area} section="guide" />}</div>
       <section class="lt-section lt-practical" id="needs">
         <div class="lt-wrap">
           <div class="lt-section-heading lt-practical-heading"><p class="lt-eyebrow">Practical</p><h2>こんな採用のニーズ、<br /><mark>{service.name}で支援できます！</mark></h2><p>新卒・中途採用に。建設・製造・運送など、<br />業種や採用フェーズに合わせてLINEを活用します。</p><img class="lt-section-art" src="/service/ltori/isometric-support.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="" /></div>
@@ -136,7 +137,7 @@ const jsonLd = [
         </div>
       </section>
 
-      <section class="lt-cta-section"><div class="lt-wrap"><ConsultBanner placement="middle" consultHref={consult} areaName={area?.fullName} /></div></section>
+      <section class="lt-cta-section"><div class="lt-wrap"><ConsultBanner placement="middle" consultHref={consult} areaName={area?.fullName} /><p class="lt-operated">自社に合う使い方を知りたい方へ。<a class="lt-text-link" href={diagnosis} data-lt-diagnosis>5つの質問で採用LINEの活用プランを見る <span aria-hidden="true">↗</span></a></p></div></section>
 
       <section class="lt-section lt-demo-section" id="scenario">
         <div class="lt-wrap">
@@ -192,5 +193,6 @@ const jsonLd = [
     const sourceParams = pageSource ? {page_source:pageSource} : {};
     document.querySelectorAll<HTMLAnchorElement>('[data-lt-cta]').forEach(a=>a.addEventListener('click',()=>track('select_content',{content_type:'consultation_cta',content_id:'ltori',placement:a.dataset.ltCta||'',...sourceParams})));
     document.querySelectorAll<HTMLAnchorElement>('[data-lt-doc]').forEach(a=>a.addEventListener('click',()=>track('select_content',{content_type:'service_document',content_id:'ltori',...sourceParams})));
+    document.querySelectorAll<HTMLAnchorElement>('[data-lt-diagnosis]').forEach(a=>a.addEventListener('click',()=>track('select_content',{content_type:'recruitment_diagnosis',content_id:'ltori',...sourceParams})));
   </script>
 </Base>

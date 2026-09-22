@@ -1,28 +1,21 @@
-const DB = 'layr-ltori-seo-v1';
-export function openDatabase() {
-  return new Promise((resolve,reject)=>{
-    const request=indexedDB.open(DB,1);
+const ENDPOINT='/api/seo/state';
+async function call(method='GET',payload) {
+  const response=await fetch(ENDPOINT,{method,credentials:'same-origin',cache:'no-store',redirect:'error',headers:payload?{'Content-Type':'application/json'}:{},...(payload?{body:JSON.stringify(payload)}:{}),signal:AbortSignal.timeout(20000)});
+  const result=await response.json();if(!response.ok)throw new Error(result.error||'共通データを読み込めませんでした。再ログインして確認してください。');return result.state;
+}
+async function legacyState() {
+  if(!globalThis.indexedDB)return null;
+  return new Promise(resolve=>{
+    const request=indexedDB.open('layr-ltori-seo-v1',1);
     request.onupgradeneeded=()=>request.result.createObjectStore('workspace');
-    request.onerror=()=>reject(new Error('このブラウザで保存を開始できません。通常モードのブラウザで開き直してください。'));
-    request.onblocked=()=>reject(new Error('別のタブを閉じて開き直してください。'));
-    request.onsuccess=()=>{const db=request.result;db.onversionchange=()=>db.close();resolve(db);};
+    request.onerror=request.onblocked=()=>resolve(null);
+    request.onsuccess=()=>{const db=request.result,tx=db.transaction('workspace','readonly'),read=tx.objectStore('workspace').get('state');tx.oncomplete=()=>{db.close();resolve(read.result||null);};tx.onerror=()=>{db.close();resolve(null);};};
   });
 }
-export function loadState(db) {
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction('workspace','readonly'), req=tx.objectStore('workspace').get('state');
-    tx.oncomplete=()=>resolve(req.result);tx.onerror=()=>reject(tx.error);
-  });
+export async function openDatabase() {
+  let state=await call();
+  if(!state){const old=await legacyState();if(old){try{state=await call('PUT',{state:old,expectedRevision:0});}catch{state=await call();if(!state)throw new Error('旧データの移行が完了していません。元のブラウザデータは残っています。');}}}
+  return {kind:'server',state};
 }
-export function saveState(db,next,expectedRevision) {
-  return new Promise((resolve,reject)=>{
-    const tx=db.transaction('workspace','readwrite'), store=tx.objectStore('workspace');let conflict=false,saved;
-    const read=store.get('state');
-    read.onsuccess=()=>{
-      if((read.result?.revision||0)!==expectedRevision){conflict=true;tx.abort();return;}
-      saved={...next,revision:expectedRevision+1,updatedAt:new Date().toISOString()};store.put(saved,'state');
-    };
-    tx.oncomplete=()=>resolve(saved);
-    tx.onabort=tx.onerror=()=>reject(new Error(conflict?'別のタブで更新されました。再読み込みしてから操作してください。':'保存できませんでした。容量・ブラウザ設定を確認し、編集内容を控えてから再度お試しください。'));
-  });
-}
+export async function loadState(db){return db.state;}
+export async function saveState(db,next,expectedRevision){const state=await call('PUT',{state:next,expectedRevision});db.state=state;return state;}

@@ -15,7 +15,24 @@ const message=(value,error=false)=>{const node=$('kw-message');node.textContent=
 const errorText=error=>error instanceof Error?error.message:String(error);
 const reportLabel=r=>`${r.start}〜${r.end} / ${r.kind==='pages'?'ページ別':'クエリ別'} / ${r.scopePageId?byId.get(r.scopePageId).fullName:'サイト全体'} / ${r.searchType} / ${r.filter}`;
 function rebuild(){allKeywords=keywordsFor(catalog,state);}
-function saveLabel(){ $('kw-save-state').textContent=state.updatedAt?`このブラウザに保存済み · ${new Date(state.updatedAt).toLocaleString('ja-JP')}`:'このブラウザに保存 · 未編集'; }
+function saveLabel(){ $('kw-save-state').textContent=state.updatedAt?`サーバーに保存済み · ${new Date(state.updatedAt).toLocaleString('ja-JP')}`:'共通データベース · 未編集'; }
+async function refreshPublication(){
+  try {
+    const response=await fetch('/api/seo/publication',{credentials:'same-origin',cache:'no-store',redirect:'error',headers:{Accept:'application/json'},signal:AbortSignal.timeout(10000)});
+    if(!response.ok)throw new Error('公開状況を取得できませんでした。');
+    const result=await response.json();
+    if(!Array.isArray(result?.pages)||result.pages.some(page=>!page||typeof page.path!=='string'||!['published','draft','scheduled','paused'].includes(page.status)))throw new Error('公開状況の形式を確認できませんでした。');
+    const byPath=new Map(catalog.map(page=>[page.path,page]));
+    for(const page of result.pages){const target=byPath.get(page.path);if(target&&target.publication!=='excluded')target.publication=page.status==='published'?'published':'draft';}
+    const eligible=catalog.filter(page=>page.publication!=='excluded'),published=eligible.filter(page=>page.publication==='published').length;
+    $('kw-stat-pages').textContent=format(eligible.length);
+    const summary=$('kw-stat-pages').parentElement.querySelector('small');
+    if(summary)summary.textContent=`公開 ${format(published)} ／ 下書き・公開待ち ${format(eligible.length-published)}`;
+    rebuild();render();renderAnalytics();
+  }catch{
+    message('最新の公開状況を確認できませんでした。公開一覧は最後に読み込んだ情報です。ページを再読み込みして確認してください。作業データの保存先は変更していません。',true);
+  }
+}
 async function commit(next) {
   if(!db||!loaded)throw new Error('保存機能が利用できません。表示されているエラーを確認してください。');
   if(busy)throw new Error('保存中です。少し待ってから操作してください。');
@@ -80,7 +97,7 @@ function render(){
   if(focusedCheck)[...document.querySelectorAll('#kw-thead input, #kw-tbody input')].find(node=>node.getAttribute('aria-label')===focusedCheck)?.focus({preventScroll:true});
 }
 function download(name,body,type){const url=URL.createObjectURL(new Blob([body],{type})),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);}
-function backup(){if(!loaded){message('保存済みデータを読み込めていません。空のバックアップは出力しません。',true);return;}download(`eltori-seo-backup-${today()}.json`,JSON.stringify({...state,exportedAt:new Date().toISOString()}),'application/json');$('kw-backup-date').textContent=`最終出力: ${new Date().toLocaleString('ja-JP')}`;message('JSONバックアップをダウンロードしました。端末変更時に復元できます。');}
+function backup(){if(!loaded){message('保存済みデータを読み込めていません。空のバックアップは出力しません。',true);return;}download(`eltori-seo-backup-${today()}.json`,JSON.stringify({...state,exportedAt:new Date().toISOString()}),'application/json');$('kw-backup-date').textContent=`最終出力: ${new Date().toLocaleString('ja-JP')}`;message('JSONバックアップをダウンロードしました。作業データの控えとして保管できます。');}
 function exportCsv(){
   const report=currentReport(),headers=['地域ID','都道府県','地域名','本番URL','対策キーワード','対策対象','優先度','対応状況','インデックス状態（手動）','担当者','次にやること','期限','メモ','クリック数','表示回数','CTR','平均掲載順位','実績期間開始','実績期間終了','実績範囲'];
   const rows=filtered.map(({page,edit,keyword,metric,paused})=>[page.id,page.prefectureName,page.fullName,`https://layr.co.jp${page.path}`,keyword?.query||'',keyword?(paused?'保留':'対象'):'',PRIORITY[edit.priority],STATUS[edit.status],INDEX[edit.indexStatus],edit.owner,edit.nextAction,edit.dueDate,edit.notes,metric?.clicks??'',metric?.impressions??'',metric?.impressions?rate(metric):'',metric?.position??'',report?.start||'',report?.end||'',report?reportLabel(report):'未取得']);
@@ -111,7 +128,7 @@ async function fileText(input){const file=input.files[0];if(!file)throw new Erro
 function clearImport(){pendingImport=null;$('kw-import-preview').hidden=true;}
 async function initialize(){
   rebuild();render();
-  try{db=await openDatabase();const saved=await loadState(db);if(saved)state=validateBackup(saved,catalog);loaded=true;rebuild();saveLabel();render();renderHistory();renderAnalytics();}
+  try{db=await openDatabase();const saved=await loadState(db);if(saved)state=validateBackup(saved,catalog);loaded=true;rebuild();saveLabel();render();renderHistory();renderAnalytics();await refreshPublication();}
   catch(error){loaded=false;$('kw-save-state').textContent='保存を利用できません';$('kw-storage-error').hidden=false;$('kw-storage-error').textContent=`${errorText(error)} 現在は閲覧のみです。保存済みデータは上書きしていません。`;$('kw-import-save').disabled=true;$('kw-restore-save').disabled=true;$('kw-bulk-apply').disabled=true;}
 }
 for(const page of catalog)$('kw-import-scope').append(option(page.id,page.fullName));

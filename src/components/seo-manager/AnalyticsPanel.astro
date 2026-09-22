@@ -9,7 +9,7 @@
       <div class="kw-subfilters"><button type="button" class="kw-button" id="analytics-connect">設定を保存してGoogleに接続</button><button type="button" class="kw-button" id="analytics-disconnect" disabled>接続を終了</button></div>
       <p class="kw-help">このサイトの測定IDは G-J7EENJ6QV2 です。プロパティIDはGA4の管理画面で確認します。接続するGoogleアカウントにGA4とSearch Consoleの閲覧権限が必要です。</p>
       <ol><li>Google Cloudのプロジェクトで「Google Analytics Data API」「Google Search Console API」を有効にします。</li><li>Google Auth Platformで同意画面とウェブアプリ用OAuthクライアントを設定します。承認済みJavaScript生成元に <code>https://seo.layr.co.jp</code> を追加してください。テスト公開中は使用するアカウントをテストユーザーに追加します。</li><li>クライアントIDとGA4プロパティIDを入力し、読み取り権限でGoogleに接続します。クライアントシークレットの入力は不要です。管理画面へのメール認証とは別に、Googleの閲覧権限が必要です。</li></ol>
-      <p class="kw-help">Googleへ直接読み取りリクエストを送ります。アクセストークンはこのタブのメモリ内にのみ保持し、バックアップには含めません。再読み込み・期限切れ時は再接続してください。取得結果はこのブラウザに保存します。</p>
+      <p class="kw-help">Googleへ直接読み取りリクエストを送ります。アクセストークンはこのタブのメモリ内にのみ保持し、バックアップには含めません。再読み込み・期限切れ時は再接続してください。取得結果は共通データベースに保存し、別の端末でも確認できます。</p>
       <a href="https://developers.google.com/identity/oauth2/web/guides/get-google-api-clientid" target="_blank" rel="noopener noreferrer">Googleの初期設定ガイド ↗</a>
     </details>
   </section>

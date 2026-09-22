@@ -25,6 +25,7 @@ const contact = `/contact/?service=ltori&source=${encodeURIComponent(`media/${po
         <p>{copy.body}</p>
         <a class="lm-button lm-service-consult" href={contact} data-lm-cta="article_consultation"><span><small>採用のお悩み、お聞かせください</small>無料相談をする</span><span class="lm-service-arrow" aria-hidden="true">↗</span></a>
         <a class="lm-text-link" href={service.path} data-lm-cta="article_service">サービス内容を見る <span aria-hidden="true">↗</span></a>
+        <a class="lm-text-link" href={`/service/ltori/diagnosis/?source=${encodeURIComponent(`media/${post.id}`)}`} data-lm-cta="article_diagnosis">5つの質問で、採用LINEの活用プランを見る <span aria-hidden="true">↗</span></a>
       </div>
       <div class="lm-service-visual" aria-hidden="true"><span class="lm-service-sticker">「気になる」から</span><img src="/service/ltori/isometric-hero.webp" alt="" width="1536" height="1024" loading="lazy" decoding="async" /><span class="lm-service-sticker lm-service-sticker-yellow">「ここで働きたい」へ。</span></div>
     </div>
