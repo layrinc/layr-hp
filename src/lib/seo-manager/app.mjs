@@ -1,19 +1,22 @@
+import {createRegionalServerReader,isServerReport,serverReportLabel,regionalServerStatus,formatSearchCtr as rate} from './regional-server-analytics.mjs';
 import {mountAnalytics} from './analytics-app.mjs';
 import {STATUS, PRIORITY, INDEX, MAX_FILE, checkStateSize, emptyState, pageEdit, keywordsFor, validateEdit, addKeyword, createReport, putReport, reportSummary, metricLookup, queryMetric, normalizeQuery, csvString, validateBackup} from './model.mjs';
 import {openDatabase, loadState, saveState} from './storage.mjs';
 const $=id=>document.getElementById(id);
 const catalog=JSON.parse($('kw-catalog').textContent), byId=new Map(catalog.map(page=>[page.id,page]));
 let renderAnalytics=()=>{};
+const serverAnalytics={loading:true,data:null,error:''};
+const readServerAnalytics=createRegionalServerReader({catalog});
+let searchSelectionChanged=false;
 let state=emptyState(), db, loaded=false, busy=false, view='pages', pageNumber=1, filtered=[], allKeywords=[], selected=new Set(), activeReport='', pendingImport, pendingRestore, editorPage='', editorCustom=[], editorPaused=new Set(), editorDirty=false, detailReport=null, detailPage=1;
 const format=value=>value==null?'—':new Intl.NumberFormat('ja-JP',{maximumFractionDigits:1}).format(value);
-const rate=row=>row?.impressions?`${(row.clicks/row.impressions*100).toFixed(1)}%`:'—';
 const today=()=>new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Tokyo'}).format(new Date());
 const text=(tag,content,className)=>{const node=document.createElement(tag);node.textContent=content;if(className)node.className=className;return node;};
 const button=(label,action,className='kw-button')=>{const b=text('button',label,className);b.type='button';b.addEventListener('click',action);return b;};
 const link=(label,href)=>{const a=text('a',label);a.href=href;a.target='_blank';a.rel='noopener noreferrer';return a;};
 const message=(value,error=false)=>{const node=$('kw-message');node.textContent=value;node.hidden=false;node.setAttribute('role',error?'alert':'status');};
 const errorText=error=>error instanceof Error?error.message:String(error);
-const reportLabel=r=>`${r.start}〜${r.end} / ${r.kind==='pages'?'ページ別':'クエリ別'} / ${r.scopePageId?byId.get(r.scopePageId).fullName:'サイト全体'} / ${r.searchType} / ${r.filter}`;
+const reportLabel=r=>isServerReport(r)?serverReportLabel(r):`${r.start}〜${r.end} / ${r.kind==='pages'?'ページ別':'クエリ別'} / ${r.scopePageId?byId.get(r.scopePageId).fullName:'サイト全体'} / ${r.searchType} / ${r.filter}`;
 function rebuild(){allKeywords=keywordsFor(catalog,state);}
 function saveLabel(){ $('kw-save-state').textContent=state.updatedAt?`サーバーに保存済み · ${new Date(state.updatedAt).toLocaleString('ja-JP')}`:'共通データベース · 未編集'; }
 async function refreshPublication(){
@@ -43,10 +46,10 @@ async function commit(next) {
   finally{busy=false;}
 }
 function option(value,label){const o=text('option',label);o.value=value;return o;}
-function reportsForView(){return state.reports.filter(r=>r.kind===(view==='keywords'?'queries':'pages')).sort((a,b)=>b.end.localeCompare(a.end)||b.importedAt.localeCompare(a.importedAt));}
+function reportsForView(){const manual=state.reports.filter(r=>r.kind===(view==='keywords'?'queries':'pages')).sort((a,b)=>b.end.localeCompare(a.end)||b.importedAt.localeCompare(a.importedAt));return view!=='keywords'&&serverAnalytics.data?.searchReport?[serverAnalytics.data.searchReport,...manual]:manual;}
 function refreshReports(){const available=reportsForView();if(!available.some(r=>r.id===activeReport))activeReport=available[0]?.id||'';$('kw-report').replaceChildren(...(available.length?available.map(r=>option(r.id,reportLabel(r))):[option('','実績は未取り込み')]));$('kw-report').value=activeReport;}
 function switchView(next){view=next;pageNumber=1;selected.clear();activeReport='';for(const node of document.querySelectorAll('[data-view]')){if(node.dataset.view===view)node.setAttribute('aria-current','page');else node.removeAttribute('aria-current');}$('kw-list-view').hidden=['data','analytics'].includes(view);$('kw-analytics-view').hidden=view!=='analytics';$('kw-data-view').hidden=view!=='data';$('kw-enabled-wrap').hidden=view!=='keywords';$('kw-view-title').textContent={pages:'地域・ページ',keywords:'対策キーワード',tasks:'改善タスク',analytics:'アクセス・問い合わせ',data:'実績・入出力'}[view];$('kw-view-hint').textContent={pages:'地域を選んで、対策キーワードと次の作業を管理します。',keywords:'候補の追加・保留は地域名から編集できます。優先度・対応状況は対象ページの設定です。',tasks:'次の作業・期限があるページと「改善中」のページを表示します。対応済みは除きます。',analytics:'',data:''}[view];if(view==='tasks')$('kw-sort').value='due';else $('kw-sort').value='area';render();renderHistory();}
-function currentReport(){return state.reports.find(r=>r.id===activeReport);}
+function currentReport(){return reportsForView().find(r=>r.id===activeReport);}
 function filteredRows(){
   const search=normalizeQuery($('kw-search').value),pref=$('kw-pref').value,status=$('kw-status').value,priority=$('kw-priority').value,enabled=$('kw-enabled').value,report=currentReport(),lookup=metricLookup(report),paused=new Set(state.pausedKeywords);
   const rows=(view==='keywords'?allKeywords:catalog).map(row=>{
@@ -74,7 +77,7 @@ function render(){
   $('kw-stat-overdue').textContent=format(Object.entries(state.pages).filter(([id,p])=>byId.get(id).publication!=='excluded'&&p.dueDate&&p.dueDate<today()&&p.status!=='done').length);
   if(['data','analytics'].includes(view)){renderAnalytics();return;}
   refreshReports();filtered=filteredRows();const size=Number($('kw-size').value),pages=Math.max(1,Math.ceil(filtered.length/size));pageNumber=Math.min(pageNumber,pages);const slice=filtered.slice((pageNumber-1)*size,pageNumber*size), report=currentReport();
-  $('kw-scope').textContent=report?`${reportLabel(report)}。CSVにない値は「—」。${report.kind==='queries'&&!report.scopePageId?'サイト全体のクエリ実績です。対象LPの実績を示すものではありません。':'平均順位は対象期間の平均掲載順位です。'}`:'検索実績は未取り込みです。順位・クリックは「—」で表示します。';
+  $('kw-scope').textContent=isServerReport(report)?`${reportLabel(report)}。${report.notes.join(' ')}`:view==='keywords'?`キーワード別の検索語句実績は手動取り込みのCSVを使用します。自動取得のページ実績をキーワード別に流用しません。${report?`${reportLabel(report)}。${report.scopePageId?'対象LPで絞り込んだクエリ実績です。':'サイト全体のクエリ実績で、対象LPの実績を示すものではありません。'}`:'検索語句CSVは未取り込みです。'}`:`${report?`${reportLabel(report)}。CSVにない値は「—」。平均順位は対象期間の平均です。`:'検索実績は未取得です。順位・クリックは「—」で表示します。'} ${regionalServerStatus(serverAnalytics)}`;
   const tr=document.createElement('tr');
   if(view!=='keywords') {const th=document.createElement('th'),label=text('label','','kw-check'),check=document.createElement('input');check.type='checkbox';check.setAttribute('aria-label','このページの地域をすべて選択');check.checked=!!slice.length&&slice.every(row=>selected.has(row.page.id));check.indeterminate=!check.checked&&slice.some(row=>selected.has(row.page.id));check.addEventListener('change',()=>{slice.forEach(row=>check.checked?selected.add(row.page.id):selected.delete(row.page.id));render();});label.append(check);th.append(label);tr.append(th);}
   const headings=view==='keywords'?['対策キーワード / 対象ページ','対象','優先度','クリック','表示回数','CTR','平均順位','LP']:['地域 / ページ','対応状況','優先度','クリック','表示回数','平均順位','次の作業 / 期限','LP'];
@@ -136,7 +139,7 @@ for(const node of document.querySelectorAll('[data-view]'))node.addEventListener
 $('kw-open-import').addEventListener('click',()=>{switchView('data');$('kw-import-file').focus();});
 for(const id of ['kw-pref','kw-status','kw-priority','kw-sort','kw-size','kw-enabled','kw-publication'])$(id).addEventListener('change',()=>{pageNumber=1;selected.clear();render();});
 $('kw-search').addEventListener('input',()=>{pageNumber=1;selected.clear();render();});
-$('kw-report').addEventListener('change',()=>{activeReport=$('kw-report').value;pageNumber=1;render();});
+$('kw-report').addEventListener('change',()=>{searchSelectionChanged=true;activeReport=$('kw-report').value;pageNumber=1;render();});
 $('kw-reset').addEventListener('click',()=>{for(const id of ['kw-search','kw-pref','kw-status','kw-priority','kw-enabled','kw-publication'])$(id).value='';$('kw-sort').value=view==='tasks'?'due':'area';pageNumber=1;selected.clear();render();});
 $('kw-prev').addEventListener('click',()=>{pageNumber--;render();});$('kw-next').addEventListener('click',()=>{pageNumber++;render();});
 $('kw-export').addEventListener('click',exportCsv);$('kw-backup').addEventListener('click',backup);$('kw-backup-data').addEventListener('click',backup);
@@ -156,7 +159,14 @@ $('kw-restore-form').addEventListener('submit',async event=>{event.preventDefaul
 $('kw-restore-save').addEventListener('click',async()=>{if(!pendingRestore)return;try{await commit(pendingRestore);pendingRestore=null;pendingImport=null;$('kw-restore-preview').hidden=true;$('kw-import-preview').hidden=true;selected.clear();message('バックアップを復元しました。');}catch(error){message(errorText(error),true);}});
 $('kw-report-close').addEventListener('click',()=>$('kw-report-dialog').close());$('kw-report-search').addEventListener('input',()=>{detailPage=1;renderReportDetail();});$('kw-report-prev').addEventListener('click',()=>{detailPage--;renderReportDetail();});$('kw-report-next').addEventListener('click',()=>{detailPage++;renderReportDetail();});
 window.addEventListener('beforeunload',event=>{if(editorDirty||busy){event.preventDefault();event.returnValue='';}});
-renderAnalytics=mountAnalytics({catalog,getState:()=>state,save:commit,download});
+renderAnalytics=mountAnalytics({catalog,getState:()=>state,getServer:()=>serverAnalytics,save:commit,download});
 const initialView=location.hash.slice(1);
 if(['pages','keywords','tasks','analytics','data'].includes(initialView))switchView(initialView);
 initialize();
+
+async function initializeServerAnalytics(){
+  try{serverAnalytics.data=await readServerAnalytics();if(!searchSelectionChanged&&view!=='keywords')activeReport=serverAnalytics.data.searchReport?.id||activeReport;}
+  catch(error){serverAnalytics.error=errorText(error);}
+  finally{serverAnalytics.loading=false;render();renderAnalytics();}
+}
+initializeServerAnalytics();

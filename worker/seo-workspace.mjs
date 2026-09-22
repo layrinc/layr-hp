@@ -3,6 +3,7 @@ import {WORKSPACE_PROJECTS, canonicalWorkspacePath, workspaceProjectForPath} fro
 const SOURCES = ['ga4', 'gsc'];
 const METRICS = ['views', 'clicks', 'impressions', 'inquiries', 'documentRequests', 'ctaClicks'];
 const GA_METRICS = ['views', 'inquiries', 'documentRequests', 'ctaClicks'];
+const GA_PAGE_METRICS = [...GA_METRICS, 'users', 'sessions'];
 const GSC_METRICS = ['clicks', 'impressions', 'ctr', 'position'];
 const finite = value => typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null;
 const values = input => Array.isArray(input) ? input.map(row => row && typeof row === 'object' && Object.hasOwn(row, 'value') ? row.value : row).filter(Boolean) : [];
@@ -29,7 +30,7 @@ function validSnapshot(snapshot) { return date(snapshot.startDate) && date(snaps
 // The collector normally stores one canonical row. For older/imported values,
 // never double-count duplicate canonical paths or invent a winner on conflict.
 function metricRows(snapshot, notes) {
-  const rows = new Map(), fields = snapshot.source === 'ga4' ? GA_METRICS : GSC_METRICS;
+  const rows = new Map(), fields = snapshot.source === 'ga4' ? GA_PAGE_METRICS : GSC_METRICS;
   for (const item of snapshot.pages) {
     const path = canonicalWorkspacePath(item?.path), project = workspaceProjectForPath(path);
     if (!project || project === 'corporate' && coverage(snapshot).version < 2) continue;
@@ -82,7 +83,7 @@ export function projectWorkspace({catalog = [], pending = [], snapshots = [], in
   for (const map of Object.values(maps)) for (const path of map.keys()) if (!allPages.has(path)) allPages.set(path, {path, title: path, type: 'observed', publishedAt: null, published: false});
   const projects = WORKSPACE_PROJECTS.map(project => {
     const pages = [...allPages.values()].filter(page => workspaceProjectForPath(page.path) === project.id).map(page => {
-      const metrics = {...blank(), ctr: null, position: null, ...maps.ga4.get(page.path)?.metrics, ...maps.gsc.get(page.path)?.metrics};
+      const metrics = {...blank(), ctr: null, position: null, users: null, sessions: null, ...maps.ga4.get(page.path)?.metrics, ...maps.gsc.get(page.path)?.metrics};
       if (project.id === 'corporate') for (const name of ['inquiries', 'documentRequests', 'ctaClicks']) metrics[name] = null;
       return {path: page.path, title: page.title, type: page.type, publishedAt: page.publishedAt, publication: page.published ? 'published' : 'unconfirmed', metrics};
     }).sort((a, b) => a.path.localeCompare(b.path));

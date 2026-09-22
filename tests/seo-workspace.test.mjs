@@ -20,7 +20,10 @@ test('unmeasured metrics stay null; actual zero remains zero, and only published
   assert.equal(result.totals.publishedCount, 3);
   assert.equal(result.totals.views, 15);
   assert.equal(result.totals.clicks, null);
-  assert.doesNotMatch(JSON.stringify(result), /"users"|external|admin/);
+  assert.equal(result.projects[1].pages[0].metrics.users, 9);
+  assert.equal(Object.hasOwn(result.totals, 'users'), false);
+  assert.equal(Object.hasOwn(result.projects[1].metrics, 'users'), false);
+  assert.doesNotMatch(JSON.stringify(result), /external|admin/);
 });
 
 test('canonical duplicate rows never double count and conflicting values stay unknown', () => {
