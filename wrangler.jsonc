@@ -5,6 +5,8 @@
   "main": "worker/index.mjs",
   "account_id": "970414d67575a1afb2eb889748741af7",
   "compatibility_date": "2026-08-01",
+  // Health checks must reach the public Worker, not the zone origin.
+  "compatibility_flags": ["global_fetch_strictly_public"],
   "keep_vars": true,
   "d1_databases": [{ "binding": "SEO_DB", "database_name": "layr-hp-seo-db", "database_id": "81c0782b-73fe-4d9e-ac71-e90b32856ca9" }],
   "vars": {
