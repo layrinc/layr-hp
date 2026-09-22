@@ -26,7 +26,7 @@ function render(report) {
     const project = report.projects.find(item => item.id === definition.id);
     for (const metric of ['views', 'clicks', 'impressions', 'inquiries']) $(`ws-${project.id}-${metric}`).textContent = formatNumber(project.metrics[metric]);
     $(`ws-${project.id}-published`).textContent = formatNumber(project.publishedCount);
-    $(`ws-${project.id}-pending`).textContent = project.id === 'corporate' ? '対象外' : formatNumber(project.pendingCount);
+    $(`ws-${project.id}-pending`).textContent = project.id === 'corporate' ? '別画面で確認' : formatNumber(project.pendingCount);
   }
   $('ws-updated').textContent = `サーバーの保存データを表示 / 確認 ${formatTime(report.generatedAt)}。このボタンはGoogleの再取得を行いません。`;
   $('ws-sources').replaceChildren(...['ga4', 'gsc'].map(source => {
