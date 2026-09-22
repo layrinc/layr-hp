@@ -5,6 +5,7 @@ import {importPKCS8, SignJWT} from 'jose';
 // developers.google.com/webmaster-tools/v1/searchanalytics/query
 // developers.google.com/webmaster-tools/v1/urlInspection.index/inspect
 const ORIGIN = 'https://layr.co.jp';
+const ANALYTICS_COVERAGE = Object.freeze({version: 2, prefixes: ['/service/ltori/', '/media/'], eventPrefixes: ['/service/ltori/area/', '/service/ltori/media/']});
 const TOKEN_URL = 'https://oauth2.googleapis.com/token';
 const SCOPES = 'https://www.googleapis.com/auth/analytics.readonly https://www.googleapis.com/auth/webmasters.readonly';
 const DAY = 86400000;
@@ -19,10 +20,10 @@ const numberOrNull = value => value === null || value === undefined || value ===
 const stringFilter = (fieldName, value, matchType = 'EXACT') => ({filter: {fieldName, stringFilter: {value, matchType, caseSensitive: true}}});
 
 export function managedPath(value) {
-  if (typeof value !== 'string' || value.length > 2048) return null;
+  if (typeof value !== 'string' || value.length > 2048 || value.includes('\\')) return null;
   try {
     const url = new URL(value, ORIGIN);
-    if (url.origin !== ORIGIN || !/^\/service\/ltori(?:\/|$)/.test(url.pathname)) return null;
+    if (url.origin !== ORIGIN || url.username || url.password || /%2f|%5c/i.test(url.pathname) || !/^\/(?:service\/ltori|media)(?:\/|$)/.test(url.pathname)) return null;
     return `${url.pathname.replace(/\/+$/, '')}/`;
   } catch { return null; }
 }
@@ -94,7 +95,7 @@ async function accessToken(env, fetchImpl, now) {
 const post = (fetchImpl, url, token, body) => requestJson(fetchImpl, url, {method: 'POST', headers: {'Content-Type': 'application/json', Authorization: `Bearer ${token}`}, body: JSON.stringify(body)});
 
 function gaFilter(fieldName) {
-  return {andGroup: {expressions: [stringFilter('hostName', 'layr.co.jp'), stringFilter(fieldName, '^/service/ltori(/.*)?$', 'FULL_REGEXP')]}};
+  return {andGroup: {expressions: [stringFilter('hostName', 'layr.co.jp'), stringFilter(fieldName, '^/(service/ltori|media)(/.*)?$', 'FULL_REGEXP')]}};
 }
 
 async function gaReport({fetchImpl, token, propertyId, period, kind}) {
@@ -124,7 +125,7 @@ function eventSource(rawPath, eventName) {
   try {
     const url = new URL(rawPath, ORIGIN);
     if (url.origin !== ORIGIN) return null;
-    if (eventName === 'ltori_media_cta_click') return managedPath(url.pathname);
+    if (eventName === 'ltori_media_cta_click') return url.pathname.startsWith('/service/ltori/media/') ? managedPath(url.pathname) : null;
     if (eventName === 'ltori_media_document_complete') {
       if (url.pathname.replace(/\/$/, '') !== '/document/ltori-service') return null;
     } else if (url.pathname.replace(/\/$/, '') !== '/contact' || url.searchParams.get('service') !== 'ltori') return null;
@@ -158,6 +159,7 @@ async function fetchGa4(context) {
   }
   for (const entry of events.rows) {
     const name = entry.dimensionValues?.[1]?.value;
+    if (!EVENTS.includes(name)) continue;
     const path = eventSource(entry.dimensionValues?.[0]?.value, name);
     if (!path) continue;
     const count = numberOrNull(entry.metricValues?.[0]?.value);
@@ -173,6 +175,7 @@ async function fetchGa4(context) {
     '表示がない指標は未計測・反映待ち・ゼロを区別できないため空欄です。',
     'セッションは入口ページ別。問い合わせはフォームのsourceで紹介元に帰属します。両者の帰属基準は異なります。',
     'LINE・資料リンクのクリック、相談受付、資料請求は別集計です。サイト共通generate_leadは重複加算しません。',
+    'アクセス集計の範囲は /service/ltori/ と /media/ です。公式メディア /media/ の相談・資料・CTA帰属は未対応です。',
   ]};
   const summary = {...blankMetrics(), views: numberOrNull(traffic.totals?.metricValues?.[0]?.value), users: numberOrNull(traffic.totals?.metricValues?.[1]?.value), sessions: numberOrNull(landings.totals?.metricValues?.[0]?.value), organicSessions: landings.truncated ? null : sumObserved('organicSessions'), inquiries: events.truncated ? null : sumObserved('inquiries'), documentRequests: events.truncated ? null : sumObserved('documentRequests'), ctaClicks: events.truncated ? null : sumObserved('ctaClicks')};
   return {pages: list, queries: [], summary, quality, timeZone: traffic.metadata.timeZone || 'GA4プロパティのタイムゾーン'};
@@ -184,7 +187,7 @@ async function gscReport(context, dimensions) {
   for (let page = 0; page < MAX_REPORT_PAGES; page++) {
     const data = await post(context.fetchImpl, `https://www.googleapis.com/webmasters/v3/sites/${encodeURIComponent(context.siteUrl)}/searchAnalytics/query`, context.token, {
       startDate: context.period.startDate, endDate: context.period.endDate, dimensions, type: 'web', dataState: 'final', aggregationType: 'auto', rowLimit: LIMIT, startRow: page * LIMIT,
-      dimensionFilterGroups: [{groupType: 'and', filters: [{dimension: 'page', operator: 'includingRegex', expression: '^https://layr\\.co\\.jp/service/ltori(/|$)'}]}],
+      dimensionFilterGroups: [{groupType: 'and', filters: [{dimension: 'page', operator: 'includingRegex', expression: '^https://layr\\.co\\.jp/(service/ltori|media)(/|$)'}]}],
     });
     if (data.rows !== undefined && !Array.isArray(data.rows)) throw new GoogleRequestError('GOOGLE_RESPONSE');
     rows.push(...(data.rows || []));
@@ -233,7 +236,7 @@ export async function runAnalyticsSync(env, {store, publishedPaths = [], now = n
   const results = await Promise.all(configured.map(async source => {
     try {
       // Compute both windows before replacing either to avoid a mixed comparison.
-      const snapshots = await Promise.all(analyticsPeriods(now).map(async period => ({source, ...period, propertyId: configuration.propertyId, siteUrl: configuration.siteUrl, fetchedAt: new Date(now).toISOString(), ...(await (source === 'ga4' ? fetchGa4 : fetchGsc)({fetchImpl, token, ...configuration, period}))})));
+      const snapshots = await Promise.all(analyticsPeriods(now).map(async period => ({source, ...period, coverage: ANALYTICS_COVERAGE, propertyId: configuration.propertyId, siteUrl: configuration.siteUrl, fetchedAt: new Date(now).toISOString(), ...(await (source === 'ga4' ? fetchGa4 : fetchGsc)({fetchImpl, token, ...configuration, period}))})));
       for (const snapshot of snapshots) await store.upsert('analytics', `${source}:${snapshot.period}`, snapshot);
       return await recordStatus(store, source, 'ok', now);
     } catch (error) { return await recordStatus(store, source, 'error', now, safeError(error)); }

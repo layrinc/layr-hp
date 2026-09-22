@@ -192,3 +192,46 @@ test('media analytics includes live dynamic articles and removes them after with
   assert.deepEqual(withdrawn.catalog, []);
   assert.deepEqual(withdrawn.reports[0].rows, []);
 });
+
+test('workspace overview joins exact public catalogs without exposing stored documents or leads', async t => {
+  const db = sqliteD1(t); await ensureDatabase(db);
+  const store = createStore(db), path = '/api/seo/overview', article = '/service/ltori/media/extra-live/';
+  const env = {SEO_DB: db, SEO_GA4_PROPERTY_ID: '123', SEO_GSC_SITE_URL: 'sc-domain:layr.co.jp'};
+  await db.prepare('INSERT INTO seo_published(id,path,value,version,published_at) VALUES(?,?,?,?,?)').bind('extra-live', article, JSON.stringify({type: 'article', title: '公開済み', body: 'SECRET BODY'}), 1, '2026-09-20T00:00:00Z').run();
+  await store.upsert('leads', 'private', {email: 'PRIVATE-LEAD'});
+  for (const status of ['draft', 'paused', 'approved', 'scheduled']) await db.prepare('INSERT INTO seo_documents(id,path,type,status,version,value,updated_at) VALUES(?,?,?,?,?,?,?)').bind(`waiting-${status}`, `/service/ltori/media/waiting-${status}/`, 'article', status, 1, JSON.stringify({type: 'article', body: 'SECRET DRAFT'}), '2026-09-22T00:00:00Z').run();
+  await store.upsert('analytics', 'ga4:current', {source: 'ga4', period: 'current', propertyId: '123', siteUrl: env.SEO_GSC_SITE_URL, startDate: '2026-08-23', endDate: '2026-09-19', fetchedAt: '2026-09-22T00:00:00Z', pages: [{path: article, views: 0}], coverage: {version: 2}, private_key: 'PRIVATE KEY'});
+  const result = await (await handleManagerApi(request(path), env, identity, path, {staticPages: [{path: '/service/ltori/area/mie/nabari/', title: '名張', type: 'city'}]})).json();
+  assert.equal(result.projects.length, 3);
+  assert.equal(result.projects.find(row => row.id === 'media').publishedCount, 1);
+  assert.equal(result.projects.find(row => row.id === 'media').pendingCount, 2, 'only approved and scheduled server records are publication waiting');
+  assert.equal(result.projects.find(row => row.id === 'media').metrics.views, 0);
+  assert.ok(result.projects.find(row => row.id === 'corporate').publishedCount > 0);
+  assert.doesNotMatch(JSON.stringify(result), /PRIVATE|SECRET|private_key/);
+  assert.equal((await handleManagerApi(request(path, {}), env, identity, path)).status, 405);
+  assert.equal((await handleManagerApi(request(path), env, {email: 'other@example.test'}, path)).status, 403);
+});
+
+test('corporate editorial state is isolated, owner-only, catalog-allowlisted and revision checked', async t => {
+  const db = sqliteD1(t), path = '/api/seo/corporate/state';
+  const {default: catalog} = await import('../src/data/seo-corporate-catalog.json', {with: {type: 'json'}});
+  const article = catalog[0].path;
+  assert.deepEqual(await (await call(db, path)).json(), {state: {revision: 0, edits: {}}});
+  const edits = {[article]: {priority: 'high', status: 'research', keyword: '採用 LINE', evidence: '一次資料を確認する', notes: '次回見直す'}};
+  const first = await call(db, path, {state: {edits}, expectedRevision: 0}, {method: 'PUT'});
+  assert.equal(first.status, 200);
+  assert.deepEqual(await first.json(), {state: {revision: 1, edits}});
+  assert.equal((await call(db, path, {state: {edits}, expectedRevision: 0}, {method: 'PUT'})).status, 409);
+  assert.deepEqual(await (await call(db, '/api/seo/state')).json(), {state: null});
+  const state = await (await call(db, path)).json(); assert.equal(state.state.edits[article].notes, '次回見直す');
+  for (const badEdits of [{'/media/not-in-catalog/': edits[article]}, {[article]: {...edits[article], status: 'published'}}, {[article]: {...edits[article], keyword: 'x'.repeat(201)}}, {[article]: {...edits[article], evidence: 'x'.repeat(2001)}}, {[article]: {...edits[article], notes: 'x'.repeat(4001)}}, null]) {
+    assert.equal((await call(db, path, {state: {edits: badEdits}, expectedRevision: 1}, {method: 'PUT'})).status, 400);
+  }
+  assert.equal((await call(db, path, {state: {edits}, expectedRevision: 1}, {method: 'PUT', requestOrigin: 'https://evil.example'})).status, 403);
+  assert.equal((await call(db, path, {state: {edits}, expectedRevision: 1})).status, 405);
+  assert.equal((await call(db, path, {padding: 'x'.repeat(512 * 1024), state: {edits}, expectedRevision: 1}, {method: 'PUT'})).status, 413);
+  assert.equal((await handleManagerApi(request(path), {SEO_DB: db}, {email: 'other@example.test'}, path)).status, 403);
+  assert.equal((await call(db, path, {state: {edits}, expectedRevision: 1}, {method: 'PUT'})).status, 200);
+  assert.deepEqual(await getPublished(db), []);
+  assert.deepEqual(await getDocuments(db), []);
+});

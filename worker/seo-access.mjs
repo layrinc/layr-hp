@@ -3,6 +3,14 @@ import {createRemoteJWKSet, jwtVerify} from 'jose';
 export const MANAGER_ORIGIN = 'https://seo.layr.co.jp';
 export const MANAGER_PATH = '/tools/ltori-seo/';
 export const MEDIA_MANAGER_PATH = `${MANAGER_PATH}media/`;
+const WORKSPACE_ASSETS = Object.freeze({'/': `${MANAGER_PATH}overview/`, '/regional/': MANAGER_PATH, '/media/': MEDIA_MANAGER_PATH, '/growth/': `${MANAGER_PATH}growth/`, '/articles/': `${MANAGER_PATH}articles/`, '/strategy/': `${MANAGER_PATH}strategy/`});
+function managementDestination(path) {
+  const base = path.replace(/(?:\/index)?\.html$/, '').replace(/\/+$/, '');
+  if ([MANAGER_PATH.slice(0, -1), `${MANAGER_PATH}regional`].includes(base)) return '/regional/';
+  if (base === `${MANAGER_PATH}overview`) return '/';
+  for (const route of Object.keys(WORKSPACE_ASSETS).filter(value => value !== '/')) if (base === `${MANAGER_PATH}${route.slice(1, -1)}`) return route;
+  return null;
+}
 const PUBLIC_HOSTS = new Set(['layr.co.jp', 'www.layr.co.jp']);
 const keySets = new Map();
 
@@ -88,21 +96,22 @@ export async function handleRequest(request, env, verify = verifyAccessToken, ha
   if (path === `${MANAGER_PATH}session.json`) {
     return protectedResponse(request.method === 'HEAD' ? null : JSON.stringify({...identity, managerOrigin: MANAGER_ORIGIN, legacy: !dedicated}), 200, {'Content-Type': 'application/json; charset=utf-8'});
   }
-  if (dedicated && path.startsWith(MANAGER_PATH)) {
-    const mediaAlias=[MEDIA_MANAGER_PATH,MEDIA_MANAGER_PATH.slice(0,-1),`${MEDIA_MANAGER_PATH}index.html`,`${MANAGER_PATH}media.html`].includes(path);
-    return protectedResponse(null, 302, {Location: `${MANAGER_ORIGIN}${path.startsWith(`${MANAGER_PATH}growth`) ? '/growth/' : mediaAlias ? '/media/' : '/'}`});
+  const legacyDestination = managementDestination(path);
+  // Keep the public-origin migration page reachable so existing IndexedDB
+  // data can be exported before switching origins. Only dedicated aliases redirect.
+  if (dedicated && legacyDestination) return protectedResponse(null, 302, {Location: `${MANAGER_ORIGIN}${legacyDestination}`});
+  if (dedicated) {
+    const base = path.replace(/(?:\/index)?\.html$/, '').replace(/\/+$/, '');
+    const canonical = base === '' || base === '/overview' ? '/' : `${base}/`;
+    if (Object.hasOwn(WORKSPACE_ASSETS, canonical) && path !== canonical) return protectedResponse(null, 302, {Location: `${MANAGER_ORIGIN}${canonical}`});
   }
-  if (dedicated && ['/media', '/media/index.html', '/media.html'].includes(path)) return protectedResponse(null,302,{Location:`${MANAGER_ORIGIN}/media/`});
-  if (dedicated && ['/growth', '/growth/index.html', '/growth.html'].includes(path)) return protectedResponse(null, 302, {Location:`${MANAGER_ORIGIN}/growth/`});
-  // Only manager assets are served on the dedicated host. In particular the
-  // public LPs, sitemap and contact form must not acquire duplicate URLs here.
-  if (dedicated && path !== '/' && path !== '/index.html' && path !== '/growth/' && path !== '/media/' && !path.startsWith('/_astro/') && path !== '/favicon.svg') {
+  // Only allowlisted manager assets are served on the dedicated host. Public
+  // articles, forms and sitemap never acquire duplicate management URLs.
+  if (dedicated && !Object.hasOwn(WORKSPACE_ASSETS, path) && !path.startsWith('/_astro/') && path !== '/favicon.svg') {
     return protectedResponse('ページが見つかりません。', 404);
   }
   const assetUrl = new URL(request.url);
-  if (dedicated && (path === '/' || path === '/index.html')) assetUrl.pathname = MANAGER_PATH;
-  if (dedicated && path === '/growth/') assetUrl.pathname = `${MANAGER_PATH}growth/`;
-  if (dedicated && path === '/media/') assetUrl.pathname = MEDIA_MANAGER_PATH;
+  if (dedicated && Object.hasOwn(WORKSPACE_ASSETS, path)) assetUrl.pathname = WORKSPACE_ASSETS[path];
   if (!dedicated) assetUrl.pathname = `${MANAGER_PATH}migrate/`;
   assetUrl.search = '';
   // Avoid a 304 replay of an HTML page from a previously authenticated session.

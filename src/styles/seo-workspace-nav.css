@@ -1,0 +1,10 @@
+.seo-workspace-nav{padding:12px 32px;background:var(--paper);border-bottom:1px solid var(--line)}
+.seo-workspace-nav ul{display:flex;flex-wrap:wrap;gap:6px;list-style:none;padding:0;margin:0}
+.seo-workspace-nav li{min-width:0}
+.seo-app .seo-workspace-nav a{display:flex;align-items:center;min-height:44px;padding:9px 12px;border:1px solid transparent;border-radius:var(--radius);color:var(--text);font-size:var(--kw-body);font-weight:500;line-height:1.5;text-decoration:none;overflow-wrap:anywhere}
+.seo-app .seo-workspace-nav a:hover{background:var(--bg);border-color:var(--line)}
+.seo-app .seo-workspace-nav a[aria-current="page"]{color:var(--green-ink);background:var(--bg);border-color:var(--green-ink)}
+.seo-app .seo-workspace-nav a:focus-visible{outline:2px solid var(--green-ink);outline-offset:3px}
+@media(max-width:900px){.seo-workspace-nav{padding-inline:22px}}
+@media(max-width:600px){.seo-workspace-nav{padding-inline:16px}.seo-workspace-nav ul{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.seo-workspace-nav a{height:100%}}
+@media(prefers-reduced-motion:reduce){.seo-workspace-nav a{transition:none}}

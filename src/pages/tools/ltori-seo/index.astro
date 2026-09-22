@@ -1,6 +1,7 @@
 ---
 import '../../../styles/style.css';
 import '../../../styles/seo-manager.css';
+import WorkspaceNav from '../../../components/seo-manager/WorkspaceNav.astro';
 import service from '../../../data/service-ltori.json';
 import AnalyticsPanel from '../../../components/seo-manager/AnalyticsPanel.astro';
 import {publicationFor} from '../../../lib/ltori-publication.mjs';
@@ -26,11 +27,12 @@ const options=(record)=>Object.entries(record);
 <body class="seo-app">
   <a class="kw-skip" href="#kw-main">管理一覧へ</a>
   <header class="kw-top"><a href="/" class="kw-brand">LAYR <span>SEO WORKSPACE</span></a><div class="kw-account"><span id="kw-save-state" role="status">データを読み込み中</span><span id="kw-identity" role="status">認証を確認中</span><a id="kw-logout" class="kw-button" href="/cdn-cgi/access/logout">ログアウト</a></div></header>
+  <WorkspaceNav active="regional" />
   <div class="kw-shell">
     <aside class="kw-sidebar">
       <p class="kw-label">{service.name} / 採用LINE</p>
       <nav aria-label="管理メニュー" id="kw-tabs">
-        <a class="kw-button" href="/growth/">集客・公開の運用管理へ</a>
+        <a class="kw-button" href="/growth/?type=city#documents">全国SEOの原稿・公開予約へ</a>
         <button type="button" data-view="pages" aria-current="page"><span>01</span>地域・ページ</button>
         <button type="button" data-view="keywords"><span>02</span>キーワード</button>
         <button type="button" data-view="tasks"><span>03</span>改善タスク</button>

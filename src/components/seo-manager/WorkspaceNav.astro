@@ -1,0 +1,24 @@
+---
+import '../../styles/seo-workspace-nav.css';
+import {WORKSPACE_PROJECTS} from '../../lib/seo-manager/workspace-projects.mjs';
+
+interface Props {
+  active?: 'overview' | 'regional' | 'media' | 'corporate' | 'strategy' | 'growth';
+  baseUrl?: string;
+}
+
+const {active, baseUrl = ''} = Astro.props;
+const links = [
+  {id: 'overview', label: '全体概要', href: '/'},
+  ...WORKSPACE_PROJECTS.map(project => ({id: project.id, label: project.shortName, href: project.href})),
+  {id: 'strategy', label: 'SEO・AIO戦略', href: '/strategy/'},
+  {id: 'growth', label: '共通の公開・運用', href: '/growth/'},
+];
+---
+<nav class="seo-workspace-nav" aria-label="SEOワークスペースの施策切り替え">
+  <ul>
+    {links.map(link => (
+      <li><a href={`${baseUrl}${link.href}`} aria-current={active === link.id ? 'page' : undefined}>{link.label}</a></li>
+    ))}
+  </ul>
+</nav>

@@ -197,3 +197,41 @@ test('path normalization is restricted to canonical production service URLs', ()
   assert.equal(managedPath('https://seo.layr.co.jp/service/ltori/'), null);
   assert.equal(managedPath('/service/ltori-evil/'), null);
 });
+
+test('workspace collection includes corporate media with scoped filters and no fabricated corporate conversions', async () => {
+  const store = memoryStore(), fallback = fakeGoogle(), corporate = '/media/line-recruit/';
+  const fetchImpl = async (url, options) => {
+    if (url.includes('analyticsdata')) {
+      const body = JSON.parse(options.body), kind = body.dimensions[0].name;
+      if (kind === 'pagePath' || kind === 'landingPage') {
+        const filter = body.dimensionFilter.andGroup.expressions;
+        assert.equal(filter[0].filter.stringFilter.value, 'layr.co.jp');
+        const pattern = new RegExp(filter[1].filter.stringFilter.value);
+        assert.ok(pattern.test(corporate)); assert.ok(pattern.test(article));
+        assert.equal(pattern.test('/media-private/'), false);
+      }
+      if (kind === 'pagePath') return response({rows: [gaRow([corporate], [25, 10]), gaRow([article], [5, 4])], rowCount: 2, totals: [gaRow(['RESERVED_TOTAL'], [30, 11])]});
+      if (kind === 'pagePathPlusQueryString') return response({rows: [gaRow([corporate, 'ltori_media_cta_click'], [999]), gaRow([corporate, 'generate_lead'], [999]), gaRow([article, 'ltori_media_cta_click'], [2])], rowCount: 3});
+    }
+    if (url.includes('searchAnalytics')) {
+      const body = JSON.parse(options.body), pattern = new RegExp(body.dimensionFilterGroups[0].filters[0].expression);
+      assert.ok(pattern.test(`https://layr.co.jp${corporate}`)); assert.ok(pattern.test(`https://layr.co.jp${path}`));
+      assert.equal(pattern.test('https://other.example/media/a/'), false);
+      assert.equal(pattern.test('https://layr.co.jp/media-private/'), false);
+      return response({rows: [{keys: body.dimensions.length === 2 ? [`https://layr.co.jp${corporate}`, '採用 LINE'] : body.dimensions.length === 1 ? [`https://layr.co.jp${corporate}`] : [], clicks: 0, impressions: 2, ctr: 0, position: 12}]});
+    }
+    return fallback.fetchImpl(url, options);
+  };
+  await runAnalyticsSync(env, {store, now, fetchImpl});
+  const ga = await store.get('analytics', 'ga4:current'), gsc = await store.get('analytics', 'gsc:current');
+  assert.deepEqual(ga.coverage.prefixes, ['/service/ltori/', '/media/']);
+  assert.equal(ga.pages.find(row => row.path === corporate).views, 25);
+  for (const name of ['inquiries', 'documentRequests', 'ctaClicks']) assert.equal(ga.pages.find(row => row.path === corporate)[name], null);
+  assert.equal(ga.summary.ctaClicks, 2);
+  assert.equal(gsc.pages[0].path, corporate); assert.equal(gsc.pages[0].clicks, 0);
+  assert.equal(gsc.coverage.version, 2);
+  assert.equal(managedPath('/media/line-recruit/'), corporate);
+  assert.equal(managedPath('/media-private/'), null);
+  assert.equal(managedPath('https://user@layr.co.jp/media/a/'), null);
+  assert.equal(managedPath('/media/a%2fb/'), null);
+});

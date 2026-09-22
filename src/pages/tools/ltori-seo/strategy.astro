@@ -1,0 +1,92 @@
+---
+import SeoWorkspace from '../../../layouts/SeoWorkspace.astro';
+import {WORKSPACE_PROJECTS} from '../../../lib/seo-manager/workspace-projects.mjs';
+import {cityAreas, prefectureAreas} from '../../../lib/ltori-seo.mjs';
+import {getCollection} from 'astro:content';
+const corporatePosts = await getCollection('blog', ({data}) => !data.draft);
+const roles = [
+  {id: 'regional', role: '地域の採用事情から、具体的なLINE運用を判断する。', topics: '自治体・労働局などの根拠、勤務地や職種の事情、地域課題に合う配信の作例。'},
+  {id: 'media', role: '採用担当者の悩みから、導入・実務・外注を判断する。', topics: '応募対応、日程調整、辞退、工数、採用費用、ツール・外注の比較。'},
+  {id: 'corporate', role: 'LINE構築・運用全般の判断材料を届ける。', topics: '一般的なLINE運用・費用・配信の基礎と、業種横断の活用。'},
+];
+const stages = [
+  {title: '初月｜候補を制作順にする', body: '既存記事と主担当URLを整理。費用・導入・日程調整などの需要と根拠を確認し、初月の制作枠を決めます。'},
+  {title: '2〜3か月｜不足する判断材料を補う', body: '顕在・潜在・実務の記事を補い、表示が出た記事を改善。全国SEOは地域の根拠が揃った市から進めます。'},
+  {title: '4〜6か月｜相談につながるテーマを深める', body: '検索語と有効相談を確認し、記事の意図・タイトル・導線を見直します。実際に得た事例は許諾後に追加します。'},
+  {title: '7〜12か月｜更新と拡張を判断する', body: '職種・地域・導入段階の不足を補い、重複候補と古い情報を再点検。制作負荷も含めて翌年の配分を決めます。'},
+];
+const portfolios = [
+  {name: '顕在ニーズ｜月4本の例', topics: ['採用 LINE 費用', '採用 ツール 費用', '採用 おすすめ 媒体', '採用 LINE 外注'], value: '料金の条件、機能の範囲、委託する作業を比較できる内容。公式情報と具体的な判断表を用意します。'},
+  {name: '潜在ニーズ｜月4本の例', topics: ['面接 日程調整 効率化', '面接 辞退 対策', '採用 業務 効率化', '応募者 連絡 つかない'], value: 'LINEをまだ検討していない採用担当者へ、課題の整理と改善手順を届けます。LINEが適さない条件も示します。'},
+  {name: '実務ニーズ｜月2本の例', topics: ['内定者 フォロー LINE 例文', '採用 LINE リッチメニュー'], value: '配信の文面、画面、担当者の対応まで具体化。作例と実際の導入事例を区別します。'},
+];
+---
+<SeoWorkspace title="SEO・AIO戦略" active="strategy">
+  <header class="kw-heading"><div class="workspace-intro"><p class="kw-label">編集と改善の共通方針 · 2026.09.22</p><h1>SEO・AIO戦略</h1><p>3施策の役割を分け、次に制作・改善する記事を決めるための方針です。</p></div><a class="kw-button" href="/">全体概要へ戻る</a></header>
+  <p class="workspace-statement">全国の中小企業の採用担当者が、応募から入社までのLINE導線を、具体的な手順・費用条件・運用例から判断できる情報を届ける。</p>
+  <p class="kw-help">参考動画を踏まえた運用提案です。この目標を、未確認の導入実績や効果として掲載しません。</p>
+
+  <section aria-labelledby="strategy-roles-title">
+    <div class="kw-section-head"><div><h2 id="strategy-roles-title">3施策の役割</h2><p>1つの検索意図に主担当URLを決め、関連情報は内部リンクでつなぎます。</p></div></div>
+    <div class="workspace-list">{roles.map(role => {const project = WORKSPACE_PROJECTS.find(item => item.id === role.id); return <article><h3>{project.name}</h3><p>{role.role}</p><p>{role.topics}</p><p class="kw-help">公開範囲：{project.prefix}</p><a href={project.href}>{project.name}を管理する →</a></article>;})}</div>
+    <p class="kw-help">公式メディアには現在{corporatePosts.length}本の公開対象記事があります。一般LINEの記事を採用専門の記事と混同せず、今回その本文は変更していません。</p>
+  </section>
+
+  <section aria-labelledby="strategy-selection-title">
+    <div class="kw-section-head"><div><h2 id="strategy-selection-title">書く記事を決める順序</h2><p>事業に合い、根拠を用意できる候補の中で、検索数の大きいものから制作します。</p></div></div>
+    <div class="workspace-strategy-grid">
+      <article class="kw-panel"><h3>1. 読者と提供できる内容を確認</h3><p>企業の採用担当者の悩みを具体化し、公的資料・仕様・独自の手順や作例を用意できるか確認します。費用・比較・導入など、検討に近い記事も揃えます。</p><p>「〜とは」は一律に外さず、導入判断を支える基礎記事が不足している場合に採用します。</p></article>
+      <article class="kw-panel"><h3>2. 重複を確認して、需要順に並べる</h3><p>同じ検索意図を持つ既存記事があれば更新を優先。対象・準備状況が同じ候補は、同条件の検索ボリュームが大きい順に並べます。</p><p>月間10程度も候補に残します。提供元の0は黒塗り、未取得・範囲値・取得失敗は別扱いです。検索10回で10PVとは限りません。</p></article>
+    </div>
+    <p class="kw-help">企画には「読者・悩み・意図・主担当URL・新規か更新か・独自の内容・根拠と確認日・検索数の取得条件・次のアクション」を残します。専用欄がない項目は既存メモや計画シートを使います。</p>
+    <p class="kw-help">表記違いだけで記事を増やしません。重複候補は確認事項として残し、記事の削除やURL変更は自動で行いません。</p>
+  </section>
+
+  <section aria-labelledby="strategy-portfolio-title">
+    <div class="kw-section-head"><div><h2 id="strategy-portfolio-title">採用ノート：月10本の配分例</h2><p>顕在4・潜在4・実務2を目安に、月次で需要と制作負荷を見て調整します。</p></div><a class="kw-button" href="/media/">記事企画を確認する</a></div>
+    <div class="workspace-list">{portfolios.map(group => <article><h3>{group.name}</h3><p>{group.value}</p><ul class="workspace-notes">{group.topics.map(topic => <li>{topic}</li>)}</ul></article>)}</div>
+    <p class="kw-help">掲載したキーワードは検索数未確認の調査候補です。表の順序で制作を確定せず、需要の確認と既存記事との照合を行います。既存記事と重なる場合は更新に回します。</p>
+  </section>
+
+  <section aria-labelledby="strategy-regional-title">
+    <div class="kw-section-head"><div><h2 id="strategy-regional-title">全国SEO：地域ごとの根拠を揃える</h2><p>地名の差し替えだけで公開せず、地域の採用担当者が使える情報を用意します。</p></div></div>
+    <div class="workspace-strategy-grid">
+      <article class="kw-panel"><h3>公開前に確認する材料</h3><ul class="workspace-notes"><li>自治体・労働局などの資料URL、対象地域・期間、確認日。</li><li>勤務地・職種・勤務形態などの事実と、それに対応する採用課題。</li><li>応募・見学・面接・入社前に使うLINE案内の具体的な作例。</li><li>地域実績や現地拠点を推測で付け加えていないか。</li><li>他地域の記事と異なる判断材料があるか。</li></ul></article>
+      <article class="kw-panel"><h3>現在の対象範囲</h3><p>現行の公開対象判定は{prefectureAreas.length}都道府県と{cityAreas.length}市です。これは公開済み件数ではありません。</p><p>町・村・区の旧データは保持していますが、現在の新規公開対象には含みません。町村への拡張は地域データ・機能・編集基準を確認してから進めます。</p><a class="kw-button" href="/regional/">全国SEOの対象を確認する</a></article>
+    </div>
+  </section>
+
+  <section aria-labelledby="strategy-ai-title">
+    <div class="kw-section-head"><div><h2 id="strategy-ai-title">SEOとAIOに共通する制作基準</h2><p>判断に使える情報を、検索で発見・閲覧できる形に整えます。</p></div></div>
+    <div class="workspace-list">
+      <article><h3>具体的な内容と根拠を本文に置く</h3><p>結論、適用条件、手順、比較基準、作例、出典・確認日を用意します。導入事例や第三者評価は実際に確認できたものだけを使い、関連する記事へ案内します。</p></article>
+      <article><h3>基本的なSEOを継続する</h3><p>GoogleのAI機能でも基本的なSEOが有効です。AI専用ファイルや特別な構造化データを必須条件とせず、独自で役立つ情報、読みやすさ、内部リンク、情報の更新を優先します。</p><a href="https://developers.google.com/search/docs/appearance/ai-features" target="_blank" rel="noopener noreferrer">GoogleのAI機能の説明 ↗</a></article>
+      <article><h3>動画の仮説と確認済みの仕様を分ける</h3><p>事業適合・独自の手順・具体的な検討を重視する考え方を採用します。「AIは必ず検索」「上位30ページが固定範囲」「共通の評価計算式」は確認済みの仕様として扱いません。</p></article>
+    </div>
+  </section>
+
+  <section aria-labelledby="strategy-roadmap-title">
+    <div class="kw-section-head"><div><h2 id="strategy-roadmap-title">12か月の見直し方</h2><p>制作本数だけでなく、判断材料と成果の積み上がりを確認します。</p></div></div>
+    <div class="workspace-strategy-grid">{stages.map(stage => <article class="kw-panel"><h3>{stage.title}</h3><p>{stage.body}</p></article>)}</div>
+    <p class="kw-help">月10本を12か月続けると年間120本が目安です。品質条件を満たさない月に本数を埋める必要はありません。月10本の編集計画と、共通公開機能の1日最大10本という上限は別です。今回、公開予定や上限は変更していません。</p>
+  </section>
+
+  <section aria-labelledby="strategy-measurement-title">
+    <div class="kw-section-head"><div><h2 id="strategy-measurement-title">実績とAIの回答を分けて確認する</h2><p>週次で改善し、月次で需要と記事の配分を見直します。</p></div></div>
+    <div class="workspace-strategy-grid">
+      <article class="kw-panel"><h3>SEO実績：既存の自動取得</h3><p>GA4・Search Consoleの取得日時と期間を確認し、検索表示・クリック・PV・CTA・問い合わせ完了から改善対象を選びます。市場の検索ボリュームとは別のデータです。</p><p>GoogleのAI機能の実績もウェブ検索の集計に含まれるため、現在の一覧をAIに引用された回数と読み替えません。</p><a class="kw-button" href="/">3施策の実績を見る</a></article>
+      <article class="kw-panel"><h3>AIO観測：手動で記録する運用案</h3><p>「採用LINEの外注で比較する項目」など、決めた質問を同じ条件で確認します。日付、AIサービス、質問全文、検索利用条件、引用URL、説明内容を残します。</p><p>質問セット内での観測として扱い、市場全体の推奨率とは呼びません。自動監視や引用率の集計は現在未実装です。</p></article>
+    </div>
+    <p class="kw-help">週次は成果と改善対象、月次は需要・企画の採否・AIOの観測を見直します。検索ボリュームAPIや競合の定期取得は未接続です。調査から記事選定・公開までを無人で決定する機能は稼働していません。</p>
+    <p class="kw-help">採用ノートの企画メモにはブラウザ保存の項目があります。画面の統合によって、すべてのデータが端末間共有やシート書き戻しになったわけではありません。</p>
+  </section>
+
+  <section aria-labelledby="strategy-sources-title">
+    <div class="kw-section-head"><div><h2 id="strategy-sources-title">方針の根拠</h2><p>2026年9月22日に確認した一次資料です。</p></div></div>
+    <div class="workspace-list"><article><h3>独自で役立つ情報を作る</h3><p>Googleの生成AI検索向けの説明を参照し、独自の材料と読者に役立つ内容を編集基準にします。</p><a href="https://developers.google.com/search/docs/fundamentals/ai-optimization-guide" target="_blank" rel="noopener noreferrer">生成AI検索向けの最適化 ↗</a></article><article><h3>低価値な大量生成を避ける</h3><p>地域名や表現の差し替えだけで記事数を増やさず、各ページの役割と利用者への価値を確認します。</p><a href="https://developers.google.com/search/docs/essentials/spam-policies" target="_blank" rel="noopener noreferrer">Google検索のスパムポリシー ↗</a></article></div>
+  </section>
+  <script>
+    import {startAccessSession} from '../../../lib/seo-manager/session.mjs';
+    await startAccessSession();
+  </script>
+</SeoWorkspace>

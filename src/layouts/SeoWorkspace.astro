@@ -1,0 +1,27 @@
+---
+import '../styles/style.css';
+import '../styles/seo-manager.css';
+import '../styles/seo-workspace.css';
+import WorkspaceNav from '../components/seo-manager/WorkspaceNav.astro';
+const {title, active = 'overview'} = Astro.props;
+---
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow, noarchive" />
+    <meta name="referrer" content="same-origin" />
+    <title>{title}｜SEOワークスペース｜LAYR</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="seo-app workspace-app">
+    <a class="kw-skip" href="#workspace-main">管理内容へ</a>
+    <header class="kw-top"><a href="/" class="kw-brand">LAYR <span>SEO WORKSPACE</span></a><div class="kw-account"><span id="kw-identity" role="status">認証を確認中</span><a id="kw-logout" class="kw-button" href="/cdn-cgi/access/logout">ログアウト</a></div></header>
+    <WorkspaceNav active={active} />
+    <main id="workspace-main" class="kw-main workspace-main"><slot /></main>
+    <noscript><p class="kw-notice">データの表示・保存にはJavaScriptが必要です。</p></noscript>
+  </body>
+</html>

@@ -1,4 +1,5 @@
 import {startAccessSession} from './session.mjs';
+import {growthNavigation} from './growth-navigation.mjs';
 
 const $ = id => document.getElementById(id);
 const array = value => Array.isArray(value) ? value : [];
@@ -304,6 +305,9 @@ function closeLead() { if (pending) return; if (leadDirty && !confirm('保存し
 
 async function initialize() {
   if (!await startAccessSession()) return;
+  const entry = growthNavigation(window.location.search, window.location.hash);
+  $('growth-document-type').value = entry.documentType;
+  switchTab(entry.tab);
   for (const element of document.querySelectorAll('[data-growth-tab]')) element.addEventListener('click', () => switchTab(element.dataset.growthTab));
   $('growth-refresh').addEventListener('click', () => operation(refresh, '最新の運用情報を取得しました。'));
   $('growth-pause').addEventListener('click', () => operation(async () => { await api('/settings', {paused: !data.settings.paused}); await refresh(); }, '自動公開の設定を保存しました。'));
