@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {projectMediaAnalytics} from '../worker/seo-media-analytics.mjs';
 import {validateMediaAnalyticsReport, validateMediaSearchReport, joinMediaMetrics} from '../src/lib/media-manager/model.mjs';
 
@@ -164,4 +165,47 @@ test('data-quality caveats and non-additive query counts are retained without ma
   assert.equal(result.queries[0].rows[0].ctr, 0.1, 'CTR is derived from observed counts');
   const notes = [...result.notes, ...result.reports.flatMap(report => report.notes)].join(' ');
   assert.match(notes, /APIの取得上限に達したため一部のみ/);
+});
+
+test('the advertised GitHub maintenance schedule matches the workflow and rolls over at 06:17 JST', () => {
+  const workflow = readFileSync(new URL('../.github/workflows/seo-growth-schedule.yml', import.meta.url), 'utf8');
+  const cases = [
+    ['2026-09-22T21:16:59.999Z', '2026-09-22T21:17:00.000Z'],
+    ['2026-09-22T21:17:00.000Z', '2026-09-23T21:17:00.000Z'],
+    ['2026-12-31T21:18:00.000Z', '2027-01-01T21:17:00.000Z'],
+  ];
+  for (const [reference, expected] of cases) {
+    const {schedule} = project([], {now: new Date(reference)});
+    assert.deepEqual(schedule, {provider: 'github-actions', frequency: 'daily', timezone: 'Asia/Tokyo', time: '06:17', cron: '17 21 * * *', nextRunAt: expected});
+    assert.ok(workflow.includes(`cron: '${schedule.cron}' # 06:17 JST: analytics`));
+  }
+});
+
+test('maintenance success never upgrades missing Google data to a successful integration', () => {
+  const scheduler = {status: 'completed', lastAttemptAt: '2026-09-22T06:17:00+09:00', lastSuccessAt: '2026-09-22T06:18:00+09:00', runId: '12345', runAttempt: '1'};
+  const result = project([], {scheduler, integrations: [{source: 'ga4', status: 'not_configured'}, {source: 'gsc', status: 'not_configured'}]});
+  assert.deepEqual(result.scheduler, {...scheduler, lastAttemptAt: '2026-09-21T21:17:00.000Z', lastSuccessAt: '2026-09-21T21:18:00.000Z'});
+  assert.ok(result.integrations.every(row => row.status === 'not_configured' && row.lastSuccessAt === null));
+  assert.deepEqual(result.reports, []);
+  assert.deepEqual(result.queries, []);
+  assert.equal(result.job, null);
+});
+
+test('scheduler failure and manual analytics completion remain independent and preserve valid reports', () => {
+  const scheduler = {status: 'error', lastAttemptAt: now.toISOString(), lastSuccessAt: '2026-09-20T21:18:00Z', runId: '54321', runAttempt: '2'};
+  const job = {status: 'completed', finishedAt: now.toISOString()};
+  const result = project([snapshot('ga4')], {scheduler, job, integrations: [{source: 'ga4', status: 'ok', lastSuccessAt: fetchedAt}]});
+  assert.equal(result.scheduler.status, 'error');
+  assert.equal(result.scheduler.lastSuccessAt, '2026-09-20T21:18:00.000Z');
+  assert.equal(result.job.status, 'completed');
+  assert.equal(result.integrations[0].status, 'ok');
+  assert.equal(result.reports[0].rows[0].views, 12);
+});
+
+test('scheduler output contains only validated run identity and timestamps', () => {
+  const scheduler = {status: 'unexpected-state', lastAttemptAt: 'not-a-date', lastSuccessAt: 'SECRET-IN-DATE', runId: 'SECRET-IN-ID', runAttempt: '-1', token: 'SECRET-TOKEN', response: {sensitive: 'SECRET-BODY'}};
+  const result = project([], {scheduler});
+  assert.deepEqual(result.scheduler, {status: null, lastAttemptAt: null, lastSuccessAt: null, runId: null, runAttempt: null});
+  assert.doesNotMatch(JSON.stringify(result), /SECRET|unexpected-state/);
+  for (const absent of [null, undefined, []]) assert.equal(project([], {scheduler: absent}).scheduler, null);
 });

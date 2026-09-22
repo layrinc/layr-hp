@@ -151,6 +151,8 @@ test('the media analytics endpoint reads only report/status data and is read-onl
   await store.upsert('integrations', 'ga4', {source: 'ga4', status: 'ok', lastAttemptAt: '2026-09-21T21:15:00Z', lastSuccessAt: '2026-09-21T21:15:00Z'});
   await store.upsert('integrations', 'inspection', {source: 'inspection', status: 'ok', unrelatedField: 'must-not-return'});
   await store.upsert('jobs', 'analytics', {status: 'completed', finishedAt: '2026-09-21T21:16:00Z', result: {internal: 'must-not-return'}});
+  await store.upsert('scheduler', 'maintenance', {status: 'error', lastAttemptAt: '2026-09-21T21:17:00Z', lastSuccessAt: '2026-09-20T21:18:00Z', runId: '1234567', runAttempt: '2', token: 'must-not-return'});
+  await store.upsert('scheduler', 'publish', {status: 'completed', runId: '7654321', privateField: 'must-not-return'});
   await store.upsert('leads', 'private-lead', {email: 'private-lead@example.test'});
   const path = '/api/seo/media/analytics', services = {staticPages: [{path: article, type: 'article'}, {path: '/service/ltori/area/mie/nabari/', type: 'city'}]};
   const response = await handleManagerApi(request(path), env, identity, path, services);
@@ -162,6 +164,9 @@ test('the media analytics endpoint reads only report/status data and is read-onl
   assert.deepEqual(result.reports[0].rows.map(row => row.pageId), ['interview-followup']);
   assert.equal(result.reports[0].rows[0].cta, 5);
   assert.equal(result.job.status, 'completed');
+  assert.deepEqual(result.scheduler, {status: 'error', lastAttemptAt: '2026-09-21T21:17:00.000Z', lastSuccessAt: '2026-09-20T21:18:00.000Z', runId: '1234567', runAttempt: '2'});
+  assert.equal(result.schedule.provider, 'github-actions');
+  assert.equal(result.schedule.time, '06:17');
   assert.equal(result.integrations.length, 1);
   assert.doesNotMatch(JSON.stringify(result), /private-lead|must-not-return|nabari|private_key|access_token/);
   assert.equal((await handleManagerApi(request(path, {}), env, identity, path, services)).status, 405);

@@ -6,7 +6,7 @@ const catalog=[{id:'interview-followup',path:'/service/ltori/media/interview-fol
 const at='2026-09-22T00:00:00.000Z';
 const config={serviceAccountConfigured:true,ga4Configured:true,gscConfigured:true,propertyId:'550092764',siteUrl:'sc-domain:layr.co.jp'};
 const report=()=>({origin:'google',start:'2026-08-23',end:'2026-09-19',property:'550092764',site:'sc-domain:layr.co.jp',gaTimezone:'Asia/Tokyo',importedAt:'2026-09-21T21:15:00.000Z',notes:[],rows:[{pageId:'interview-followup',views:10,clicks:1,impressions:10,position:2}]});
-const payload=(overrides={})=>({catalog,configuration:config,integrations:['ga4','gsc'].map(source=>({source,status:'ok',lastAttemptAt:'2026-09-21T21:15:00.000Z',lastSuccessAt:'2026-09-21T21:15:00.000Z'})),schedule:{frequency:'daily',timezone:'Asia/Tokyo',time:'06:15'},job:{status:'completed',finishedAt:'2026-09-21T21:15:05.000Z'},reports:[report()],queries:[],notes:[],serverTime:at,...overrides});
+const payload=(overrides={})=>({catalog,configuration:config,integrations:['ga4','gsc'].map(source=>({source,status:'ok',lastAttemptAt:'2026-09-21T21:15:00.000Z',lastSuccessAt:'2026-09-21T21:15:00.000Z'})),schedule:{provider:'github-actions',frequency:'daily',timezone:'Asia/Tokyo',time:'06:17',nextRunAt:'2026-09-22T21:17:00.000Z'},job:{status:'completed',finishedAt:'2026-09-21T21:15:05.000Z'},reports:[report()],queries:[],notes:[],serverTime:at,...overrides});
 const response=(data,status=200)=>({ok:status>=200&&status<300,status,json:async()=>data});
 const normalize=value=>normalizeServerAnalytics(value,catalog);
 const completed=()=>payload({serverTime:'2026-09-22T00:00:04.000Z',job:{status:'completed',finishedAt:'2026-09-22T00:00:03.000Z'},integrations:['ga4','gsc'].map(source=>({source,status:'ok',lastAttemptAt:at,lastSuccessAt:at}))});
@@ -30,12 +30,14 @@ test('published API catalog admits dynamic articles and drops no-longer-publishe
   assert.throws(()=>serverArticleCatalog(catalog,[dynamic,dynamic]));
 });
 
-test('schedule shows the next daily 06:15 JST, including month and year boundaries',()=>{
+test('schedule shows the next daily 06:17 JST, including month and year boundaries',()=>{
   const schedule=payload().schedule;
-  assert.equal(nextAutomaticRun(schedule,'2026-09-21T21:14:59Z'),'2026-09-21T21:15:00.000Z');
-  assert.equal(nextAutomaticRun(schedule,'2026-09-21T21:15:00Z'),'2026-09-22T21:15:00.000Z');
-  assert.equal(nextAutomaticRun(schedule,'2026-12-31T22:00:00Z'),'2027-01-01T21:15:00.000Z');
+  assert.equal(nextAutomaticRun(schedule,'2026-09-21T21:16:59Z'),'2026-09-21T21:17:00.000Z');
+  assert.equal(nextAutomaticRun(schedule,'2026-09-21T21:17:00Z'),'2026-09-22T21:17:00.000Z');
+  assert.equal(nextAutomaticRun(schedule,'2026-12-31T22:00:00Z'),'2027-01-01T21:17:00.000Z');
   assert.equal(nextAutomaticRun(null,at),null);
+  assert.equal(nextAutomaticRun({...schedule,time:'24:17'},at),null);
+  assert.equal(nextAutomaticRun({...schedule,time:'06:61'},at),null);
 });
 
 test('completed old job, queued acceptance, and one changed source do not prove completion',()=>{
@@ -110,4 +112,30 @@ test('a failed latest job is surfaced even when integrations still show earlier 
   await client.refresh();assert.equal(client.getStatus().phase,'attention');assert.match(client.getStatus().message,/直近の自動取得に問題/);
   assert.equal(client.getSnapshot().job.message,'処理を完了できませんでした。');assert.equal(client.getSnapshot().reports[0].rows[0].views,10);
   assert.ok(client.getSnapshot().integrations.every(source=>source.status==='ok'));
+});
+
+
+test('scheduler completion is separate from source success and manual synchronization completion',()=>{
+  const before=normalize(payload());
+  const raw=payload({scheduler:{status:'completed',lastAttemptAt:at,lastSuccessAt:at},integrations:[{source:'ga4',status:'error',lastAttemptAt:at,message:'閲覧権限を確認してください。'},{source:'gsc',status:'not_configured'}]});
+  const after=normalize(raw);assert.equal(after.scheduler.status,'completed');assert.equal(after.scheduler.lastSuccessAt,at);
+  assert.equal(after.integrations[0].status,'error');assert.equal(after.integrations[1].status,'not_configured');
+  assert.equal(synchronizationFinished(before,after),false);assert.equal(after.schedule.provider,'github-actions');assert.equal(after.schedule.time,'06:17');
+});
+
+test('a failed scheduler is surfaced even if Google sources and last manual job previously succeeded',async()=>{
+  const mock=server([response(payload({scheduler:{status:'error',lastAttemptAt:at,lastSuccessAt:'2026-09-21T21:17:00Z'}}))]);
+  const client=createServerAnalyticsClient({catalog,fetcher:mock.fetcher});await client.refresh();
+  assert.equal(client.getStatus().phase,'attention');assert.equal(client.getSnapshot().scheduler.status,'error');assert.equal(client.getSnapshot().reports[0].rows[0].views,10);
+});
+
+test('yesterday scheduler running does not block manual sync when analytics job is completed',async()=>{
+  const scheduler={status:'running',lastAttemptAt:'2026-09-21T00:00:00.000Z',lastSuccessAt:null};
+  const initial=payload({scheduler}),result=completed();result.scheduler=scheduler;
+  const mock=server([response(initial),response({status:'queued'},202),response(result)]);
+  const client=createServerAnalyticsClient({catalog,fetcher:mock.fetcher,delay:async()=>{}});await client.sync();
+  assert.equal(mock.requests.filter(row=>row.options.method==='POST').length,1);
+  assert.equal(mock.requests.find(row=>row.options.method==='POST').url,'/api/seo/sync');
+  assert.equal(client.getStatus().phase,'ready');assert.equal(client.getSnapshot().job.status,'completed');
+  assert.equal(client.getSnapshot().scheduler.status,'running');
 });

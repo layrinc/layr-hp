@@ -27,15 +27,16 @@ export function normalizeServerAnalytics(input,catalog){
   const reports=input.reports.map(row=>({...validateMediaAnalyticsReport(row,publishedCatalog),storage:'server'})).map(row=>({...row,id:`server:${row.id}`}));
   const queries=input.queries.map(row=>({...validateMediaSearchReport(row,publishedCatalog),storage:'server'})).map(row=>({...row,id:`server:${row.id}`}));
   if(queries.some(row=>row.kind!=='queries'))throw new Error('検索クエリの取得形式を確認できませんでした。');
-  const schedule=input.schedule?.frequency==='daily'&&input.schedule?.timezone==='Asia/Tokyo'&&input.schedule?.time==='06:15'?{frequency:'daily',timezone:'Asia/Tokyo',time:'06:15'}:null;
+  const schedule=input.schedule?.provider==='github-actions'&&input.schedule?.frequency==='daily'&&input.schedule?.timezone==='Asia/Tokyo'&&/^([01]\d|2[0-3]):[0-5]\d$/.test(input.schedule?.time||'')?{provider:'github-actions',frequency:'daily',timezone:'Asia/Tokyo',time:input.schedule.time,nextRunAt:date(input.schedule.nextRunAt)}:null;
+  const scheduler=input.scheduler&&typeof input.scheduler==='object'?{status:['running','completed','error'].includes(input.scheduler.status)?input.scheduler.status:null,lastAttemptAt:date(input.scheduler.lastAttemptAt),lastSuccessAt:date(input.scheduler.lastSuccessAt)}:null;
   const job=input.job&&['running','completed','error'].includes(input.job.status)?{status:input.job.status,startedAt:date(input.job.startedAt),finishedAt:date(input.job.finishedAt),message:text(input.job.message)}:null;
-  return {catalog:publishedCatalog,configuration:{ga4Configured:configuration.ga4Configured===true,gscConfigured:configuration.gscConfigured===true,serviceAccountConfigured:configuration.serviceAccountConfigured===true},integrations,reports,queries,schedule,job,notes:list(input.notes).map(text).filter(Boolean),serverTime:input.serverTime};
+  return {catalog:publishedCatalog,configuration:{ga4Configured:configuration.ga4Configured===true,gscConfigured:configuration.gscConfigured===true,serviceAccountConfigured:configuration.serviceAccountConfigured===true},integrations,reports,queries,schedule,scheduler,job,notes:list(input.notes).map(text).filter(Boolean),serverTime:input.serverTime};
 }
 
 export function nextAutomaticRun(schedule,reference){
-  if(!schedule||schedule.frequency!=='daily'||schedule.timezone!=='Asia/Tokyo'||schedule.time!=='06:15')return null;
+  if(!schedule||schedule.provider!=='github-actions'||schedule.frequency!=='daily'||schedule.timezone!=='Asia/Tokyo'||!/^([01]\d|2[0-3]):[0-5]\d$/.test(schedule.time||''))return null;
   const now=new Date(reference);if(!Number.isFinite(now.getTime()))return null;
-  const jst=new Date(now.getTime()+9*60*60*1000),next=new Date(Date.UTC(jst.getUTCFullYear(),jst.getUTCMonth(),jst.getUTCDate(),6-9,15));
+  const [hour,minute]=schedule.time.split(':').map(Number),jst=new Date(now.getTime()+9*60*60*1000),next=new Date(Date.UTC(jst.getUTCFullYear(),jst.getUTCMonth(),jst.getUTCDate(),hour-9,minute));
   if(next.getTime()<=now.getTime())next.setUTCDate(next.getUTCDate()+1);
   return next.toISOString();
 }
@@ -93,7 +94,7 @@ export function createServerAnalyticsClient({catalog,fetcher=fetch,delay=default
     pending=operation;return operation;
   }
   return {
-    refresh(){return execute(async()=>{emit('loading','サーバーに保存された実績を読み込んでいます。');const latest=await read();if(latest.job?.status==='running')return waitForCompletion(latest);const failed=latest.job?.status==='error'||latest.integrations.some(row=>row.status==='error');emit(failed?'attention':'ready',failed?'直近の自動取得に問題があります。最後に取得できた実績を表示しています。':'サーバーに保存された実績を表示しています。');return latest;});},
+    refresh(){return execute(async()=>{emit('loading','サーバーに保存された実績を読み込んでいます。');const latest=await read();if(latest.job?.status==='running')return waitForCompletion(latest);const failed=latest.job?.status==='error'||latest.scheduler?.status==='error'||latest.integrations.some(row=>row.status==='error');emit(failed?'attention':'ready',failed?'直近の自動取得に問題があります。最後に取得できた実績を表示しています。':'サーバーに保存された実績を表示しています。');return latest;});},
     sync(){return execute(async()=>{
       emit('loading','同期状態を確認しています。');const before=await read();if(before.job?.status==='running')return waitForCompletion(before);
       if(!before.configuration.ga4Configured&&!before.configuration.gscConfigured){emit('attention','サーバー連携の設定準備中です。設定完了後に同期できます。');return before;}

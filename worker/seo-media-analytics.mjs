@@ -49,9 +49,21 @@ function safeIntegration(row) {
     ...(typeof row.code === 'string' ? {code: row.code.slice(0, 100)} : {}), ...(typeof row.message === 'string' ? {message: noteText(row.message)} : {})};
 }
 
+function safeScheduler(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
+  const timestamp = input => validTime(input) ? new Date(input).toISOString() : null;
+  const identifier = input => typeof input === 'string' && /^[1-9][0-9]{0,29}$/.test(input) ? input : null;
+  // This is the maintenance delivery's status, not proof that Google returned data.
+  // A completed delivery may have found unconfigured integrations; an inspection
+  // failure may fail maintenance while the analytics job itself succeeded.
+  return {status: ['running', 'completed', 'error'].includes(value.status) ? value.status : null,
+    lastAttemptAt: timestamp(value.lastAttemptAt), lastSuccessAt: timestamp(value.lastSuccessAt),
+    runId: identifier(value.runId), runAttempt: identifier(value.runAttempt)};
+}
+
 /** Read-only projection of the shared last-successful server snapshots into the
  * existing media report contract. No leads, raw event URLs or credentials leave it. */
-export function projectMediaAnalytics({snapshots = [], catalog = [], configuration = {}, integrations = [], job = null, now = new Date()} = {}) {
+export function projectMediaAnalytics({snapshots = [], catalog = [], configuration = {}, integrations = [], job = null, scheduler = null, now = new Date()} = {}) {
   const pages = mediaAnalyticsCatalog(catalog), groups = new Map(), reports = [], queries = [], notes = [];
   const config = {
     serviceAccountConfigured: configuration.serviceAccountConfigured === true,
@@ -109,15 +121,15 @@ export function projectMediaAnalytics({snapshots = [], catalog = [], configurati
   const recentFirst = (a, b) => b.end.localeCompare(a.end) || Date.parse(b.importedAt) - Date.parse(a.importedAt);
   reports.sort(recentFirst); queries.sort(recentFirst);
   const serverTime = new Date(now).toISOString(), next = new Date(now);
-  next.setUTCHours(21, 15, 0, 0); if (next <= new Date(now)) next.setUTCDate(next.getUTCDate() + 1);
+  next.setUTCHours(21, 17, 0, 0); if (next <= new Date(now)) next.setUTCDate(next.getUTCDate() + 1);
   const safeJob = job && ['running', 'completed', 'error'].includes(job.status) ? {status: job.status,
     ...(validTime(job.startedAt) ? {startedAt: job.startedAt} : {}), ...(validTime(job.finishedAt) ? {finishedAt: job.finishedAt} : {}), ...(typeof job.message === 'string' ? {message: noteText(job.message)} : {})} : null;
   return {configuration: config, catalog: pages, integrations: values(integrations).map(safeIntegration).filter(Boolean),
-    schedule: {frequency: 'daily', timezone: 'Asia/Tokyo', time: '06:15', cron: '15 21 * * *', nextRunAt: next.toISOString()},
-    job: safeJob, reports, queries, notes: [...new Set(notes)], serverTime};
+    schedule: {provider: 'github-actions', frequency: 'daily', timezone: 'Asia/Tokyo', time: '06:17', cron: '17 21 * * *', nextRunAt: next.toISOString()},
+    scheduler: safeScheduler(scheduler), job: safeJob, reports, queries, notes: [...new Set(notes)], serverTime};
 }
 
 export async function readMediaAnalytics(store, options = {}) {
-  const [snapshots, integrations, job] = await Promise.all([store.list('analytics'), store.list('integrations'), store.get('jobs', 'analytics')]);
-  return projectMediaAnalytics({...options, snapshots, integrations, job});
+  const [snapshots, integrations, job, scheduler] = await Promise.all([store.list('analytics'), store.list('integrations'), store.get('jobs', 'analytics'), store.get('scheduler', 'maintenance')]);
+  return projectMediaAnalytics({...options, snapshots, integrations, job, scheduler});
 }

@@ -32,4 +32,11 @@
 - 未設定は「設定準備中」・同期無効。一部取得失敗は「確認が必要」とソース別失敗理由を表示し、前回成功実績を保持。
 - スクリーンショットは `media-auto-sync/`。すべて明示した架空テストデータであり、本番取得成功の証拠ではない。
 - ユーザー承認後、専用Googleアカウントと対象GA4/GSCの閲覧権限を設定。既存サーバー取得関数の実API読み取りはGA4・GSCとも成功（2026-09-22 12:35 JST）。本番DB保存は未実施。
-- Cloudflareへの鍵保存は自動承認レビューで停止。本番ビルドのCron登録は無料プラン上限5件により失敗しており、本番での無人定時実行・画面再読込は未検証。詳細は `../seo/ltori-media-automatic-analytics.md`。
+- Cloudflare Secretの保存完了。mainのPR #44により定期実行はGitHub Actionsへ移行済み（毎日06:17 JST、遅延の場合あり）。この変更を取り込み、メディア表示と定期実行状態を整合させる。詳細は `../seo/ltori-media-automatic-analytics.md`。
+
+## PR #44統合後の最終検証
+
+- mainのGitHub Actions定期処理を取り込み、毎日06:17 JSTの表示と実行履歴を整合。Cloudflareの追加Cron・有料化は行わない。
+- 全261テストのうち259件PASS、localhost通信2件はsandboxのlisten制限が原因で初回失敗。権限を付けた再実行で2件ともPASS。
+- 独立レビューで、古いschedulerのrunning履歴が手動同期を禁止する問題を修正。対象UI26テストと独立再確認17テストPASS。手動同期の重複制御はanalytics jobと既存サーバーロックが担当する。
+- 71ページbuild・デザイン回帰ゲート・Cloudflare dry-run PASS。

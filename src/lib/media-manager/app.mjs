@@ -130,14 +130,16 @@ function refreshArticleChoices(value=$('mm-edit-url').value){
 }
 function renderServerStatus(){
   const snapshot=serverSnapshot,busy=['loading','syncing'].includes(serverStatus.phase),sources=snapshot?.integrations||[],configured=Boolean(snapshot?.configuration.ga4Configured&&snapshot?.configuration.gscConfigured);
-  const errors=snapshot?.job?.status==='error'||sources.some(row=>row.status==='error'),unconfigured=sources.some(row=>row.status==='not_configured'),hasSuccess=sources.some(row=>row.lastSuccessAt);
+  const errors=snapshot?.job?.status==='error'||snapshot?.scheduler?.status==='error'||sources.some(row=>row.status==='error'),unconfigured=sources.some(row=>row.status==='not_configured'),hasSuccess=sources.some(row=>row.lastSuccessAt);
   let label='確認中';
   if(snapshot){label=!configured||unconfigured?'設定準備中':snapshot.job?.status==='running'?'同期中':errors||serverStatus.phase==='error'?'確認が必要':serverStatus.phase==='waiting'?'終了未確認':hasSuccess?'取得済み':'初回取得待ち';}
   else if(serverStatus.phase==='error')label='取得できません';
   $('mm-stat-google').textContent=label;
   const successes=sources.map(row=>row.lastSuccessAt).filter(Boolean).sort();$('mm-last-fetch').textContent=successes.length?`最終成功：${dateLabel(successes.at(-1))}`:'サーバー実績は未取得';
   const next=nextAutomaticRun(snapshot?.schedule,new Date());
-  $('mm-server-next').textContent=next?(configured?`次回実行：${dateLabel(next)}（毎日06:15・日本時間）`:'スケジュール：毎日06:15・日本時間（サーバー連携の設定完了後に稼働）'):'自動取得の実行予定を確認できていません。';
+  $('mm-server-next').textContent=next?`実行予定：毎日${snapshot.schedule.time}・日本時間（GitHub Actions）。次回目安：${dateLabel(next)}。混雑状況により開始が遅れる場合があります。${configured?'':' Google連携は設定完了後に稼働します。'}`:'自動取得の実行予定を確認できていません。';
+  const scheduler=snapshot?.scheduler,schedulerLabels={running:'実行中',completed:'完了',error:'失敗'};
+  $('mm-server-scheduler').textContent=scheduler?`定期処理：${schedulerLabels[scheduler.status]||'未確認'} / 最終試行：${dateLabel(scheduler.lastAttemptAt)} / 最終完了：${dateLabel(scheduler.lastSuccessAt)}。処理の完了とGoogle各ソースの取得成功は別です。下記のGA4・Search Consoleの状態を確認してください。`:'定期処理の実行履歴はまだありません。Google各ソースの取得状況は下記に表示します。';
   $('mm-server-status').textContent=['error','waiting','syncing'].includes(serverStatus.phase)?serverStatus.message:snapshot&&(!configured||unconfigured)?'サーバー連携の設定準備中です。設定完了後は、個別のGoogle接続なしで自動取得した実績を表示します。':serverStatus.message;
   $('mm-server-status').setAttribute('role',serverStatus.phase==='error'?'alert':'status');
   $('mm-server-sources').replaceChildren(...sources.map(source=>{
