@@ -38,7 +38,7 @@ jobs:
         run: node --test tests/media-manager-*.test.mjs
 
       - name: SEO自動運用（認証・D1・公開上限・計測・診断）
-        run: node --test tests/seo-store.test.mjs tests/seo-leads.test.mjs tests/seo-api.test.mjs tests/seo-publication.test.mjs tests/seo-publication-runtime.test.mjs tests/seo-analytics-server.test.mjs tests/seo-growth.test.mjs tests/ltori-diagnosis.test.mjs tests/ltori-contact.test.mjs
+        run: node --test tests/seo-store.test.mjs tests/seo-leads.test.mjs tests/seo-api.test.mjs tests/seo-publication.test.mjs tests/seo-publication-runtime.test.mjs tests/seo-analytics-server.test.mjs tests/seo-media-analytics.test.mjs tests/seo-growth.test.mjs tests/ltori-diagnosis.test.mjs tests/ltori-contact.test.mjs
 
       - name: Design gate regression（基準値から1項目でも悪化していれば失敗）
         run: bash scripts/gate-regression.sh

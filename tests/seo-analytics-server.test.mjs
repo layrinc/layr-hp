@@ -96,6 +96,8 @@ test('Google service account uses real signed read-only JWT and separates contac
   assert.ok(result.statuses.every(item => item.status === 'ok'));
   assert.equal((await store.list('analytics')).length, 4);
   const ga = await store.get('analytics', 'ga4:current');
+  assert.equal(ga.propertyId, env.SEO_GA4_PROPERTY_ID, 'persist source identity rather than deriving it from future settings');
+  assert.equal(ga.siteUrl, env.SEO_GSC_SITE_URL);
   assert.equal(ga.summary.users, 25, 'unique users must use API totals, not page sums');
   assert.equal(ga.summary.views, 100);
   assert.equal(ga.summary.sessions, 35);
@@ -106,6 +108,7 @@ test('Google service account uses real signed read-only JWT and separates contac
   assert.equal(ga.pages.find(row => row.path === path).sessions, 15);
   assert.equal(ga.pages.find(row => row.path === path).documentRequests, null);
   const gsc = await store.get('analytics', 'gsc:current');
+  assert.equal(gsc.siteUrl, env.SEO_GSC_SITE_URL);
   assert.equal(gsc.queries[0].query, '採用 LINE 構築');
   assert.equal(gsc.timeZone, 'America/Los_Angeles');
   assert.equal(JSON.stringify([...store.data]).includes('test-access-token'), false);
