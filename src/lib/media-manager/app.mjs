@@ -278,7 +278,7 @@ $('mm-backup-apply').addEventListener('click',async()=>{if(!pendingBackup)return
 
 async function initialize(){
   const end=new Date(`${today()}T00:00:00Z`);end.setUTCDate(end.getUTCDate()-3);const start=new Date(end);start.setUTCDate(start.getUTCDate()-27);$('mm-analytics-start').value=start.toISOString().slice(0,10);$('mm-analytics-end').value=end.toISOString().slice(0,10);$('mm-volume-fetched').value=today();
-  try{const saved=JSON.parse(localStorage.getItem('layr-ltori-google-config')||'null');if(saved){const values=validateConnection(saved);$('mm-client-id').value=values.clientId;$('mm-property').value=values.property;$('mm-site').value=values.site;}}catch{/* Invalid or absent nonsecret connection settings remain empty. */}
+  try{const saved=JSON.parse(localStorage.getItem('layr-ltori-google-config')||'null');if(saved){const values=validateConnection(saved);$('mm-client-id').value=values.clientId;$('mm-property').value=values.property;$('mm-site').value=values.site;}}catch{/* Invalid or absent saved settings retain the HTML defaults; valid saved settings take priority. */}
   try{
     db=await openDatabase();const saved=await loadState(db);
     if(saved){if(!Number.isSafeInteger(saved.revision)||saved.revision<0)throw new Error('保存データの更新番号が正しくありません。');state={...validateMediaBackup(saved,catalog),revision:saved.revision,updatedAt:saved.updatedAt};}
