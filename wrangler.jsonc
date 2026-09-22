@@ -7,7 +7,7 @@
   "compatibility_date": "2026-08-01",
   "keep_vars": true,
   "d1_databases": [{ "binding": "SEO_DB", "database_name": "layr-hp-seo-db" }],
-  "triggers": { "crons": ["0 0 * * *", "15 21 * * *"] },
+  "triggers": { "crons": [] },
   "assets": {
     "directory": "./dist",
     "binding": "ASSETS",
