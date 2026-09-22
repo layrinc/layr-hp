@@ -2,6 +2,7 @@ import {protectedResponse,MANAGER_ORIGIN} from './seo-access.mjs';
 import {ensureDatabase,createStore,HttpError,getDocuments,getDocument,getPublished,getWorkspace,saveWorkspace,saveDocument,approveDocument,pauseDocument,publicationStats,activity,backup} from './seo-store.mjs';
 import {validateDocument,qualityIssues,publicPath,cityCatalog} from '../src/lib/seo-manager/editorial-model.mjs';
 import {getAnalyticsConfiguration} from './seo-analytics.mjs';
+import {readMediaAnalytics} from './seo-media-analytics.mjs';
 import {buildGrowthReport} from '../src/lib/seo-manager/growth-model.mjs';
 import {saveLead} from './seo-leads.mjs';
 
@@ -21,6 +22,13 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
     if(!['GET','POST','PUT'].includes(request.method))throw new HttpError(405,'この操作には対応していません。');
     if(request.method!=='GET'&&request.headers.get('Origin')!==MANAGER_ORIGIN)throw new HttpError(403,'管理画面を開き直して操作してください。');
     await ensureDatabase(env.SEO_DB);const db=env.SEO_DB,store=createStore(db),url=new URL(request.url),now=new Date();
+    if(path==='/api/seo/media/analytics') {
+      if(request.method!=='GET')throw new HttpError(405,'GETで取得してください。');
+      // Read public article identities only, not drafts, lead records or full bodies.
+      const {results:articles}=await db.prepare("SELECT path,json_extract(value,'$.title') AS title FROM seo_published WHERE json_extract(value,'$.type')='article'").all();
+      const catalog=[...(services.staticPages||[]),...articles.map(row=>({...row,type:'article'}))];
+      return json(await readMediaAnalytics(store,{configuration:getAnalyticsConfiguration(env),catalog,now}));
+    }
     if(path==='/api/seo/state') {
       if(request.method==='GET')return json({state:await getWorkspace(db)});
       if(request.method!=='PUT')throw new HttpError(405,'PUTで保存してください。');

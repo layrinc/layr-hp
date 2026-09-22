@@ -1,6 +1,7 @@
 import {MAX_FILE,STATUS,PRIORITY,normalizeKeyword,emptyMediaState,plansFromRows,mergePlans,planEdit,validatePlanEdit,volumeFromCsv,applyVolumeReport,rankPlans,joinMediaMetrics,validateMediaBackup,applyAnalyticsReport,applySearchReport,csvString,checkStateSize} from './model.mjs';
 import {openDatabase,loadState,saveState} from './storage.mjs';
 import {createPreviewChannel} from './preview-import.mjs';
+import {createServerAnalyticsClient,combineAnalyticsReports,nextAutomaticRun} from './server-analytics.mjs';
 import {GOOGLE_SCOPES,SHEETS_SCOPE,validateConnection,fetchMediaReport,fetchMediaSearchQueries,fetchMediaPlans} from './google.mjs';
 
 const $=id=>document.getElementById(id);
@@ -10,7 +11,7 @@ const number=value=>value==null?'—':new Intl.NumberFormat('ja-JP',{maximumFrac
 const percentage=value=>value==null?'—':`${number(value*100)}%`;
 const dateLabel=value=>value?new Date(value).toLocaleString('ja-JP'):'未取得';
 const today=()=>new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Tokyo'});
-const catalog=JSON.parse($('mm-catalog').textContent);
+let catalog=JSON.parse($('mm-catalog').textContent);
 const seed=JSON.parse($('mm-seed').textContent);
 const metricsKeys=['views','users','sessions','cta','inquiries','documents','clicks','impressions','ctr','position'];
 const metricsLabels=['PV','ユーザー','流入セッション','CTAクリック','相談完了','資料請求完了','検索クリック','検索表示','CTR','平均順位'];
@@ -19,6 +20,7 @@ let activeVolume='',activeAnalytics='',activeQuery='',page=1,queryPage=1;
 let pendingVolume=null,pendingPlans=null,pendingBackup=null,editingId='',editorDirty=false;
 let token='',expires=0,sheetToken='',sheetExpires=0,identityLoading=null,oauthPending=false;
 const pageSize=30;
+let serverSnapshot=null,serverStatus={phase:'loading',message:'取得状態を確認しています。'},serverLoadedOnce=false,analyticsSelectionTouched=false,querySelectionTouched=false;
 const volumePreviewChannel=createPreviewChannel(),planPreviewChannel=createPreviewChannel(),backupPreviewChannel=createPreviewChannel();
 
 function message(text,error=false){const box=$('mm-message');box.textContent=text;box.hidden=false;box.setAttribute('role',error?'alert':'status');}
@@ -40,9 +42,11 @@ function showTab(name){
   history.replaceState(null,'',`#${name}`);
 }
 const volumeReport=()=>state.volumeReports.find(report=>report.id===activeVolume)||null;
-const analyticsReport=()=>state.analyticsReports.find(report=>report.id===activeAnalytics)||null;
-const queryReport=()=>state.searchReports.find(report=>report.id===activeQuery&&report.kind==='queries')||null;
-const reportLabel=report=>`${report.start}〜${report.end} / ${dateLabel(report.importedAt)}`;
+const allAnalyticsReports=()=>combineAnalyticsReports(serverSnapshot?.reports,state.analyticsReports);
+const allQueryReports=()=>combineAnalyticsReports(serverSnapshot?.queries,state.searchReports.filter(report=>report.kind==='queries'));
+const analyticsReport=()=>allAnalyticsReports().find(report=>report.id===activeAnalytics)||null;
+const queryReport=()=>allQueryReports().find(report=>report.id===activeQuery)||null;
+const reportLabel=report=>`${report.storage==='server'?'自動・サーバー':'手動・このブラウザ'} / ${report.start}〜${report.end} / ${dateLabel(report.importedAt)}`;
 const volumeLabel=report=>`${report.source} / ${report.periodStart}〜${report.periodEnd} / ${report.country}・${report.language} / ${report.network}・${report.matchType} / 取得 ${dateLabel(report.fetchedAt)}`;
 function replaceOptions(id,rows,empty,selected){
   const target=$(id);target.replaceChildren(...(rows.length?rows.map(row=>option(row.id,row.label)):[option('',empty)]));
@@ -82,30 +86,30 @@ function renderPlanTable(){
   $('mm-page').textContent=`${page} / ${pages}`;$('mm-prev').disabled=page===1;$('mm-next').disabled=page===pages;
 }
 function renderAnalytics(){
-  activeAnalytics=replaceOptions('mm-analytics-report',state.analyticsReports.map(r=>({id:r.id,label:reportLabel(r)})),'実績は未取得',activeAnalytics);
-  const report=analyticsReport();$('mm-analytics-scope').textContent=report?`${report.start}〜${report.end} / GA4 ${report.gaTimezone||'タイムゾーン未取得'} / GSC America/Los_Angeles / 取得：${dateLabel(report.importedAt)}`:'実績は未取得です。Googleに接続して取得してください。行が返らない記事を0と表示しません。';
+  activeAnalytics=replaceOptions('mm-analytics-report',allAnalyticsReports().map(r=>({id:r.id,label:reportLabel(r)})),'実績は未取得',activeAnalytics);
+  const report=analyticsReport();$('mm-analytics-scope').textContent=report?`${reportLabel(report)} / GA4 ${report.gaTimezone||'タイムゾーン未取得'} / GSC America/Los_Angeles`:'実績はまだ取得されていません。サーバーの連携状況を確認しています。行が返らない記事を0と表示しません。';
   $('mm-analytics-notes').replaceChildren(...(report?.notes||[]).map(note=>element('li',note)));
   const byId=new Map((report?.rows||[]).map(row=>[row.pageId,row]));
   $('mm-analytics-rows').replaceChildren(...catalog.map(article=>{const tr=element('tr'),td=element('td');td.append(externalLink(article.title,article.path));tr.append(td);const values=byId.get(article.id)||{};for(const key of metricsKeys)tr.append(element('td',key==='ctr'?percentage(values[key]):number(values[key]),'kw-number'));return tr;}));
   $('mm-export-metrics').disabled=!report;
-  activeQuery=replaceOptions('mm-query-report',state.searchReports.filter(r=>r.kind==='queries').map(r=>({id:r.id,label:reportLabel(r)})),'クエリは未取得',activeQuery);
+  activeQuery=replaceOptions('mm-query-report',allQueryReports().map(r=>({id:r.id,label:reportLabel(r)})),'クエリは未取得',activeQuery);
   renderQueries();
 }
 function renderQueries(){
   const report=queryReport(),search=$('mm-query-search').value.trim().normalize('NFKC').toLowerCase(),articles=new Map(catalog.map(item=>[item.id,item]));
   const rows=(report?.rows||[]).filter(row=>!search||row.query.normalize('NFKC').toLowerCase().includes(search)).slice().sort((a,b)=>b.clicks-a.clicks||b.impressions-a.impressions||a.query.localeCompare(b.query,'ja'));
   const pages=Math.max(1,Math.ceil(rows.length/pageSize));queryPage=Math.min(Math.max(1,queryPage),pages);
-  $('mm-query-scope').textContent=report?`${report.start}〜${report.end} / 取得：${dateLabel(report.importedAt)}。${report.notes.join(' ')}`:'検索クエリは未取得です。上部のボタンから取得できます。';
+  $('mm-query-scope').textContent=report?`${reportLabel(report)}。${report.notes.join(' ')}`:'検索クエリは未取得です。自動取得の完了後に表示します。';
   $('mm-query-rows').replaceChildren(...rows.slice((queryPage-1)*pageSize,queryPage*pageSize).map(row=>{const tr=element('tr');tr.append(element('td',row.query,'kw-name'));const article=articles.get(row.pageId),td=element('td',article?.title||row.pageId,'kw-name');tr.append(td);for(const key of ['clicks','impressions','ctr','position'])tr.append(element('td',key==='ctr'?percentage(row[key]):number(row[key]),'kw-number'));return tr;}));
   if(!rows.length){const tr=element('tr'),td=element('td',report?'この条件のクエリ行はありません。':'検索クエリは未取得です。','kw-empty');td.colSpan=6;tr.append(td);$('mm-query-rows').append(tr);}
   $('mm-query-count').textContent=`${rows.length}件`;$('mm-query-page').textContent=`${queryPage} / ${pages}`;$('mm-query-prev').disabled=queryPage===1;$('mm-query-next').disabled=queryPage===pages;$('mm-export-queries').disabled=!report;
 }
 function renderConnection(){
-  const connected=Boolean(token&&Date.now()<expires);$('mm-stat-google').textContent=connected?'接続済み':'未接続';
+  const connected=Boolean(token&&Date.now()<expires);
   $('mm-fetch-metrics').disabled=!connected||fetchBusy||!ready;$('mm-fetch-queries').disabled=!connected||fetchBusy||!ready;
   $('mm-google-disconnect').disabled=!token&&!sheetToken;
   $('mm-google-connect').disabled=oauthPending;$('mm-sheet-read').disabled=oauthPending||fetchBusy||!ready;
-  $('mm-analytics-connection').textContent=connected?'Google接続済み。期間を指定して取得してください。':'Google未接続。接続・入出力画面で設定してください。';
+  $('mm-analytics-connection').textContent=connected?'任意の手動接続は有効です。期間を指定して取得できます。':'任意の手動接続は未使用です。サーバーの自動取得には影響しません。';
 }
 function render(){
   activeVolume=replaceOptions('mm-volume-report',state.volumeReports.map(r=>({id:r.id,label:volumeLabel(r)})),'調査データは未取得',activeVolume);
@@ -114,12 +118,51 @@ function render(){
   const ranked=rankPlans(state.plans,report,state.edits);$('mm-stat-plans').textContent=number(state.plans.length);$('mm-stat-measured').textContent=number(ranked.filter(row=>row.volume?.status==='measured').length);$('mm-stat-volume-note').textContent=report?`${report.source}・実数のみ集計`:'調査CSVは未取込';
   $('mm-stat-linked').textContent=number(joinMediaMetrics(state.plans,null,catalog,state.edits).filter(row=>row.page).length);
   $('mm-keywords-export').textContent=`調査用キーワード${state.plans.length}件を出力`;
-  const latest=state.analyticsReports.slice().sort((a,b)=>b.importedAt.localeCompare(a.importedAt))[0];$('mm-last-fetch').textContent=latest?`最終取得：${dateLabel(latest.importedAt)}`:'実績は未取得';
-  renderAnalytics();renderPlanTable();renderConnection();
+  renderAnalytics();renderPlanTable();renderConnection();renderServerStatus();
 }
+function refreshArticleChoices(value=$('mm-edit-url').value){
+  const select=$('mm-edit-url');select.replaceChildren(option('','未紐づけ'),...catalog.map(article=>option(`https://layr.co.jp${article.path}`,article.title)));
+  const retired=Boolean(value&&!catalog.some(article=>`https://layr.co.jp${article.path}`===value));
+  if(retired){const item=option(value,`以前の公開URL（現在の公開一覧外）：${value}`);item.disabled=true;item.dataset.mmRetired='true';select.append(item);}
+  select.value=value;
+  if(retired&&$('mm-editor').open){$('mm-editor-message').hidden=false;$('mm-editor-message').textContent='公開記事一覧が更新され、選択中のURLが一覧外になりました。現在の公開記事または「未紐づけ」を選択してください。';}
+  return retired;
+}
+function renderServerStatus(){
+  const snapshot=serverSnapshot,busy=['loading','syncing'].includes(serverStatus.phase),sources=snapshot?.integrations||[],configured=Boolean(snapshot?.configuration.ga4Configured&&snapshot?.configuration.gscConfigured);
+  const errors=snapshot?.job?.status==='error'||snapshot?.scheduler?.status==='error'||sources.some(row=>row.status==='error'),unconfigured=sources.some(row=>row.status==='not_configured'),hasSuccess=sources.some(row=>row.lastSuccessAt);
+  let label='確認中';
+  if(snapshot){label=!configured||unconfigured?'設定準備中':snapshot.job?.status==='running'?'同期中':errors||serverStatus.phase==='error'?'確認が必要':serverStatus.phase==='waiting'?'終了未確認':hasSuccess?'取得済み':'初回取得待ち';}
+  else if(serverStatus.phase==='error')label='取得できません';
+  $('mm-stat-google').textContent=label;
+  const successes=sources.map(row=>row.lastSuccessAt).filter(Boolean).sort();$('mm-last-fetch').textContent=successes.length?`最終成功：${dateLabel(successes.at(-1))}`:'サーバー実績は未取得';
+  const next=nextAutomaticRun(snapshot?.schedule,new Date());
+  $('mm-server-next').textContent=next?`実行予定：毎日${snapshot.schedule.time}・日本時間（GitHub Actions）。次回目安：${dateLabel(next)}。混雑状況により開始が遅れる場合があります。${configured?'':' Google連携は設定完了後に稼働します。'}`:'自動取得の実行予定を確認できていません。';
+  const scheduler=snapshot?.scheduler,schedulerLabels={running:'実行中',completed:'完了',error:'失敗'};
+  $('mm-server-scheduler').textContent=scheduler?`定期処理：${schedulerLabels[scheduler.status]||'未確認'} / 最終試行：${dateLabel(scheduler.lastAttemptAt)} / 最終完了：${dateLabel(scheduler.lastSuccessAt)}。処理の完了とGoogle各ソースの取得成功は別です。下記のGA4・Search Consoleの状態を確認してください。`:'定期処理の実行履歴はまだありません。Google各ソースの取得状況は下記に表示します。';
+  $('mm-server-status').textContent=['error','waiting','syncing'].includes(serverStatus.phase)?serverStatus.message:snapshot&&(!configured||unconfigured)?'サーバー連携の設定準備中です。設定完了後は、個別のGoogle接続なしで自動取得した実績を表示します。':serverStatus.message;
+  $('mm-server-status').setAttribute('role',serverStatus.phase==='error'?'alert':'status');
+  $('mm-server-sources').replaceChildren(...sources.map(source=>{
+    const item=element('article','', 'mm-server-source');item.append(element('h3',source.source==='ga4'?'GA4':'Search Console'));
+    const labels={ok:'取得済み',error:'取得に失敗',not_configured:'設定準備中',unknown:'未確認'};item.append(element('p',labels[source.status]||'未確認','kw-tag'));
+    if(source.message)item.append(element('p',source.message));
+    item.append(element('p',`最終成功：${dateLabel(source.lastSuccessAt)}`,'kw-help'),element('p',`最終試行：${dateLabel(source.lastAttemptAt)}`,'kw-help'));return item;
+  }));
+  $('mm-server-notes').replaceChildren(...(snapshot?.job?.status==='error'?[`直近の同期が失敗しました（${dateLabel(snapshot.job.finishedAt)}）：${snapshot.job.message||'接続設定と実行履歴を確認してください。'}`]:[]).concat(snapshot?.notes||[]).map(note=>element('li',note)));
+  $('mm-server-sync').disabled=!ready||busy||!snapshot||!sources.some(source=>snapshot.configuration[`${source.source}Configured`])||snapshot.job?.status==='running';
+  $('mm-server-refresh').disabled=!ready||busy;
+}
+const serverClient=createServerAnalyticsClient({catalog,onSnapshot:snapshot=>{
+  serverSnapshot=snapshot;catalog=snapshot.catalog;refreshArticleChoices();
+  if(!serverLoadedOnce){if(!analyticsSelectionTouched&&snapshot.reports.length)activeAnalytics=snapshot.reports[0].id;if(!querySelectionTouched&&snapshot.queries.length)activeQuery=snapshot.queries[0].id;serverLoadedOnce=true;}
+  if(ready)render();
+},onStatus:status=>{serverStatus=status;renderServerStatus();}});
+$('mm-server-refresh').addEventListener('click',()=>void serverClient.refresh());
+$('mm-server-sync').addEventListener('click',()=>void serverClient.sync());
+
 function config(){return validateConnection({clientId:$('mm-client-id').value.trim(),property:$('mm-property').value.trim(),site:$('mm-site').value});}
 function dates(){const start=$('mm-analytics-start').value,end=$('mm-analytics-end').value;if(!start||!end||start>end)throw new Error('開始日と終了日を確認してください。');return {start,end};}
-function disconnect(){clearPlanPreview();token='';expires=0;sheetToken='';sheetExpires=0;$('mm-google-status').textContent='Google未接続。保存済みの実績は閲覧できます。';$('mm-sheet-status').textContent='シートへの読み取り権限は未接続。';renderConnection();}
+function disconnect(){clearPlanPreview();token='';expires=0;sheetToken='';sheetExpires=0;$('mm-google-status').textContent='任意の手動接続は未使用です。サーバー自動取得には影響しません。';$('mm-sheet-status').textContent='シートへの読み取り権限は未接続。';renderConnection();}
 function loadIdentity(){
   if(window.google?.accounts?.oauth2)return Promise.resolve();if(identityLoading)return identityLoading;
   identityLoading=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='https://accounts.google.com/gsi/client';script.async=true;
@@ -160,8 +203,8 @@ for(const button of document.querySelectorAll('[data-mm-tab]'))button.addEventLi
 for(const button of document.querySelectorAll('[data-mm-open]'))button.addEventListener('click',()=>showTab(button.dataset.mmOpen));
 for(const id of ['mm-search','mm-need','mm-status','mm-volume-filter','mm-sort','mm-column-mode'])$(id).addEventListener(id==='mm-search'?'input':'change',()=>{page=1;renderPlanTable();});
 $('mm-volume-report').addEventListener('change',()=>{activeVolume=$('mm-volume-report').value;page=1;render();});
-$('mm-analytics-report').addEventListener('change',()=>{activeAnalytics=$('mm-analytics-report').value;render();});
-$('mm-query-report').addEventListener('change',()=>{activeQuery=$('mm-query-report').value;queryPage=1;renderQueries();});
+$('mm-analytics-report').addEventListener('change',()=>{analyticsSelectionTouched=true;activeAnalytics=$('mm-analytics-report').value;render();});
+$('mm-query-report').addEventListener('change',()=>{querySelectionTouched=true;activeQuery=$('mm-query-report').value;queryPage=1;renderQueries();});
 $('mm-query-search').addEventListener('input',()=>{queryPage=1;renderQueries();});
 $('mm-prev').addEventListener('click',()=>{page--;renderPlanTable();});$('mm-next').addEventListener('click',()=>{page++;renderPlanTable();});
 $('mm-query-prev').addEventListener('click',()=>{queryPage--;renderQueries();});$('mm-query-next').addEventListener('click',()=>{queryPage++;renderQueries();});
@@ -172,10 +215,8 @@ $('mm-plan-rows').addEventListener('click',event=>{
   editingId=plan.id;editorDirty=false;const edit=planEdit(state,plan.id);$('mm-editor-id').textContent=plan.id;$('mm-editor-title').textContent=plan.title;$('mm-editor-keyword').textContent=`主キーワード：${plan.keyword}`;
   $('mm-editor-detail').replaceChildren(...[['需要段階',plan.need],['企画カテゴリー',plan.category],['解決する問い',plan.intent],['素材・構成',plan.material],['関連語',plan.relatedKeywords],['公開前の条件',plan.gate]].flatMap(([label,value])=>[element('dt',label),element('dd',value||'未記入')]));
   $('mm-edit-status').value=edit.status;$('mm-edit-priority').value=edit.priority;
-  const select=$('mm-edit-url');for(const item of select.querySelectorAll('[data-mm-retired]'))item.remove();
-  const url=edit.url?new URL(edit.url,'https://layr.co.jp').href:'',retired=Boolean(url&&!catalog.some(article=>`https://layr.co.jp${article.path}`===url));
-  if(retired){const item=option(url,`以前の公開URL（現在の公開一覧外）：${url}`);item.disabled=true;item.dataset.mmRetired='true';select.append(item);}
-  select.value=url;$('mm-edit-notes').value=edit.notes;$('mm-editor-message').hidden=!retired;
+  const url=edit.url?new URL(edit.url,'https://layr.co.jp').href:'',retired=refreshArticleChoices(url);
+  $('mm-edit-notes').value=edit.notes;$('mm-editor-message').hidden=!retired;
   if(retired)$('mm-editor-message').textContent='以前の公開URLが保存されています。保存する場合は、現在の公開記事または「未紐づけ」を明示的に選択してください。';
   $('mm-editor').showModal();
 });
@@ -220,15 +261,15 @@ $('mm-export-plans').addEventListener('click',()=>{const report=volumeReport(),j
 
 $('mm-config-form').addEventListener('submit',event=>{event.preventDefault();try{localStorage.setItem('layr-ltori-google-config',JSON.stringify(config()));message('接続設定をこのブラウザに保存しました。');}catch(error){message(error.message,true);}});
 for(const id of ['mm-client-id','mm-property','mm-site'])$(id).addEventListener('change',disconnect);
-$('mm-google-connect').addEventListener('click',async()=>{try{const settings=config();localStorage.setItem('layr-ltori-google-config',JSON.stringify(settings));const response=await authorize(GOOGLE_SCOPES,settings.clientId);token=response.token;expires=response.expires;$('mm-google-status').textContent='Googleに接続済み。アクセス実績画面から手動で取得できます。';renderConnection();message('GA4とSearch Consoleへの読み取り接続が完了しました。');}catch(error){message(error.message,true);}});
+$('mm-google-connect').addEventListener('click',async()=>{try{const settings=config();localStorage.setItem('layr-ltori-google-config',JSON.stringify(settings));const response=await authorize(GOOGLE_SCOPES,settings.clientId);token=response.token;expires=response.expires;$('mm-google-status').textContent='任意の手動接続は有効です。アクセス実績画面の詳細操作から取得できます。';renderConnection();message('GA4とSearch Consoleへの読み取り接続が完了しました。');}catch(error){message(error.message,true);}});
 $('mm-google-disconnect').addEventListener('click',()=>{disconnect();message('この画面のGoogle接続を解除しました。保存済みの実績は残っています。');});
 async function fetchAnalytics(kind){
   if(fetchBusy)return;try{
     if(!token||Date.now()>=expires){disconnect();throw new Error('Google接続の期限が切れています。再接続してください。');}
     const settings=config(),period=dates();fetchBusy=true;renderConnection();message(kind==='queries'?'ページごとの検索クエリを取得しています。':'GA4とSearch Consoleから公開記事の実績を取得しています。');
     const request={config:settings,token,...period,catalog};
-    if(kind==='queries'){const report=await fetchMediaSearchQueries(request);await commit(applySearchReport(state,report,catalog));activeQuery=report.id;queryPage=1;}
-    else{const report=await fetchMediaReport(request);await commit(applyAnalyticsReport(state,report,catalog));activeAnalytics=report.id;}
+    if(kind==='queries'){const report=await fetchMediaSearchQueries(request);await commit(applySearchReport(state,report,catalog));activeQuery=report.id;querySelectionTouched=true;queryPage=1;}
+    else{const report=await fetchMediaReport(request);await commit(applyAnalyticsReport(state,report,catalog));activeAnalytics=report.id;analyticsSelectionTouched=true;}
     render();message('取得できた実績を保存しました。部分的な取得失敗や集計上の注記は、実績の下に表示します。');
   }catch(error){message(error.message,true);}finally{fetchBusy=false;renderConnection();}
 }
@@ -286,9 +327,10 @@ async function initialize(){
     if(seed.volumeReports?.length){$('mm-seed-volume-block').hidden=false;$('mm-seed-volume-summary').textContent=`${volumeLabel(seed.volumeReports[0])} / ${seed.volumeReports[0].rows.length}キーワード`;}
     ready=true;render();$('mm-save-state').textContent=`このブラウザに保存：${dateLabel(state.updatedAt)}`;
     const hash=location.hash.slice(1);showTab(['plans','volume','analytics','settings'].includes(hash)?hash:'plans');
+    void serverClient.refresh();
   }catch(error){ready=false;message(`データを開けませんでした。${error.message}`,true);$('mm-save-state').textContent='保存を利用できません';for(const control of document.querySelectorAll('main button,main input,main select,main textarea'))control.disabled=true;}
 }
-window.addEventListener('pagehide',disconnect);
+window.addEventListener('pagehide',()=>{disconnect();serverClient.dispose();});
 window.addEventListener('beforeunload',event=>{if(editorDirty||saveBusy||fetchBusy){event.preventDefault();event.returnValue='';}});
 setInterval(renderConnection,30000);
 void initialize();

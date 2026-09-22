@@ -6,7 +6,11 @@
   "account_id": "970414d67575a1afb2eb889748741af7",
   "compatibility_date": "2026-08-01",
   "keep_vars": true,
-  "d1_databases": [{ "binding": "SEO_DB", "database_name": "layr-hp-seo-db" }],
+  "d1_databases": [{ "binding": "SEO_DB", "database_name": "layr-hp-seo-db", "database_id": "81c0782b-73fe-4d9e-ac71-e90b32856ca9" }],
+  "vars": {
+    "SEO_GA4_PROPERTY_ID": "550092764",
+    "SEO_GSC_SITE_URL": "sc-domain:layr.co.jp"
+  },
   "triggers": { "crons": [] },
   "assets": {
     "directory": "./dist",

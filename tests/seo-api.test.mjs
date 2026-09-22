@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {handleManagerApi} from '../worker/seo-manager-api.mjs';
-import {getDocuments, getPublished, publishDue} from '../worker/seo-store.mjs';
+import {getDocuments, getPublished, publishDue, ensureDatabase, createStore} from '../worker/seo-store.mjs';
 import {publicFetch} from '../worker/seo-runtime.mjs';
 
 function sqliteD1(t) {
@@ -139,4 +139,56 @@ test('null and non-object document payloads return a validation error without wr
     assert.equal((await call(db, '/api/seo/documents', payload)).status, 400);
   }
   assert.equal((await getDocuments(db)).length, 0);
+});
+
+test('the media analytics endpoint reads only report/status data and is read-only and owner-protected', async t => {
+  const db = sqliteD1(t); await ensureDatabase(db);
+  const store = createStore(db), article = '/service/ltori/media/interview-followup/';
+  const env = {SEO_DB: db, SEO_GA4_PROPERTY_ID: '123', SEO_GSC_SITE_URL: 'sc-domain:layr.co.jp'};
+  await store.upsert('analytics', 'ga4:current', {source: 'ga4', period: 'current', propertyId: '123', siteUrl: env.SEO_GSC_SITE_URL,
+    startDate: '2026-08-22', endDate: '2026-09-18', fetchedAt: '2026-09-21T21:15:00Z', timeZone: 'Asia/Tokyo',
+    pages: [{path: article, views: 17, users: 10, sessions: 11, inquiries: 1, ctaClicks: 5, documentRequests: 2}, {path: '/service/ltori/area/mie/nabari/', views: 999}], queries: [], quality: {notes: []}});
+  await store.upsert('integrations', 'ga4', {source: 'ga4', status: 'ok', lastAttemptAt: '2026-09-21T21:15:00Z', lastSuccessAt: '2026-09-21T21:15:00Z'});
+  await store.upsert('integrations', 'inspection', {source: 'inspection', status: 'ok', unrelatedField: 'must-not-return'});
+  await store.upsert('jobs', 'analytics', {status: 'completed', finishedAt: '2026-09-21T21:16:00Z', result: {internal: 'must-not-return'}});
+  await store.upsert('scheduler', 'maintenance', {status: 'error', lastAttemptAt: '2026-09-21T21:17:00Z', lastSuccessAt: '2026-09-20T21:18:00Z', runId: '1234567', runAttempt: '2', token: 'must-not-return'});
+  await store.upsert('scheduler', 'publish', {status: 'completed', runId: '7654321', privateField: 'must-not-return'});
+  await store.upsert('leads', 'private-lead', {email: 'private-lead@example.test'});
+  const path = '/api/seo/media/analytics', services = {staticPages: [{path: article, type: 'article'}, {path: '/service/ltori/area/mie/nabari/', type: 'city'}]};
+  const response = await handleManagerApi(request(path), env, identity, path, services);
+  assert.equal(response.status, 200);
+  assert.match(response.headers.get('Cache-Control'), /no-store/);
+  assert.match(response.headers.get('X-Robots-Tag'), /noindex/);
+  const result = await response.json();
+  assert.equal(result.reports.length, 1);
+  assert.deepEqual(result.reports[0].rows.map(row => row.pageId), ['interview-followup']);
+  assert.equal(result.reports[0].rows[0].cta, 5);
+  assert.equal(result.job.status, 'completed');
+  assert.deepEqual(result.scheduler, {status: 'error', lastAttemptAt: '2026-09-21T21:17:00.000Z', lastSuccessAt: '2026-09-20T21:18:00.000Z', runId: '1234567', runAttempt: '2'});
+  assert.equal(result.schedule.provider, 'github-actions');
+  assert.equal(result.schedule.time, '06:17');
+  assert.equal(result.integrations.length, 1);
+  assert.doesNotMatch(JSON.stringify(result), /private-lead|must-not-return|nabari|private_key|access_token/);
+  assert.equal((await handleManagerApi(request(path, {}), env, identity, path, services)).status, 405);
+  assert.equal((await handleManagerApi(request(path), env, {email: 'other@example.test'}, path, services)).status, 403);
+});
+
+test('media analytics includes live dynamic articles and removes them after withdrawal without exposing drafts', async t => {
+  const db = sqliteD1(t); await ensureDatabase(db);
+  const store = createStore(db), path = '/api/seo/media/analytics';
+  const livePath = '/service/ltori/media/live-extra/', draftPath = '/service/ltori/media/draft-extra/';
+  const env = {SEO_DB: db, SEO_GA4_PROPERTY_ID: '123', SEO_GSC_SITE_URL: 'sc-domain:layr.co.jp'};
+  await db.prepare('INSERT INTO seo_published(id,path,value,version,published_at) VALUES(?,?,?,?,?)').bind('live-extra', livePath, JSON.stringify({type: 'article', title: '公開済みの記事', body: 'BODY-MUST-NOT-LEAK'}), 1, '2026-09-20T00:00:00Z').run();
+  await call(db, '/api/seo/documents', {document: {type: 'article', slug: 'draft-extra', title: 'まだ非公開の記事'}});
+  await store.upsert('analytics', 'ga4:current', {source: 'ga4', period: 'current', propertyId: '123', siteUrl: env.SEO_GSC_SITE_URL,
+    startDate: '2026-08-22', endDate: '2026-09-18', fetchedAt: '2026-09-21T21:15:00Z', timeZone: 'Asia/Tokyo',
+    pages: [{path: livePath, views: 7}, {path: draftPath, views: 99}], queries: [], quality: {notes: []}});
+  const result = await (await handleManagerApi(request(path), env, identity, path)).json();
+  assert.deepEqual(result.catalog, [{id: 'live-extra', path: livePath, title: '公開済みの記事', publication: 'published'}]);
+  assert.deepEqual(result.reports[0].rows.map(row => row.pageId), ['live-extra']);
+  assert.doesNotMatch(JSON.stringify(result), /BODY-MUST-NOT-LEAK|draft-extra|まだ非公開/);
+  await db.prepare('DELETE FROM seo_published WHERE id=?').bind('live-extra').run();
+  const withdrawn = await (await handleManagerApi(request(path), env, identity, path)).json();
+  assert.deepEqual(withdrawn.catalog, []);
+  assert.deepEqual(withdrawn.reports[0].rows, []);
 });

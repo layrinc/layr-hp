@@ -228,7 +228,7 @@ export async function runAnalyticsSync(env, {store, publishedPaths = [], now = n
   const results = await Promise.all(configured.map(async source => {
     try {
       // Compute both windows before replacing either to avoid a mixed comparison.
-      const snapshots = await Promise.all(analyticsPeriods(now).map(async period => ({source, ...period, fetchedAt: new Date(now).toISOString(), ...(await (source === 'ga4' ? fetchGa4 : fetchGsc)({fetchImpl, token, ...configuration, period}))})));
+      const snapshots = await Promise.all(analyticsPeriods(now).map(async period => ({source, ...period, propertyId: configuration.propertyId, siteUrl: configuration.siteUrl, fetchedAt: new Date(now).toISOString(), ...(await (source === 'ga4' ? fetchGa4 : fetchGsc)({fetchImpl, token, ...configuration, period}))})));
       for (const snapshot of snapshots) await store.upsert('analytics', `${source}:${snapshot.period}`, snapshot);
       return await recordStatus(store, source, 'ok', now);
     } catch (error) { return await recordStatus(store, source, 'error', now, safeError(error)); }
