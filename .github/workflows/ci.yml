@@ -37,6 +37,9 @@ jobs:
       - name: メディア管理（検索需要・Google連携・保存を検証）
         run: node --test tests/media-manager-*.test.mjs
 
+      - name: SEOワークスペース統合（施策別集計・改善管理・画面切り替えを検証）
+        run: node --test tests/seo-workspace.test.mjs tests/seo-workspace-client.test.mjs tests/seo-growth-navigation.test.mjs
+
       - name: SEO自動運用（認証・D1・公開上限・計測・診断）
         run: node --test tests/seo-store.test.mjs tests/seo-leads.test.mjs tests/seo-api.test.mjs tests/seo-publication.test.mjs tests/seo-publication-runtime.test.mjs tests/seo-analytics-server.test.mjs tests/seo-analytics-runtime.test.mjs tests/seo-media-analytics.test.mjs tests/seo-growth.test.mjs tests/ltori-diagnosis.test.mjs tests/ltori-contact.test.mjs
 
