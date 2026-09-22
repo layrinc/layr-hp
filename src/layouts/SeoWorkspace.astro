@@ -4,6 +4,7 @@ import '../styles/seo-manager.css';
 import '../styles/seo-workspace.css';
 import WorkspaceNav from '../components/seo-manager/WorkspaceNav.astro';
 const {title, active = 'overview'} = Astro.props;
+const hasSidebar = Astro.slots.has('sidebar');
 ---
 <!doctype html>
 <html lang="ja">
@@ -21,7 +22,7 @@ const {title, active = 'overview'} = Astro.props;
     <a class="kw-skip" href="#workspace-main">管理内容へ</a>
     <header class="kw-top"><a href="/" class="kw-brand">LAYR <span>SEO WORKSPACE</span></a><div class="kw-account"><span id="kw-identity" role="status">認証を確認中</span><a id="kw-logout" class="kw-button" href="/cdn-cgi/access/logout">ログアウト</a></div></header>
     <WorkspaceNav active={active} />
-    <main id="workspace-main" class="kw-main workspace-main"><slot /></main>
+    {hasSidebar ? <div class="kw-shell"><slot name="sidebar" /><main id="workspace-main" class="kw-main workspace-main"><slot /></main></div> : <main id="workspace-main" class="kw-main workspace-main"><slot /></main>}
     <noscript><p class="kw-notice">データの表示・保存にはJavaScriptが必要です。</p></noscript>
   </body>
 </html>

@@ -1,14 +1,16 @@
 ---
 import SeoWorkspace from '../../../layouts/SeoWorkspace.astro';
 import KijiWorkbench from '../../../components/seo-manager/KijiWorkbench.astro';
+import KijiNavigation from '../../../components/seo-manager/KijiNavigation.astro';
 import catalog from '../../../data/seo-corporate-catalog.json';
 import {CORPORATE_STATUS, CORPORATE_PRIORITY} from '../../../lib/seo-manager/corporate-model.mjs';
 const serialized = JSON.stringify(catalog).replace(/</g, '\\u003c');
 ---
 <SeoWorkspace title="LAYR公式メディアの記事制作・公開・改善" active="corporate">
+  <KijiNavigation slot="sidebar" />
   <header class="kw-heading"><div class="workspace-intro"><p class="workspace-eyebrow">LAYR / MEDIA</p><h1>公式メディアの記事制作・公開・改善</h1><p>キーワードの選定から原稿の確認、公開後の改善までを管理します。</p></div></header>
   <KijiWorkbench />
-  <section id="kiji-panel-improve" role="tabpanel" aria-labelledby="kiji-tab-improve" data-kiji-panel="improve" hidden>
+  <section id="kiji-panel-improve" role="tabpanel" tabindex="0" aria-labelledby="kiji-tab-improve" data-kiji-panel="improve" hidden>
   <header class="kw-heading"><div class="workspace-intro"><p class="workspace-eyebrow">LAYR / MEDIA</p><h2>公開記事の改善</h2><p>公開済みの記事と検索・アクセス実績を確認し、次の改善を記録します。</p></div><button class="kw-button" id="cp-refresh" type="button">最新の情報に更新</button></header>
   <p id="cp-message" class="kw-notice" role="status" hidden></p>
   <p id="cp-saved" class="kw-help" role="status">共有する改善メモを読み込み中です。</p>

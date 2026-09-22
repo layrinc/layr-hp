@@ -2,7 +2,7 @@ import {startAccessSession} from './session.mjs';
 import {API_BASE,ARTICLE_STATUS,KEYWORD_STATUS,number,safeJson,safeUrl,articleUrl,publicationUrl,demandInfo,createKijiApi,createOperationLock,createLatestRead,metricTotal,metricRate,decodeCsv,importCsv,markdownHtml} from './kiji-client.mjs';
 
 export async function mountKijiWorkbench({api = createKijiApi(), mountImprovement = async () => { const module = await import('./corporate-app.mjs'); await module.mountCorporate(); }} = {}) {
-  const root = document.getElementById('kiji-workbench'); if (!root || root.dataset.mounted) return;
+  const root = document.getElementById('kiji-workbench'), navigation = document.getElementById('kiji-navigation'); if (!root || !navigation || root.dataset.mounted) return;
   root.dataset.mounted = 'true';
   const $ = id => document.getElementById(`kiji-${id}`), all = selector => [...root.querySelectorAll(selector)];
   const node = (tag,text,className) => { const el = document.createElement(tag); if (text !== undefined) el.textContent = String(text ?? ''); if (className) el.className = className; return el; };
@@ -189,15 +189,22 @@ export async function mountKijiWorkbench({api = createKijiApi(), mountImprovemen
     try { const rows = items(data); $('evidence-empty').hidden = !!rows.length; $('evidence-rows').replaceChildren(...rows.map(row => cells([row.label,row.value,row.source,button(row.usable ? '使用中：停止する' : '停止中：使用する',() => mutate('evidence-error',async () => { await api(`/evidence/${row.id}`,{method:'PATCH',body:{usable:row.usable ? 0 : 1}}); await loadEvidence(); }),false,true)]))); } catch (err) { error('evidence-error',err.message); }
   }
   const loaders = {dash:loadDash,keywords:loadKeywords,queue:loadQueue,drafts:loadDrafts,metrics:loadMetrics,settings:loadSettings,improve:mountImprovement};
+  const tabs = [...navigation.querySelectorAll('[data-kiji-tab]')];
+  const panels = tabs.map(tab => document.getElementById(tab.getAttribute('aria-controls'))).filter(Boolean);
+  const compactNavigation = window.matchMedia?.('(max-width: 900px)');
+  const updateNavigationOrientation = () => navigation.setAttribute('aria-orientation',compactNavigation?.matches ? 'horizontal' : 'vertical');
+  updateNavigationOrientation();
+  compactNavigation?.addEventListener('change',updateNavigationOrientation);
   const visited = new Set();
   async function selectTab(key,{focus = false} = {}) {
-    if (!loaders[key]) key = 'dash';
-    all('[data-kiji-tab]').forEach(tab => { const active = tab.dataset.kijiTab === key; tab.setAttribute('aria-selected',String(active)); tab.tabIndex = active ? 0 : -1; if (active && focus) tab.focus(); });
-    document.querySelectorAll('[data-kiji-panel]').forEach(panel => { panel.hidden = panel.dataset.kijiPanel !== key; });
+    if (!Object.hasOwn(loaders,key)) key = 'dash';
+    tabs.forEach(tab => { const active = tab.dataset.kijiTab === key; tab.setAttribute('aria-selected',String(active)); tab.tabIndex = active ? 0 : -1; if (active && focus) tab.focus(); });
+    panels.forEach(panel => { panel.hidden = panel.dataset.kijiPanel !== key; });
     history.replaceState(null,'',`${location.pathname}${location.search}#${key}`);
     if (!visited.has(key)) { visited.add(key); try { await loaders[key](); } catch (err) { visited.delete(key); notify(err.message); } }
   }
-  all('[data-kiji-tab]').forEach(tab => { tab.addEventListener('click',() => selectTab(tab.dataset.kijiTab)); tab.addEventListener('keydown',event => { const tabs = all('[data-kiji-tab]'), index = tabs.indexOf(tab); let next = null; if (event.key === 'ArrowRight') next = (index + 1) % tabs.length; if (event.key === 'ArrowLeft') next = (index - 1 + tabs.length) % tabs.length; if (event.key === 'Home') next = 0; if (event.key === 'End') next = tabs.length - 1; if (next !== null) { event.preventDefault(); void selectTab(tabs[next].dataset.kijiTab,{focus:true}); } }); });
+  window.addEventListener('hashchange',() => { const key = location.hash.slice(1); if (Object.hasOwn(loaders,key)) void selectTab(key); });
+  tabs.forEach(tab => { tab.addEventListener('click',() => selectTab(tab.dataset.kijiTab)); tab.addEventListener('keydown',event => { const index = tabs.indexOf(tab), vertical = navigation.getAttribute('aria-orientation') === 'vertical'; let next = null; if (event.key === (vertical ? 'ArrowDown' : 'ArrowRight')) next = (index + 1) % tabs.length; if (event.key === (vertical ? 'ArrowUp' : 'ArrowLeft')) next = (index - 1 + tabs.length) % tabs.length; if (event.key === 'Home') next = 0; if (event.key === 'End') next = tabs.length - 1; if (next !== null) { event.preventDefault(); void selectTab(tabs[next].dataset.kijiTab,{focus:true}); } }); });
   all('[data-kiji-refresh]').forEach(el => el.addEventListener('click',() => loaders[el.dataset.kijiRefresh](true)));
   $('seed-form').addEventListener('submit',event => { event.preventDefault(); void addKeyword(); }); $('expand').addEventListener('click',() => addKeyword(true));
   $('classify').addEventListener('click',() => mutate('keywords-error',async () => { const result = await api('/keywords/classify',{method:'POST',body:{}}); notify(result.classified ? `${number(result.classified)}件を分類しました。層と検索意図を確認してください。` : result.message || '分類対象がありません。'); await loadKeywords(); }));
@@ -215,7 +222,7 @@ export async function mountKijiWorkbench({api = createKijiApi(), mountImprovemen
   $('settings-form').addEventListener('input',() => { settingsDirty = true; read('settings').invalidate(); }); $('settings-form').addEventListener('submit',event => { event.preventDefault(); if (!settingsLoaded || !$('settings-form').reportValidity()) return; const body = Object.fromEntries(settingFields().map(field => [field.dataset.kijiSetting,field.dataset.kijiSetting === 'categories' ? field.value.split(',').map(value => value.trim()).filter(Boolean) : field.value])); if (Number(body.article_min_chars) > Number(body.article_max_chars)) return error('settings-error','本文の最大文字数は最小文字数以上にしてください。'); if (!confirm(`運転設定を保存します。モード：${body.autopilot === 'full' ? '自動制作（条件を満たす原稿の公開用の変更を作成）' : '確認後に公開'}、1日の公開上限：${body.daily_cap}本、週の目標：${body.weekly_target}本。この設定で保存しますか？`)) return; void mutate('settings-error',async () => { await api('/settings',{method:'PUT',body}); settingsDirty = false; notify('運転設定を保存しました。'); await loadDash(); }); });
   $('evidence-form').addEventListener('submit',event => { event.preventDefault(); if (!$('evidence-form').reportValidity()) return; const body = {label:$('evidence-label').value.trim(),value:$('evidence-value').value.trim(),source:$('evidence-source').value.trim()}; void mutate('evidence-error',async () => { await api('/evidence',{method:'POST',body}); $('evidence-form').reset(); notify('一次データを登録しました。'); await loadEvidence(); }); });
   $('publication-check').addEventListener('click',async () => { const button = $('publication-check'); if (button.disabled) return; button.disabled = true; $('publication-status').textContent = '公開先への接続を確認しています。'; try { const result = await api('/publication/status'); $('publish-status').textContent = result.connected || result.readable ? '読み取り確認済み（書込未確認）' : '読み取り接続を確認できません'; $('publication-status').textContent = `${result.connected || result.readable ? '公開先の読み取り接続を確認しました。' : '公開先への接続を確認できません。'} ${result.message || ''} この確認では書き込み権限を検証していません。`; } catch (err) { $('publication-status').textContent = err.message; } finally { button.disabled = false; } });
-  const initial = location.hash.slice(1); await selectTab(loaders[initial] ? initial : 'dash');
+  await selectTab(location.hash.slice(1));
   return {apiBase:API_BASE,selectTab};
 }
 

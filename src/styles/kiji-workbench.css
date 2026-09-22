@@ -1,8 +1,7 @@
 .kiji-workbench { min-width:0; }
 .kiji-workbench section:not(.kw-panel), #kiji-panel-improve > section:not(.kw-panel) { padding:0; }
-.kiji-tabs { display:flex; flex-wrap:wrap; gap:6px; padding-bottom:16px; margin-bottom:24px; border-bottom:1px solid var(--line); }
-.kiji-tabs [aria-selected="true"] { color:var(--green-ink); border-color:var(--green-ink); background:var(--paper); }
-.kiji-tabs .kw-tag { margin-left:6px; }
+.kiji-sidebar nav button[aria-selected="true"] { background:var(--green-pale); color:var(--green-ink); border-color:var(--green-line); }
+.kiji-sidebar nav button .kw-tag { color:inherit; margin:0 0 0 6px; }
 .kiji-workbench h3 { font-size:var(--kw-lead); font-weight:700; margin:0 0 16px; }
 .kiji-actions { display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin:16px 0; }
 .kiji-actions .kiji-actions { margin:0; }
@@ -51,8 +50,6 @@
 .kiji-preview mark { background:var(--bg); color:inherit; font-weight:700; }
 .kiji-workbench :focus-visible { outline:2px solid var(--green-ink); outline-offset:3px; }
 @media (max-width:600px) {
-  .kiji-tabs { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .kiji-tabs .kw-button { justify-content:flex-start; text-align:left; }
   .kiji-dialog { padding:16px; }
   .kiji-workbench .kw-section-head { align-items:stretch; }
   .kiji-workbench .kiji-actions { gap:6px; }
