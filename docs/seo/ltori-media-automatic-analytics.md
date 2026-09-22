@@ -19,10 +19,18 @@ Googleのサーバー接続には、専用サービスアカウントへのGA4�
 
 2026-09-22、ユーザー承認後に専用サービスアカウント `layr-seo-workspace-reader@lunar-linker-472010-f5.iam.gserviceaccount.com` を作成し、対象GA4に閲覧者、対象Search Consoleに制限付き権限を設定した。既存の `runAnalyticsSync` を使う読み取り専用の実API検証では両方とも成功。2026-08-23〜09-19のGA4ページ2行、GSCページ1行・検索語句0行を取得。公開メディア記事は双方0行だが、集計終了日が公開日09-20より前であり、PVや需要がゼロという意味ではない。この検証は一時メモリ上で実行し、本番DBには保存していない。
 
-2026-09-22、ユーザーの保存委任を受け、Cloudflare Worker `layr-hp` の `SEO_GOOGLE_SERVICE_ACCOUNT` Secretへ専用鍵を保存済み。鍵の内容はコード・ログ・成果物に含めていない。本番の対象ID設定・メディア表示と定期実行の最終検証は、このPRの反映後に行う。
+2026-09-22、ユーザーの保存委任を受け、Cloudflare Worker `layr-hp` の `SEO_GOOGLE_SERVICE_ACCOUNT` Secretへ専用鍵を保存済み。鍵の内容はコード・ログ・成果物に含めていない。PR #43（main `308b2e7`）で対象ID設定・メディア表示を本番反映済み。
 
 以前の本番ビルドはCloudflare Cron登録時に無料枠5件の上限へ達していたが、PR #44（main `4622a67`）で定期実行をGitHub Actionsへ移行済み。対象mainのCI、本番Workers Build、初回ジョブの成功を確認した。Cloudflare有料化や新しいD1は不要。移行前のCloudflare Cron定義へ戻さない。
 
 メディアのAPIは、手動同期を含むanalyticsジョブと、GitHub側maintenanceの実行状態を別に返す。maintenanceにはサイト点検も含まれるため、その失敗をGoogleデータ取得失敗と断定しない。Googleの実取得成功はGA4・GSCそれぞれの最終成功で確認する。
 
 初回設定後は管理画面の「今すぐ同期」を1回実行し、終了日時・GA4とGSCの個別成功・対象プロパティと期間を確認する。認証済み画面を開き直してもサーバー実績が読めることを検証する。
+
+## 本番初回同期で判明した互換性修正
+
+2026-09-22 14:14 JSTのGitHub maintenance実行（35689903871）はGoogle同期が `GOOGLE_RESPONSE` で失敗した。専用鍵を使うローカル実API検証はOAuth・GA4・GSCすべて200で、権限不足ではない。
+
+本番と同じcompatibilityDate `2026-08-01` のnative Workers runtimeで、`fetch` の `redirect: 'error'` が未対応のTypeErrorになることを再現。Google宛て通信は `manual` で受け取り、3xxを失敗として扱う。認証情報をリダイレクト先へ送らない保護を維持する。fake fetchだけでなくnative runtimeで200・OAuth 302・report 307を検証し、CIへ追加する。
+
+D1を読み取り、既存の公開10記事と最終公開時刻（2026-09-22 12:47 JST）が維持されていることも確認。新しいデータベース作成や課金は行っていない。修正反映後にmaintenanceを再実行し、GA4/GSCの個別成功とsnapshot保存を確認する。
