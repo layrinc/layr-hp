@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {DatabaseSync} from 'node:sqlite';
 import {ensureDatabase, createStore, saveWorkspace, getWorkspace, saveDocument, approveDocument, pauseDocument, getDocument, getDocuments, getPublished, publishDue, publicationStats, backup} from '../worker/seo-store.mjs';
+import {REGIONAL_PREFECTURES,saveRegionalCampaignConfig} from '../worker/seo-regional-campaign.mjs';
 
 // Exercise the actual SQLite statements against real constraints and atomic
 // transactions, rather than accepting SQL strings in a behaviorless fake.
@@ -24,10 +25,13 @@ function sqliteD1(t) {
 const beforeMidnight = new Date('2026-09-21T14:59:59.000Z');
 const afterMidnight = new Date('2026-09-21T15:00:00.000Z');
 function document(index, overrides = {}) {
-  const id = `city-${String(index).padStart(3, '0')}`;
-  return {id, type: 'city', path: `/service/ltori/area/mie/${id}/`, title: `市 ${index}`, body: `Reviewed useful original content ${index}`, scheduledAt: '2026-09-21T01:00:00.000Z', ...overrides};
+  const city=REGIONAL_PREFECTURES[0].cities[index];
+  return {id:city.id, type: 'city', path:city.path, title:city.name, body: `Reviewed useful original content ${index}`, scheduledAt: '2026-09-21T01:00:00.000Z', ...overrides};
 }
+const cityId=index=>REGIONAL_PREFECTURES[0].cities[index].id;
+async function enableCampaign(db) {if(!await db.prepare("SELECT value FROM seo_kv WHERE namespace='regional_campaign' AND key='config'").first())await saveRegionalCampaignConfig(db,{enabled:true,startDate:'2026-09-21'},{expectedRevision:0,now:beforeMidnight});}
 async function enqueue(db, count, {start = 0, scheduledAt} = {}) {
+  await enableCampaign(db);
   for (let i = start; i < start + count; i++) {
     const saved = await saveDocument(db, document(i, scheduledAt ? {scheduledAt} : {}), 0, beforeMidnight);
     await approveDocument(db, saved, saved.version, 'owner@example.test', beforeMidnight);
@@ -41,53 +45,62 @@ async function enqueueArticles(db,count,{scheduledAt='2026-09-01T00:00:00.000Z',
   }
 }
 
-test('26 approved regions publish at most 20 in one Japan day, including overlapping and repeated deliveries', async t => {
+test('all approved cities for the assigned prefecture publish once, including overlapping deliveries', async t => {
   const db = sqliteD1(t);
   await ensureDatabase(db);
   await enqueue(db, 26);
   const runs = await Promise.all([publishDue(db, beforeMidnight), publishDue(db, beforeMidnight), publishDue(db, beforeMidnight)]);
-  assert.equal(runs.reduce((sum, run) => sum + run.published.length, 0), 20);
-  assert.equal((await getPublished(db)).length, 20);
+  assert.equal(runs.reduce((sum, run) => sum + run.published.length, 0), 26);
+  assert.equal((await getPublished(db)).length, 26);
   const stats = await publicationStats(db, beforeMidnight);
-  assert.deepEqual(stats.byScope.regional, {todayPublished: 20, queued: 6, dueReady:6, dailyLimit: 20});
+  assert.equal(stats.byScope.regional.campaign.day.prefecture.slug,'hokkaido');
+  assert.equal(stats.byScope.regional.queued,0);
   assert.equal(stats.day, '2026-09-21');
-  assert.equal(stats.todayPublished, 20);
-  assert.equal(stats.queued, 6);
-  assert.equal(stats.dailyLimit, 20);
-  assert.equal(stats.releaseCountToday, 20);
+  assert.equal(stats.todayPublished, 26);
+  assert.equal(stats.queued, 0);
+  assert.equal(stats.dailyLimit, null);
+  assert.equal(stats.releaseCountToday, 26);
   assert.equal((await publishDue(db, beforeMidnight)).published.length, 0);
   const exported = await backup(db);
-  assert.equal(exported.tables.seo_release_events.length, 20);
-  assert.equal(new Set(exported.tables.seo_release_events.map(row => `${row.document_id}:${row.version}`)).size, 20);
+  assert.equal(exported.tables.seo_release_events.length, 26);
+  assert.equal(new Set(exported.tables.seo_release_events.map(row => `${row.document_id}:${row.version}`)).size, 26);
 });
 
-test('the daily budget resets exactly at midnight Japan time, not UTC midnight', async t => {
+test('prefecture assignment changes at Japan midnight but publication waits until 09:17', async t => {
   const db = sqliteD1(t);
   await ensureDatabase(db);
-  await enqueue(db, 26);
+  await enqueue(db, 3);
+  for(const city of REGIONAL_PREFECTURES[1].cities.slice(0,2)) {
+    const draft=await saveDocument(db,document(0,{id:city.id,path:city.path}),0,beforeMidnight);
+    await approveDocument(db,draft,draft.version,'owner@example.test',beforeMidnight);
+  }
   await publishDue(db, beforeMidnight);
   const next = await publishDue(db, afterMidnight);
   assert.equal(next.day, '2026-09-22');
-  assert.equal(next.published.length, 6);
-  assert.equal((await getPublished(db)).length, 26);
-  assert.equal((await publicationStats(db, afterMidnight)).todayPublished, 6);
+  assert.equal(next.published.length, 0);
+  assert.equal(next.byScope.regional.campaignDay.prefecture,'aomori');
+  const morning=new Date('2026-09-22T00:17:00Z');
+  assert.equal((await publishDue(db,morning)).published.length,2);
+  assert.equal((await getPublished(db)).length,5);
+  assert.equal((await publicationStats(db,morning)).todayPublished,2);
 });
 
 test('regional and note quotas are independent and repeated deliveries cannot publish two new articles', async t => {
   const db=sqliteD1(t);await ensureDatabase(db);
   await enqueue(db,22);await enqueueArticles(db,4);
   const runs=await Promise.all([publishDue(db,beforeMidnight),publishDue(db,beforeMidnight),publishDue(db,beforeMidnight)]);
-  assert.equal(runs.flatMap(run=>run.byScope.regional.published).length,20);
+  assert.equal(runs.flatMap(run=>run.byScope.regional.published).length,22);
   assert.equal(runs.flatMap(run=>run.byScope.media.published).length,1);
-  assert.equal((await getPublished(db)).length,21);
+  assert.equal((await getPublished(db)).length,23);
   const stats=await publicationStats(db,beforeMidnight);
-  assert.deepEqual(stats.byScope.regional,{todayPublished:20,queued:2,dueReady:2,dailyLimit:20});
+  assert.equal(stats.byScope.regional.todayPublished,22);
+  assert.equal(stats.byScope.regional.queued,0);
   assert.equal(stats.byScope.media.monthPublished,1);
   assert.equal(stats.byScope.media.todayPublished,1);
   assert.equal(stats.byScope.media.queued,3);
   assert.equal(stats.byScope.media.dueReady,3);
   assert.equal(stats.byScope.media.nextEligibleAt,'2026-09-24T09:17:00+09:00');
-  assert.equal(stats.releaseCountToday,21);
+  assert.equal(stats.releaseCountToday,23);
 });
 
 test('note articles wait three Japan calendar days even when overdue reservations are queued', async t => {
@@ -130,17 +143,18 @@ test('note cadence carries across month boundaries instead of releasing on conse
   assert.equal((await publishDue(db,new Date('2026-10-02T15:00:00Z'))).published.length,1);
 });
 
-test('reviewed regional corrections do not consume another municipality slot or release a twenty-first region', async t => {
+test('reviewed live-city corrections remain available without restarting the campaign', async t => {
   const db=sqliteD1(t);await ensureDatabase(db);await enqueue(db,21);
   await publishDue(db,beforeMidnight);
-  const live=await getDocument(db,'city-000');
+  const live=await getDocument(db,cityId(0));
   const draft=await saveDocument(db,{...live,body:'Reviewed correction'},live.version,beforeMidnight);
   await approveDocument(db,draft,draft.version,'owner@example.test',beforeMidnight);
-  assert.deepEqual((await publishDue(db,beforeMidnight)).published,['city-000']);
+  await saveRegionalCampaignConfig(db,{enabled:false,startDate:'2026-09-21'},{expectedRevision:1,now:beforeMidnight});
+  assert.deepEqual((await publishDue(db,beforeMidnight)).published,[cityId(0)]);
   const stats=await publicationStats(db,beforeMidnight);
-  assert.equal(stats.byScope.regional.todayPublished,20);
-  assert.equal(stats.releaseCountToday,21);
-  assert.equal((await getDocument(db,'city-020')).status,'scheduled');
+  assert.equal(stats.byScope.regional.todayPublished,21);
+  assert.equal(stats.releaseCountToday,22);
+  assert.equal((await getDocument(db,cityId(20))).status,'published');
 });
 
 test('article corrections preserve first-publication history, monthly quota and new-article spacing', async t => {
@@ -165,20 +179,21 @@ test('article corrections preserve first-publication history, monthly quota and 
   assert.equal(stats.releaseCountToday,2);
 });
 
-test('legacy release events consume regional/monthly quotas without rewriting history', async t => {
+test('legacy release events are preserved and still consume the note monthly quota', async t => {
   const db=sqliteD1(t);await ensureDatabase(db);await enqueue(db,26);await enqueueArticles(db,12);
   const historical=[];
-  for(const doc of (await getDocuments(db)).filter(doc=>doc.id.startsWith('city-')?Number(doc.id.slice(5))<10:Number(doc.id.slice(8))<10)) {
+  const previousCityIds=new Set(REGIONAL_PREFECTURES[0].cities.slice(0,10).map(city=>city.id));
+  for(const doc of (await getDocuments(db)).filter(doc=>doc.type==='city'?previousCityIds.has(doc.id):Number(doc.id.slice(8))<10)) {
     const id=`legacy:${doc.id}`;historical.push(id);
     const releasedDay=doc.type==='city'?'2026-09-21':'2026-09-01';
     await db.prepare('INSERT INTO seo_release_events(id,day,document_id,version,run_id,created_at) VALUES(?,?,?,?,?,?)').bind(id,releasedDay,doc.id,doc.version,'legacy-shared-ten',`${releasedDay}T00:17:00Z`).run();
     await db.prepare("UPDATE seo_documents SET status='published',value=json_set(value,'$.status','published') WHERE id=?").bind(doc.id).run();
   }
   const released=await publishDue(db,beforeMidnight);
-  assert.equal(released.byScope.regional.published.length,10);
+  assert.equal(released.byScope.regional.published.length,16);
   assert.equal(released.byScope.media.published.length,0);
   const stats=await publicationStats(db,beforeMidnight);
-  assert.equal(stats.byScope.regional.todayPublished,20);
+  assert.equal(stats.byScope.regional.todayPublished,26);
   assert.equal(stats.byScope.media.monthPublished,10);
   const retained=(await backup(db)).tables.seo_release_events.filter(row=>row.run_id==='legacy-shared-ten');
   assert.deepEqual(new Set(retained.map(row=>row.id)),new Set(historical));
@@ -212,6 +227,7 @@ test('global pause retains approved queue without consuming the publication budg
 test('unreviewed drafts, future reservations, and individually paused pages never leak into publication', async t => {
   const db = sqliteD1(t);
   await ensureDatabase(db);
+  await enableCampaign(db);
   await saveDocument(db, document(1), 0, beforeMidnight);
   const future = await saveDocument(db, document(2, {scheduledAt: '2026-09-22T09:00:00.000Z'}), 0, beforeMidnight);
   await approveDocument(db, future, 1, 'owner@example.test', beforeMidnight);
@@ -225,6 +241,7 @@ test('unreviewed drafts, future reservations, and individually paused pages neve
 test('editing an approved draft revokes review; old approval and old edits conflict', async t => {
   const db = sqliteD1(t);
   await ensureDatabase(db);
+  await enableCampaign(db);
   const original = await saveDocument(db, document(1), 0, beforeMidnight);
   const approved = await approveDocument(db, original, original.version, 'owner@example.test', beforeMidnight);
   const edited = await saveDocument(db, {...approved, body: 'New text awaiting review'}, approved.version, beforeMidnight);
@@ -267,7 +284,7 @@ test('pausing a live page withdraws the public snapshot but preserves an editabl
   await pauseDocument(db, live.id, live.version, beforeMidnight);
   assert.equal((await getPublished(db)).length, 0);
   assert.equal((await getDocuments(db))[0].status, 'paused');
-  assert.match((await getDocument(db, 'city-000')).body, /Reviewed/);
+  assert.match((await getDocument(db,cityId(0))).body,/Reviewed/);
   assert.equal((await publishDue(db, beforeMidnight)).published.length, 0);
 });
 
@@ -301,17 +318,17 @@ test('CAS workspace and document writes allow one winner and preserve that winne
   const edits = await Promise.allSettled([saveDocument(db, document(7, {title: 'A'}), 1, beforeMidnight), saveDocument(db, document(7, {title: 'B'}), 1, beforeMidnight)]);
   assert.equal(edits.filter(result => result.status === 'fulfilled').length, 1);
   assert.equal(edits.find(result => result.status === 'rejected').reason.status, 409);
-  assert.equal((await getDocument(db, 'city-007')).version, 2);
+  assert.equal((await getDocument(db,cityId(7))).version,2);
 });
 
 test('publication transaction rolls back quota and status if the public snapshot insert fails', async t => {
   const db = sqliteD1(t);
   await ensureDatabase(db);
   await enqueue(db, 1);
-  await db.prepare('INSERT INTO seo_published(id,path,value,version,published_at) VALUES(?,?,?,?,?)').bind('conflicting-live', document(0).path, '{}', 1, beforeMidnight.toISOString()).run();
-  await assert.rejects(() => publishDue(db, beforeMidnight), /UNIQUE constraint/);
+  await db.prepare("CREATE TRIGGER fail_publication BEFORE INSERT ON seo_published BEGIN SELECT RAISE(ABORT,'fixture publication failed'); END").run();
+  await assert.rejects(() => publishDue(db, beforeMidnight),/fixture publication failed/);
   assert.equal((await publicationStats(db, beforeMidnight)).todayPublished, 0);
-  assert.equal((await getDocument(db, 'city-000')).status, 'scheduled');
+  assert.equal((await getDocument(db,cityId(0))).status,'scheduled');
 });
 
 test('legacy inline workspace state remains readable and upgrades without losing its revision', async t => {

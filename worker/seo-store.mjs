@@ -1,3 +1,4 @@
+import {REGIONAL_PREFECTURES,readRegionalCampaignSnapshot,regionalCampaignDay,readRegionalCampaignOverview,staticPublishedCityPaths} from './seo-regional-campaign.mjs';
 const initialized = new WeakMap();
 export const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS seo_kv (namespace TEXT NOT NULL, key TEXT NOT NULL, value TEXT NOT NULL, version INTEGER NOT NULL DEFAULT 1, updated_at TEXT NOT NULL, PRIMARY KEY(namespace,key))`,
@@ -10,12 +11,12 @@ export const SCHEMA = [
 ];
 export const japanDay = now => new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Tokyo'}).format(now);
 export const PUBLICATION_LIMITS = Object.freeze({
-  regional: Object.freeze({daily:20}),
+  regional: Object.freeze({daily:null,mode:'prefecture_campaign',prefectures:47}),
   media: Object.freeze({monthly:10,daily:1,minimumIntervalDays:3}),
 });
 export function publicationSettings(value={}) {
-  // dailyLimit remains a regional-only alias for older clients. There is no
-  // shared daily pool: note articles have their own monthly editorial cadence.
+  // A fixed daily city cap no longer applies; one prefecture's cities are
+  // assigned to each campaign day. Notes retain a separate monthly cadence.
   return {dailyLimit:PUBLICATION_LIMITS.regional.daily,limits:PUBLICATION_LIMITS,paused:value?.paused===true,timezone:'Asia/Tokyo',publishTime:'09:17'};
 }
 const shiftDay=(day,amount)=>new Date(Date.parse(`${day}T00:00:00Z`)+amount*86400000).toISOString().slice(0,10);
@@ -122,26 +123,34 @@ export async function pauseDocument(db,id,version,now=new Date()) {
 }
 export async function publishDue(db,now=new Date()) {
   const day=japanDay(now),iso=now.toISOString(),run=crypto.randomUUID(),month=day.slice(0,7);
-  const eligible=`d.status='scheduled' AND d.reviewed_version=d.version AND d.scheduled_at<=?
+  const campaignSnapshot=await readRegionalCampaignSnapshot(db),campaignDay=regionalCampaignDay(campaignSnapshot.config,now);
+  const campaignCities=campaignDay.readyToPublish?campaignDay.prefecture.cities:[];
+  const allCityPaths=REGIONAL_PREFECTURES.flatMap(prefecture=>prefecture.cities.map(city=>city.path));
+  const staticPaths=staticPublishedCityPaths(now);
+  const eligible=`d.status='scheduled' AND d.reviewed_version=d.version AND julianday(d.scheduled_at)<=julianday(?)
     AND COALESCE((SELECT json_extract(value,'$.paused') FROM seo_kv WHERE namespace='settings' AND key='publication'),0)=0
     AND NOT EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=d.id AND r.version=d.version)`;
   const firstArticles=`SELECT r.document_id,MIN(r.day) AS first_day FROM seo_release_events r
     JOIN seo_documents d ON d.id=r.document_id WHERE d.type='article' GROUP BY r.document_id`;
-  // Each selection and remaining quota is evaluated inside the same D1 batch
-  // transaction. Repeated/overlapping cron deliveries cannot spend a slot twice.
-  // Document IDs/type/path are immutable through the editor API. Count regions,
-  // not revisions, and allow reviewed article corrections without charging a new
-  // article slot. Existing release history is retained and counted on upgrade.
+  // All selections run in the same transaction. The config snapshot is checked
+  // again inside the city INSERT, so a concurrent pause/date change cannot use
+  // an old prefecture selection. Canonical IDs/paths come from the city master,
+  // never user-entered prefecture labels. There is no late-prefecture catch-up.
   await db.batch([
     db.prepare(`INSERT OR IGNORE INTO seo_release_events(id,day,document_id,version,run_id,created_at)
       SELECT lower(hex(randomblob(16))),?,d.id,d.version,?,? FROM seo_documents d WHERE ${eligible}
-      AND ((d.type='city' AND EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=d.id AND r.day=?))
-        OR (d.type='article' AND EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=d.id)))`).bind(day,run,iso,iso,day),
+      AND ((d.type='city' AND d.path IN (SELECT value FROM json_each(?))
+          AND d.path NOT IN (SELECT value FROM json_each(?))
+          AND EXISTS(SELECT 1 FROM seo_published p WHERE p.id=d.id AND p.path=d.path))
+        OR (d.type='article' AND EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=d.id)))`).bind(day,run,iso,iso,JSON.stringify(allCityPaths),JSON.stringify(staticPaths)),
     db.prepare(`INSERT OR IGNORE INTO seo_release_events(id,day,document_id,version,run_id,created_at)
-      SELECT lower(hex(randomblob(16))),?,d.id,d.version,?,? FROM seo_documents d WHERE ${eligible} AND d.type='city'
-      AND NOT EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=d.id AND r.day=?)
-      ORDER BY d.scheduled_at,d.id LIMIT MAX(0,?-(SELECT COUNT(DISTINCT r.document_id) FROM seo_release_events r
-        JOIN seo_documents d ON d.id=r.document_id WHERE r.day=? AND d.type='city'))`).bind(day,run,iso,iso,day,PUBLICATION_LIMITS.regional.daily,day),
+      SELECT lower(hex(randomblob(16))),?,d.id,d.version,?,? FROM seo_documents d
+      JOIN json_each(?) city ON d.id=json_extract(city.value,'$.id') AND d.path=json_extract(city.value,'$.path')
+      WHERE ${eligible} AND d.type='city'
+      AND d.path NOT IN (SELECT value FROM json_each(?))
+      AND NOT EXISTS(SELECT 1 FROM seo_published p WHERE p.id=d.id OR p.path=d.path)
+      AND EXISTS(SELECT 1 FROM seo_kv WHERE namespace='regional_campaign' AND key='config' AND version=? AND value=?)
+      ORDER BY json_extract(city.value,'$.code')`).bind(day,run,iso,JSON.stringify(campaignCities),iso,JSON.stringify(staticPaths),campaignSnapshot.revision,campaignSnapshot.raw),
     db.prepare(`INSERT OR IGNORE INTO seo_release_events(id,day,document_id,version,run_id,created_at)
       SELECT lower(hex(randomblob(16))),?,d.id,d.version,?,? FROM seo_documents d WHERE ${eligible} AND d.type='article'
       AND NOT EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=d.id)
@@ -155,8 +164,8 @@ export async function publishDue(db,now=new Date()) {
   ]);
   const {results}=await db.prepare('SELECT r.document_id,d.type FROM seo_release_events r JOIN seo_documents d ON d.id=r.document_id WHERE r.run_id=?').bind(run).all();
   if(results.length)await activity(db,'publish',`${day}に${results.length}件を公開しました。`,now);
-  return {day,published:results.map(row=>row.document_id),dailyLimit:PUBLICATION_LIMITS.regional.daily,limits:PUBLICATION_LIMITS,
-    byScope:{regional:{published:results.filter(row=>row.type==='city').map(row=>row.document_id)},media:{published:results.filter(row=>row.type==='article').map(row=>row.document_id)}}};
+  return {day,published:results.map(row=>row.document_id),dailyLimit:null,limits:PUBLICATION_LIMITS,
+    byScope:{regional:{published:results.filter(row=>row.type==='city').map(row=>row.document_id),campaignDay:{status:campaignDay.status,dayNumber:campaignDay.dayNumber,prefecture:campaignDay.prefecture?.slug||null,readyToPublish:campaignDay.readyToPublish}},media:{published:results.filter(row=>row.type==='article').map(row=>row.document_id)}}};
 }
 export async function publicationStats(db,now=new Date()) {
   const day=japanDay(now),month=day.slice(0,7),iso=now.toISOString();
@@ -167,17 +176,18 @@ export async function publicationStats(db,now=new Date()) {
     queue AS (SELECT * FROM seo_documents WHERE status='scheduled' AND reviewed_version=version)
     SELECT (SELECT COUNT(DISTINCT document_id) FROM releases WHERE type='city' AND day=?) AS regional_today,
       (SELECT COUNT(*) FROM queue WHERE type='city') AS regional_queued,
-      (SELECT COUNT(*) FROM queue WHERE type='city' AND scheduled_at<=?) AS regional_ready,
+      (SELECT COUNT(*) FROM queue WHERE type='city' AND julianday(scheduled_at)<=julianday(?)) AS regional_ready,
       (SELECT COUNT(*) FROM first_articles WHERE first_day LIKE ?) AS media_month,
       (SELECT COUNT(*) FROM first_articles WHERE first_day=?) AS media_today,
       (SELECT MAX(first_day) FROM first_articles) AS media_last_day,
       (SELECT COUNT(*) FROM queue WHERE type='article') AS media_queued,
-      (SELECT COUNT(*) FROM queue WHERE type='article' AND scheduled_at<=?) AS media_ready,
+      (SELECT COUNT(*) FROM queue WHERE type='article' AND julianday(scheduled_at)<=julianday(?)) AS media_ready,
       (SELECT COUNT(*) FROM seo_release_events WHERE day=?) AS release_count_today`).bind(day,iso,`${month}-%`,day,iso,day).first();
   let nextEligibleDay=day;
   if(row.media_last_day)nextEligibleDay=[nextEligibleDay,shiftDay(row.media_last_day,PUBLICATION_LIMITS.media.minimumIntervalDays)].sort().at(-1);
   if(row.media_month>=PUBLICATION_LIMITS.media.monthly)nextEligibleDay=[nextEligibleDay,nextMonth(day)].sort().at(-1);
-  const regional={todayPublished:row.regional_today,queued:row.regional_queued,dueReady:row.regional_ready,dailyLimit:PUBLICATION_LIMITS.regional.daily};
+  const campaign=await readRegionalCampaignOverview(db,now);
+  const regional={todayPublished:row.regional_today,queued:campaign.totals.ready,dueReady:campaign.currentDay?.dueReady||0,dailyLimit:null,mode:'prefecture_campaign',todayTarget:campaign.currentDay?.total||0,campaign};
   const media={month,todayPublished:row.media_today,monthPublished:row.media_month,queued:row.media_queued,dueReady:row.media_ready,monthlyLimit:PUBLICATION_LIMITS.media.monthly,dailyLimit:PUBLICATION_LIMITS.media.daily,minimumIntervalDays:PUBLICATION_LIMITS.media.minimumIntervalDays,nextEligibleAt:`${nextEligibleDay}T09:17:00+09:00`};
   return {todayPublished:regional.todayPublished,queued:regional.queued+media.queued,dailyLimit:regional.dailyLimit,day,releaseCountToday:row.release_count_today,byScope:{regional,media}};
 }
