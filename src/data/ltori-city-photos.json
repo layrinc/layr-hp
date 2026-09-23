@@ -1,0 +1,114 @@
+{
+  "hokkaido/sapporo": {
+    "schemaVersion": 1,
+    "citySlug": "hokkaido/sapporo",
+    "status": "ready",
+    "fetchedAt": "2026-09-23T07:40:37.067646+00:00",
+    "photos": [
+      {
+        "id": "File:2024-09-22 Odori Park.jpg",
+        "title": "大通公園とさっぽろテレビ塔（2024年）",
+        "alt": "札幌市の大通公園とさっぽろテレビ塔",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/2024-09-22_Odori_Park.jpg/960px-2024-09-22_Odori_Park.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2024-09-22_Odori_Park.jpg",
+        "author": "ノボホショコロトソ",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "width": 960,
+        "height": 720
+      },
+      {
+        "id": "File:Sapporo City Skyline Views from Norbesa20230312.jpg",
+        "title": "ノルベサから望む札幌（2023年）",
+        "alt": "札幌市のノルベサから望む市街地",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Sapporo_City_Skyline_Views_from_Norbesa20230312.jpg/960px-Sapporo_City_Skyline_Views_from_Norbesa20230312.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sapporo_City_Skyline_Views_from_Norbesa20230312.jpg",
+        "author": "Nryate",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 960,
+        "height": 720
+      },
+      {
+        "id": "File:Asahiyama Memorial Park.jpg",
+        "title": "旭山記念公園（2009年）",
+        "alt": "札幌市中央区の旭山記念公園",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Asahiyama_Memorial_Park.jpg/960px-Asahiyama_Memorial_Park.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Asahiyama_Memorial_Park.jpg",
+        "author": "Ozizo",
+        "license": "PD",
+        "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+        "width": 960,
+        "height": 720
+      },
+      {
+        "id": "File:Kotoni okurayama 01.jpg",
+        "title": "大倉山から望む琴似（2014年）",
+        "alt": "札幌市の大倉山から望む琴似とその周辺",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Kotoni_okurayama_01.jpg/960px-Kotoni_okurayama_01.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kotoni_okurayama_01.jpg",
+        "author": "Asacyan",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 960,
+        "height": 540
+      }
+    ]
+  },
+  "mie/nabari": {
+    "schemaVersion": 1,
+    "citySlug": "mie/nabari",
+    "status": "ready",
+    "fetchedAt": "2026-09-23T07:41:24.570612+00:00",
+    "photos": [
+      {
+        "id": "File:Aerial view of Nabari City.jpg",
+        "title": "空から望む名張市（2025年）",
+        "alt": "三重県名張市の市街地を上空から撮影した風景",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Aerial_view_of_Nabari_City.jpg/960px-Aerial_view_of_Nabari_City.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Nabari_City.jpg",
+        "author": "掬茶",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 960,
+        "height": 640
+      },
+      {
+        "id": "File:View from train near Nabari Station.jpg",
+        "title": "名張駅付近の車窓（2019年）",
+        "alt": "名張市の名張駅西側、近鉄大阪線の列車内から望む風景",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/View_from_train_near_Nabari_Station.jpg/960px-View_from_train_near_Nabari_Station.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:View_from_train_near_Nabari_Station.jpg",
+        "author": "そらみみ",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 960,
+        "height": 720
+      },
+      {
+        "id": "File:Nabaricyuuoukouen.jpg",
+        "title": "名張中央公園（2020年）",
+        "alt": "名張市の名張中央公園の風景",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Nabaricyuuoukouen.jpg/960px-Nabaricyuuoukouen.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nabaricyuuoukouen.jpg",
+        "author": "Fmtw2cx40",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 960,
+        "height": 720
+      },
+      {
+        "id": "File:Akame 48 Waterfalls, Fudo Falls.jpg",
+        "title": "赤目四十八滝・不動滝（2020年）",
+        "alt": "三重県名張市の赤目四十八滝にある不動滝",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Akame_48_Waterfalls%2C_Fudo_Falls.jpg/960px-Akame_48_Waterfalls%2C_Fudo_Falls.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Akame_48_Waterfalls,_Fudo_Falls.jpg",
+        "author": "Saigen Jiro",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "width": 960,
+        "height": 638
+      }
+    ]
+  }
+}

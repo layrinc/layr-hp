@@ -6,6 +6,36 @@
 .ltori .lt-hero h1 .lt-area-service { display: block; color: var(--lt-ink); }
 .lt-area-service > span { display: inline-block; }
 .lt-area-links { background: var(--lt-gray); }
+/* City photographs share one native horizontal viewport on static and runtime LPs. */
+.lt-city-photos { padding: 22px 0; background: var(--lt-white); }
+.lt-city-photos-head { display: flex; align-items: end; justify-content: space-between; gap: 22px; margin-bottom: 22px; }
+.lt-city-photos-city { color: var(--lt-green-ink); font-size: 14px; font-weight: 500; margin-bottom: 6px !important; }
+.lt-city-photos-head h2 { font-size: 26px; scroll-margin-top: 150px; }
+.lt-city-photos-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+.lt-city-photos-controls button { min-width: 44px; min-height: 44px; border: 1px solid color-mix(in srgb, var(--lt-ink) 25%, transparent); border-radius: var(--radius); background: var(--lt-white); color: var(--lt-ink); padding: 6px 12px; font-size: 12px; }
+.lt-city-photos-controls button:hover { border-color: var(--lt-green-ink); }
+.lt-city-photos-controls button:disabled { color: color-mix(in srgb, var(--lt-ink) 70%, var(--lt-white)); cursor: default; }
+.lt-city-photos-viewport { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: max(48px, calc((100vw - 1240px) / 2)); scrollbar-width: thin; }
+.lt-city-photos-track { display: flex; width: max-content; gap: 22px; padding: 0 max(48px, calc((100vw - 1240px) / 2)) 6px !important; }
+.lt-city-photo { width: 360px; flex: 0 0 auto; scroll-snap-align: start; }
+.ltori .lt-city-photo img { width: 100%; height: 220px; object-fit: cover; border-radius: var(--radius); background: var(--lt-gray); }
+.lt-city-photo figcaption { margin-top: 6px; font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+.lt-city-photo-credits { margin-top: 22px; font-size: 12px; }
+.lt-city-photo-credits summary { display: flex; align-items: center; gap: 6px; min-height: 44px; width: fit-content; cursor: pointer; }
+.lt-city-photo-credits summary::before { content: '+'; }
+.lt-city-photo-credits[open] summary::before { content: '−'; }
+.lt-city-photo-credits ul { display: grid; gap: 6px; margin: 6px 0; }
+.lt-city-photo-credits li { overflow-wrap: anywhere; }
+.ltori .lt-city-photo-credits a { color: var(--lt-green-ink); text-decoration: underline; text-underline-offset: 4px; }
+.lt-city-photos :is(button, summary, a, [tabindex]):focus-visible { outline: 3px solid var(--lt-ink); outline-offset: -3px; }
+@media (max-width: 640px) {
+  .lt-city-photos-head { flex-wrap: wrap; }
+  .lt-city-photos-viewport { scroll-padding-inline: 22px; }
+  .lt-city-photos-track { padding-inline: 22px !important; }
+  .lt-city-photo { width: min(360px, 82vw); }
+  .ltori .lt-city-photo img { height: auto; aspect-ratio: 18 / 11; }
+}
+@media (prefers-reduced-motion: reduce) { .lt-city-photos-viewport { scroll-behavior: auto; } }
 .lt-area-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px 24px; padding: 0; margin: 28px 0 0; list-style: none; }
 .lt-area-list a { display: flex; align-items: center; min-height: 44px; overflow-wrap: anywhere; }
 .lt-area-directory .lt-area-jump { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 32px; }

@@ -7,6 +7,8 @@ import {runAnalyticsSync,runInspections} from './seo-analytics.mjs';
 import {runHealthChecks,acquireJob,releaseJob} from './seo-health.mjs';
 import {contactRelay} from './seo-leads.mjs';
 import {prepareRegionalStep} from './seo-regional-preparation.mjs';
+import {readCityPhotos,runCityPhotosStep} from './seo-city-photos.mjs';
+import {renderCityPhotos} from '../src/lib/ltori-city-photos.mjs';
 
 export const getStaticPages=(now=new Date())=>[
   ...getPublishedAreas(now).map(area=>({path:`/service/ltori/area/${area.slug}/`,title:`${area.fullName}の採用LINE構築・運用支援`,type:'city'})),
@@ -77,20 +79,27 @@ export async function publicFetch(request,env) {
         publishedCitySlugs.push(...dynamic.filter((slug,index)=>available.has(paths[index])));
       }
     }
-    const result=await previewDocument(env,doc,{publishedCitySlugs});
+    const cityPhotos=doc.type==='city'&&request.method==='GET'?await readCityPhotos(env.SEO_DB,doc.slug):null;
+    const result=await previewDocument(env,doc,{publishedCitySlugs,...(doc.type==='city'?{cityPhotos}:{})});
     return request.method==='HEAD'?new Response(null,{status:result.status,headers:result.headers}):result;
   }
-  return env.ASSETS.fetch(request);
+  const asset=await env.ASSETS.fetch(request);
+  const staticCity=asset.ok&&request.method==='GET'?getPublishedAreas().find(area=>`/service/ltori/area/${area.slug}/`===canonicalPath):null;
+  if(!staticCity)return asset;
+  const cityPhotos=await readCityPhotos(env.SEO_DB,staticCity.slug);
+  const headers=new Headers(asset.headers);for(const name of ['content-length','content-encoding','etag','last-modified'])headers.delete(name);headers.set('Cache-Control','public, max-age=0, must-revalidate');
+  return new HTMLRewriter().on('[data-city-photos-slot]',{element(element){element.setInnerContent(renderCityPhotos(staticCity,cityPhotos),{html:true});}}).transform(new Response(asset.body,{status:asset.status,headers}));
 }
 export async function runJob(env,kind,{now=new Date()}={}) {
   await ensureDatabase(env.SEO_DB);const db=env.SEO_DB,store=createStore(db),token=await acquireJob(db,kind,now);
   if(!token)return {status:'running',message:'同じ処理を実行中です。'};
   try {
     await store.upsert('jobs',kind,{status:'running',startedAt:now.toISOString()});
-    const published=kind==='prepare'?[]:await getPublished(db),paths=[...getStaticPages(now).map(row=>row.path),...published.map(publicPath)];
+    const published=['prepare','photos'].includes(kind)?[]:await getPublished(db),paths=[...getStaticPages(now).map(row=>row.path),...published.map(publicPath)];
     let result;
     if(kind==='publish')result=await publishDue(db,now);
     else if(kind==='prepare')result=await prepareRegionalStep(env,{now});
+    else if(kind==='photos')result=await runCityPhotosStep(env,{now});
     else if(kind==='analytics')result=await runAnalyticsSync(env,{store,publishedPaths:paths,now});
     else if(kind==='inspection'){result=await runInspections(env,{store,publishedPaths:paths,now});await runHealthChecks(env,{paths,now});}
     else throw new HttpError(400,'処理の種類を確認してください。');

@@ -1,0 +1,7133 @@
+{
+  "schemaVersion": 1,
+  "source": "https://query.wikidata.org/",
+  "fetchedAt": "2026-09-23T07:30:50.569572+00:00",
+  "query": "SELECT ?item ?code ?label ?category ?coordinate WHERE { ?item wdt:P429 ?code . OPTIONAL { ?item wdt:P373 ?category . } OPTIONAL { ?item rdfs:label ?label . FILTER(LANG(?label)=\"ja\") } OPTIONAL { ?item wdt:P625 ?coordinate . } }",
+  "verification": {
+    "municipalityCount": 792,
+    "codeAndJapaneseNameMatches": 792,
+    "directCommonsPropertyMatches": 791,
+    "verifiedCategoryMainTopicMatches": 1,
+    "missingCategories": 0,
+    "ambiguousCoordinates": 76,
+    "coordinatePolicy": "Coordinates are informational only. Multiple P625 coordinates remain null; use the municipality-code-linked category for photo matching. Never use proximity alone as municipality evidence.",
+    "municipalityCodeSource": "https://www.j-lis.go.jp/spd/code-address/cms_1750514.html"
+  },
+  "cities": {
+    "hokkaido/sapporo": {
+      "cityCode": "01100",
+      "wikidataId": "Q37951",
+      "label": "札幌市",
+      "commonsCategory": "Sapporo",
+      "latitude": 43.061944444,
+      "longitude": 141.354444444,
+      "preferredCategories": [
+        "Cityscapes of Sapporo"
+      ],
+      "preferredCategoryEvidence": [
+        {
+          "category": "Cityscapes of Sapporo",
+          "parentCategory": "Sapporo",
+          "sourceUrl": "https://commons.wikimedia.org/wiki/Category:Cityscapes_of_Sapporo",
+          "fetchedAt": "2026-09-23T07:37:20.144308+00:00"
+        }
+      ]
+    },
+    "hokkaido/hakodate": {
+      "cityCode": "01202",
+      "wikidataId": "Q26418",
+      "label": "函館市",
+      "commonsCategory": "Hakodate, Hokkaido",
+      "latitude": 41.768666666,
+      "longitude": 140.728916666
+    },
+    "hokkaido/otaru": {
+      "cityCode": "01203",
+      "wikidataId": "Q242108",
+      "label": "小樽市",
+      "commonsCategory": "Otaru, Hokkaido",
+      "latitude": 43.190722222,
+      "longitude": 140.994361111
+    },
+    "hokkaido/asahikawa": {
+      "cityCode": "01204",
+      "wikidataId": "Q200740",
+      "label": "旭川市",
+      "commonsCategory": "Asahikawa, Hokkaido",
+      "latitude": 43.770638888,
+      "longitude": 142.365
+    },
+    "hokkaido/muroran": {
+      "cityCode": "01205",
+      "wikidataId": "Q496667",
+      "label": "室蘭市",
+      "commonsCategory": "Muroran, Hokkaido",
+      "latitude": 42.31525,
+      "longitude": 140.974027777
+    },
+    "hokkaido/kushiro-shi": {
+      "cityCode": "01206",
+      "wikidataId": "Q271917",
+      "label": "釧路市",
+      "commonsCategory": "Kushiro, Hokkaido (city)",
+      "latitude": 42.984888888,
+      "longitude": 144.381722222
+    },
+    "hokkaido/obihiro": {
+      "cityCode": "01207",
+      "wikidataId": "Q177149",
+      "label": "帯広市",
+      "commonsCategory": "Obihiro, Hokkaido",
+      "latitude": 42.923972222,
+      "longitude": 143.196111111
+    },
+    "hokkaido/kitami": {
+      "cityCode": "01208",
+      "wikidataId": "Q265555",
+      "label": "北見市",
+      "commonsCategory": "Kitami, Hokkaido",
+      "latitude": 43.803055555,
+      "longitude": 143.894722222
+    },
+    "hokkaido/yubari": {
+      "cityCode": "01209",
+      "wikidataId": "Q637145",
+      "label": "夕張市",
+      "commonsCategory": "Yubari, Hokkaido",
+      "latitude": 43.05675,
+      "longitude": 141.973888888
+    },
+    "hokkaido/iwamizawa": {
+      "cityCode": "01210",
+      "wikidataId": "Q693264",
+      "label": "岩見沢市",
+      "commonsCategory": "Iwamizawa, Hokkaido",
+      "latitude": 43.196166666,
+      "longitude": 141.775888888
+    },
+    "hokkaido/abashiri": {
+      "cityCode": "01211",
+      "wikidataId": "Q305640",
+      "label": "網走市",
+      "commonsCategory": "Abashiri, Hokkaido",
+      "latitude": 44.020638888,
+      "longitude": 144.273555555
+    },
+    "hokkaido/rumoi": {
+      "cityCode": "01212",
+      "wikidataId": "Q714628",
+      "label": "留萌市",
+      "commonsCategory": "Rumoi, Hokkaido",
+      "latitude": 43.940972222,
+      "longitude": 141.637027777
+    },
+    "hokkaido/tomakomai": {
+      "cityCode": "01213",
+      "wikidataId": "Q390413",
+      "label": "苫小牧市",
+      "commonsCategory": "Tomakomai, Hokkaido",
+      "latitude": 42.634055555,
+      "longitude": 141.605527777
+    },
+    "hokkaido/wakkanai": {
+      "cityCode": "01214",
+      "wikidataId": "Q267894",
+      "label": "稚内市",
+      "commonsCategory": "Wakkanai, Hokkaido",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 45.415638888,
+          "longitude": 141.673083333
+        },
+        {
+          "latitude": 45.3325,
+          "longitude": 141.828333333
+        }
+      ]
+    },
+    "hokkaido/bibai": {
+      "cityCode": "01215",
+      "wikidataId": "Q817271",
+      "label": "美唄市",
+      "commonsCategory": "Bibai, Hokkaido",
+      "latitude": 43.332944444,
+      "longitude": 141.853777777
+    },
+    "hokkaido/ashibetsu": {
+      "cityCode": "01216",
+      "wikidataId": "Q725311",
+      "label": "芦別市",
+      "commonsCategory": "Ashibetsu, Hokkaido",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 43.518222222,
+          "longitude": 142.189611111
+        },
+        {
+          "latitude": 43.425277777,
+          "longitude": 142.201666666
+        }
+      ]
+    },
+    "hokkaido/ebetsu": {
+      "cityCode": "01217",
+      "wikidataId": "Q496681",
+      "label": "江別市",
+      "commonsCategory": "Ebetsu, Hokkaido",
+      "latitude": 43.103722222,
+      "longitude": 141.536194444
+    },
+    "hokkaido/akabira": {
+      "cityCode": "01218",
+      "wikidataId": "Q413804",
+      "label": "赤平市",
+      "commonsCategory": "Akabira, Hokkaido",
+      "latitude": 43.558055555,
+      "longitude": 142.044166666
+    },
+    "hokkaido/mombetsu": {
+      "cityCode": "01219",
+      "wikidataId": "Q692745",
+      "label": "紋別市",
+      "commonsCategory": "Mombetsu, Hokkaido",
+      "latitude": 44.356444444,
+      "longitude": 143.354416666
+    },
+    "hokkaido/shibetsu-shi": {
+      "cityCode": "01220",
+      "wikidataId": "Q766942",
+      "label": "士別市",
+      "commonsCategory": "Shibetsu, Hokkaido (city)",
+      "latitude": 44.178611111,
+      "longitude": 142.400083333
+    },
+    "hokkaido/nayoro": {
+      "cityCode": "01221",
+      "wikidataId": "Q820725",
+      "label": "名寄市",
+      "commonsCategory": "Nayoro, Hokkaido",
+      "latitude": 44.355944444,
+      "longitude": 142.463194444
+    },
+    "hokkaido/mikasa": {
+      "cityCode": "01222",
+      "wikidataId": "Q842318",
+      "label": "三笠市",
+      "commonsCategory": "Mikasa, Hokkaido",
+      "latitude": 43.245666666,
+      "longitude": 141.87525
+    },
+    "hokkaido/nemuro": {
+      "cityCode": "01223",
+      "wikidataId": "Q502205",
+      "label": "根室市",
+      "commonsCategory": "Nemuro, Hokkaido",
+      "latitude": 43.330083333,
+      "longitude": 145.582861111
+    },
+    "hokkaido/chitose": {
+      "cityCode": "01224",
+      "wikidataId": "Q693237",
+      "label": "千歳市",
+      "commonsCategory": "Chitose, Hokkaido",
+      "latitude": 42.820972222,
+      "longitude": 141.650888888
+    },
+    "hokkaido/takikawa": {
+      "cityCode": "01225",
+      "wikidataId": "Q842286",
+      "label": "滝川市",
+      "commonsCategory": "Takikawa, Hokkaido",
+      "latitude": 43.557833333,
+      "longitude": 141.910416666
+    },
+    "hokkaido/sunagawa": {
+      "cityCode": "01226",
+      "wikidataId": "Q507147",
+      "label": "砂川市",
+      "commonsCategory": "Sunagawa, Hokkaido",
+      "latitude": 43.494833333,
+      "longitude": 141.903472222
+    },
+    "hokkaido/utashinai": {
+      "cityCode": "01227",
+      "wikidataId": "Q842279",
+      "label": "歌志内市",
+      "commonsCategory": "Utashinai, Hokkaido",
+      "latitude": 43.521388888,
+      "longitude": 142.034444444
+    },
+    "hokkaido/fukagawa": {
+      "cityCode": "01228",
+      "wikidataId": "Q817268",
+      "label": "深川市",
+      "commonsCategory": "Fukagawa, Hokkaido",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 43.72325,
+          "longitude": 142.053583333
+        },
+        {
+          "latitude": 43.793333333,
+          "longitude": 142.099166666
+        }
+      ]
+    },
+    "hokkaido/furano": {
+      "cityCode": "01229",
+      "wikidataId": "Q654738",
+      "label": "富良野市",
+      "commonsCategory": "Furano, Hokkaido",
+      "latitude": 43.342027777,
+      "longitude": 142.383194444
+    },
+    "hokkaido/noboribetsu": {
+      "cityCode": "01230",
+      "wikidataId": "Q428989",
+      "label": "登別市",
+      "commonsCategory": "Noboribetsu, Hokkaido",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 42.465555555,
+          "longitude": 141.075833333
+        },
+        {
+          "latitude": 42.41275,
+          "longitude": 141.106583333
+        }
+      ]
+    },
+    "hokkaido/eniwa": {
+      "cityCode": "01231",
+      "wikidataId": "Q733979",
+      "label": "恵庭市",
+      "commonsCategory": "Eniwa, Hokkaido",
+      "latitude": 42.882555555,
+      "longitude": 141.577777777
+    },
+    "hokkaido/date": {
+      "cityCode": "01233",
+      "wikidataId": "Q693178",
+      "label": "伊達市",
+      "commonsCategory": "Date, Hokkaido",
+      "latitude": 42.471888888,
+      "longitude": 140.864694444
+    },
+    "hokkaido/kitahiroshima": {
+      "cityCode": "01234",
+      "wikidataId": "Q817278",
+      "label": "北広島市",
+      "commonsCategory": "Kitahiroshima, Hokkaido",
+      "latitude": 42.9855,
+      "longitude": 141.563083333
+    },
+    "hokkaido/ishikari": {
+      "cityCode": "01235",
+      "wikidataId": "Q693221",
+      "label": "石狩市",
+      "commonsCategory": "Ishikari, Hokkaido",
+      "latitude": 43.171361111,
+      "longitude": 141.3155
+    },
+    "hokkaido/hokuto": {
+      "cityCode": "01236",
+      "wikidataId": "Q842301",
+      "label": "北斗市",
+      "commonsCategory": "Hokuto, Hokkaido",
+      "latitude": 41.824111111,
+      "longitude": 140.653027777
+    },
+    "aomori/aomori": {
+      "cityCode": "02201",
+      "wikidataId": "Q146790",
+      "label": "青森市",
+      "commonsCategory": "Aomori, Aomori",
+      "latitude": 40.822777777,
+      "longitude": 140.746944444
+    },
+    "aomori/hirosaki": {
+      "cityCode": "02202",
+      "wikidataId": "Q194087",
+      "label": "弘前市",
+      "commonsCategory": "Hirosaki, Aomori",
+      "latitude": 40.603111111,
+      "longitude": 140.463833333
+    },
+    "aomori/hachinohe": {
+      "cityCode": "02203",
+      "wikidataId": "Q191914",
+      "label": "八戸市",
+      "commonsCategory": "Hachinohe, Aomori",
+      "latitude": 40.512277777,
+      "longitude": 141.488388888
+    },
+    "aomori/kuroishi": {
+      "cityCode": "02204",
+      "wikidataId": "Q496412",
+      "label": "黒石市",
+      "commonsCategory": "Kuroishi, Aomori",
+      "latitude": 40.642611111,
+      "longitude": 140.594638888
+    },
+    "aomori/goshogawara": {
+      "cityCode": "02205",
+      "wikidataId": "Q496702",
+      "label": "五所川原市",
+      "commonsCategory": "Goshogawara, Aomori",
+      "latitude": 40.807722222,
+      "longitude": 140.446083333
+    },
+    "aomori/towada": {
+      "cityCode": "02206",
+      "wikidataId": "Q646818",
+      "label": "十和田市",
+      "commonsCategory": "Towada, Aomori",
+      "latitude": 40.612694444,
+      "longitude": 141.205861111
+    },
+    "aomori/misawa": {
+      "cityCode": "02207",
+      "wikidataId": "Q496401",
+      "label": "三沢市",
+      "commonsCategory": "Misawa, Aomori",
+      "latitude": 40.683083333,
+      "longitude": 141.369055555
+    },
+    "aomori/mutsu": {
+      "cityCode": "02208",
+      "wikidataId": "Q641992",
+      "label": "むつ市",
+      "commonsCategory": "Mutsu, Aomori",
+      "latitude": 41.292833333,
+      "longitude": 141.183611111
+    },
+    "aomori/tsugaru": {
+      "cityCode": "02209",
+      "wikidataId": "Q372517",
+      "label": "つがる市",
+      "commonsCategory": "Tsugaru, Aomori",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 40.87,
+          "longitude": 140.349722222
+        },
+        {
+          "latitude": 40.808722222,
+          "longitude": 140.380055555
+        }
+      ]
+    },
+    "aomori/hirakawa": {
+      "cityCode": "02210",
+      "wikidataId": "Q695930",
+      "label": "平川市",
+      "commonsCategory": "Hirakawa, Aomori",
+      "latitude": 40.584083333,
+      "longitude": 140.5665
+    },
+    "iwate/morioka": {
+      "cityCode": "03201",
+      "wikidataId": "Q200077",
+      "label": "盛岡市",
+      "commonsCategory": "Morioka, Iwate",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 39.702083333,
+          "longitude": 141.1545
+        },
+        {
+          "latitude": 39.74546,
+          "longitude": 141.26915
+        }
+      ]
+    },
+    "iwate/miyako": {
+      "cityCode": "03202",
+      "wikidataId": "Q502981",
+      "label": "宮古市",
+      "commonsCategory": "Miyako, Iwate",
+      "latitude": 39.639722222,
+      "longitude": 141.946111111
+    },
+    "iwate/ofunato": {
+      "cityCode": "03203",
+      "wikidataId": "Q384934",
+      "label": "大船渡市",
+      "commonsCategory": "Ofunato, Iwate",
+      "latitude": 39.081944444,
+      "longitude": 141.708888888
+    },
+    "iwate/hanamaki": {
+      "cityCode": "03205",
+      "wikidataId": "Q317827",
+      "label": "花巻市",
+      "commonsCategory": "Hanamaki, Iwate",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 39.388611111,
+          "longitude": 141.116916666
+        },
+        {
+          "latitude": 39.441944444,
+          "longitude": 141.1675
+        }
+      ]
+    },
+    "iwate/kitakami": {
+      "cityCode": "03206",
+      "wikidataId": "Q695917",
+      "label": "北上市",
+      "commonsCategory": "Kitakami, Iwate",
+      "latitude": 39.28675,
+      "longitude": 141.113222222
+    },
+    "iwate/kuji": {
+      "cityCode": "03207",
+      "wikidataId": "Q695911",
+      "label": "久慈市",
+      "commonsCategory": "Kuji, Iwate",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 40.143611111,
+          "longitude": 141.659166666
+        },
+        {
+          "latitude": 40.190472222,
+          "longitude": 141.775666666
+        }
+      ]
+    },
+    "iwate/tono": {
+      "cityCode": "03208",
+      "wikidataId": "Q646766",
+      "label": "遠野市",
+      "commonsCategory": "Tono, Iwate",
+      "latitude": 39.332027777,
+      "longitude": 141.532888888
+    },
+    "iwate/ichinoseki": {
+      "cityCode": "03209",
+      "wikidataId": "Q390817",
+      "label": "一関市",
+      "commonsCategory": "Ichinoseki, Iwate",
+      "latitude": 38.934722222,
+      "longitude": 141.126583333
+    },
+    "iwate/rikuzentakata": {
+      "cityCode": "03210",
+      "wikidataId": "Q270463",
+      "label": "陸前高田市",
+      "commonsCategory": "Rikuzentakata, Iwate",
+      "latitude": 39.020416666,
+      "longitude": 141.633055555
+    },
+    "iwate/kamaishi": {
+      "cityCode": "03211",
+      "wikidataId": "Q329790",
+      "label": "釜石市",
+      "commonsCategory": "Kamaishi, Iwate",
+      "latitude": 39.275805555,
+      "longitude": 141.885694444
+    },
+    "iwate/ninohe": {
+      "cityCode": "03213",
+      "wikidataId": "Q695907",
+      "label": "二戸市",
+      "commonsCategory": "Ninohe, Iwate",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 40.23798,
+          "longitude": 141.19576
+        },
+        {
+          "latitude": 40.27125,
+          "longitude": 141.304777777
+        }
+      ]
+    },
+    "iwate/hachimantai": {
+      "cityCode": "03214",
+      "wikidataId": "Q765884",
+      "label": "八幡平市",
+      "commonsCategory": "Hachimantai, Iwate",
+      "latitude": 39.956388888,
+      "longitude": 141.071638888
+    },
+    "iwate/oshu": {
+      "cityCode": "03215",
+      "wikidataId": "Q386052",
+      "label": "奥州市",
+      "commonsCategory": "Oshu, Iwate",
+      "latitude": 39.144472222,
+      "longitude": 141.139138888
+    },
+    "iwate/takizawa": {
+      "cityCode": "03216",
+      "wikidataId": "Q1205932",
+      "label": "滝沢市",
+      "commonsCategory": "Takizawa, Iwate",
+      "latitude": 39.734694444,
+      "longitude": 141.077055555
+    },
+    "miyagi/sendai": {
+      "cityCode": "04100",
+      "wikidataId": "Q46747",
+      "label": "仙台市",
+      "commonsCategory": "Sendai, Miyagi",
+      "latitude": 38.268222222,
+      "longitude": 140.869416666
+    },
+    "miyagi/ishinomaki": {
+      "cityCode": "04202",
+      "wikidataId": "Q270814",
+      "label": "石巻市",
+      "commonsCategory": "Ishinomaki, Miyagi",
+      "latitude": 38.43425,
+      "longitude": 141.302722222
+    },
+    "miyagi/shiogama": {
+      "cityCode": "04203",
+      "wikidataId": "Q496448",
+      "label": "塩竈市",
+      "commonsCategory": "Shiogama, Miyagi",
+      "latitude": 38.314361111,
+      "longitude": 141.021972222
+    },
+    "miyagi/kesennuma": {
+      "cityCode": "04205",
+      "wikidataId": "Q235746",
+      "label": "気仙沼市",
+      "commonsCategory": "Kesennuma, Miyagi",
+      "latitude": 38.908055555,
+      "longitude": 141.569944444
+    },
+    "miyagi/shiroishi": {
+      "cityCode": "04206",
+      "wikidataId": "Q823489",
+      "label": "白石市",
+      "commonsCategory": "Shiroishi, Miyagi",
+      "latitude": 38.002444444,
+      "longitude": 140.619888888
+    },
+    "miyagi/natori": {
+      "cityCode": "04207",
+      "wikidataId": "Q642018",
+      "label": "名取市",
+      "commonsCategory": "Natori, Miyagi",
+      "latitude": 38.171527777,
+      "longitude": 140.891805555
+    },
+    "miyagi/kakuda": {
+      "cityCode": "04208",
+      "wikidataId": "Q696425",
+      "label": "角田市",
+      "commonsCategory": "Kakuda, Miyagi",
+      "latitude": 37.977027777,
+      "longitude": 140.782055555
+    },
+    "miyagi/tagajo": {
+      "cityCode": "04209",
+      "wikidataId": "Q653355",
+      "label": "多賀城市",
+      "commonsCategory": "Tagajo, Miyagi",
+      "latitude": 38.293833333,
+      "longitude": 141.00425
+    },
+    "miyagi/iwanuma": {
+      "cityCode": "04211",
+      "wikidataId": "Q518203",
+      "label": "岩沼市",
+      "commonsCategory": "Iwanuma, Miyagi",
+      "latitude": 38.104277777,
+      "longitude": 140.870166666
+    },
+    "miyagi/tome": {
+      "cityCode": "04212",
+      "wikidataId": "Q696401",
+      "label": "登米市",
+      "commonsCategory": "Tome, Miyagi",
+      "latitude": 38.691833333,
+      "longitude": 141.18775
+    },
+    "miyagi/kurihara": {
+      "cityCode": "04213",
+      "wikidataId": "Q469189",
+      "label": "栗原市",
+      "commonsCategory": "Kurihara, Miyagi",
+      "latitude": 38.730111111,
+      "longitude": 141.021472222
+    },
+    "miyagi/higashimatsushima": {
+      "cityCode": "04214",
+      "wikidataId": "Q511872",
+      "label": "東松島市",
+      "commonsCategory": "Higashimatsushima, Miyagi",
+      "latitude": 38.426388888,
+      "longitude": 141.211083333
+    },
+    "miyagi/osaki": {
+      "cityCode": "04215",
+      "wikidataId": "Q385892",
+      "label": "大崎市",
+      "commonsCategory": "Osaki, Miyagi",
+      "latitude": 38.577111111,
+      "longitude": 140.955583333
+    },
+    "miyagi/tomiya": {
+      "cityCode": "04216",
+      "wikidataId": "Q1205173",
+      "label": "富谷市",
+      "commonsCategory": "Tomiya, Miyagi",
+      "latitude": 38.399936111,
+      "longitude": 140.895302777
+    },
+    "akita/akita": {
+      "cityCode": "05201",
+      "wikidataId": "Q17139",
+      "label": "秋田市",
+      "commonsCategory": "Akita, Akita",
+      "latitude": 39.719888888,
+      "longitude": 140.102583333
+    },
+    "akita/noshiro": {
+      "cityCode": "05202",
+      "wikidataId": "Q819587",
+      "label": "能代市",
+      "commonsCategory": "Noshiro, Akita",
+      "latitude": 40.211777777,
+      "longitude": 140.027083333
+    },
+    "akita/yokote": {
+      "cityCode": "05203",
+      "wikidataId": "Q496479",
+      "label": "横手市",
+      "commonsCategory": "Yokote, Akita",
+      "latitude": 39.313722222,
+      "longitude": 140.566611111
+    },
+    "akita/odate": {
+      "cityCode": "05204",
+      "wikidataId": "Q329996",
+      "label": "大館市",
+      "commonsCategory": "Odate, Akita",
+      "latitude": 40.271611111,
+      "longitude": 140.565305555
+    },
+    "akita/oga": {
+      "cityCode": "05206",
+      "wikidataId": "Q633935",
+      "label": "男鹿市",
+      "commonsCategory": "Oga, Akita",
+      "latitude": 39.88675,
+      "longitude": 139.847555555
+    },
+    "akita/yuzawa": {
+      "cityCode": "05207",
+      "wikidataId": "Q633272",
+      "label": "湯沢市",
+      "commonsCategory": "Yuzawa, Akita",
+      "latitude": 39.164444444,
+      "longitude": 140.495833333
+    },
+    "akita/kazuno": {
+      "cityCode": "05209",
+      "wikidataId": "Q496499",
+      "label": "鹿角市",
+      "commonsCategory": "Kazuno, Akita",
+      "latitude": 40.215777777,
+      "longitude": 140.7885
+    },
+    "akita/yurihonjo": {
+      "cityCode": "05210",
+      "wikidataId": "Q602903",
+      "label": "由利本荘市",
+      "commonsCategory": "Yurihonjo, Akita",
+      "latitude": 39.385861111,
+      "longitude": 140.048833333
+    },
+    "akita/katagami": {
+      "cityCode": "05211",
+      "wikidataId": "Q646780",
+      "label": "潟上市",
+      "commonsCategory": "Katagami, Akita",
+      "latitude": 39.85725,
+      "longitude": 140.013027777
+    },
+    "akita/daisen": {
+      "cityCode": "05212",
+      "wikidataId": "Q695920",
+      "label": "大仙市",
+      "commonsCategory": "Daisen, Akita",
+      "latitude": 39.453055555,
+      "longitude": 140.475444444
+    },
+    "akita/kitaakita": {
+      "cityCode": "05213",
+      "wikidataId": "Q653545",
+      "label": "北秋田市",
+      "commonsCategory": "Kitaakita, Akita",
+      "latitude": 40.226027777,
+      "longitude": 140.370722222
+    },
+    "akita/nikaho": {
+      "cityCode": "05214",
+      "wikidataId": "Q847550",
+      "label": "にかほ市",
+      "commonsCategory": "Nikaho, Akita",
+      "latitude": 39.203,
+      "longitude": 139.907722222
+    },
+    "akita/semboku": {
+      "cityCode": "05215",
+      "wikidataId": "Q846877",
+      "label": "仙北市",
+      "commonsCategory": "Semboku, Akita",
+      "latitude": 39.700083333,
+      "longitude": 140.730583333
+    },
+    "yamagata/yamagata": {
+      "cityCode": "06201",
+      "wikidataId": "Q205526",
+      "label": "山形市",
+      "commonsCategory": "Yamagata, Yamagata",
+      "latitude": 38.255416666,
+      "longitude": 140.339611111
+    },
+    "yamagata/yonezawa": {
+      "cityCode": "06202",
+      "wikidataId": "Q734378",
+      "label": "米沢市",
+      "commonsCategory": "Yonezawa, Yamagata",
+      "latitude": 37.922222222,
+      "longitude": 140.116666666
+    },
+    "yamagata/tsuruoka": {
+      "cityCode": "06203",
+      "wikidataId": "Q734416",
+      "label": "鶴岡市",
+      "commonsCategory": "Tsuruoka, Yamagata",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 38.585,
+          "longitude": 139.808333333
+        },
+        {
+          "latitude": 38.727222222,
+          "longitude": 139.826666666
+        }
+      ]
+    },
+    "yamagata/sakata": {
+      "cityCode": "06204",
+      "wikidataId": "Q504690",
+      "label": "酒田市",
+      "commonsCategory": "Sakata, Yamagata",
+      "latitude": 38.914861111,
+      "longitude": 139.836722222
+    },
+    "yamagata/shinjo": {
+      "cityCode": "06205",
+      "wikidataId": "Q840603",
+      "label": "新庄市",
+      "commonsCategory": "Shinjo, Yamagata",
+      "latitude": 38.765027777,
+      "longitude": 140.301638888
+    },
+    "yamagata/sagae": {
+      "cityCode": "06206",
+      "wikidataId": "Q823955",
+      "label": "寒河江市",
+      "commonsCategory": "Sagae, Yamagata",
+      "latitude": 38.380916666,
+      "longitude": 140.276027777
+    },
+    "yamagata/kaminoyama": {
+      "cityCode": "06207",
+      "wikidataId": "Q770187",
+      "label": "上山市",
+      "commonsCategory": "Kaminoyama, Yamagata",
+      "latitude": 38.149583333,
+      "longitude": 140.267861111
+    },
+    "yamagata/murayama": {
+      "cityCode": "06208",
+      "wikidataId": "Q858008",
+      "label": "村山市",
+      "commonsCategory": "Murayama, Yamagata",
+      "latitude": 38.483333333,
+      "longitude": 140.380277777
+    },
+    "yamagata/nagai": {
+      "cityCode": "06209",
+      "wikidataId": "Q847557",
+      "label": "長井市",
+      "commonsCategory": "Nagai, Yamagata",
+      "latitude": 38.1075,
+      "longitude": 140.040527777
+    },
+    "yamagata/tendo": {
+      "cityCode": "06210",
+      "wikidataId": "Q385779",
+      "label": "天童市",
+      "commonsCategory": "Tendo, Yamagata",
+      "latitude": 38.362111111,
+      "longitude": 140.378444444
+    },
+    "yamagata/higashine": {
+      "cityCode": "06211",
+      "wikidataId": "Q823927",
+      "label": "東根市",
+      "commonsCategory": "Higashine, Yamagata",
+      "latitude": 38.431305555,
+      "longitude": 140.391083333
+    },
+    "yamagata/obanazawa": {
+      "cityCode": "06212",
+      "wikidataId": "Q846342",
+      "label": "尾花沢市",
+      "commonsCategory": "Obanazawa, Yamagata",
+      "latitude": 38.600638888,
+      "longitude": 140.405666666
+    },
+    "yamagata/nanyo": {
+      "cityCode": "06213",
+      "wikidataId": "Q850496",
+      "label": "南陽市",
+      "commonsCategory": "Nanyo, Yamagata",
+      "latitude": 38.055111111,
+      "longitude": 140.148361111
+    },
+    "fukushima/fukushima": {
+      "cityCode": "07201",
+      "wikidataId": "Q161176",
+      "label": "福島市",
+      "commonsCategory": "Fukushima, Fukushima",
+      "latitude": 37.760805555,
+      "longitude": 140.474722222
+    },
+    "fukushima/aizuwakamatsu": {
+      "cityCode": "07202",
+      "wikidataId": "Q237699",
+      "label": "会津若松市",
+      "commonsCategory": "Aizuwakamatsu",
+      "latitude": 37.494833333,
+      "longitude": 139.92975
+    },
+    "fukushima/koriyama": {
+      "cityCode": "07203",
+      "wikidataId": "Q264206",
+      "label": "郡山市",
+      "commonsCategory": "Koriyama, Fukushima",
+      "latitude": 37.4003,
+      "longitude": 140.3597
+    },
+    "fukushima/iwaki": {
+      "cityCode": "07204",
+      "wikidataId": "Q274384",
+      "label": "いわき市",
+      "commonsCategory": "Iwaki, Fukushima",
+      "latitude": 37.0505,
+      "longitude": 140.887722222
+    },
+    "fukushima/shirakawa": {
+      "cityCode": "07205",
+      "wikidataId": "Q750587",
+      "label": "白河市",
+      "commonsCategory": "Shirakawa, Fukushima",
+      "latitude": 37.126305555,
+      "longitude": 140.210916666
+    },
+    "fukushima/sukagawa": {
+      "cityCode": "07207",
+      "wikidataId": "Q819664",
+      "label": "須賀川市",
+      "commonsCategory": "Sukagawa, Fukushima",
+      "latitude": 37.286888888,
+      "longitude": 140.372555555
+    },
+    "fukushima/kitakata": {
+      "cityCode": "07208",
+      "wikidataId": "Q496506",
+      "label": "喜多方市",
+      "commonsCategory": "Kitakata, Fukushima",
+      "latitude": 37.651138888,
+      "longitude": 139.87475
+    },
+    "fukushima/soma": {
+      "cityCode": "07209",
+      "wikidataId": "Q696456",
+      "label": "相馬市",
+      "commonsCategory": "Soma, Fukushima",
+      "latitude": 37.796666666,
+      "longitude": 140.919638888
+    },
+    "fukushima/nihommatsu": {
+      "cityCode": "07210",
+      "wikidataId": "Q685491",
+      "label": "二本松市",
+      "commonsCategory": "Nihonmatsu, Fukushima",
+      "latitude": 37.584861111,
+      "longitude": 140.431166666
+    },
+    "fukushima/tamura": {
+      "cityCode": "07211",
+      "wikidataId": "Q734400",
+      "label": "田村市",
+      "commonsCategory": "Tamura, Fukushima",
+      "latitude": 37.440638888,
+      "longitude": 140.57625
+    },
+    "fukushima/minamisoma": {
+      "cityCode": "07212",
+      "wikidataId": "Q642094",
+      "label": "南相馬市",
+      "commonsCategory": "Minamisoma, Fukushima",
+      "latitude": 37.642194444,
+      "longitude": 140.957305555
+    },
+    "fukushima/date": {
+      "cityCode": "07213",
+      "wikidataId": "Q858423",
+      "label": "伊達市",
+      "commonsCategory": "Date, Fukushima",
+      "latitude": 37.819138888,
+      "longitude": 140.562972222
+    },
+    "fukushima/motomiya": {
+      "cityCode": "07214",
+      "wikidataId": "Q867106",
+      "label": "本宮市",
+      "commonsCategory": "Motomiya, Fukushima",
+      "latitude": 37.513194444,
+      "longitude": 140.393833333
+    },
+    "ibaraki/mito": {
+      "cityCode": "08201",
+      "wikidataId": "Q204249",
+      "label": "水戸市",
+      "commonsCategory": "Mito, Ibaraki",
+      "latitude": 36.365833333,
+      "longitude": 140.47125
+    },
+    "ibaraki/hitachi": {
+      "cityCode": "08202",
+      "wikidataId": "Q633922",
+      "label": "日立市",
+      "commonsCategory": "Hitachi, Ibaraki",
+      "latitude": 36.599138888,
+      "longitude": 140.6515
+    },
+    "ibaraki/tsuchiura": {
+      "cityCode": "08203",
+      "wikidataId": "Q653446",
+      "label": "土浦市",
+      "commonsCategory": "Tsuchiura, Ibaraki",
+      "latitude": 36.078277777,
+      "longitude": 140.2045
+    },
+    "ibaraki/koga": {
+      "cityCode": "08204",
+      "wikidataId": "Q836836",
+      "label": "古河市",
+      "commonsCategory": "Koga, Ibaraki",
+      "latitude": 36.17825,
+      "longitude": 139.755444444
+    },
+    "ibaraki/ishioka": {
+      "cityCode": "08205",
+      "wikidataId": "Q819658",
+      "label": "石岡市",
+      "commonsCategory": "Ishioka, Ibaraki",
+      "latitude": 36.190833333,
+      "longitude": 140.287222222
+    },
+    "ibaraki/yuki": {
+      "cityCode": "08207",
+      "wikidataId": "Q847569",
+      "label": "結城市",
+      "commonsCategory": "Yuki, Ibaraki",
+      "latitude": 36.289655555,
+      "longitude": 139.871530555
+    },
+    "ibaraki/ryugasaki": {
+      "cityCode": "08208",
+      "wikidataId": "Q844138",
+      "label": "龍ケ崎市",
+      "commonsCategory": "Ryugasaki, Ibaraki",
+      "latitude": 35.911555555,
+      "longitude": 140.182305555
+    },
+    "ibaraki/shimotsuma": {
+      "cityCode": "08210",
+      "wikidataId": "Q533241",
+      "label": "下妻市",
+      "commonsCategory": "Shimotsuma, Ibaraki",
+      "latitude": 36.184388888,
+      "longitude": 139.968416666
+    },
+    "ibaraki/joso": {
+      "cityCode": "08211",
+      "wikidataId": "Q851149",
+      "label": "常総市",
+      "commonsCategory": "Joso, Ibaraki",
+      "latitude": 36.023555555,
+      "longitude": 139.993833333
+    },
+    "ibaraki/hitachiota": {
+      "cityCode": "08212",
+      "wikidataId": "Q838663",
+      "label": "常陸太田市",
+      "commonsCategory": "Hitachiota, Ibaraki",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 36.648333333,
+          "longitude": 140.505277777
+        },
+        {
+          "latitude": 36.538277777,
+          "longitude": 140.530916666
+        }
+      ]
+    },
+    "ibaraki/takahagi": {
+      "cityCode": "08214",
+      "wikidataId": "Q520428",
+      "label": "高萩市",
+      "commonsCategory": "Takahagi, Ibaraki",
+      "latitude": 36.713666666,
+      "longitude": 140.709472222
+    },
+    "ibaraki/kitaibaraki": {
+      "cityCode": "08215",
+      "wikidataId": "Q838654",
+      "label": "北茨城市",
+      "commonsCategory": "Kitaibaraki, Ibaraki",
+      "latitude": 36.801888888,
+      "longitude": 140.751027777
+    },
+    "ibaraki/kasama": {
+      "cityCode": "08216",
+      "wikidataId": "Q845851",
+      "label": "笠間市",
+      "commonsCategory": "Kasama, Ibaraki",
+      "latitude": 36.345166666,
+      "longitude": 140.304305555
+    },
+    "ibaraki/toride": {
+      "cityCode": "08217",
+      "wikidataId": "Q638312",
+      "label": "取手市",
+      "commonsCategory": "Toride, Ibaraki",
+      "latitude": 35.9115,
+      "longitude": 140.050361111
+    },
+    "ibaraki/ushiku": {
+      "cityCode": "08219",
+      "wikidataId": "Q844133",
+      "label": "牛久市",
+      "commonsCategory": "Ushiku, Ibaraki",
+      "latitude": 35.979361111,
+      "longitude": 140.149555555
+    },
+    "ibaraki/tsukuba": {
+      "cityCode": "08220",
+      "wikidataId": "Q273863",
+      "label": "つくば市",
+      "commonsCategory": "Tsukuba, Ibaraki",
+      "latitude": 36.083472222,
+      "longitude": 140.076444444
+    },
+    "ibaraki/hitachinaka": {
+      "cityCode": "08221",
+      "wikidataId": "Q696772",
+      "label": "ひたちなか市",
+      "commonsCategory": "Hitachinaka, Ibaraki",
+      "latitude": 36.396694444,
+      "longitude": 140.534666666
+    },
+    "ibaraki/kashima": {
+      "cityCode": "08222",
+      "wikidataId": "Q467471",
+      "label": "鹿嶋市",
+      "commonsCategory": "Kashima, Ibaraki",
+      "latitude": 35.965638888,
+      "longitude": 140.644833333
+    },
+    "ibaraki/itako": {
+      "cityCode": "08223",
+      "wikidataId": "Q840598",
+      "label": "潮来市",
+      "commonsCategory": "Itako, Ibaraki",
+      "latitude": 35.947138888,
+      "longitude": 140.555361111
+    },
+    "ibaraki/moriya": {
+      "cityCode": "08224",
+      "wikidataId": "Q840608",
+      "label": "守谷市",
+      "commonsCategory": "Moriya, Ibaraki",
+      "latitude": 35.951416666,
+      "longitude": 139.975416666
+    },
+    "ibaraki/hitachiomiya": {
+      "cityCode": "08225",
+      "wikidataId": "Q838681",
+      "label": "常陸大宮市",
+      "commonsCategory": "Hitachiomiya, Ibaraki",
+      "latitude": 36.542527777,
+      "longitude": 140.410888888
+    },
+    "ibaraki/naka": {
+      "cityCode": "08226",
+      "wikidataId": "Q633647",
+      "label": "那珂市",
+      "commonsCategory": "Naka, Ibaraki",
+      "latitude": 36.457388888,
+      "longitude": 140.48675
+    },
+    "ibaraki/chikusei": {
+      "cityCode": "08227",
+      "wikidataId": "Q694322",
+      "label": "筑西市",
+      "commonsCategory": "Chikusei, Ibaraki",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 36.307083333,
+          "longitude": 139.983138888
+        },
+        {
+          "latitude": 36.289444444,
+          "longitude": 139.986944444
+        }
+      ]
+    },
+    "ibaraki/bando": {
+      "cityCode": "08228",
+      "wikidataId": "Q583931",
+      "label": "坂東市",
+      "commonsCategory": "Bando, Ibaraki",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 36.063888888,
+          "longitude": 139.887777777
+        },
+        {
+          "latitude": 36.048416666,
+          "longitude": 139.888722222
+        }
+      ]
+    },
+    "ibaraki/inashiki": {
+      "cityCode": "08229",
+      "wikidataId": "Q838675",
+      "label": "稲敷市",
+      "commonsCategory": "Inashiki, Ibaraki",
+      "latitude": 35.956527777,
+      "longitude": 140.323944444
+    },
+    "ibaraki/kasumigaura": {
+      "cityCode": "08230",
+      "wikidataId": "Q772817",
+      "label": "かすみがうら市",
+      "commonsCategory": "Kasumigaura, Ibaraki",
+      "latitude": 36.15175,
+      "longitude": 140.237111111
+    },
+    "ibaraki/sakuragawa": {
+      "cityCode": "08231",
+      "wikidataId": "Q990350",
+      "label": "桜川市",
+      "commonsCategory": "Sakuragawa, Ibaraki",
+      "latitude": 36.327305555,
+      "longitude": 140.090555555
+    },
+    "ibaraki/kamisu": {
+      "cityCode": "08232",
+      "wikidataId": "Q840595",
+      "label": "神栖市",
+      "commonsCategory": "Kamisu, Ibaraki",
+      "latitude": 35.889944444,
+      "longitude": 140.664527777
+    },
+    "ibaraki/namegata": {
+      "cityCode": "08233",
+      "wikidataId": "Q877184",
+      "label": "行方市",
+      "commonsCategory": "Namegata, Ibaraki",
+      "latitude": 35.9905,
+      "longitude": 140.489027777
+    },
+    "ibaraki/hokota": {
+      "cityCode": "08234",
+      "wikidataId": "Q857297",
+      "label": "鉾田市",
+      "commonsCategory": "Hokota, Ibaraki",
+      "latitude": 36.158666666,
+      "longitude": 140.516416666
+    },
+    "ibaraki/tsukubamirai": {
+      "cityCode": "08235",
+      "wikidataId": "Q877254",
+      "label": "つくばみらい市",
+      "commonsCategory": "Tsukubamirai, Ibaraki",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.963055555,
+          "longitude": 140.037027777
+        },
+        {
+          "latitude": 35.981944444,
+          "longitude": 140.038055555
+        }
+      ]
+    },
+    "ibaraki/omitama": {
+      "cityCode": "08236",
+      "wikidataId": "Q430584",
+      "label": "小美玉市",
+      "commonsCategory": "Omitama, Ibaraki",
+      "latitude": 36.239277777,
+      "longitude": 140.352555555
+    },
+    "tochigi/utsunomiya": {
+      "cityCode": "09201",
+      "wikidataId": "Q200589",
+      "label": "宇都宮市",
+      "commonsCategory": "Utsunomiya, Tochigi",
+      "latitude": 36.555111111,
+      "longitude": 139.882555555
+    },
+    "tochigi/ashikaga": {
+      "cityCode": "09202",
+      "wikidataId": "Q374477",
+      "label": "足利市",
+      "commonsCategory": "Ashikaga, Tochigi",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 36.340166666,
+          "longitude": 139.449722222
+        },
+        {
+          "latitude": 36.359444444,
+          "longitude": 139.453055555
+        }
+      ]
+    },
+    "tochigi/tochigi": {
+      "cityCode": "09203",
+      "wikidataId": "Q44830",
+      "label": "栃木市",
+      "commonsCategory": "Tochigi, Tochigi",
+      "latitude": 36.382444444,
+      "longitude": 139.734138888
+    },
+    "tochigi/sano": {
+      "cityCode": "09204",
+      "wikidataId": "Q646912",
+      "label": "佐野市",
+      "commonsCategory": "Sano, Tochigi",
+      "latitude": 36.3144,
+      "longitude": 139.5783
+    },
+    "tochigi/kanuma": {
+      "cityCode": "09205",
+      "wikidataId": "Q390792",
+      "label": "鹿沼市",
+      "commonsCategory": "Kanuma, Tochigi",
+      "latitude": 36.567083333,
+      "longitude": 139.745055555
+    },
+    "tochigi/nikko": {
+      "cityCode": "09206",
+      "wikidataId": "Q235753",
+      "label": "日光市",
+      "commonsCategory": "Nikko, Tochigi",
+      "latitude": 36.719833333,
+      "longitude": 139.698166666
+    },
+    "tochigi/oyama": {
+      "cityCode": "09208",
+      "wikidataId": "Q374511",
+      "label": "小山市",
+      "commonsCategory": "Oyama, Tochigi",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 36.314611111,
+          "longitude": 139.800166666
+        },
+        {
+          "latitude": 36.308,
+          "longitude": 139.80195
+        }
+      ]
+    },
+    "tochigi/moka": {
+      "cityCode": "09209",
+      "wikidataId": "Q498060",
+      "label": "真岡市",
+      "commonsCategory": "Mooka, Tochigi",
+      "latitude": 36.440416666,
+      "longitude": 140.013388888
+    },
+    "tochigi/otawara": {
+      "cityCode": "09210",
+      "wikidataId": "Q386322",
+      "label": "大田原市",
+      "commonsCategory": "Otawara, Tochigi",
+      "latitude": 36.870972222,
+      "longitude": 140.015944444
+    },
+    "tochigi/yaita": {
+      "cityCode": "09211",
+      "wikidataId": "Q695926",
+      "label": "矢板市",
+      "commonsCategory": "Yaita, Tochigi",
+      "latitude": 36.806722222,
+      "longitude": 139.924111111
+    },
+    "tochigi/nasushiobara": {
+      "cityCode": "09213",
+      "wikidataId": "Q498027",
+      "label": "那須塩原市",
+      "commonsCategory": "Nasushiobara, Tochigi",
+      "latitude": 36.961722222,
+      "longitude": 140.046055555
+    },
+    "tochigi/sakura": {
+      "cityCode": "09214",
+      "wikidataId": "Q696394",
+      "label": "さくら市",
+      "commonsCategory": "Sakura, Tochigi",
+      "latitude": 36.685277777,
+      "longitude": 139.966416666
+    },
+    "tochigi/nasukarasuyama": {
+      "cityCode": "09215",
+      "wikidataId": "Q847562",
+      "label": "那須烏山市",
+      "commonsCategory": "Nasukarasuyama, Tochigi",
+      "latitude": 36.656888888,
+      "longitude": 140.151416666
+    },
+    "tochigi/shimotsuke": {
+      "cityCode": "09216",
+      "wikidataId": "Q851804",
+      "label": "下野市",
+      "commonsCategory": "Shimotsuke, Tochigi",
+      "latitude": 36.394861111,
+      "longitude": 139.851805555
+    },
+    "gunma/maebashi": {
+      "cityCode": "10201",
+      "wikidataId": "Q201613",
+      "label": "前橋市",
+      "commonsCategory": "Maebashi, Gunma",
+      "latitude": 36.3895,
+      "longitude": 139.063444444
+    },
+    "gunma/takasaki": {
+      "cityCode": "10202",
+      "wikidataId": "Q336438",
+      "label": "高崎市",
+      "commonsCategory": "Takasaki, Gunma",
+      "latitude": 36.323111111,
+      "longitude": 139.002361111
+    },
+    "gunma/kiryu": {
+      "cityCode": "10203",
+      "wikidataId": "Q634022",
+      "label": "桐生市",
+      "commonsCategory": "Kiryu, Gunma",
+      "latitude": 36.405333333,
+      "longitude": 139.330472222
+    },
+    "gunma/isesaki": {
+      "cityCode": "10204",
+      "wikidataId": "Q328596",
+      "label": "伊勢崎市",
+      "commonsCategory": "Isesaki, Gunma",
+      "latitude": 36.311361111,
+      "longitude": 139.196805555
+    },
+    "gunma/ota": {
+      "cityCode": "10205",
+      "wikidataId": "Q386179",
+      "label": "太田市",
+      "commonsCategory": "Ota, Gunma",
+      "latitude": 36.291138888,
+      "longitude": 139.375388888
+    },
+    "gunma/numata": {
+      "cityCode": "10206",
+      "wikidataId": "Q666317",
+      "label": "沼田市",
+      "commonsCategory": "Numata, Gunma",
+      "latitude": 36.643927777,
+      "longitude": 139.042752777
+    },
+    "gunma/tatebayashi": {
+      "cityCode": "10207",
+      "wikidataId": "Q858016",
+      "label": "館林市",
+      "commonsCategory": "Tatebayashi, Gunma",
+      "latitude": 36.244833333,
+      "longitude": 139.542111111
+    },
+    "gunma/shibukawa": {
+      "cityCode": "10208",
+      "wikidataId": "Q851492",
+      "label": "渋川市",
+      "commonsCategory": "Shibukawa, Gunma",
+      "latitude": 36.489472222,
+      "longitude": 139.000416666
+    },
+    "gunma/fujioka": {
+      "cityCode": "10209",
+      "wikidataId": "Q596486",
+      "label": "藤岡市",
+      "commonsCategory": "Fujioka, Gunma",
+      "latitude": 36.258694444,
+      "longitude": 139.074555555
+    },
+    "gunma/tomioka": {
+      "cityCode": "10210",
+      "wikidataId": "Q873835",
+      "label": "富岡市",
+      "commonsCategory": "Tomioka, Gunma",
+      "latitude": 36.259916666,
+      "longitude": 138.889916666
+    },
+    "gunma/annaka": {
+      "cityCode": "10211",
+      "wikidataId": "Q564234",
+      "label": "安中市",
+      "commonsCategory": "Annaka, Gunma",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 36.340833333,
+          "longitude": 138.776388888
+        },
+        {
+          "latitude": 36.32635,
+          "longitude": 138.88767
+        }
+      ]
+    },
+    "gunma/midori": {
+      "cityCode": "10212",
+      "wikidataId": "Q576556",
+      "label": "みどり市",
+      "commonsCategory": "Midori, Gunma",
+      "latitude": 36.394805555,
+      "longitude": 139.281138888
+    },
+    "saitama/saitama": {
+      "cityCode": "11100",
+      "wikidataId": "Q134635",
+      "label": "さいたま市",
+      "commonsCategory": "Saitama, Saitama",
+      "latitude": 35.861388888,
+      "longitude": 139.645555555
+    },
+    "saitama/kawagoe": {
+      "cityCode": "11201",
+      "wikidataId": "Q319740",
+      "label": "川越市",
+      "commonsCategory": "Kawagoe, Saitama",
+      "latitude": 35.925138888,
+      "longitude": 139.485777777
+    },
+    "saitama/kumagaya": {
+      "cityCode": "11202",
+      "wikidataId": "Q41106",
+      "label": "熊谷市",
+      "commonsCategory": "Kumagaya, Saitama",
+      "latitude": 36.147388888,
+      "longitude": 139.388638888
+    },
+    "saitama/kawaguchi": {
+      "cityCode": "11203",
+      "wikidataId": "Q387136",
+      "label": "川口市",
+      "commonsCategory": "Kawaguchi, Saitama",
+      "latitude": 35.807583333,
+      "longitude": 139.724138888,
+      "categoryEvidence": {
+        "kind": "Wikidata category main topic and Commons sitelink",
+        "categoryWikidataId": "Q6807556",
+        "mainTopicWikidataId": "Q387136",
+        "sourceUrl": "https://www.wikidata.org/wiki/Q6807556",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/Category:Kawaguchi,_Saitama",
+        "fetchedAt": "2026-09-23T07:37:43.695657+00:00"
+      }
+    },
+    "saitama/gyoda": {
+      "cityCode": "11206",
+      "wikidataId": "Q860659",
+      "label": "行田市",
+      "commonsCategory": "Gyoda, Saitama",
+      "latitude": 36.138888888,
+      "longitude": 139.455638888
+    },
+    "saitama/chichibu": {
+      "cityCode": "11207",
+      "wikidataId": "Q647079",
+      "label": "秩父市",
+      "commonsCategory": "Chichibu, Saitama",
+      "latitude": 35.959722222,
+      "longitude": 138.933333333
+    },
+    "saitama/tokorozawa": {
+      "cityCode": "11208",
+      "wikidataId": "Q165857",
+      "label": "所沢市",
+      "commonsCategory": "Tokorozawa, Saitama",
+      "latitude": 35.799444444,
+      "longitude": 139.468888888
+    },
+    "saitama/hanno": {
+      "cityCode": "11209",
+      "wikidataId": "Q850472",
+      "label": "飯能市",
+      "commonsCategory": "Hanno, Saitama",
+      "latitude": 35.855555555,
+      "longitude": 139.327777777
+    },
+    "saitama/kazo": {
+      "cityCode": "11210",
+      "wikidataId": "Q851680",
+      "label": "加須市",
+      "commonsCategory": "Kazo, Saitama",
+      "latitude": 36.131444444,
+      "longitude": 139.601777777
+    },
+    "saitama/honjo": {
+      "cityCode": "11211",
+      "wikidataId": "Q873565",
+      "label": "本庄市",
+      "commonsCategory": "Honjo, Saitama",
+      "latitude": 36.243583333,
+      "longitude": 139.190388888
+    },
+    "saitama/higashimatsuyama": {
+      "cityCode": "11212",
+      "wikidataId": "Q823907",
+      "label": "東松山市",
+      "commonsCategory": "Higashimatsuyama, Saitama",
+      "latitude": 36.042166666,
+      "longitude": 139.399916666
+    },
+    "saitama/kasukabe": {
+      "cityCode": "11214",
+      "wikidataId": "Q376023",
+      "label": "春日部市",
+      "commonsCategory": "Kasukabe, Saitama",
+      "latitude": 35.975277777,
+      "longitude": 139.752222222
+    },
+    "saitama/sayama": {
+      "cityCode": "11215",
+      "wikidataId": "Q824009",
+      "label": "狭山市",
+      "commonsCategory": "Sayama, Saitama",
+      "latitude": 35.852972222,
+      "longitude": 139.412194444
+    },
+    "saitama/hanyu": {
+      "cityCode": "11216",
+      "wikidataId": "Q847565",
+      "label": "羽生市",
+      "commonsCategory": "Hanyu, Saitama",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 36.1725,
+          "longitude": 139.54847
+        },
+        {
+          "latitude": 36.1725,
+          "longitude": 139.553333333
+        }
+      ]
+    },
+    "saitama/konosu": {
+      "cityCode": "11217",
+      "wikidataId": "Q734541",
+      "label": "鴻巣市",
+      "commonsCategory": "Konosu, Saitama",
+      "latitude": 36.065888888,
+      "longitude": 139.522194444
+    },
+    "saitama/fukaya": {
+      "cityCode": "11218",
+      "wikidataId": "Q734532",
+      "label": "深谷市",
+      "commonsCategory": "Fukaya, Saitama",
+      "latitude": 36.197472222,
+      "longitude": 139.2815
+    },
+    "saitama/ageo": {
+      "cityCode": "11219",
+      "wikidataId": "Q163888",
+      "label": "上尾市",
+      "commonsCategory": "Ageo, Saitama",
+      "latitude": 35.977388888,
+      "longitude": 139.593194444
+    },
+    "saitama/soka": {
+      "cityCode": "11221",
+      "wikidataId": "Q734442",
+      "label": "草加市",
+      "commonsCategory": "Soka, Saitama",
+      "latitude": 35.825388888,
+      "longitude": 139.805333333
+    },
+    "saitama/koshigaya": {
+      "cityCode": "11222",
+      "wikidataId": "Q497952",
+      "label": "越谷市",
+      "commonsCategory": "Koshigaya, Saitama",
+      "latitude": 35.891138888,
+      "longitude": 139.790916666
+    },
+    "saitama/warabi": {
+      "cityCode": "11223",
+      "wikidataId": "Q673010",
+      "label": "蕨市",
+      "commonsCategory": "Warabi, Saitama",
+      "latitude": 35.825555555,
+      "longitude": 139.679722222
+    },
+    "saitama/toda": {
+      "cityCode": "11224",
+      "wikidataId": "Q823874",
+      "label": "戸田市",
+      "commonsCategory": "Toda, Saitama",
+      "latitude": 35.817611111,
+      "longitude": 139.677916666
+    },
+    "saitama/iruma": {
+      "cityCode": "11225",
+      "wikidataId": "Q696925",
+      "label": "入間市",
+      "commonsCategory": "Iruma, Saitama",
+      "latitude": 35.835805555,
+      "longitude": 139.391138888
+    },
+    "saitama/asaka": {
+      "cityCode": "11227",
+      "wikidataId": "Q646834",
+      "label": "朝霞市",
+      "commonsCategory": "Asaka, Saitama",
+      "latitude": 35.797194444,
+      "longitude": 139.593888888
+    },
+    "saitama/shiki": {
+      "cityCode": "11228",
+      "wikidataId": "Q877202",
+      "label": "志木市",
+      "commonsCategory": "Shiki, Saitama",
+      "latitude": 35.836666666,
+      "longitude": 139.580305555
+    },
+    "saitama/wako": {
+      "cityCode": "11229",
+      "wikidataId": "Q658058",
+      "label": "和光市",
+      "commonsCategory": "Wako, Saitama",
+      "latitude": 35.781222222,
+      "longitude": 139.605694444
+    },
+    "saitama/niiza": {
+      "cityCode": "11230",
+      "wikidataId": "Q386691",
+      "label": "新座市",
+      "commonsCategory": "Niiza, Saitama",
+      "latitude": 35.7935,
+      "longitude": 139.565305555
+    },
+    "saitama/okegawa": {
+      "cityCode": "11231",
+      "wikidataId": "Q570333",
+      "label": "桶川市",
+      "commonsCategory": "Okegawa, Saitama",
+      "latitude": 36.002805555,
+      "longitude": 139.5585
+    },
+    "saitama/kuki": {
+      "cityCode": "11232",
+      "wikidataId": "Q47535",
+      "label": "久喜市",
+      "commonsCategory": "Kuki, Saitama",
+      "latitude": 36.062083333,
+      "longitude": 139.666805555
+    },
+    "saitama/kitamoto": {
+      "cityCode": "11233",
+      "wikidataId": "Q857285",
+      "label": "北本市",
+      "commonsCategory": "Kitamoto, Saitama",
+      "latitude": 36.026888888,
+      "longitude": 139.530194444
+    },
+    "saitama/yashio": {
+      "cityCode": "11234",
+      "wikidataId": "Q869032",
+      "label": "八潮市",
+      "commonsCategory": "Yashio, Saitama",
+      "latitude": 35.822527777,
+      "longitude": 139.839222222
+    },
+    "saitama/fujimi": {
+      "cityCode": "11235",
+      "wikidataId": "Q495809",
+      "label": "富士見市",
+      "commonsCategory": "Fujimi, Saitama",
+      "latitude": 35.856555555,
+      "longitude": 139.549166666
+    },
+    "saitama/misato-shi": {
+      "cityCode": "11237",
+      "wikidataId": "Q853061",
+      "label": "三郷市",
+      "commonsCategory": "Misato, Saitama (city)",
+      "latitude": 35.830138888,
+      "longitude": 139.872333333
+    },
+    "saitama/hasuda": {
+      "cityCode": "11238",
+      "wikidataId": "Q857256",
+      "label": "蓮田市",
+      "commonsCategory": "Hasuda, Saitama",
+      "latitude": 35.9945,
+      "longitude": 139.662388888
+    },
+    "saitama/sakado": {
+      "cityCode": "11239",
+      "wikidataId": "Q850344",
+      "label": "坂戸市",
+      "commonsCategory": "Sakado, Saitama",
+      "latitude": 35.95725,
+      "longitude": 139.403027777
+    },
+    "saitama/satte": {
+      "cityCode": "11240",
+      "wikidataId": "Q868971",
+      "label": "幸手市",
+      "commonsCategory": "Satte, Saitama",
+      "latitude": 36.078083333,
+      "longitude": 139.725861111
+    },
+    "saitama/tsurugashima": {
+      "cityCode": "11241",
+      "wikidataId": "Q869027",
+      "label": "鶴ヶ島市",
+      "commonsCategory": "Tsurugashima, Saitama",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.9345,
+          "longitude": 139.393083333
+        },
+        {
+          "latitude": 35.935833333,
+          "longitude": 139.394444444
+        }
+      ]
+    },
+    "saitama/hidaka": {
+      "cityCode": "11242",
+      "wikidataId": "Q905721",
+      "label": "日高市",
+      "commonsCategory": "Hidaka, Saitama",
+      "latitude": 35.907805555,
+      "longitude": 139.339083333
+    },
+    "saitama/yoshikawa": {
+      "cityCode": "11243",
+      "wikidataId": "Q873546",
+      "label": "吉川市",
+      "commonsCategory": "Yoshikawa, Saitama",
+      "latitude": 35.895833333,
+      "longitude": 139.855555555
+    },
+    "saitama/fujimino": {
+      "cityCode": "11245",
+      "wikidataId": "Q873590",
+      "label": "ふじみ野市",
+      "commonsCategory": "Fujimino, Saitama",
+      "latitude": 35.879527777,
+      "longitude": 139.519777777
+    },
+    "saitama/shiraoka": {
+      "cityCode": "11246",
+      "wikidataId": "Q1345322",
+      "label": "白岡市",
+      "commonsCategory": "Shiraoka, Saitama",
+      "latitude": 36.019055555,
+      "longitude": 139.676944444
+    },
+    "chiba/chiba": {
+      "cityCode": "12100",
+      "wikidataId": "Q170616",
+      "label": "千葉市",
+      "commonsCategory": "Chiba, Chiba",
+      "latitude": 35.607277777,
+      "longitude": 140.106361111
+    },
+    "chiba/choshi": {
+      "cityCode": "12202",
+      "wikidataId": "Q694317",
+      "label": "銚子市",
+      "commonsCategory": "Choshi, Chiba",
+      "latitude": 35.734638888,
+      "longitude": 140.826777777
+    },
+    "chiba/ichikawa": {
+      "cityCode": "12203",
+      "wikidataId": "Q209785",
+      "label": "市川市",
+      "commonsCategory": "Ichikawa, Chiba",
+      "latitude": 35.721916666,
+      "longitude": 139.931055555
+    },
+    "chiba/funabashi": {
+      "cityCode": "12204",
+      "wikidataId": "Q271417",
+      "label": "船橋市",
+      "commonsCategory": "Funabashi, Chiba",
+      "latitude": 35.694555555,
+      "longitude": 139.982555555
+    },
+    "chiba/tateyama": {
+      "cityCode": "12205",
+      "wikidataId": "Q646755",
+      "label": "館山市",
+      "commonsCategory": "Tateyama, Chiba",
+      "latitude": 34.996583333,
+      "longitude": 139.869972222
+    },
+    "chiba/kisarazu": {
+      "cityCode": "12206",
+      "wikidataId": "Q335427",
+      "label": "木更津市",
+      "commonsCategory": "Kisarazu, Chiba",
+      "latitude": 35.375972222,
+      "longitude": 139.916833333
+    },
+    "chiba/matsudo": {
+      "cityCode": "12207",
+      "wikidataId": "Q320943",
+      "label": "松戸市",
+      "commonsCategory": "Matsudo, Chiba",
+      "latitude": 35.787638888,
+      "longitude": 139.903166666
+    },
+    "chiba/noda": {
+      "cityCode": "12208",
+      "wikidataId": "Q328619",
+      "label": "野田市",
+      "commonsCategory": "Noda, Chiba",
+      "latitude": 35.955083333,
+      "longitude": 139.874805555
+    },
+    "chiba/mobara": {
+      "cityCode": "12210",
+      "wikidataId": "Q502486",
+      "label": "茂原市",
+      "commonsCategory": "Mobara, Chiba",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.428527777,
+          "longitude": 140.287972222
+        },
+        {
+          "latitude": 35.449722222,
+          "longitude": 140.301666666
+        }
+      ]
+    },
+    "chiba/narita": {
+      "cityCode": "12211",
+      "wikidataId": "Q273798",
+      "label": "成田市",
+      "commonsCategory": "Narita, Chiba",
+      "latitude": 35.776666666,
+      "longitude": 140.318333333
+    },
+    "chiba/sakura": {
+      "cityCode": "12212",
+      "wikidataId": "Q498011",
+      "label": "佐倉市",
+      "commonsCategory": "Sakura, Chiba",
+      "latitude": 35.723472222,
+      "longitude": 140.223944444
+    },
+    "chiba/togane": {
+      "cityCode": "12213",
+      "wikidataId": "Q637913",
+      "label": "東金市",
+      "commonsCategory": "Togane, Chiba",
+      "latitude": 35.559944444,
+      "longitude": 140.366083333
+    },
+    "chiba/asahi": {
+      "cityCode": "12215",
+      "wikidataId": "Q637868",
+      "label": "旭市",
+      "commonsCategory": "Asahi, Chiba",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.716055555,
+          "longitude": 140.648138888
+        },
+        {
+          "latitude": 35.734444444,
+          "longitude": 140.655555555
+        }
+      ]
+    },
+    "chiba/narashino": {
+      "cityCode": "12216",
+      "wikidataId": "Q318047",
+      "label": "習志野市",
+      "commonsCategory": "Narashino, Chiba",
+      "latitude": 35.681277777,
+      "longitude": 140.026638888
+    },
+    "chiba/kashiwa": {
+      "cityCode": "12217",
+      "wikidataId": "Q319743",
+      "label": "柏市",
+      "commonsCategory": "Kashiwa, Chiba",
+      "latitude": 35.867583333,
+      "longitude": 139.97575
+    },
+    "chiba/katsura": {
+      "cityCode": "12218",
+      "wikidataId": "Q696418",
+      "label": "勝浦市",
+      "commonsCategory": "Katsuura, Chiba",
+      "latitude": 35.152194444,
+      "longitude": 140.320833333
+    },
+    "chiba/ichihara": {
+      "cityCode": "12219",
+      "wikidataId": "Q207881",
+      "label": "市原市",
+      "commonsCategory": "Ichihara, Chiba",
+      "latitude": 35.498055555,
+      "longitude": 140.115444444
+    },
+    "chiba/nagareyama": {
+      "cityCode": "12220",
+      "wikidataId": "Q328625",
+      "label": "流山市",
+      "commonsCategory": "Nagareyama, Chiba",
+      "latitude": 35.856305555,
+      "longitude": 139.902888888
+    },
+    "chiba/yachiyo": {
+      "cityCode": "12221",
+      "wikidataId": "Q328651",
+      "label": "八千代市",
+      "commonsCategory": "Yachiyo, Chiba",
+      "latitude": 35.722416666,
+      "longitude": 140.099888888
+    },
+    "chiba/abiko": {
+      "cityCode": "12222",
+      "wikidataId": "Q243859",
+      "label": "我孫子市",
+      "commonsCategory": "Abiko, Chiba",
+      "latitude": 35.864222222,
+      "longitude": 140.028388888
+    },
+    "chiba/kamogawa": {
+      "cityCode": "12223",
+      "wikidataId": "Q387211",
+      "label": "鴨川市",
+      "commonsCategory": "Kamogawa, Chiba",
+      "latitude": 35.114055555,
+      "longitude": 140.098916666
+    },
+    "chiba/kamagaya": {
+      "cityCode": "12224",
+      "wikidataId": "Q387365",
+      "label": "鎌ケ谷市",
+      "commonsCategory": "Kamagaya, Chiba",
+      "latitude": 35.776833333,
+      "longitude": 140.000805555
+    },
+    "chiba/kimitsu": {
+      "cityCode": "12225",
+      "wikidataId": "Q637928",
+      "label": "君津市",
+      "commonsCategory": "Kimitsu, Chiba",
+      "latitude": 35.330527777,
+      "longitude": 139.902472222
+    },
+    "chiba/futtsu": {
+      "cityCode": "12226",
+      "wikidataId": "Q498023",
+      "label": "富津市",
+      "commonsCategory": "Futtsu, Chiba",
+      "latitude": 35.304083333,
+      "longitude": 139.857027777
+    },
+    "chiba/urayasu": {
+      "cityCode": "12227",
+      "wikidataId": "Q319729",
+      "label": "浦安市",
+      "commonsCategory": "Urayasu, Chiba",
+      "latitude": 35.653138888,
+      "longitude": 139.902
+    },
+    "chiba/yotsukaido": {
+      "cityCode": "12228",
+      "wikidataId": "Q429373",
+      "label": "四街道市",
+      "commonsCategory": "Yotsukaido, Chiba",
+      "latitude": 35.669777777,
+      "longitude": 140.167944444
+    },
+    "chiba/sodegaura": {
+      "cityCode": "12229",
+      "wikidataId": "Q646847",
+      "label": "袖ケ浦市",
+      "commonsCategory": "Sodegaura, Chiba",
+      "latitude": 35.43,
+      "longitude": 139.954416666
+    },
+    "chiba/yachimata": {
+      "cityCode": "12230",
+      "wikidataId": "Q638296",
+      "label": "八街市",
+      "commonsCategory": "Yachimata, Chiba",
+      "latitude": 35.665888888,
+      "longitude": 140.317944444
+    },
+    "chiba/inzai": {
+      "cityCode": "12231",
+      "wikidataId": "Q637901",
+      "label": "印西市",
+      "commonsCategory": "Inzai, Chiba",
+      "latitude": 35.832305555,
+      "longitude": 140.145722222
+    },
+    "chiba/shiroi": {
+      "cityCode": "12232",
+      "wikidataId": "Q519187",
+      "label": "白井市",
+      "commonsCategory": "Shiroi, Chiba",
+      "latitude": 35.791472222,
+      "longitude": 140.056305555
+    },
+    "chiba/tomisato": {
+      "cityCode": "12233",
+      "wikidataId": "Q692857",
+      "label": "富里市",
+      "commonsCategory": "Tomisato, Chiba",
+      "latitude": 35.72675,
+      "longitude": 140.342944444
+    },
+    "chiba/minamiboso": {
+      "cityCode": "12234",
+      "wikidataId": "Q873521",
+      "label": "南房総市",
+      "commonsCategory": "Minamiboso, Chiba",
+      "latitude": 35.043166666,
+      "longitude": 139.84
+    },
+    "chiba/sosa": {
+      "cityCode": "12235",
+      "wikidataId": "Q858367",
+      "label": "匝瑳市",
+      "commonsCategory": "Sosa, Chiba",
+      "latitude": 35.707861111,
+      "longitude": 140.564277777
+    },
+    "chiba/katori": {
+      "cityCode": "12236",
+      "wikidataId": "Q858357",
+      "label": "香取市",
+      "commonsCategory": "Katori, Chiba",
+      "latitude": 35.897722222,
+      "longitude": 140.499194444
+    },
+    "chiba/sammu": {
+      "cityCode": "12237",
+      "wikidataId": "Q873528",
+      "label": "山武市",
+      "commonsCategory": "Sanmu, Chiba",
+      "latitude": 35.602916666,
+      "longitude": 140.413527777
+    },
+    "chiba/isumi": {
+      "cityCode": "12238",
+      "wikidataId": "Q840834",
+      "label": "いすみ市",
+      "commonsCategory": "Isumi, Chiba",
+      "latitude": 35.253916666,
+      "longitude": 140.385194444
+    },
+    "chiba/oamishirasato": {
+      "cityCode": "12239",
+      "wikidataId": "Q1203251",
+      "label": "大網白里市",
+      "commonsCategory": "Oamishirasato, Chiba",
+      "latitude": 35.52175,
+      "longitude": 140.321
+    },
+    "tokyo/hachioji": {
+      "cityCode": "13201",
+      "wikidataId": "Q208863",
+      "label": "八王子市",
+      "commonsCategory": "Hachioji, Tokyo",
+      "latitude": 35.666444444,
+      "longitude": 139.316
+    },
+    "tokyo/tachikawa": {
+      "cityCode": "13202",
+      "wikidataId": "Q269634",
+      "label": "立川市",
+      "commonsCategory": "Tachikawa, Tokyo",
+      "latitude": 35.713944444,
+      "longitude": 139.407916666
+    },
+    "tokyo/musashino": {
+      "cityCode": "13203",
+      "wikidataId": "Q210661",
+      "label": "武蔵野市",
+      "commonsCategory": "Musashino, Tokyo",
+      "latitude": 35.717722222,
+      "longitude": 139.566055555
+    },
+    "tokyo/mitaka": {
+      "cityCode": "13204",
+      "wikidataId": "Q242885",
+      "label": "三鷹市",
+      "commonsCategory": "Mitaka, Tokyo",
+      "latitude": 35.683555555,
+      "longitude": 139.559527777
+    },
+    "tokyo/ome": {
+      "cityCode": "13205",
+      "wikidataId": "Q237683",
+      "label": "青梅市",
+      "commonsCategory": "Ome, Tokyo",
+      "latitude": 35.787972222,
+      "longitude": 139.275833333
+    },
+    "tokyo/fuchu": {
+      "cityCode": "13206",
+      "wikidataId": "Q208818",
+      "label": "府中市",
+      "commonsCategory": "Fuchu, Tokyo",
+      "latitude": 35.669444444,
+      "longitude": 139.4775
+    },
+    "tokyo/akishima": {
+      "cityCode": "13207",
+      "wikidataId": "Q212494",
+      "label": "昭島市",
+      "commonsCategory": "Akishima, Tokyo",
+      "latitude": 35.705666666,
+      "longitude": 139.353527777
+    },
+    "tokyo/chofu": {
+      "cityCode": "13208",
+      "wikidataId": "Q210667",
+      "label": "調布市",
+      "commonsCategory": "Chofu, Tokyo",
+      "latitude": 35.650583333,
+      "longitude": 139.540666666
+    },
+    "tokyo/machida": {
+      "cityCode": "13209",
+      "wikidataId": "Q210628",
+      "label": "町田市",
+      "commonsCategory": "Machida, Tokyo",
+      "latitude": 35.546666666,
+      "longitude": 139.438611111
+    },
+    "tokyo/koganei": {
+      "cityCode": "13210",
+      "wikidataId": "Q242874",
+      "label": "小金井市",
+      "commonsCategory": "Koganei, Tokyo",
+      "latitude": 35.699472222,
+      "longitude": 139.502972222
+    },
+    "tokyo/kodaira": {
+      "cityCode": "13211",
+      "wikidataId": "Q213278",
+      "label": "小平市",
+      "commonsCategory": "Kodaira, Tokyo",
+      "latitude": 35.7285,
+      "longitude": 139.477444444
+    },
+    "tokyo/hino": {
+      "cityCode": "13212",
+      "wikidataId": "Q236197",
+      "label": "日野市",
+      "commonsCategory": "Hino, Tokyo",
+      "latitude": 35.671277777,
+      "longitude": 139.395138888
+    },
+    "tokyo/higashimurayama": {
+      "cityCode": "13213",
+      "wikidataId": "Q240489",
+      "label": "東村山市",
+      "commonsCategory": "Higashimurayama, Tokyo",
+      "latitude": 35.754611111,
+      "longitude": 139.4685
+    },
+    "tokyo/kokubunji": {
+      "cityCode": "13214",
+      "wikidataId": "Q317834",
+      "label": "国分寺市",
+      "commonsCategory": "Kokubunji, Tokyo",
+      "latitude": 35.710333333,
+      "longitude": 139.463194444
+    },
+    "tokyo/kunitachi": {
+      "cityCode": "13215",
+      "wikidataId": "Q330007",
+      "label": "国立市",
+      "commonsCategory": "Kunitachi, Tokyo",
+      "latitude": 35.683916666,
+      "longitude": 139.441388888
+    },
+    "tokyo/fussa": {
+      "cityCode": "13218",
+      "wikidataId": "Q317813",
+      "label": "福生市",
+      "commonsCategory": "Fussa, Tokyo",
+      "latitude": 35.738472222,
+      "longitude": 139.326944444
+    },
+    "tokyo/komae": {
+      "cityCode": "13219",
+      "wikidataId": "Q86536",
+      "label": "狛江市",
+      "commonsCategory": "Komae, Tokyo",
+      "latitude": 35.634777777,
+      "longitude": 139.578694444
+    },
+    "tokyo/higashiyamato": {
+      "cityCode": "13220",
+      "wikidataId": "Q390788",
+      "label": "東大和市",
+      "commonsCategory": "Higashiyamato, Tokyo",
+      "latitude": 35.745361111,
+      "longitude": 139.4265
+    },
+    "tokyo/kiyose": {
+      "cityCode": "13221",
+      "wikidataId": "Q329754",
+      "label": "清瀬市",
+      "commonsCategory": "Kiyose, Tokyo",
+      "latitude": 35.785722222,
+      "longitude": 139.526472222
+    },
+    "tokyo/higashikurume": {
+      "cityCode": "13222",
+      "wikidataId": "Q317830",
+      "label": "東久留米市",
+      "commonsCategory": "Higashikurume, Tokyo",
+      "latitude": 35.758,
+      "longitude": 139.529861111
+    },
+    "tokyo/musashimurayama": {
+      "cityCode": "13223",
+      "wikidataId": "Q390806",
+      "label": "武蔵村山市",
+      "commonsCategory": "Musashimurayama, Tokyo",
+      "latitude": 35.754833333,
+      "longitude": 139.387361111
+    },
+    "tokyo/tama": {
+      "cityCode": "13224",
+      "wikidataId": "Q213263",
+      "label": "多摩市",
+      "commonsCategory": "Tama, Tokyo",
+      "latitude": 35.636944444,
+      "longitude": 139.446277777
+    },
+    "tokyo/inagi": {
+      "cityCode": "13225",
+      "wikidataId": "Q317847",
+      "label": "稲城市",
+      "commonsCategory": "Inagi, Tokyo",
+      "latitude": 35.638055555,
+      "longitude": 139.504444444
+    },
+    "tokyo/hamura": {
+      "cityCode": "13227",
+      "wikidataId": "Q270465",
+      "label": "羽村市",
+      "commonsCategory": "Hamura, Tokyo",
+      "latitude": 35.767166666,
+      "longitude": 139.310944444
+    },
+    "tokyo/akiruno": {
+      "cityCode": "13228",
+      "wikidataId": "Q240480",
+      "label": "あきる野市",
+      "commonsCategory": "Akiruno, Tokyo",
+      "latitude": 35.728916666,
+      "longitude": 139.294083333
+    },
+    "tokyo/nishitokyo": {
+      "cityCode": "13229",
+      "wikidataId": "Q242882",
+      "label": "西東京市",
+      "commonsCategory": "Nishitokyo, Tokyo",
+      "latitude": 35.725611111,
+      "longitude": 139.53825
+    },
+    "kanagawa/yokohama": {
+      "cityCode": "14100",
+      "wikidataId": "Q38283",
+      "label": "横浜市",
+      "commonsCategory": "Yokohama",
+      "latitude": 35.450333333,
+      "longitude": 139.634222222
+    },
+    "kanagawa/kawasaki": {
+      "cityCode": "14130",
+      "wikidataId": "Q164234",
+      "label": "川崎市",
+      "commonsCategory": "Kawasaki, Kanagawa",
+      "latitude": 35.530888888,
+      "longitude": 139.703
+    },
+    "kanagawa/sagamihara": {
+      "cityCode": "14150",
+      "wikidataId": "Q209779",
+      "label": "相模原市",
+      "commonsCategory": "Sagamihara, Kanagawa",
+      "latitude": 35.571416666,
+      "longitude": 139.373138888
+    },
+    "kanagawa/yokosuka": {
+      "cityCode": "14201",
+      "wikidataId": "Q200578",
+      "label": "横須賀市",
+      "commonsCategory": "Yokosuka, Kanagawa",
+      "latitude": 35.281305555,
+      "longitude": 139.672083333
+    },
+    "kanagawa/hiratsuka": {
+      "cityCode": "14203",
+      "wikidataId": "Q502199",
+      "label": "平塚市",
+      "commonsCategory": "Hiratsuka, Kanagawa",
+      "latitude": 35.335527777,
+      "longitude": 139.349444444
+    },
+    "kanagawa/kamakura": {
+      "cityCode": "14204",
+      "wikidataId": "Q200267",
+      "label": "鎌倉市",
+      "commonsCategory": "Kamakura, Kanagawa",
+      "latitude": 35.319166666,
+      "longitude": 139.547222222
+    },
+    "kanagawa/fujisawa": {
+      "cityCode": "14205",
+      "wikidataId": "Q386661",
+      "label": "藤沢市",
+      "commonsCategory": "Fujisawa, Kanagawa",
+      "latitude": 35.338777777,
+      "longitude": 139.490888888
+    },
+    "kanagawa/odawara": {
+      "cityCode": "14206",
+      "wikidataId": "Q267258",
+      "label": "小田原市",
+      "commonsCategory": "Odawara, Kanagawa",
+      "latitude": 35.264611111,
+      "longitude": 139.152222222
+    },
+    "kanagawa/chigasaki": {
+      "cityCode": "14207",
+      "wikidataId": "Q633911",
+      "label": "茅ヶ崎市",
+      "commonsCategory": "Chigasaki, Kanagawa",
+      "latitude": 35.333861111,
+      "longitude": 139.404722222
+    },
+    "kanagawa/zushi": {
+      "cityCode": "14208",
+      "wikidataId": "Q230843",
+      "label": "逗子市",
+      "commonsCategory": "Zushi, Kanagawa",
+      "latitude": 35.295611111,
+      "longitude": 139.580333333
+    },
+    "kanagawa/miura": {
+      "cityCode": "14210",
+      "wikidataId": "Q823886",
+      "label": "三浦市",
+      "commonsCategory": "Miura, Kanagawa",
+      "latitude": 35.144194444,
+      "longitude": 139.620722222
+    },
+    "kanagawa/hadano": {
+      "cityCode": "14211",
+      "wikidataId": "Q460806",
+      "label": "秦野市",
+      "commonsCategory": "Hadano, Kanagawa",
+      "latitude": 35.374722222,
+      "longitude": 139.220111111
+    },
+    "kanagawa/atsugi": {
+      "cityCode": "14212",
+      "wikidataId": "Q389711",
+      "label": "厚木市",
+      "commonsCategory": "Atsugi, Kanagawa",
+      "latitude": 35.443055555,
+      "longitude": 139.3625
+    },
+    "kanagawa/yamato": {
+      "cityCode": "14213",
+      "wikidataId": "Q386697",
+      "label": "大和市",
+      "commonsCategory": "Yamato, Kanagawa",
+      "latitude": 35.487527777,
+      "longitude": 139.458027777
+    },
+    "kanagawa/isehara": {
+      "cityCode": "14214",
+      "wikidataId": "Q734520",
+      "label": "伊勢原市",
+      "commonsCategory": "Isehara, Kanagawa",
+      "latitude": 35.402944444,
+      "longitude": 139.314972222
+    },
+    "kanagawa/ebina": {
+      "cityCode": "14215",
+      "wikidataId": "Q734390",
+      "label": "海老名市",
+      "commonsCategory": "Ebina, Kanagawa",
+      "latitude": 35.446416666,
+      "longitude": 139.390805555
+    },
+    "kanagawa/zama": {
+      "cityCode": "14216",
+      "wikidataId": "Q145333",
+      "label": "座間市",
+      "commonsCategory": "Zama, Kanagawa",
+      "latitude": 35.488583333,
+      "longitude": 139.407611111
+    },
+    "kanagawa/minamiashigara": {
+      "cityCode": "14217",
+      "wikidataId": "Q651742",
+      "label": "南足柄市",
+      "commonsCategory": "Minamiashigara, Kanagawa",
+      "latitude": 35.320722222,
+      "longitude": 139.099638888
+    },
+    "kanagawa/ayase": {
+      "cityCode": "14218",
+      "wikidataId": "Q792819",
+      "label": "綾瀬市",
+      "commonsCategory": "Ayase, Kanagawa",
+      "latitude": 35.437138888,
+      "longitude": 139.426138888
+    },
+    "niigata/niigata": {
+      "cityCode": "15100",
+      "wikidataId": "Q179691",
+      "label": "新潟市",
+      "commonsCategory": "Niigata, Niigata",
+      "latitude": 37.916194444,
+      "longitude": 139.036388888
+    },
+    "niigata/nagaoka": {
+      "cityCode": "15202",
+      "wikidataId": "Q540312",
+      "label": "長岡市",
+      "commonsCategory": "Nagaoka, Niigata",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 37.446194444,
+          "longitude": 138.85125
+        },
+        {
+          "latitude": 37.445277777,
+          "longitude": 138.856666666
+        }
+      ]
+    },
+    "niigata/sanjo": {
+      "cityCode": "15204",
+      "wikidataId": "Q817273",
+      "label": "三条市",
+      "commonsCategory": "Sanjo, Niigata",
+      "latitude": 37.636777777,
+      "longitude": 138.961666666
+    },
+    "niigata/kashiwazaki": {
+      "cityCode": "15205",
+      "wikidataId": "Q633983",
+      "label": "柏崎市",
+      "commonsCategory": "Kashiwazaki, Niigata",
+      "latitude": 37.364861111,
+      "longitude": 138.557861111
+    },
+    "niigata/shibata": {
+      "cityCode": "15206",
+      "wikidataId": "Q601950",
+      "label": "新発田市",
+      "commonsCategory": "Shibata, Niigata",
+      "latitude": 37.947916666,
+      "longitude": 139.327277777
+    },
+    "niigata/ojiya": {
+      "cityCode": "15208",
+      "wikidataId": "Q819174",
+      "label": "小千谷市",
+      "commonsCategory": "Ojiya, Niigata",
+      "latitude": 37.314361111,
+      "longitude": 138.795083333
+    },
+    "niigata/kamo": {
+      "cityCode": "15209",
+      "wikidataId": "Q857293",
+      "label": "加茂市",
+      "commonsCategory": "Kamo, Niigata",
+      "latitude": 37.666305555,
+      "longitude": 139.040222222
+    },
+    "niigata/tokamachi": {
+      "cityCode": "15210",
+      "wikidataId": "Q858369",
+      "label": "十日町市",
+      "commonsCategory": "Tokamachi, Niigata",
+      "latitude": 37.127527777,
+      "longitude": 138.755722222
+    },
+    "niigata/mitsuke": {
+      "cityCode": "15211",
+      "wikidataId": "Q649650",
+      "label": "見附市",
+      "commonsCategory": "Mitsuke, Niigata",
+      "latitude": 37.531583333,
+      "longitude": 138.91275
+    },
+    "niigata/murakami": {
+      "cityCode": "15212",
+      "wikidataId": "Q284503",
+      "label": "村上市",
+      "commonsCategory": "Murakami, Niigata",
+      "latitude": 38.223944444,
+      "longitude": 139.480083333
+    },
+    "niigata/tsubame": {
+      "cityCode": "15213",
+      "wikidataId": "Q571051",
+      "label": "燕市",
+      "commonsCategory": "Tsubame, Niigata",
+      "latitude": 37.673083333,
+      "longitude": 138.882222222
+    },
+    "niigata/itoigawa": {
+      "cityCode": "15216",
+      "wikidataId": "Q857208",
+      "label": "糸魚川市",
+      "commonsCategory": "Itoigawa, Niigata",
+      "latitude": 37.039027777,
+      "longitude": 137.862666666
+    },
+    "niigata/myoko": {
+      "cityCode": "15217",
+      "wikidataId": "Q279642",
+      "label": "妙高市",
+      "commonsCategory": "Myoko, Niigata",
+      "latitude": 37.025194444,
+      "longitude": 138.253527777
+    },
+    "niigata/gosen": {
+      "cityCode": "15218",
+      "wikidataId": "Q858364",
+      "label": "五泉市",
+      "commonsCategory": "Gosen, Niigata",
+      "latitude": 37.744444444,
+      "longitude": 139.182611111
+    },
+    "niigata/joetsu": {
+      "cityCode": "15222",
+      "wikidataId": "Q582289",
+      "label": "上越市",
+      "commonsCategory": "Joetsu, Niigata",
+      "latitude": 37.147861111,
+      "longitude": 138.236083333
+    },
+    "niigata/agano": {
+      "cityCode": "15223",
+      "wikidataId": "Q390466",
+      "label": "阿賀野市",
+      "commonsCategory": "Agano, Niigata",
+      "latitude": 37.834444444,
+      "longitude": 139.226
+    },
+    "niigata/sado": {
+      "cityCode": "15224",
+      "wikidataId": "Q499047",
+      "label": "佐渡市",
+      "commonsCategory": "Sado, Niigata",
+      "latitude": 38.044444444,
+      "longitude": 138.389722222
+    },
+    "niigata/uonuma": {
+      "cityCode": "15225",
+      "wikidataId": "Q850352",
+      "label": "魚沼市",
+      "commonsCategory": "Uonuma, Niigata",
+      "latitude": 37.236444444,
+      "longitude": 138.963833333
+    },
+    "niigata/minamiuonuma": {
+      "cityCode": "15226",
+      "wikidataId": "Q850524",
+      "label": "南魚沼市",
+      "commonsCategory": "Minamiuonuma, Niigata",
+      "latitude": 37.065527777,
+      "longitude": 138.876083333
+    },
+    "niigata/tainai": {
+      "cityCode": "15227",
+      "wikidataId": "Q877266",
+      "label": "胎内市",
+      "commonsCategory": "Tainai, Niigata",
+      "latitude": 38.059694444,
+      "longitude": 139.410333333
+    },
+    "toyama/toyama": {
+      "cityCode": "16201",
+      "wikidataId": "Q204266",
+      "label": "富山市",
+      "commonsCategory": "Toyama, Toyama",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 36.695916666,
+          "longitude": 137.213694444
+        },
+        {
+          "latitude": 36.551388888,
+          "longitude": 137.298611111
+        }
+      ]
+    },
+    "toyama/takaoka": {
+      "cityCode": "16202",
+      "wikidataId": "Q502988",
+      "label": "高岡市",
+      "commonsCategory": "Takaoka, Toyama",
+      "latitude": 36.754055555,
+      "longitude": 137.025666666
+    },
+    "toyama/uozu": {
+      "cityCode": "16204",
+      "wikidataId": "Q819613",
+      "label": "魚津市",
+      "commonsCategory": "Uozu, Toyama",
+      "latitude": 36.827305555,
+      "longitude": 137.409166666
+    },
+    "toyama/himi": {
+      "cityCode": "16205",
+      "wikidataId": "Q646886",
+      "label": "氷見市",
+      "commonsCategory": "Himi, Toyama",
+      "latitude": 36.855916666,
+      "longitude": 136.973
+    },
+    "toyama/namerikawa": {
+      "cityCode": "16206",
+      "wikidataId": "Q823513",
+      "label": "滑川市",
+      "commonsCategory": "Namerikawa, Toyama",
+      "latitude": 36.764361111,
+      "longitude": 137.341166666
+    },
+    "toyama/kurobe": {
+      "cityCode": "16207",
+      "wikidataId": "Q753864",
+      "label": "黒部市",
+      "commonsCategory": "Kurobe, Toyama",
+      "latitude": 36.871444444,
+      "longitude": 137.44775
+    },
+    "toyama/tonami": {
+      "cityCode": "16208",
+      "wikidataId": "Q526760",
+      "label": "砺波市",
+      "commonsCategory": "Tonami, Toyama",
+      "latitude": 36.647472222,
+      "longitude": 136.962138888
+    },
+    "toyama/oyabe": {
+      "cityCode": "16209",
+      "wikidataId": "Q734366",
+      "label": "小矢部市",
+      "commonsCategory": "Oyabe, Toyama",
+      "latitude": 36.675527777,
+      "longitude": 136.868694444
+    },
+    "toyama/nanto": {
+      "cityCode": "16210",
+      "wikidataId": "Q646805",
+      "label": "南砺市",
+      "commonsCategory": "Nanto, Toyama",
+      "latitude": 36.557444444,
+      "longitude": 136.875472222
+    },
+    "toyama/imizu": {
+      "cityCode": "16211",
+      "wikidataId": "Q851411",
+      "label": "射水市",
+      "commonsCategory": "Imizu, Toyama",
+      "latitude": 36.730555555,
+      "longitude": 137.075555555
+    },
+    "ishikawa/kanazawa": {
+      "cityCode": "17201",
+      "wikidataId": "Q191130",
+      "label": "金沢市",
+      "commonsCategory": "Kanazawa, Ishikawa",
+      "latitude": 36.561055555,
+      "longitude": 136.6565
+    },
+    "ishikawa/nanao": {
+      "cityCode": "17202",
+      "wikidataId": "Q695892",
+      "label": "七尾市",
+      "commonsCategory": "Nanao, Ishikawa",
+      "latitude": 37.043138888,
+      "longitude": 136.967444444
+    },
+    "ishikawa/komatsu": {
+      "cityCode": "17203",
+      "wikidataId": "Q646898",
+      "label": "小松市",
+      "commonsCategory": "Komatsu, Ishikawa",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 36.408333333,
+          "longitude": 136.445527777
+        },
+        {
+          "latitude": 36.311111111,
+          "longitude": 136.498333333
+        }
+      ]
+    },
+    "ishikawa/wajima": {
+      "cityCode": "17204",
+      "wikidataId": "Q823896",
+      "label": "輪島市",
+      "commonsCategory": "Wajima, Ishikawa",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 37.3375,
+          "longitude": 136.8875
+        },
+        {
+          "latitude": 37.390552777,
+          "longitude": 136.899097222
+        }
+      ]
+    },
+    "ishikawa/suzu": {
+      "cityCode": "17205",
+      "wikidataId": "Q846345",
+      "label": "珠洲市",
+      "commonsCategory": "Suzu, Ishikawa",
+      "latitude": 37.436333333,
+      "longitude": 137.260472222
+    },
+    "ishikawa/kaga": {
+      "cityCode": "17206",
+      "wikidataId": "Q120103",
+      "label": "加賀市",
+      "commonsCategory": "Kaga, Ishikawa",
+      "latitude": 36.302777777,
+      "longitude": 136.315027777
+    },
+    "ishikawa/hakui": {
+      "cityCode": "17207",
+      "wikidataId": "Q822585",
+      "label": "羽咋市",
+      "commonsCategory": "Hakui, Ishikawa",
+      "latitude": 36.893611111,
+      "longitude": 136.778972222
+    },
+    "ishikawa/kahoku": {
+      "cityCode": "17209",
+      "wikidataId": "Q846335",
+      "label": "かほく市",
+      "commonsCategory": "Kahoku, Ishikawa",
+      "latitude": 36.719833333,
+      "longitude": 136.706694444
+    },
+    "ishikawa/hakusan": {
+      "cityCode": "17210",
+      "wikidataId": "Q696407",
+      "label": "白山市",
+      "commonsCategory": "Hakusan, Ishikawa",
+      "latitude": 36.514416666,
+      "longitude": 136.565583333
+    },
+    "ishikawa/nomi": {
+      "cityCode": "17211",
+      "wikidataId": "Q658912",
+      "label": "能美市",
+      "commonsCategory": "Nomi, Ishikawa",
+      "latitude": 36.447,
+      "longitude": 136.554083333
+    },
+    "ishikawa/nonoichi": {
+      "cityCode": "17212",
+      "wikidataId": "Q1354896",
+      "label": "野々市市",
+      "commonsCategory": "Nonoichi, Ishikawa",
+      "latitude": 36.519416666,
+      "longitude": 136.609777777
+    },
+    "fukui/fukui": {
+      "cityCode": "18201",
+      "wikidataId": "Q201618",
+      "label": "福井市",
+      "commonsCategory": "Fukui, Fukui",
+      "latitude": 36.064055555,
+      "longitude": 136.219583333
+    },
+    "fukui/tsuruga": {
+      "cityCode": "18202",
+      "wikidataId": "Q847581",
+      "label": "敦賀市",
+      "commonsCategory": "Tsuruga, Fukui",
+      "latitude": 35.645194444,
+      "longitude": 136.0555
+    },
+    "fukui/obama": {
+      "cityCode": "18204",
+      "wikidataId": "Q41773",
+      "label": "小浜市",
+      "commonsCategory": "Obama, Fukui",
+      "latitude": 35.495611111,
+      "longitude": 135.746611111
+    },
+    "fukui/ono": {
+      "cityCode": "18205",
+      "wikidataId": "Q385684",
+      "label": "大野市",
+      "commonsCategory": "Ono, Fukui",
+      "latitude": 35.979722222,
+      "longitude": 136.4875
+    },
+    "fukui/katsuyama": {
+      "cityCode": "18206",
+      "wikidataId": "Q847543",
+      "label": "勝山市",
+      "commonsCategory": "Katsuyama, Fukui",
+      "latitude": 36.060861111,
+      "longitude": 136.500638888
+    },
+    "fukui/sabae": {
+      "cityCode": "18207",
+      "wikidataId": "Q847598",
+      "label": "鯖江市",
+      "commonsCategory": "Sabae, Fukui",
+      "latitude": 35.956472222,
+      "longitude": 136.184277777
+    },
+    "fukui/awara": {
+      "cityCode": "18208",
+      "wikidataId": "Q538623",
+      "label": "あわら市",
+      "commonsCategory": "Awara, Fukui",
+      "latitude": 36.211305555,
+      "longitude": 136.228972222
+    },
+    "fukui/echizen-shi": {
+      "cityCode": "18209",
+      "wikidataId": "Q877941",
+      "label": "越前市",
+      "commonsCategory": "Echizen, Fukui (city)",
+      "latitude": 35.9035,
+      "longitude": 136.16875
+    },
+    "fukui/sakai": {
+      "cityCode": "18210",
+      "wikidataId": "Q990342",
+      "label": "坂井市",
+      "commonsCategory": "Sakai, Fukui",
+      "latitude": 36.166944444,
+      "longitude": 136.231444444
+    },
+    "yamanashi/kofu": {
+      "cityCode": "19201",
+      "wikidataId": "Q201932",
+      "label": "甲府市",
+      "commonsCategory": "Kofu, Yamanashi",
+      "latitude": 35.662138888,
+      "longitude": 138.568222222
+    },
+    "yamanashi/fujiyoshida": {
+      "cityCode": "19202",
+      "wikidataId": "Q647508",
+      "label": "富士吉田市",
+      "commonsCategory": "Fujiyoshida, Yamanashi",
+      "latitude": 35.487527777,
+      "longitude": 138.80775
+    },
+    "yamanashi/tsuru": {
+      "cityCode": "19204",
+      "wikidataId": "Q747362",
+      "label": "都留市",
+      "commonsCategory": "Tsuru, Yamanashi",
+      "latitude": 35.551527777,
+      "longitude": 138.905444444
+    },
+    "yamanashi/yamanashi": {
+      "cityCode": "19205",
+      "wikidataId": "Q840610",
+      "label": "山梨市",
+      "commonsCategory": "Yamanashi, Yamanashi",
+      "latitude": 35.693444444,
+      "longitude": 138.686888888
+    },
+    "yamanashi/otsuki": {
+      "cityCode": "19206",
+      "wikidataId": "Q386508",
+      "label": "大月市",
+      "commonsCategory": "Otsuki, Yamanashi",
+      "latitude": 35.610555555,
+      "longitude": 138.94
+    },
+    "yamanashi/nirasaki": {
+      "cityCode": "19207",
+      "wikidataId": "Q290326",
+      "label": "韮崎市",
+      "commonsCategory": "Nirasaki, Yamanashi",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.71772,
+          "longitude": 138.412
+        },
+        {
+          "latitude": 35.708861111,
+          "longitude": 138.446138888
+        }
+      ]
+    },
+    "yamanashi/minamiarupusu": {
+      "cityCode": "19208",
+      "wikidataId": "Q824000",
+      "label": "南アルプス市",
+      "commonsCategory": "Minami-Alps, Yamanashi",
+      "latitude": 35.608305555,
+      "longitude": 138.465027777
+    },
+    "yamanashi/hokuto": {
+      "cityCode": "19209",
+      "wikidataId": "Q825272",
+      "label": "北杜市",
+      "commonsCategory": "Hokuto, Yamanashi",
+      "latitude": 35.776472222,
+      "longitude": 138.423638888
+    },
+    "yamanashi/kai": {
+      "cityCode": "19210",
+      "wikidataId": "Q577309",
+      "label": "甲斐市",
+      "commonsCategory": "Kai, Yamanashi",
+      "latitude": 35.660805555,
+      "longitude": 138.515777777
+    },
+    "yamanashi/fuefuki": {
+      "cityCode": "19211",
+      "wikidataId": "Q849434",
+      "label": "笛吹市",
+      "commonsCategory": "Fuefuki, Yamanashi",
+      "latitude": 35.647305555,
+      "longitude": 138.639722222
+    },
+    "yamanashi/uenohara": {
+      "cityCode": "19212",
+      "wikidataId": "Q851030",
+      "label": "上野原市",
+      "commonsCategory": "Uenohara, Yamanashi",
+      "latitude": 35.630194444,
+      "longitude": 139.108555555
+    },
+    "yamanashi/koshu": {
+      "cityCode": "19213",
+      "wikidataId": "Q248723",
+      "label": "甲州市",
+      "commonsCategory": "Koshu, Yamanashi",
+      "latitude": 35.704333333,
+      "longitude": 138.729416666
+    },
+    "yamanashi/chuo": {
+      "cityCode": "19214",
+      "wikidataId": "Q666049",
+      "label": "中央市",
+      "commonsCategory": "Chuo, Yamanashi",
+      "latitude": 35.599611111,
+      "longitude": 138.51725
+    },
+    "nagano/nagano": {
+      "cityCode": "20201",
+      "wikidataId": "Q128849",
+      "label": "長野市",
+      "commonsCategory": "Nagano, Nagano",
+      "latitude": 36.648666666,
+      "longitude": 138.194694444
+    },
+    "nagano/matsumoto": {
+      "cityCode": "20202",
+      "wikidataId": "Q213324",
+      "label": "松本市",
+      "commonsCategory": "Matsumoto, Nagano",
+      "latitude": 36.238,
+      "longitude": 137.971972222
+    },
+    "nagano/ueda": {
+      "cityCode": "20203",
+      "wikidataId": "Q844852",
+      "label": "上田市",
+      "commonsCategory": "Ueda, Nagano",
+      "latitude": 36.401889,
+      "longitude": 138.249083
+    },
+    "nagano/okaya": {
+      "cityCode": "20204",
+      "wikidataId": "Q838672",
+      "label": "岡谷市",
+      "commonsCategory": "Okaya, Nagano",
+      "latitude": 36.067111111,
+      "longitude": 138.049305555
+    },
+    "nagano/iida": {
+      "cityCode": "20205",
+      "wikidataId": "Q841129",
+      "label": "飯田市",
+      "commonsCategory": "Iida, Nagano",
+      "latitude": 35.514805555,
+      "longitude": 137.821833333
+    },
+    "nagano/suwa": {
+      "cityCode": "20206",
+      "wikidataId": "Q846338",
+      "label": "諏訪市",
+      "commonsCategory": "Suwa, Nagano",
+      "latitude": 36.039138888,
+      "longitude": 138.114027777
+    },
+    "nagano/suzaka": {
+      "cityCode": "20207",
+      "wikidataId": "Q850461",
+      "label": "須坂市",
+      "commonsCategory": "Suzaka, Nagano",
+      "latitude": 36.651111111,
+      "longitude": 138.30725
+    },
+    "nagano/komoro": {
+      "cityCode": "20208",
+      "wikidataId": "Q838657",
+      "label": "小諸市",
+      "commonsCategory": "Komoro, Nagano",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 36.3275,
+          "longitude": 138.425833333
+        },
+        {
+          "latitude": 36.339166666,
+          "longitude": 138.435
+        }
+      ]
+    },
+    "nagano/ina": {
+      "cityCode": "20209",
+      "wikidataId": "Q840888",
+      "label": "伊那市",
+      "commonsCategory": "Ina, Nagano",
+      "latitude": 35.827527777,
+      "longitude": 137.953972222
+    },
+    "nagano/komagane": {
+      "cityCode": "20210",
+      "wikidataId": "Q838684",
+      "label": "駒ヶ根市",
+      "commonsCategory": "Komagane, Nagano",
+      "latitude": 35.728777777,
+      "longitude": 137.933861111
+    },
+    "nagano/nakano": {
+      "cityCode": "20211",
+      "wikidataId": "Q838652",
+      "label": "中野市",
+      "commonsCategory": "Nakano, Nagano",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 36.769444444,
+          "longitude": 138.347222222
+        },
+        {
+          "latitude": 36.741527777,
+          "longitude": 138.369416666
+        }
+      ]
+    },
+    "nagano/omachi": {
+      "cityCode": "20212",
+      "wikidataId": "Q385375",
+      "label": "大町市",
+      "commonsCategory": "Omachi, Nagano",
+      "latitude": 36.503,
+      "longitude": 137.851111111
+    },
+    "nagano/iiyama": {
+      "cityCode": "20213",
+      "wikidataId": "Q851097",
+      "label": "飯山市",
+      "commonsCategory": "Iiyama, Nagano",
+      "latitude": 36.851638888,
+      "longitude": 138.365527777
+    },
+    "nagano/chino": {
+      "cityCode": "20214",
+      "wikidataId": "Q838660",
+      "label": "茅野市",
+      "commonsCategory": "Chino, Nagano",
+      "latitude": 35.995527777,
+      "longitude": 138.158805555
+    },
+    "nagano/shiojiri": {
+      "cityCode": "20215",
+      "wikidataId": "Q857272",
+      "label": "塩尻市",
+      "commonsCategory": "Shiojiri, Nagano",
+      "latitude": 36.114972222,
+      "longitude": 137.953444444
+    },
+    "nagano/saku": {
+      "cityCode": "20217",
+      "wikidataId": "Q495821",
+      "label": "佐久市",
+      "commonsCategory": "Saku, Nagano",
+      "latitude": 36.248805555,
+      "longitude": 138.476944444
+    },
+    "nagano/chikuma": {
+      "cityCode": "20218",
+      "wikidataId": "Q179757",
+      "label": "千曲市",
+      "commonsCategory": "Chikuma, Nagano",
+      "latitude": 36.530694444,
+      "longitude": 138.114916666
+    },
+    "nagano/tomi": {
+      "cityCode": "20219",
+      "wikidataId": "Q840859",
+      "label": "東御市",
+      "commonsCategory": "Tomi, Nagano",
+      "latitude": 36.359388888,
+      "longitude": 138.330388888
+    },
+    "nagano/azumino": {
+      "cityCode": "20220",
+      "wikidataId": "Q534667",
+      "label": "安曇野市",
+      "commonsCategory": "Azumino, Nagano",
+      "latitude": 36.303888888,
+      "longitude": 137.905555555
+    },
+    "gifu/gifu": {
+      "cityCode": "21201",
+      "wikidataId": "Q45798",
+      "label": "岐阜市",
+      "commonsCategory": "Gifu",
+      "latitude": 35.42625,
+      "longitude": 136.759444444
+    },
+    "gifu/ogaki": {
+      "cityCode": "21202",
+      "wikidataId": "Q384926",
+      "label": "大垣市",
+      "commonsCategory": "Ogaki, Gifu",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.364722222,
+          "longitude": 136.601944444
+        },
+        {
+          "latitude": 35.359944444,
+          "longitude": 136.612694444
+        }
+      ]
+    },
+    "gifu/takayama": {
+      "cityCode": "21203",
+      "wikidataId": "Q622594",
+      "label": "高山市",
+      "commonsCategory": "Takayama, Gifu",
+      "latitude": 36.146027777,
+      "longitude": 137.252166666
+    },
+    "gifu/tajimi": {
+      "cityCode": "21204",
+      "wikidataId": "Q819689",
+      "label": "多治見市",
+      "commonsCategory": "Tajimi, Gifu",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.333888888,
+          "longitude": 137.1125
+        },
+        {
+          "latitude": 35.332777777,
+          "longitude": 137.132027777
+        }
+      ]
+    },
+    "gifu/seki": {
+      "cityCode": "21205",
+      "wikidataId": "Q860647",
+      "label": "関市",
+      "commonsCategory": "Seki, Gifu",
+      "latitude": 35.495777777,
+      "longitude": 136.917916666
+    },
+    "gifu/nakatsugawa": {
+      "cityCode": "21206",
+      "wikidataId": "Q844052",
+      "label": "中津川市",
+      "commonsCategory": "Nakatsugawa, Gifu",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.56656,
+          "longitude": 137.47433
+        },
+        {
+          "latitude": 35.487583333,
+          "longitude": 137.500583333
+        }
+      ]
+    },
+    "gifu/mino": {
+      "cityCode": "21207",
+      "wikidataId": "Q853835",
+      "label": "美濃市",
+      "commonsCategory": "Mino, Gifu",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.57892,
+          "longitude": 136.9012
+        },
+        {
+          "latitude": 35.54475,
+          "longitude": 136.907555555
+        }
+      ]
+    },
+    "gifu/mizunami": {
+      "cityCode": "21208",
+      "wikidataId": "Q853821",
+      "label": "瑞浪市",
+      "commonsCategory": "Mizunami, Gifu",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.361805555,
+          "longitude": 137.2545
+        },
+        {
+          "latitude": 35.389444444,
+          "longitude": 137.273611111
+        }
+      ]
+    },
+    "gifu/hashima": {
+      "cityCode": "21209",
+      "wikidataId": "Q819595",
+      "label": "羽島市",
+      "commonsCategory": "Hashima, Gifu",
+      "latitude": 35.319944444,
+      "longitude": 136.703277777
+    },
+    "gifu/ena": {
+      "cityCode": "21210",
+      "wikidataId": "Q819653",
+      "label": "恵那市",
+      "commonsCategory": "Ena, Gifu",
+      "latitude": 35.44925,
+      "longitude": 137.412833333
+    },
+    "gifu/minokamo": {
+      "cityCode": "21211",
+      "wikidataId": "Q857305",
+      "label": "美濃加茂市",
+      "commonsCategory": "Minokamo, Gifu",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.440222222,
+          "longitude": 137.015666666
+        },
+        {
+          "latitude": 35.483888888,
+          "longitude": 137.026666666
+        }
+      ]
+    },
+    "gifu/toki": {
+      "cityCode": "21212",
+      "wikidataId": "Q847332",
+      "label": "土岐市",
+      "commonsCategory": "Toki, Gifu",
+      "latitude": 35.352527777,
+      "longitude": 137.18325
+    },
+    "gifu/kakamigahara": {
+      "cityCode": "21213",
+      "wikidataId": "Q641491",
+      "label": "各務原市",
+      "commonsCategory": "Kakamigahara, Gifu",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.398805555,
+          "longitude": 136.848416666
+        },
+        {
+          "latitude": 35.402777777,
+          "longitude": 136.878333333
+        }
+      ]
+    },
+    "gifu/kani": {
+      "cityCode": "21214",
+      "wikidataId": "Q853805",
+      "label": "可児市",
+      "commonsCategory": "Kani, Gifu",
+      "latitude": 35.426055555,
+      "longitude": 137.061333333
+    },
+    "gifu/yamagata": {
+      "cityCode": "21215",
+      "wikidataId": "Q773311",
+      "label": "山県市",
+      "commonsCategory": "Yamagata, Gifu",
+      "latitude": 35.506111111,
+      "longitude": 136.781361111
+    },
+    "gifu/mizuho": {
+      "cityCode": "21216",
+      "wikidataId": "Q782103",
+      "label": "瑞穂市",
+      "commonsCategory": "Mizuho, Gifu",
+      "latitude": 35.391805555,
+      "longitude": 136.690861111
+    },
+    "gifu/hida": {
+      "cityCode": "21217",
+      "wikidataId": "Q847319",
+      "label": "飛騨市",
+      "commonsCategory": "Hida, Gifu",
+      "latitude": 36.238138888,
+      "longitude": 137.186222222
+    },
+    "gifu/motosu": {
+      "cityCode": "21218",
+      "wikidataId": "Q844047",
+      "label": "本巣市",
+      "commonsCategory": "Motosu, Gifu",
+      "latitude": 35.483,
+      "longitude": 136.678638888
+    },
+    "gifu/gujo": {
+      "cityCode": "21219",
+      "wikidataId": "Q857243",
+      "label": "郡上市",
+      "commonsCategory": "Gujo, Gifu",
+      "latitude": 35.748555555,
+      "longitude": 136.964333333
+    },
+    "gifu/gero": {
+      "cityCode": "21220",
+      "wikidataId": "Q819639",
+      "label": "下呂市",
+      "commonsCategory": "Gero, Gifu",
+      "latitude": 35.805861111,
+      "longitude": 137.244138888
+    },
+    "gifu/kaizu": {
+      "cityCode": "21221",
+      "wikidataId": "Q844056",
+      "label": "海津市",
+      "commonsCategory": "Kaizu, Gifu",
+      "latitude": 35.220555555,
+      "longitude": 136.636472222
+    },
+    "shizuoka/shizuoka": {
+      "cityCode": "22100",
+      "wikidataId": "Q174691",
+      "label": "静岡市",
+      "commonsCategory": "Shizuoka, Shizuoka",
+      "latitude": 34.975555555,
+      "longitude": 138.3825
+    },
+    "shizuoka/hamamatsu": {
+      "cityCode": "22130",
+      "wikidataId": "Q185125",
+      "label": "浜松市",
+      "commonsCategory": "Hamamatsu, Shizuoka",
+      "latitude": 34.710888888,
+      "longitude": 137.726194444
+    },
+    "shizuoka/numazu": {
+      "cityCode": "22203",
+      "wikidataId": "Q241037",
+      "label": "沼津市",
+      "commonsCategory": "Numazu, Shizuoka",
+      "latitude": 35.095583333,
+      "longitude": 138.863444444
+    },
+    "shizuoka/atami": {
+      "cityCode": "22205",
+      "wikidataId": "Q653364",
+      "label": "熱海市",
+      "commonsCategory": "Atami, Shizuoka",
+      "latitude": 35.096305555,
+      "longitude": 139.071666666
+    },
+    "shizuoka/mishima": {
+      "cityCode": "22206",
+      "wikidataId": "Q653478",
+      "label": "三島市",
+      "commonsCategory": "Mishima, Shizuoka",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.1185,
+          "longitude": 138.918555555
+        },
+        {
+          "latitude": 35.139444444,
+          "longitude": 138.948888888
+        }
+      ]
+    },
+    "shizuoka/fujinomiya": {
+      "cityCode": "22207",
+      "wikidataId": "Q496072",
+      "label": "富士宮市",
+      "commonsCategory": "Fujinomiya, Shizuoka",
+      "latitude": 35.222111111,
+      "longitude": 138.621611111
+    },
+    "shizuoka/ito": {
+      "cityCode": "22208",
+      "wikidataId": "Q721163",
+      "label": "伊東市",
+      "commonsCategory": "Ito, Shizuoka",
+      "latitude": 34.965722222,
+      "longitude": 139.101861111
+    },
+    "shizuoka/shimada": {
+      "cityCode": "22209",
+      "wikidataId": "Q605256",
+      "label": "島田市",
+      "commonsCategory": "Shimada, Shizuoka",
+      "latitude": 34.836277777,
+      "longitude": 138.176055555
+    },
+    "shizuoka/fuji": {
+      "cityCode": "22210",
+      "wikidataId": "Q328613",
+      "label": "富士市",
+      "commonsCategory": "Fuji, Shizuoka",
+      "latitude": 35.161333333,
+      "longitude": 138.676277777
+    },
+    "shizuoka/iwata": {
+      "cityCode": "22211",
+      "wikidataId": "Q386651",
+      "label": "磐田市",
+      "commonsCategory": "Iwata, Shizuoka",
+      "latitude": 34.717888888,
+      "longitude": 137.851527777
+    },
+    "shizuoka/yaizu": {
+      "cityCode": "22212",
+      "wikidataId": "Q696783",
+      "label": "焼津市",
+      "commonsCategory": "Yaizu, Shizuoka",
+      "latitude": 34.866888888,
+      "longitude": 138.32325
+    },
+    "shizuoka/kakegawa": {
+      "cityCode": "22213",
+      "wikidataId": "Q823988",
+      "label": "掛川市",
+      "commonsCategory": "Kakegawa, Shizuoka",
+      "latitude": 34.76875,
+      "longitude": 137.998388888
+    },
+    "shizuoka/fujieda": {
+      "cityCode": "22214",
+      "wikidataId": "Q734432",
+      "label": "藤枝市",
+      "commonsCategory": "Fujieda, Shizuoka",
+      "latitude": 34.867416666,
+      "longitude": 138.257722222
+    },
+    "shizuoka/gotemba": {
+      "cityCode": "22215",
+      "wikidataId": "Q735175",
+      "label": "御殿場市",
+      "commonsCategory": "Gotemba, Shizuoka",
+      "latitude": 35.308694444,
+      "longitude": 138.934611111
+    },
+    "shizuoka/fukuroi": {
+      "cityCode": "22216",
+      "wikidataId": "Q821337",
+      "label": "袋井市",
+      "commonsCategory": "Fukuroi, Shizuoka",
+      "latitude": 34.750166666,
+      "longitude": 137.924666666
+    },
+    "shizuoka/shimoda": {
+      "cityCode": "22219",
+      "wikidataId": "Q653402",
+      "label": "下田市",
+      "commonsCategory": "Shimoda, Shizuoka",
+      "latitude": 34.679527777,
+      "longitude": 138.945305555
+    },
+    "shizuoka/susono": {
+      "cityCode": "22220",
+      "wikidataId": "Q847577",
+      "label": "裾野市",
+      "commonsCategory": "Susono, Shizuoka",
+      "latitude": 35.173944444,
+      "longitude": 138.906777777
+    },
+    "shizuoka/kosai": {
+      "cityCode": "22221",
+      "wikidataId": "Q850515",
+      "label": "湖西市",
+      "commonsCategory": "Kosai, Shizuoka",
+      "latitude": 34.718444444,
+      "longitude": 137.531611111
+    },
+    "shizuoka/izu": {
+      "cityCode": "22222",
+      "wikidataId": "Q696840",
+      "label": "伊豆市",
+      "commonsCategory": "Izu, Shizuoka",
+      "latitude": 34.976527777,
+      "longitude": 138.946805555
+    },
+    "shizuoka/omaezaki": {
+      "cityCode": "22223",
+      "wikidataId": "Q850380",
+      "label": "御前崎市",
+      "commonsCategory": "Omaezaki, Shizuoka",
+      "latitude": 34.637944444,
+      "longitude": 138.128083333
+    },
+    "shizuoka/kikugawa": {
+      "cityCode": "22224",
+      "wikidataId": "Q726565",
+      "label": "菊川市",
+      "commonsCategory": "Kikugawa, Shizuoka",
+      "latitude": 34.75775,
+      "longitude": 138.084777777
+    },
+    "shizuoka/izunokuni": {
+      "cityCode": "22225",
+      "wikidataId": "Q863758",
+      "label": "伊豆の国市",
+      "commonsCategory": "Izunokuni, Shizuoka",
+      "latitude": 35.027722222,
+      "longitude": 138.928861111
+    },
+    "shizuoka/makinohara": {
+      "cityCode": "22226",
+      "wikidataId": "Q850527",
+      "label": "牧之原市",
+      "commonsCategory": "Makinohara, Shizuoka",
+      "latitude": 34.74,
+      "longitude": 138.224611111
+    },
+    "aichi/nagoya": {
+      "cityCode": "23100",
+      "wikidataId": "Q11751",
+      "label": "名古屋市",
+      "commonsCategory": "Nagoya",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.181388888,
+          "longitude": 136.906388888
+        },
+        {
+          "latitude": 35.18147,
+          "longitude": 136.90641
+        }
+      ]
+    },
+    "aichi/toyohashi": {
+      "cityCode": "23201",
+      "wikidataId": "Q336431",
+      "label": "豊橋市",
+      "commonsCategory": "Toyohashi, Aichi",
+      "latitude": 34.769166666,
+      "longitude": 137.391527777
+    },
+    "aichi/okazaki": {
+      "cityCode": "23202",
+      "wikidataId": "Q242783",
+      "label": "岡崎市",
+      "commonsCategory": "Okazaki, Aichi",
+      "latitude": 34.954722222,
+      "longitude": 137.173027777
+    },
+    "aichi/ichinomiya": {
+      "cityCode": "23203",
+      "wikidataId": "Q270810",
+      "label": "一宮市",
+      "commonsCategory": "Ichinomiya, Aichi",
+      "latitude": 35.303888888,
+      "longitude": 136.803055555
+    },
+    "aichi/seto": {
+      "cityCode": "23204",
+      "wikidataId": "Q499493",
+      "label": "瀬戸市",
+      "commonsCategory": "Seto, Aichi",
+      "latitude": 35.224,
+      "longitude": 137.084027777
+    },
+    "aichi/handa": {
+      "cityCode": "23205",
+      "wikidataId": "Q463171",
+      "label": "半田市",
+      "commonsCategory": "Handa, Aichi",
+      "latitude": 34.891944444,
+      "longitude": 136.938055555
+    },
+    "aichi/kasugai": {
+      "cityCode": "23206",
+      "wikidataId": "Q26101",
+      "label": "春日井市",
+      "commonsCategory": "Kasugai, Aichi",
+      "latitude": 35.2475,
+      "longitude": 136.972222222
+    },
+    "aichi/toyokawa": {
+      "cityCode": "23207",
+      "wikidataId": "Q389495",
+      "label": "豊川市",
+      "commonsCategory": "Toyokawa, Aichi",
+      "latitude": 34.826777777,
+      "longitude": 137.375916666
+    },
+    "aichi/tsushima": {
+      "cityCode": "23208",
+      "wikidataId": "Q816736",
+      "label": "津島市",
+      "commonsCategory": "Tsushima, Aichi",
+      "latitude": 35.177055555,
+      "longitude": 136.741277777
+    },
+    "aichi/hekinan": {
+      "cityCode": "23209",
+      "wikidataId": "Q495802",
+      "label": "碧南市",
+      "commonsCategory": "Hekinan, Aichi",
+      "latitude": 34.884694444,
+      "longitude": 136.993416666
+    },
+    "aichi/kariya": {
+      "cityCode": "23210",
+      "wikidataId": "Q389515",
+      "label": "刈谷市",
+      "commonsCategory": "Kariya, Aichi",
+      "latitude": 34.989277777,
+      "longitude": 137.002138888
+    },
+    "aichi/toyota": {
+      "cityCode": "23211",
+      "wikidataId": "Q201117",
+      "label": "豊田市",
+      "commonsCategory": "Toyota, Aichi",
+      "latitude": 35.082416666,
+      "longitude": 137.156333333
+    },
+    "aichi/anjo": {
+      "cityCode": "23212",
+      "wikidataId": "Q270806",
+      "label": "安城市",
+      "commonsCategory": "Anjo, Aichi",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.943333333,
+          "longitude": 137.071666666
+        },
+        {
+          "latitude": 34.958722222,
+          "longitude": 137.080333333
+        }
+      ]
+    },
+    "aichi/nishio": {
+      "cityCode": "23213",
+      "wikidataId": "Q317844",
+      "label": "西尾市",
+      "commonsCategory": "Nishio",
+      "latitude": 34.861833333,
+      "longitude": 137.061805555
+    },
+    "aichi/gamagori": {
+      "cityCode": "23214",
+      "wikidataId": "Q694930",
+      "label": "蒲郡市",
+      "commonsCategory": "Gamagori, Aichi",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.826388888,
+          "longitude": 137.219583333
+        },
+        {
+          "latitude": 34.8275,
+          "longitude": 137.2275
+        }
+      ]
+    },
+    "aichi/inuyama": {
+      "cityCode": "23215",
+      "wikidataId": "Q503411",
+      "label": "犬山市",
+      "commonsCategory": "Inuyama",
+      "latitude": 35.378611111,
+      "longitude": 136.9445
+    },
+    "aichi/tokoname": {
+      "cityCode": "23216",
+      "wikidataId": "Q209683",
+      "label": "常滑市",
+      "commonsCategory": "Tokoname",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.889166666,
+          "longitude": 136.853055555
+        },
+        {
+          "latitude": 34.896111111,
+          "longitude": 136.854333333
+        }
+      ]
+    },
+    "aichi/konan": {
+      "cityCode": "23217",
+      "wikidataId": "Q820496",
+      "label": "江南市",
+      "commonsCategory": "Konan, Aichi",
+      "latitude": 35.332083333,
+      "longitude": 136.870666666
+    },
+    "aichi/komaki": {
+      "cityCode": "23219",
+      "wikidataId": "Q389537",
+      "label": "小牧市",
+      "commonsCategory": "Komaki, Aichi",
+      "latitude": 35.290305555,
+      "longitude": 136.911
+    },
+    "aichi/inazawa": {
+      "cityCode": "23220",
+      "wikidataId": "Q389562",
+      "label": "稲沢市",
+      "commonsCategory": "Inazawa",
+      "latitude": 35.248055555,
+      "longitude": 136.78025
+    },
+    "aichi/shinshiro": {
+      "cityCode": "23221",
+      "wikidataId": "Q694923",
+      "label": "新城市",
+      "commonsCategory": "Shinshiro, Aichi",
+      "latitude": 34.898944444,
+      "longitude": 137.497722222
+    },
+    "aichi/tokai": {
+      "cityCode": "23222",
+      "wikidataId": "Q622620",
+      "label": "東海市",
+      "commonsCategory": "Tokai, Aichi",
+      "latitude": 35.023055555,
+      "longitude": 136.902194444
+    },
+    "aichi/obu": {
+      "cityCode": "23223",
+      "wikidataId": "Q384809",
+      "label": "大府市",
+      "commonsCategory": "Obu, Aichi",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.019166666,
+          "longitude": 136.954166666
+        },
+        {
+          "latitude": 35.011666666,
+          "longitude": 136.963833333
+        }
+      ]
+    },
+    "aichi/chita": {
+      "cityCode": "23224",
+      "wikidataId": "Q495826",
+      "label": "知多市",
+      "commonsCategory": "Chita, Aichi",
+      "latitude": 34.996555555,
+      "longitude": 136.864722222
+    },
+    "aichi/chiryu": {
+      "cityCode": "23225",
+      "wikidataId": "Q223496",
+      "label": "知立市",
+      "commonsCategory": "Chiryu, Aichi",
+      "latitude": 35.001277777,
+      "longitude": 137.050805555
+    },
+    "aichi/owariasahi": {
+      "cityCode": "23226",
+      "wikidataId": "Q694893",
+      "label": "尾張旭市",
+      "commonsCategory": "Owariasahi, Aichi",
+      "latitude": 35.216527777,
+      "longitude": 137.035361111
+    },
+    "aichi/takahama": {
+      "cityCode": "23227",
+      "wikidataId": "Q816734",
+      "label": "高浜市",
+      "commonsCategory": "Takahama, Aichi",
+      "latitude": 34.927611111,
+      "longitude": 136.987694444
+    },
+    "aichi/iwakura": {
+      "cityCode": "23228",
+      "wikidataId": "Q648275",
+      "label": "岩倉市",
+      "commonsCategory": "Iwakura, Aichi",
+      "latitude": 35.279444444,
+      "longitude": 136.871416666
+    },
+    "aichi/toyoake": {
+      "cityCode": "23229",
+      "wikidataId": "Q817280",
+      "label": "豊明市",
+      "commonsCategory": "Toyoake, Aichi",
+      "latitude": 35.053638888,
+      "longitude": 137.012833333
+    },
+    "aichi/nisshin": {
+      "cityCode": "23230",
+      "wikidataId": "Q696777",
+      "label": "日進市",
+      "commonsCategory": "Nisshin, Aichi",
+      "latitude": 35.131972222,
+      "longitude": 137.039444444
+    },
+    "aichi/tahara": {
+      "cityCode": "23231",
+      "wikidataId": "Q501891",
+      "label": "田原市",
+      "commonsCategory": "Tahara, Aichi",
+      "latitude": 34.66875,
+      "longitude": 137.264222222
+    },
+    "aichi/aisai": {
+      "cityCode": "23232",
+      "wikidataId": "Q269644",
+      "label": "愛西市",
+      "commonsCategory": "Aisai, Aichi",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.17234,
+          "longitude": 136.69478
+        },
+        {
+          "latitude": 35.152777777,
+          "longitude": 136.728222222
+        }
+      ]
+    },
+    "aichi/kiyosu": {
+      "cityCode": "23233",
+      "wikidataId": "Q502407",
+      "label": "清須市",
+      "commonsCategory": "Kiyosu, Aichi",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.213333333,
+          "longitude": 136.847777777
+        },
+        {
+          "latitude": 35.199805555,
+          "longitude": 136.852861111
+        }
+      ]
+    },
+    "aichi/kitanagoya": {
+      "cityCode": "23234",
+      "wikidataId": "Q597594",
+      "label": "北名古屋市",
+      "commonsCategory": "Kitanagoya, Aichi",
+      "latitude": 35.245666666,
+      "longitude": 136.865972222
+    },
+    "aichi/yatomi": {
+      "cityCode": "23235",
+      "wikidataId": "Q332825",
+      "label": "弥富市",
+      "commonsCategory": "Yatomi, Aichi",
+      "latitude": 35.11,
+      "longitude": 136.724666666
+    },
+    "aichi/miyoshi": {
+      "cityCode": "23236",
+      "wikidataId": "Q1023781",
+      "label": "みよし市",
+      "commonsCategory": "Miyoshi, Aichi",
+      "latitude": 35.089444444,
+      "longitude": 137.074833333
+    },
+    "aichi/ama": {
+      "cityCode": "23237",
+      "wikidataId": "Q451661",
+      "label": "あま市",
+      "commonsCategory": "Ama, Aichi",
+      "latitude": 35.200444444,
+      "longitude": 136.783222222
+    },
+    "aichi/nagakute": {
+      "cityCode": "23238",
+      "wikidataId": "Q930396",
+      "label": "長久手市",
+      "commonsCategory": "Nagakute, Aichi",
+      "latitude": 35.184111111,
+      "longitude": 137.048722222
+    },
+    "mie/tsu": {
+      "cityCode": "24201",
+      "wikidataId": "Q203027",
+      "label": "津市",
+      "commonsCategory": "Tsu, Mie",
+      "latitude": 34.718444444,
+      "longitude": 136.505777777
+    },
+    "mie/yokkaichi": {
+      "cityCode": "24202",
+      "wikidataId": "Q26410",
+      "label": "四日市市",
+      "commonsCategory": "Yokkaichi, Mie",
+      "latitude": 34.965027777,
+      "longitude": 136.624416666
+    },
+    "mie/ise": {
+      "cityCode": "24203",
+      "wikidataId": "Q328067",
+      "label": "伊勢市",
+      "commonsCategory": "Ise, Mie",
+      "latitude": 34.4875,
+      "longitude": 136.709305555
+    },
+    "mie/matsusaka": {
+      "cityCode": "24204",
+      "wikidataId": "Q460829",
+      "label": "松阪市",
+      "commonsCategory": "Matsusaka, Mie",
+      "latitude": 34.577944444,
+      "longitude": 136.527583333
+    },
+    "mie/kuwana": {
+      "cityCode": "24205",
+      "wikidataId": "Q496472",
+      "label": "桑名市",
+      "commonsCategory": "Kuwana, Mie",
+      "latitude": 35.062194444,
+      "longitude": 136.683666666
+    },
+    "mie/suzuka": {
+      "cityCode": "24207",
+      "wikidataId": "Q207311",
+      "label": "鈴鹿市",
+      "commonsCategory": "Suzuka, Mie",
+      "latitude": 34.881972222,
+      "longitude": 136.584166666
+    },
+    "mie/nabari": {
+      "cityCode": "24208",
+      "wikidataId": "Q166183",
+      "label": "名張市",
+      "commonsCategory": "Nabari, Mie",
+      "latitude": 34.627583333,
+      "longitude": 136.108388888
+    },
+    "mie/owase": {
+      "cityCode": "24209",
+      "wikidataId": "Q847554",
+      "label": "尾鷲市",
+      "commonsCategory": "Owase, Mie",
+      "latitude": 34.070777777,
+      "longitude": 136.190972222
+    },
+    "mie/kameyama": {
+      "cityCode": "24210",
+      "wikidataId": "Q646858",
+      "label": "亀山市",
+      "commonsCategory": "Kameyama, Mie",
+      "latitude": 34.855694444,
+      "longitude": 136.451611111
+    },
+    "mie/toba": {
+      "cityCode": "24211",
+      "wikidataId": "Q819629",
+      "label": "鳥羽市",
+      "commonsCategory": "Toba, Mie",
+      "latitude": 34.481333333,
+      "longitude": 136.843416666
+    },
+    "mie/kumano": {
+      "cityCode": "24212",
+      "wikidataId": "Q819672",
+      "label": "熊野市",
+      "commonsCategory": "Kumano, Mie",
+      "latitude": 33.888777777,
+      "longitude": 136.100277777
+    },
+    "mie/inabe": {
+      "cityCode": "24214",
+      "wikidataId": "Q281817",
+      "label": "いなべ市",
+      "commonsCategory": "Inabe, Mie",
+      "latitude": 35.158194444,
+      "longitude": 136.517111111
+    },
+    "mie/shima": {
+      "cityCode": "24215",
+      "wikidataId": "Q338009",
+      "label": "志摩市",
+      "commonsCategory": "Shima, Mie",
+      "latitude": 34.328194444,
+      "longitude": 136.829666666
+    },
+    "mie/iga": {
+      "cityCode": "24216",
+      "wikidataId": "Q460820",
+      "label": "伊賀市",
+      "commonsCategory": "Iga, Mie",
+      "latitude": 34.749861111,
+      "longitude": 136.142277777
+    },
+    "shiga/otsu": {
+      "cityCode": "25201",
+      "wikidataId": "Q202907",
+      "label": "大津市",
+      "commonsCategory": "Otsu, Shiga",
+      "latitude": 35.0177852,
+      "longitude": 135.8548122
+    },
+    "shiga/hikone": {
+      "cityCode": "25202",
+      "wikidataId": "Q386635",
+      "label": "彦根市",
+      "commonsCategory": "Hikone, Shiga",
+      "latitude": 35.274361111,
+      "longitude": 136.259722222
+    },
+    "shiga/nagahama": {
+      "cityCode": "25203",
+      "wikidataId": "Q844130",
+      "label": "長浜市",
+      "commonsCategory": "Nagahama, Shiga",
+      "latitude": 35.380833333,
+      "longitude": 136.278333333
+    },
+    "shiga/omihachiman": {
+      "cityCode": "25204",
+      "wikidataId": "Q385461",
+      "label": "近江八幡市",
+      "commonsCategory": "Omihachiman, Shiga",
+      "latitude": 35.128333333,
+      "longitude": 136.098055555
+    },
+    "shiga/kusatsu": {
+      "cityCode": "25206",
+      "wikidataId": "Q386677",
+      "label": "草津市",
+      "commonsCategory": "Kusatsu, Shiga",
+      "latitude": 35.013166666,
+      "longitude": 135.959888888
+    },
+    "shiga/moriyama": {
+      "cityCode": "25207",
+      "wikidataId": "Q857225",
+      "label": "守山市",
+      "commonsCategory": "Moriyama, Shiga",
+      "latitude": 35.058916666,
+      "longitude": 135.99425
+    },
+    "shiga/ritto": {
+      "cityCode": "25208",
+      "wikidataId": "Q857310",
+      "label": "栗東市",
+      "commonsCategory": "Ritto, Shiga",
+      "latitude": 35.021611111,
+      "longitude": 135.998
+    },
+    "shiga/koka": {
+      "cityCode": "25209",
+      "wikidataId": "Q847584",
+      "label": "甲賀市",
+      "commonsCategory": "Koka, Shiga",
+      "latitude": 34.966083333,
+      "longitude": 136.166305555
+    },
+    "shiga/yasu": {
+      "cityCode": "25210",
+      "wikidataId": "Q611642",
+      "label": "野洲市",
+      "commonsCategory": "Yasu, Shiga",
+      "latitude": 35.067472222,
+      "longitude": 136.025833333
+    },
+    "shiga/konan": {
+      "cityCode": "25211",
+      "wikidataId": "Q857194",
+      "label": "湖南市",
+      "commonsCategory": "Konan, Shiga",
+      "latitude": 35.004083333,
+      "longitude": 136.084722222
+    },
+    "shiga/takashima": {
+      "cityCode": "25212",
+      "wikidataId": "Q845794",
+      "label": "高島市",
+      "commonsCategory": "Takashima, Shiga",
+      "latitude": 35.353,
+      "longitude": 136.035722222
+    },
+    "shiga/higashiomi": {
+      "cityCode": "25213",
+      "wikidataId": "Q240891",
+      "label": "東近江市",
+      "commonsCategory": "Higashiomi, Shiga",
+      "latitude": 35.112583333,
+      "longitude": 136.207527777
+    },
+    "shiga/maibara": {
+      "cityCode": "25214",
+      "wikidataId": "Q824020",
+      "label": "米原市",
+      "commonsCategory": "Maibara, Shiga",
+      "latitude": 35.315055555,
+      "longitude": 136.291638888
+    },
+    "kyoto/kyoto": {
+      "cityCode": "26100",
+      "wikidataId": "Q34600",
+      "label": "京都市",
+      "commonsCategory": "Kyoto",
+      "latitude": 35.011611111,
+      "longitude": 135.768111111
+    },
+    "kyoto/fukuchiyama": {
+      "cityCode": "26201",
+      "wikidataId": "Q3355306",
+      "label": "福知山市",
+      "commonsCategory": "Fukuchiyama, Kyoto",
+      "latitude": 35.296694444,
+      "longitude": 135.126611111
+    },
+    "kyoto/maizuru": {
+      "cityCode": "26202",
+      "wikidataId": "Q750573",
+      "label": "舞鶴市",
+      "commonsCategory": "Maizuru",
+      "latitude": 35.47475,
+      "longitude": 135.385972222
+    },
+    "kyoto/ayabe": {
+      "cityCode": "26203",
+      "wikidataId": "Q694370",
+      "label": "綾部市",
+      "commonsCategory": "Ayabe, Kyoto",
+      "latitude": 35.298861111,
+      "longitude": 135.258805555
+    },
+    "kyoto/uji": {
+      "cityCode": "26204",
+      "wikidataId": "Q326956",
+      "label": "宇治市",
+      "commonsCategory": "Uji, Kyoto",
+      "latitude": 34.884361111,
+      "longitude": 135.799805555
+    },
+    "kyoto/miyazu": {
+      "cityCode": "26205",
+      "wikidataId": "Q846351",
+      "label": "宮津市",
+      "commonsCategory": "Miyazu, Kyoto",
+      "latitude": 35.535555555,
+      "longitude": 135.1955
+    },
+    "kyoto/kameoka": {
+      "cityCode": "26206",
+      "wikidataId": "Q633996",
+      "label": "亀岡市",
+      "commonsCategory": "Kameoka, Kyoto",
+      "latitude": 35.013527777,
+      "longitude": 135.573527777
+    },
+    "kyoto/joyo": {
+      "cityCode": "26207",
+      "wikidataId": "Q817276",
+      "label": "城陽市",
+      "commonsCategory": "Joyo, Kyoto",
+      "latitude": 34.852944444,
+      "longitude": 135.780027777
+    },
+    "kyoto/muko": {
+      "cityCode": "26208",
+      "wikidataId": "Q850640",
+      "label": "向日市",
+      "commonsCategory": "Muko, Kyoto",
+      "latitude": 34.948722222,
+      "longitude": 135.698277777
+    },
+    "kyoto/nagaokakyo": {
+      "cityCode": "26209",
+      "wikidataId": "Q861246",
+      "label": "長岡京市",
+      "commonsCategory": "Nagaokakyo, Kyoto",
+      "latitude": 34.926805555,
+      "longitude": 135.69575
+    },
+    "kyoto/yawata": {
+      "cityCode": "26210",
+      "wikidataId": "Q260923",
+      "label": "八幡市",
+      "commonsCategory": "Yawata, Kyoto",
+      "latitude": 34.875555555,
+      "longitude": 135.707611111
+    },
+    "kyoto/kyotanabe": {
+      "cityCode": "26211",
+      "wikidataId": "Q816728",
+      "label": "京田辺市",
+      "commonsCategory": "Kyotanabe, Kyoto",
+      "latitude": 34.814444444,
+      "longitude": 135.767694444
+    },
+    "kyoto/kyotango": {
+      "cityCode": "26212",
+      "wikidataId": "Q513897",
+      "label": "京丹後市",
+      "commonsCategory": "Kyotango, Kyoto",
+      "latitude": 35.624138888,
+      "longitude": 135.060944444
+    },
+    "kyoto/nantan": {
+      "cityCode": "26213",
+      "wikidataId": "Q170421",
+      "label": "南丹市",
+      "commonsCategory": "Nantan, Kyoto",
+      "latitude": 35.107388888,
+      "longitude": 135.470333333
+    },
+    "kyoto/kizugawa": {
+      "cityCode": "26214",
+      "wikidataId": "Q990352",
+      "label": "木津川市",
+      "commonsCategory": "Kizugawa, Kyoto",
+      "latitude": 34.737138888,
+      "longitude": 135.820083333
+    },
+    "osaka/osaka": {
+      "cityCode": "27100",
+      "wikidataId": "Q35765",
+      "label": "大阪市",
+      "commonsCategory": "Osaka",
+      "latitude": 34.69375,
+      "longitude": 135.502111111
+    },
+    "osaka/sakai": {
+      "cityCode": "27140",
+      "wikidataId": "Q193428",
+      "label": "堺市",
+      "commonsCategory": "Sakai",
+      "latitude": 34.573333333,
+      "longitude": 135.483
+    },
+    "osaka/kishiwada": {
+      "cityCode": "27202",
+      "wikidataId": "Q740456",
+      "label": "岸和田市",
+      "commonsCategory": "Kishiwada, Osaka",
+      "latitude": 34.460527777,
+      "longitude": 135.370916666
+    },
+    "osaka/toyonaka": {
+      "cityCode": "27203",
+      "wikidataId": "Q467479",
+      "label": "豊中市",
+      "commonsCategory": "Toyonaka, Osaka",
+      "latitude": 34.7815,
+      "longitude": 135.469638888
+    },
+    "osaka/ikeda": {
+      "cityCode": "27204",
+      "wikidataId": "Q817965",
+      "label": "池田市",
+      "commonsCategory": "Ikeda, Osaka",
+      "latitude": 34.821722222,
+      "longitude": 135.428527777
+    },
+    "osaka/suita": {
+      "cityCode": "27205",
+      "wikidataId": "Q653510",
+      "label": "吹田市",
+      "commonsCategory": "Suita, Osaka",
+      "latitude": 34.759472222,
+      "longitude": 135.516833333
+    },
+    "osaka/izumiotsu": {
+      "cityCode": "27206",
+      "wikidataId": "Q873553",
+      "label": "泉大津市",
+      "commonsCategory": "Izumiotsu, Osaka",
+      "latitude": 34.504277777,
+      "longitude": 135.410416666
+    },
+    "osaka/takatsuki": {
+      "cityCode": "27207",
+      "wikidataId": "Q335423",
+      "label": "高槻市",
+      "commonsCategory": "Takatsuki, Osaka",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.84833,
+          "longitude": 135.61678
+        },
+        {
+          "latitude": 34.846,
+          "longitude": 135.61725
+        }
+      ]
+    },
+    "osaka/kaizuka": {
+      "cityCode": "27208",
+      "wikidataId": "Q908972",
+      "label": "貝塚市",
+      "commonsCategory": "Kaizuka, Osaka",
+      "latitude": 34.437611111,
+      "longitude": 135.358527777
+    },
+    "osaka/moriguchi": {
+      "cityCode": "27209",
+      "wikidataId": "Q694154",
+      "label": "守口市",
+      "commonsCategory": "Moriguchi, Osaka",
+      "latitude": 34.735777777,
+      "longitude": 135.561722222
+    },
+    "osaka/hirakata": {
+      "cityCode": "27210",
+      "wikidataId": "Q270912",
+      "label": "枚方市",
+      "commonsCategory": "Hirakata, Osaka",
+      "latitude": 34.814361111,
+      "longitude": 135.650638888
+    },
+    "osaka/ibaraki": {
+      "cityCode": "27211",
+      "wikidataId": "Q502403",
+      "label": "茨木市",
+      "commonsCategory": "Ibaraki, Osaka",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.855833333,
+          "longitude": 135.55
+        },
+        {
+          "latitude": 34.816361111,
+          "longitude": 135.568583333
+        }
+      ]
+    },
+    "osaka/yao": {
+      "cityCode": "27212",
+      "wikidataId": "Q490872",
+      "label": "八尾市",
+      "commonsCategory": "Yao, Osaka",
+      "latitude": 34.626916666,
+      "longitude": 135.600833333
+    },
+    "osaka/izumisano": {
+      "cityCode": "27213",
+      "wikidataId": "Q852018",
+      "label": "泉佐野市",
+      "commonsCategory": "Izumisano, Osaka",
+      "latitude": 34.406944444,
+      "longitude": 135.327527777
+    },
+    "osaka/tondabayashi": {
+      "cityCode": "27214",
+      "wikidataId": "Q490928",
+      "label": "富田林市",
+      "commonsCategory": "Tondabayashi, Osaka",
+      "latitude": 34.499638888,
+      "longitude": 135.59725
+    },
+    "osaka/neyagawa": {
+      "cityCode": "27215",
+      "wikidataId": "Q389633",
+      "label": "寝屋川市",
+      "commonsCategory": "Neyagawa, Osaka",
+      "latitude": 34.766083333,
+      "longitude": 135.628083333
+    },
+    "osaka/kawachinagano": {
+      "cityCode": "27216",
+      "wikidataId": "Q819572",
+      "label": "河内長野市",
+      "commonsCategory": "Kawachinagano, Osaka",
+      "latitude": 34.458083333,
+      "longitude": 135.564138888
+    },
+    "osaka/matsubara": {
+      "cityCode": "27217",
+      "wikidataId": "Q774952",
+      "label": "松原市",
+      "commonsCategory": "Matsubara, Osaka",
+      "latitude": 34.577861111,
+      "longitude": 135.551861111
+    },
+    "osaka/daito": {
+      "cityCode": "27218",
+      "wikidataId": "Q386668",
+      "label": "大東市",
+      "commonsCategory": "Daito, Osaka",
+      "latitude": 34.712,
+      "longitude": 135.623416666
+    },
+    "osaka/izumi": {
+      "cityCode": "27219",
+      "wikidataId": "Q696412",
+      "label": "和泉市",
+      "commonsCategory": "Izumi, Osaka",
+      "latitude": 34.483222222,
+      "longitude": 135.423222222
+    },
+    "osaka/mino": {
+      "cityCode": "27220",
+      "wikidataId": "Q665097",
+      "label": "箕面市",
+      "commonsCategory": "Minoh, Osaka",
+      "latitude": 34.826941666,
+      "longitude": 135.470438888
+    },
+    "osaka/kashiwara": {
+      "cityCode": "27221",
+      "wikidataId": "Q873583",
+      "label": "柏原市",
+      "commonsCategory": "Kashiwara, Osaka",
+      "latitude": 34.579277777,
+      "longitude": 135.628611111
+    },
+    "osaka/habikino": {
+      "cityCode": "27222",
+      "wikidataId": "Q694308",
+      "label": "羽曳野市",
+      "commonsCategory": "Habikino, Osaka",
+      "latitude": 34.557916666,
+      "longitude": 135.606305555
+    },
+    "osaka/kadoma": {
+      "cityCode": "27223",
+      "wikidataId": "Q496080",
+      "label": "門真市",
+      "commonsCategory": "Kadoma, Osaka",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.739138888,
+          "longitude": 135.586861111
+        },
+        {
+          "latitude": 34.732222222,
+          "longitude": 135.599444444
+        }
+      ]
+    },
+    "osaka/settsu": {
+      "cityCode": "27224",
+      "wikidataId": "Q643878",
+      "label": "摂津市",
+      "commonsCategory": "Settsu, Osaka",
+      "latitude": 34.777277777,
+      "longitude": 135.561833333
+    },
+    "osaka/takaishi": {
+      "cityCode": "27225",
+      "wikidataId": "Q857218",
+      "label": "高石市",
+      "commonsCategory": "Takaishi, Osaka",
+      "latitude": 34.520722222,
+      "longitude": 135.442361111
+    },
+    "osaka/fujiidera": {
+      "cityCode": "27226",
+      "wikidataId": "Q634011",
+      "label": "藤井寺市",
+      "commonsCategory": "Fujiidera, Osaka",
+      "latitude": 34.574222222,
+      "longitude": 135.597472222
+    },
+    "osaka/higashiosaka": {
+      "cityCode": "27227",
+      "wikidataId": "Q243863",
+      "label": "東大阪市",
+      "commonsCategory": "Higashiosaka, Osaka",
+      "latitude": 34.679361111,
+      "longitude": 135.600888888
+    },
+    "osaka/sennan": {
+      "cityCode": "27228",
+      "wikidataId": "Q838809",
+      "label": "泉南市",
+      "commonsCategory": "Sennan, Osaka",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.365888888,
+          "longitude": 135.273444444
+        },
+        {
+          "latitude": 34.351666666,
+          "longitude": 135.291666666
+        }
+      ]
+    },
+    "osaka/shijonawate": {
+      "cityCode": "27229",
+      "wikidataId": "Q742160",
+      "label": "四條畷市",
+      "commonsCategory": "Shijonawate, Osaka",
+      "latitude": 34.739916666,
+      "longitude": 135.639527777
+    },
+    "osaka/katano": {
+      "cityCode": "27230",
+      "wikidataId": "Q819646",
+      "label": "交野市",
+      "commonsCategory": "Katano, Osaka",
+      "latitude": 34.787944444,
+      "longitude": 135.679944444
+    },
+    "osaka/osakasayama": {
+      "cityCode": "27231",
+      "wikidataId": "Q385864",
+      "label": "大阪狭山市",
+      "commonsCategory": "Osakasayama, Osaka",
+      "latitude": 34.503611111,
+      "longitude": 135.555694444
+    },
+    "osaka/hannan": {
+      "cityCode": "27232",
+      "wikidataId": "Q819670",
+      "label": "阪南市",
+      "commonsCategory": "Hannan, Osaka",
+      "latitude": 34.359583333,
+      "longitude": 135.239694444
+    },
+    "hyogo/kobe": {
+      "cityCode": "28100",
+      "wikidataId": "Q48320",
+      "label": "神戸市",
+      "commonsCategory": "Kobe",
+      "latitude": 34.690166666,
+      "longitude": 135.195444444
+    },
+    "hyogo/himeji": {
+      "cityCode": "28201",
+      "wikidataId": "Q209801",
+      "label": "姫路市",
+      "commonsCategory": "Himeji, Hyogo",
+      "latitude": 34.815166666,
+      "longitude": 134.685388888
+    },
+    "hyogo/amagasaki": {
+      "cityCode": "28202",
+      "wikidataId": "Q213318",
+      "label": "尼崎市",
+      "commonsCategory": "Amagasaki, Hyogo",
+      "latitude": 34.733833333,
+      "longitude": 135.406333333
+    },
+    "hyogo/akashi": {
+      "cityCode": "28203",
+      "wikidataId": "Q26406",
+      "label": "明石市",
+      "commonsCategory": "Akashi, Hyogo",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.682777777,
+          "longitude": 134.940277777
+        },
+        {
+          "latitude": 34.643138888,
+          "longitude": 134.997222222
+        }
+      ]
+    },
+    "hyogo/nishinomiya": {
+      "cityCode": "28204",
+      "wikidataId": "Q243853",
+      "label": "西宮市",
+      "commonsCategory": "Nishinomiya",
+      "latitude": 34.737638888,
+      "longitude": 135.34175
+    },
+    "hyogo/sumoto": {
+      "cityCode": "28205",
+      "wikidataId": "Q369628",
+      "label": "洲本市",
+      "commonsCategory": "Sumoto, Hyogo",
+      "latitude": 34.342472222,
+      "longitude": 134.895638888
+    },
+    "hyogo/ashiya": {
+      "cityCode": "28206",
+      "wikidataId": "Q725514",
+      "label": "芦屋市",
+      "commonsCategory": "Ashiya, Hyogo",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.748611111,
+          "longitude": 135.2975
+        },
+        {
+          "latitude": 34.727,
+          "longitude": 135.304111111
+        }
+      ]
+    },
+    "hyogo/itami": {
+      "cityCode": "28207",
+      "wikidataId": "Q335444",
+      "label": "伊丹市",
+      "commonsCategory": "Itami, Hyogo",
+      "latitude": 34.784305555,
+      "longitude": 135.400888888
+    },
+    "hyogo/aioi": {
+      "cityCode": "28208",
+      "wikidataId": "Q406318",
+      "label": "相生市",
+      "commonsCategory": "Aioi, Hyogo",
+      "latitude": 34.803583333,
+      "longitude": 134.468111111
+    },
+    "hyogo/toyoka": {
+      "cityCode": "28209",
+      "wikidataId": "Q696388",
+      "label": "豊岡市",
+      "commonsCategory": "Toyooka, Hyogo",
+      "latitude": 35.5445,
+      "longitude": 134.820194444
+    },
+    "hyogo/kakogawa": {
+      "cityCode": "28210",
+      "wikidataId": "Q750569",
+      "label": "加古川市",
+      "commonsCategory": "Kakogawa, Hyogo",
+      "latitude": 34.756916666,
+      "longitude": 134.841277777
+    },
+    "hyogo/ako": {
+      "cityCode": "28212",
+      "wikidataId": "Q424813",
+      "label": "赤穂市",
+      "commonsCategory": "Ako, Hyogo",
+      "latitude": 34.754972222,
+      "longitude": 134.390333333
+    },
+    "hyogo/nishiwaki": {
+      "cityCode": "28213",
+      "wikidataId": "Q869020",
+      "label": "西脇市",
+      "commonsCategory": "Nishiwaki, Hyogo",
+      "latitude": 34.982916666,
+      "longitude": 134.979527777
+    },
+    "hyogo/takarazuka": {
+      "cityCode": "28214",
+      "wikidataId": "Q823967",
+      "label": "宝塚市",
+      "commonsCategory": "Takarazuka, Hyogo",
+      "latitude": 34.8,
+      "longitude": 135.360305555
+    },
+    "hyogo/miki": {
+      "cityCode": "28215",
+      "wikidataId": "Q31238",
+      "label": "三木市",
+      "commonsCategory": "Miki, Hyogo",
+      "latitude": 34.796916666,
+      "longitude": 134.990194444
+    },
+    "hyogo/takasago": {
+      "cityCode": "28216",
+      "wikidataId": "Q869037",
+      "label": "高砂市",
+      "commonsCategory": "Takasago, Hyogo",
+      "latitude": 34.765944444,
+      "longitude": 134.790638888
+    },
+    "hyogo/kawanishi": {
+      "cityCode": "28217",
+      "wikidataId": "Q609350",
+      "label": "川西市",
+      "commonsCategory": "Kawanishi, Hyogo",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.879444444,
+          "longitude": 135.409166666
+        },
+        {
+          "latitude": 34.830138888,
+          "longitude": 135.417277777
+        }
+      ]
+    },
+    "hyogo/ono": {
+      "cityCode": "28218",
+      "wikidataId": "Q911717",
+      "label": "小野市",
+      "commonsCategory": "Ono, Hyogo",
+      "latitude": 34.857861111,
+      "longitude": 134.939805555
+    },
+    "hyogo/sanda": {
+      "cityCode": "28219",
+      "wikidataId": "Q847607",
+      "label": "三田市",
+      "commonsCategory": "Sanda, Hyogo",
+      "latitude": 34.889972222,
+      "longitude": 135.225444444
+    },
+    "hyogo/kasai": {
+      "cityCode": "28220",
+      "wikidataId": "Q851155",
+      "label": "加西市",
+      "commonsCategory": "Kasai, Hyogo",
+      "latitude": 34.927833333,
+      "longitude": 134.841888888
+    },
+    "hyogo/tambasasayama": {
+      "cityCode": "28221",
+      "wikidataId": "Q877169",
+      "label": "丹波篠山市",
+      "commonsCategory": "Tambasasayama, Hyogo",
+      "latitude": 35.075722222,
+      "longitude": 135.219222222
+    },
+    "hyogo/yabu": {
+      "cityCode": "28222",
+      "wikidataId": "Q869014",
+      "label": "養父市",
+      "commonsCategory": "Yabu, Hyogo",
+      "latitude": 35.404611111,
+      "longitude": 134.767611111
+    },
+    "hyogo/tamba": {
+      "cityCode": "28223",
+      "wikidataId": "Q877196",
+      "label": "丹波市",
+      "commonsCategory": "Tamba, Hyogo",
+      "latitude": 35.177083333,
+      "longitude": 135.035888888
+    },
+    "hyogo/minamiawaji": {
+      "cityCode": "28224",
+      "wikidataId": "Q869004",
+      "label": "南あわじ市",
+      "commonsCategory": "Minamiawaji, Hyogo",
+      "latitude": 34.294444444,
+      "longitude": 134.779833333
+    },
+    "hyogo/asago": {
+      "cityCode": "28225",
+      "wikidataId": "Q720402",
+      "label": "朝来市",
+      "commonsCategory": "Asago, Hyogo",
+      "latitude": 35.339833333,
+      "longitude": 134.853083333
+    },
+    "hyogo/awaji": {
+      "cityCode": "28226",
+      "wikidataId": "Q373107",
+      "label": "淡路市",
+      "commonsCategory": "Awaji, Hyogo",
+      "latitude": 34.43975,
+      "longitude": 134.914944444
+    },
+    "hyogo/shiso": {
+      "cityCode": "28227",
+      "wikidataId": "Q877216",
+      "label": "宍粟市",
+      "commonsCategory": "Shiso, Hyogo",
+      "latitude": 35.004388888,
+      "longitude": 134.549388888
+    },
+    "hyogo/kato": {
+      "cityCode": "28228",
+      "wikidataId": "Q877164",
+      "label": "加東市",
+      "commonsCategory": "Kato, Hyogo",
+      "latitude": 34.918611111,
+      "longitude": 134.973361111
+    },
+    "hyogo/tatsuno": {
+      "cityCode": "28229",
+      "wikidataId": "Q877190",
+      "label": "たつの市",
+      "commonsCategory": "Tatsuno, Hyogo",
+      "latitude": 34.857916666,
+      "longitude": 134.545388888
+    },
+    "nara/nara": {
+      "cityCode": "29201",
+      "wikidataId": "Q169134",
+      "label": "奈良市",
+      "commonsCategory": "Nara, Nara",
+      "latitude": 34.685,
+      "longitude": 135.804777777
+    },
+    "nara/yamatotakada": {
+      "cityCode": "29202",
+      "wikidataId": "Q838669",
+      "label": "大和高田市",
+      "commonsCategory": "Yamatotakada, Nara",
+      "latitude": 34.515055555,
+      "longitude": 135.736472222
+    },
+    "nara/yamatokoriyama": {
+      "cityCode": "29203",
+      "wikidataId": "Q118213",
+      "label": "大和郡山市",
+      "commonsCategory": "Yamatokoriyama, Nara",
+      "latitude": 34.649305555,
+      "longitude": 135.782694444
+    },
+    "nara/tenri": {
+      "cityCode": "29204",
+      "wikidataId": "Q502196",
+      "label": "天理市",
+      "commonsCategory": "Tenri, Nara",
+      "latitude": 34.596666666,
+      "longitude": 135.837222222
+    },
+    "nara/kashihara": {
+      "cityCode": "29205",
+      "wikidataId": "Q496319",
+      "label": "橿原市",
+      "commonsCategory": "Kashihara, Nara",
+      "latitude": 34.509444444,
+      "longitude": 135.7925
+    },
+    "nara/sakurai": {
+      "cityCode": "29206",
+      "wikidataId": "Q127026",
+      "label": "桜井市",
+      "commonsCategory": "Sakurai, Nara",
+      "latitude": 34.518722222,
+      "longitude": 135.843222222
+    },
+    "nara/gojo": {
+      "cityCode": "29207",
+      "wikidataId": "Q602571",
+      "label": "五條市",
+      "commonsCategory": "Gojo, Nara",
+      "latitude": 34.356333333,
+      "longitude": 135.695583333
+    },
+    "nara/gose": {
+      "cityCode": "29208",
+      "wikidataId": "Q847334",
+      "label": "御所市",
+      "commonsCategory": "Gose, Nara",
+      "latitude": 34.463333333,
+      "longitude": 135.740222222
+    },
+    "nara/ikoma": {
+      "cityCode": "29209",
+      "wikidataId": "Q328610",
+      "label": "生駒市",
+      "commonsCategory": "Ikoma, Nara",
+      "latitude": 34.691888888,
+      "longitude": 135.700527777
+    },
+    "nara/kashiba": {
+      "cityCode": "29210",
+      "wikidataId": "Q696643",
+      "label": "香芝市",
+      "commonsCategory": "Kashiba, Nara",
+      "latitude": 34.541277777,
+      "longitude": 135.699027777
+    },
+    "nara/katsuragi": {
+      "cityCode": "29211",
+      "wikidataId": "Q659672",
+      "label": "葛城市",
+      "commonsCategory": "Katsuragi, Nara",
+      "latitude": 34.489222222,
+      "longitude": 135.726444444
+    },
+    "nara/uda": {
+      "cityCode": "29212",
+      "wikidataId": "Q863747",
+      "label": "宇陀市",
+      "commonsCategory": "Uda, Nara",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.527972222,
+          "longitude": 135.95225
+        },
+        {
+          "latitude": 34.520277777,
+          "longitude": 135.997777777
+        }
+      ]
+    },
+    "wakayama/wakayama": {
+      "cityCode": "30201",
+      "wikidataId": "Q200747",
+      "label": "和歌山市",
+      "commonsCategory": "Wakayama, Wakayama",
+      "latitude": 34.230361111,
+      "longitude": 135.17075
+    },
+    "wakayama/kainan": {
+      "cityCode": "30202",
+      "wikidataId": "Q841309",
+      "label": "海南市",
+      "commonsCategory": "Kainan, Wakayama",
+      "latitude": 34.1575,
+      "longitude": 135.239694444
+    },
+    "wakayama/hashimoto": {
+      "cityCode": "30203",
+      "wikidataId": "Q842098",
+      "label": "橋本市",
+      "commonsCategory": "Hashimoto, Wakayama",
+      "latitude": 34.314638888,
+      "longitude": 135.605222222
+    },
+    "wakayama/arida": {
+      "cityCode": "30204",
+      "wikidataId": "Q657843",
+      "label": "有田市",
+      "commonsCategory": "Arida, Wakayama",
+      "latitude": 34.082972222,
+      "longitude": 135.12775
+    },
+    "wakayama/gobo": {
+      "cityCode": "30205",
+      "wikidataId": "Q847572",
+      "label": "御坊市",
+      "commonsCategory": "Gobo, Wakayama",
+      "latitude": 33.891444444,
+      "longitude": 135.152333333
+    },
+    "wakayama/tanabe": {
+      "cityCode": "30206",
+      "wikidataId": "Q304266",
+      "label": "田辺市",
+      "commonsCategory": "Tanabe, Wakayama",
+      "latitude": 33.727972222,
+      "longitude": 135.377722222
+    },
+    "wakayama/shingu": {
+      "cityCode": "30207",
+      "wikidataId": "Q823526",
+      "label": "新宮市",
+      "commonsCategory": "Shingu, Wakayama",
+      "latitude": 33.724166666,
+      "longitude": 135.992555555
+    },
+    "wakayama/kinokawa": {
+      "cityCode": "30208",
+      "wikidataId": "Q697002",
+      "label": "紀の川市",
+      "commonsCategory": "Kinokawa, Wakayama",
+      "latitude": 34.269722222,
+      "longitude": 135.362777777
+    },
+    "wakayama/iwade": {
+      "cityCode": "30209",
+      "wikidataId": "Q579623",
+      "label": "岩出市",
+      "commonsCategory": "Iwade, Wakayama",
+      "latitude": 34.25625,
+      "longitude": 135.311333333
+    },
+    "tottori/tottori": {
+      "cityCode": "31201",
+      "wikidataId": "Q200731",
+      "label": "鳥取市",
+      "commonsCategory": "Tottori, Tottori",
+      "latitude": 35.494388888,
+      "longitude": 134.221611111
+    },
+    "tottori/yonago": {
+      "cityCode": "31202",
+      "wikidataId": "Q320964",
+      "label": "米子市",
+      "commonsCategory": "Yonago, Tottori",
+      "latitude": 35.428166666,
+      "longitude": 133.330888888
+    },
+    "tottori/kurayoshi": {
+      "cityCode": "31203",
+      "wikidataId": "Q642006",
+      "label": "倉吉市",
+      "commonsCategory": "Kurayoshi, Tottori",
+      "latitude": 35.430111111,
+      "longitude": 133.825527777
+    },
+    "tottori/sakaiminato": {
+      "cityCode": "31204",
+      "wikidataId": "Q496431",
+      "label": "境港市",
+      "commonsCategory": "Sakaiminato, Tottori",
+      "latitude": 35.539611111,
+      "longitude": 133.231611111
+    },
+    "shimane/matsue": {
+      "cityCode": "32201",
+      "wikidataId": "Q207321",
+      "label": "松江市",
+      "commonsCategory": "Matsue, Shimane",
+      "latitude": 35.468111111,
+      "longitude": 133.048527777
+    },
+    "shimane/hamada": {
+      "cityCode": "32202",
+      "wikidataId": "Q432055",
+      "label": "浜田市",
+      "commonsCategory": "Hamada, Shimane",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.899222222,
+          "longitude": 132.079833333
+        },
+        {
+          "latitude": 34.828055555,
+          "longitude": 132.139166666
+        }
+      ]
+    },
+    "shimane/izumo": {
+      "cityCode": "32203",
+      "wikidataId": "Q825166",
+      "label": "出雲市",
+      "commonsCategory": "Izumo, Shimane",
+      "latitude": 35.401622505,
+      "longitude": 132.685440687
+    },
+    "shimane/masuda": {
+      "cityCode": "32204",
+      "wikidataId": "Q753731",
+      "label": "益田市",
+      "commonsCategory": "Masuda, Shimane",
+      "latitude": 34.67475,
+      "longitude": 131.842833333
+    },
+    "shimane/oda": {
+      "cityCode": "32205",
+      "wikidataId": "Q384796",
+      "label": "大田市",
+      "commonsCategory": "Oda, Shimane",
+      "latitude": 35.192083333,
+      "longitude": 132.499361111
+    },
+    "shimane/yasugi": {
+      "cityCode": "32206",
+      "wikidataId": "Q851114",
+      "label": "安来市",
+      "commonsCategory": "Yasugi, Shimane",
+      "latitude": 35.431444444,
+      "longitude": 133.250888888
+    },
+    "shimane/gotsu": {
+      "cityCode": "32207",
+      "wikidataId": "Q850395",
+      "label": "江津市",
+      "commonsCategory": "Gotsu, Shimane",
+      "latitude": 35.011777777,
+      "longitude": 132.217666666
+    },
+    "shimane/unnan": {
+      "cityCode": "32209",
+      "wikidataId": "Q877935",
+      "label": "雲南市",
+      "commonsCategory": "Unnan, Shimane",
+      "latitude": 35.307722222,
+      "longitude": 132.900305555
+    },
+    "okayama/okayama": {
+      "cityCode": "33100",
+      "wikidataId": "Q200078",
+      "label": "岡山市",
+      "commonsCategory": "Okayama",
+      "latitude": 34.655111111,
+      "longitude": 133.919583333
+    },
+    "okayama/kurashiki": {
+      "cityCode": "33202",
+      "wikidataId": "Q467487",
+      "label": "倉敷市",
+      "commonsCategory": "Kurashiki, Okayama",
+      "latitude": 34.585083333,
+      "longitude": 133.772111111
+    },
+    "okayama/tsuyama": {
+      "cityCode": "33203",
+      "wikidataId": "Q841125",
+      "label": "津山市",
+      "commonsCategory": "Tsuyama, Okayama",
+      "latitude": 35.069111111,
+      "longitude": 134.004472222
+    },
+    "okayama/tamano": {
+      "cityCode": "33204",
+      "wikidataId": "Q850335",
+      "label": "玉野市",
+      "commonsCategory": "Tamano, Okayama",
+      "latitude": 34.491944444,
+      "longitude": 133.945972222
+    },
+    "okayama/kasaoka": {
+      "cityCode": "33205",
+      "wikidataId": "Q863739",
+      "label": "笠岡市",
+      "commonsCategory": "Kasaoka, Okayama",
+      "latitude": 34.507138888,
+      "longitude": 133.507361111
+    },
+    "okayama/ibara": {
+      "cityCode": "33207",
+      "wikidataId": "Q863754",
+      "label": "井原市",
+      "commonsCategory": "Ibara, Okayama",
+      "latitude": 34.597694444,
+      "longitude": 133.463777777
+    },
+    "okayama/soja": {
+      "cityCode": "33208",
+      "wikidataId": "Q873536",
+      "label": "総社市",
+      "commonsCategory": "Soja, Okayama",
+      "latitude": 34.672777777,
+      "longitude": 133.7465
+    },
+    "okayama/takahashi": {
+      "cityCode": "33209",
+      "wikidataId": "Q851675",
+      "label": "高梁市",
+      "commonsCategory": "Takahashi, Okayama",
+      "latitude": 34.791027777,
+      "longitude": 133.616833333
+    },
+    "okayama/niimi": {
+      "cityCode": "33210",
+      "wikidataId": "Q873596",
+      "label": "新見市",
+      "commonsCategory": "Niimi, Okayama",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 35.01571,
+          "longitude": 133.449
+        },
+        {
+          "latitude": 34.977027777,
+          "longitude": 133.470277777
+        }
+      ]
+    },
+    "okayama/bizen": {
+      "cityCode": "33211",
+      "wikidataId": "Q863741",
+      "label": "備前市",
+      "commonsCategory": "Bizen, Okayama",
+      "latitude": 34.745166666,
+      "longitude": 134.188833333
+    },
+    "okayama/setochi": {
+      "cityCode": "33212",
+      "wikidataId": "Q691691",
+      "label": "瀬戸内市",
+      "commonsCategory": "Setouchi, Okayama",
+      "latitude": 34.664888888,
+      "longitude": 134.092805555
+    },
+    "okayama/akaiwa": {
+      "cityCode": "33213",
+      "wikidataId": "Q415372",
+      "label": "赤磐市",
+      "commonsCategory": "Akaiwa, Okayama",
+      "latitude": 34.755361111,
+      "longitude": 134.018777777
+    },
+    "okayama/maniwa": {
+      "cityCode": "33214",
+      "wikidataId": "Q861230",
+      "label": "真庭市",
+      "commonsCategory": "Maniwa, Okayama",
+      "latitude": 35.075583333,
+      "longitude": 133.752722222
+    },
+    "okayama/mimasaka": {
+      "cityCode": "33215",
+      "wikidataId": "Q861279",
+      "label": "美作市",
+      "commonsCategory": "Mimasaka, Okayama",
+      "latitude": 35.008611111,
+      "longitude": 134.148583333
+    },
+    "okayama/asakuchi": {
+      "cityCode": "33216",
+      "wikidataId": "Q990353",
+      "label": "浅口市",
+      "commonsCategory": "Asakuchi, Okayama",
+      "latitude": 34.527888888,
+      "longitude": 133.584861111
+    },
+    "hiroshima/hiroshima": {
+      "cityCode": "34100",
+      "wikidataId": "Q34664",
+      "label": "広島市",
+      "commonsCategory": "Hiroshima",
+      "latitude": 34.38525,
+      "longitude": 132.455305555
+    },
+    "hiroshima/kure": {
+      "cityCode": "34202",
+      "wikidataId": "Q223439",
+      "label": "呉市",
+      "commonsCategory": "Kure, Hiroshima",
+      "latitude": 34.249222222,
+      "longitude": 132.565722222
+    },
+    "hiroshima/takehara": {
+      "cityCode": "34203",
+      "wikidataId": "Q200500",
+      "label": "竹原市",
+      "commonsCategory": "Takehara, Hiroshima",
+      "latitude": 34.34175,
+      "longitude": 132.906916666
+    },
+    "hiroshima/mihara": {
+      "cityCode": "34204",
+      "wikidataId": "Q820760",
+      "label": "三原市",
+      "commonsCategory": "Mihara, Hiroshima",
+      "latitude": 34.397388888,
+      "longitude": 133.078694444
+    },
+    "hiroshima/onomichi": {
+      "cityCode": "34205",
+      "wikidataId": "Q696694",
+      "label": "尾道市",
+      "commonsCategory": "Onomichi, Hiroshima",
+      "latitude": 34.409111111,
+      "longitude": 133.205444444
+    },
+    "hiroshima/fukuyama": {
+      "cityCode": "34207",
+      "wikidataId": "Q661038",
+      "label": "福山市",
+      "commonsCategory": "Fukuyama, Hiroshima",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 34.523333333,
+          "longitude": 133.337777777
+        },
+        {
+          "latitude": 34.485861111,
+          "longitude": 133.362305555
+        }
+      ]
+    },
+    "hiroshima/fuchu-shi": {
+      "cityCode": "34208",
+      "wikidataId": "Q686775",
+      "label": "府中市",
+      "commonsCategory": "Fuchu, Hiroshima (city)",
+      "latitude": 34.568305555,
+      "longitude": 133.236361111
+    },
+    "hiroshima/miyoshi": {
+      "cityCode": "34209",
+      "wikidataId": "Q840591",
+      "label": "三次市",
+      "commonsCategory": "Miyoshi, Hiroshima",
+      "latitude": 34.805666666,
+      "longitude": 132.851805555
+    },
+    "hiroshima/shobara": {
+      "cityCode": "34210",
+      "wikidataId": "Q857234",
+      "label": "庄原市",
+      "commonsCategory": "Shobara, Hiroshima",
+      "latitude": 34.85775,
+      "longitude": 133.017277777
+    },
+    "hiroshima/otake": {
+      "cityCode": "34211",
+      "wikidataId": "Q386250",
+      "label": "大竹市",
+      "commonsCategory": "Otake, Hiroshima",
+      "latitude": 34.237888888,
+      "longitude": 132.222333333
+    },
+    "hiroshima/higashihiroshima": {
+      "cityCode": "34212",
+      "wikidataId": "Q653372",
+      "label": "東広島市",
+      "commonsCategory": "Higashihiroshima, Hiroshima",
+      "latitude": 34.426388888,
+      "longitude": 132.743333333
+    },
+    "hiroshima/hatsukaichi": {
+      "cityCode": "34213",
+      "wikidataId": "Q736897",
+      "label": "廿日市市",
+      "commonsCategory": "Hatsukaichi, Hiroshima",
+      "latitude": 34.348222222,
+      "longitude": 132.331583333
+    },
+    "hiroshima/akitakata": {
+      "cityCode": "34214",
+      "wikidataId": "Q419392",
+      "label": "安芸高田市",
+      "commonsCategory": "Akitakata, Hiroshima",
+      "latitude": 34.666222222,
+      "longitude": 132.704333333
+    },
+    "hiroshima/etajima": {
+      "cityCode": "34215",
+      "wikidataId": "Q865506",
+      "label": "江田島市",
+      "commonsCategory": "Etajima, Hiroshima",
+      "latitude": 34.175,
+      "longitude": 132.462222222
+    },
+    "yamaguchi/shimonoseki": {
+      "cityCode": "35201",
+      "wikidataId": "Q203308",
+      "label": "下関市",
+      "commonsCategory": "Shimonoseki, Yamaguchi",
+      "latitude": 33.957888888,
+      "longitude": 130.941333333
+    },
+    "yamaguchi/ube": {
+      "cityCode": "35202",
+      "wikidataId": "Q468765",
+      "label": "宇部市",
+      "commonsCategory": "Ube, Yamaguchi",
+      "latitude": 33.951583333,
+      "longitude": 131.246722222
+    },
+    "yamaguchi/yamaguchi": {
+      "cityCode": "35203",
+      "wikidataId": "Q207876",
+      "label": "山口市",
+      "commonsCategory": "Yamaguchi, Yamaguchi",
+      "latitude": 34.178027777,
+      "longitude": 131.473777777
+    },
+    "yamaguchi/hagi": {
+      "cityCode": "35204",
+      "wikidataId": "Q378225",
+      "label": "萩市",
+      "commonsCategory": "Hagi, Yamaguchi",
+      "latitude": 34.408111111,
+      "longitude": 131.399166666
+    },
+    "yamaguchi/hofu": {
+      "cityCode": "35206",
+      "wikidataId": "Q502209",
+      "label": "防府市",
+      "commonsCategory": "Hofu, Yamaguchi",
+      "latitude": 34.051277777,
+      "longitude": 131.562555555
+    },
+    "yamaguchi/kudamatsu": {
+      "cityCode": "35207",
+      "wikidataId": "Q841316",
+      "label": "下松市",
+      "commonsCategory": "Kudamatsu, Yamaguchi",
+      "latitude": 34.014972222,
+      "longitude": 131.870333333
+    },
+    "yamaguchi/iwakuni": {
+      "cityCode": "35208",
+      "wikidataId": "Q329797",
+      "label": "岩国市",
+      "commonsCategory": "Iwakuni, Yamaguchi",
+      "latitude": 34.166583333,
+      "longitude": 132.218833333
+    },
+    "yamaguchi/hikari": {
+      "cityCode": "35210",
+      "wikidataId": "Q823502",
+      "label": "光市",
+      "commonsCategory": "Hikari, Yamaguchi",
+      "latitude": 33.961861111,
+      "longitude": 131.942194444
+    },
+    "yamaguchi/nagato": {
+      "cityCode": "35211",
+      "wikidataId": "Q390812",
+      "label": "長門市",
+      "commonsCategory": "Nagato, Yamaguchi",
+      "latitude": 34.370527777,
+      "longitude": 131.182555555
+    },
+    "yamaguchi/yanai": {
+      "cityCode": "35212",
+      "wikidataId": "Q819678",
+      "label": "柳井市",
+      "commonsCategory": "Yanai, Yamaguchi",
+      "latitude": 33.963861111,
+      "longitude": 132.101555555
+    },
+    "yamaguchi/mine": {
+      "cityCode": "35213",
+      "wikidataId": "Q749885",
+      "label": "美祢市",
+      "commonsCategory": "Mine, Yamaguchi",
+      "latitude": 34.166666666,
+      "longitude": 131.205666666
+    },
+    "yamaguchi/shunan": {
+      "cityCode": "35215",
+      "wikidataId": "Q643929",
+      "label": "周南市",
+      "commonsCategory": "Shunan, Yamaguchi",
+      "latitude": 34.055055555,
+      "longitude": 131.806222222
+    },
+    "yamaguchi/sanyoonoda": {
+      "cityCode": "35216",
+      "wikidataId": "Q861239",
+      "label": "山陽小野田市",
+      "commonsCategory": "Sanyo-Onoda, Yamaguchi",
+      "latitude": 34.003166666,
+      "longitude": 131.181805555
+    },
+    "tokushima/tokushima": {
+      "cityCode": "36201",
+      "wikidataId": "Q207309",
+      "label": "徳島市",
+      "commonsCategory": "Tokushima, Tokushima",
+      "latitude": 34.070277777,
+      "longitude": 134.554944444
+    },
+    "tokushima/naruto": {
+      "cityCode": "36202",
+      "wikidataId": "Q460812",
+      "label": "鳴門市",
+      "commonsCategory": "Naruto, Tokushima",
+      "latitude": 34.172583333,
+      "longitude": 134.608777777
+    },
+    "tokushima/komatsushima": {
+      "cityCode": "36203",
+      "wikidataId": "Q823493",
+      "label": "小松島市",
+      "commonsCategory": "Komatsushima, Tokushima",
+      "latitude": 34.004888888,
+      "longitude": 134.590555555
+    },
+    "tokushima/anan": {
+      "cityCode": "36204",
+      "wikidataId": "Q485583",
+      "label": "阿南市",
+      "commonsCategory": "Anan, Tokushima",
+      "latitude": 33.921777777,
+      "longitude": 134.659527777
+    },
+    "tokushima/yoshinogawa": {
+      "cityCode": "36205",
+      "wikidataId": "Q592500",
+      "label": "吉野川市",
+      "commonsCategory": "Yoshinogawa, Tokushima",
+      "latitude": 34.066333333,
+      "longitude": 134.358611111
+    },
+    "tokushima/awa": {
+      "cityCode": "36206",
+      "wikidataId": "Q791587",
+      "label": "阿波市",
+      "commonsCategory": "Awa, Tokushima",
+      "latitude": 34.102138888,
+      "longitude": 134.297444444
+    },
+    "tokushima/mima": {
+      "cityCode": "36207",
+      "wikidataId": "Q857828",
+      "label": "美馬市",
+      "commonsCategory": "Mima, Tokushima",
+      "latitude": 34.053305555,
+      "longitude": 134.169805555
+    },
+    "tokushima/miyoshi": {
+      "cityCode": "36208",
+      "wikidataId": "Q990371",
+      "label": "三好市",
+      "commonsCategory": "Miyoshi, Tokushima",
+      "latitude": 34.026027777,
+      "longitude": 133.807166666
+    },
+    "kagawa/takamatsu": {
+      "cityCode": "37201",
+      "wikidataId": "Q200707",
+      "label": "高松市",
+      "commonsCategory": "Takamatsu, Kagawa",
+      "latitude": 34.342805555,
+      "longitude": 134.046611111
+    },
+    "kagawa/marugame": {
+      "cityCode": "37202",
+      "wikidataId": "Q460835",
+      "label": "丸亀市",
+      "commonsCategory": "Marugame, Kagawa",
+      "latitude": 34.289416666,
+      "longitude": 133.797611111
+    },
+    "kagawa/sakaide": {
+      "cityCode": "37203",
+      "wikidataId": "Q855059",
+      "label": "坂出市",
+      "commonsCategory": "Sakaide, Kagawa",
+      "latitude": 34.316666666,
+      "longitude": 133.860277777
+    },
+    "kagawa/zentsuji": {
+      "cityCode": "37204",
+      "wikidataId": "Q191300",
+      "label": "善通寺市",
+      "commonsCategory": "Zentsuji, Kagawa",
+      "latitude": 34.2285,
+      "longitude": 133.787111111
+    },
+    "kagawa/kanonji": {
+      "cityCode": "37205",
+      "wikidataId": "Q861270",
+      "label": "観音寺市",
+      "commonsCategory": "Kan'onji, Kagawa",
+      "latitude": 34.128333333,
+      "longitude": 133.662777777
+    },
+    "kagawa/sanuki": {
+      "cityCode": "37206",
+      "wikidataId": "Q857202",
+      "label": "さぬき市",
+      "commonsCategory": "Sanuki, Kagawa",
+      "latitude": 34.325305555,
+      "longitude": 134.172055555
+    },
+    "kagawa/higashikagawa": {
+      "cityCode": "37207",
+      "wikidataId": "Q861255",
+      "label": "東かがわ市",
+      "commonsCategory": "Higashikagawa, Kagawa",
+      "latitude": 34.243833333,
+      "longitude": 134.358888888
+    },
+    "kagawa/mitoyo": {
+      "cityCode": "37208",
+      "wikidataId": "Q873578",
+      "label": "三豊市",
+      "commonsCategory": "Mitoyo, Kagawa",
+      "latitude": 34.182638888,
+      "longitude": 133.715083333
+    },
+    "ehime/matsuyama": {
+      "cityCode": "38201",
+      "wikidataId": "Q200022",
+      "label": "松山市",
+      "commonsCategory": "Matsuyama, Ehime",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.839166666,
+          "longitude": 132.765638888
+        },
+        {
+          "latitude": 33.83916,
+          "longitude": 132.76574
+        }
+      ]
+    },
+    "ehime/imabari": {
+      "cityCode": "38202",
+      "wikidataId": "Q461020",
+      "label": "今治市",
+      "commonsCategory": "Imabari, Ehime",
+      "latitude": 34.066166666,
+      "longitude": 132.997777777
+    },
+    "ehime/uwajima": {
+      "cityCode": "38203",
+      "wikidataId": "Q845857",
+      "label": "宇和島市",
+      "commonsCategory": "Uwajima, Ehime",
+      "latitude": 33.223305555,
+      "longitude": 132.560555555
+    },
+    "ehime/yawatahama": {
+      "cityCode": "38204",
+      "wikidataId": "Q200603",
+      "label": "八幡浜市",
+      "commonsCategory": "Yawatahama, Ehime",
+      "latitude": 33.462861111,
+      "longitude": 132.423361111
+    },
+    "ehime/niihama": {
+      "cityCode": "38205",
+      "wikidataId": "Q386628",
+      "label": "新居浜市",
+      "commonsCategory": "Niihama, Ehime",
+      "latitude": 33.960333333,
+      "longitude": 133.283388888
+    },
+    "ehime/saijo": {
+      "cityCode": "38206",
+      "wikidataId": "Q633945",
+      "label": "西条市",
+      "commonsCategory": "Saijo, Ehime",
+      "latitude": 33.919555555,
+      "longitude": 133.181166666
+    },
+    "ehime/ozu": {
+      "cityCode": "38207",
+      "wikidataId": "Q386655",
+      "label": "大洲市",
+      "commonsCategory": "Ozu, Ehime",
+      "latitude": 33.506277777,
+      "longitude": 132.544527777
+    },
+    "ehime/iyo": {
+      "cityCode": "38210",
+      "wikidataId": "Q838678",
+      "label": "伊予市",
+      "commonsCategory": "Iyo, Ehime",
+      "latitude": 33.757444444,
+      "longitude": 132.703666666
+    },
+    "ehime/shikokuchuo": {
+      "cityCode": "38213",
+      "wikidataId": "Q838666",
+      "label": "四国中央市",
+      "commonsCategory": "Shikokuchuo, Ehime",
+      "latitude": 33.980722222,
+      "longitude": 133.549166666
+    },
+    "ehime/seiyo": {
+      "cityCode": "38214",
+      "wikidataId": "Q819620",
+      "label": "西予市",
+      "commonsCategory": "Seiyo, Ehime",
+      "latitude": 33.362638888,
+      "longitude": 132.510861111
+    },
+    "ehime/toon": {
+      "cityCode": "38215",
+      "wikidataId": "Q132412",
+      "label": "東温市",
+      "commonsCategory": "Toon, Ehime",
+      "latitude": 33.791027777,
+      "longitude": 132.872222222
+    },
+    "kochi/kochi": {
+      "cityCode": "39201",
+      "wikidataId": "Q200251",
+      "label": "高知市",
+      "commonsCategory": "Kochi, Kochi",
+      "latitude": 33.558833333,
+      "longitude": 133.531222222
+    },
+    "kochi/muroto": {
+      "cityCode": "39202",
+      "wikidataId": "Q431889",
+      "label": "室戸市",
+      "commonsCategory": "Muroto, Kochi",
+      "latitude": 33.289944444,
+      "longitude": 134.152027777
+    },
+    "kochi/aki": {
+      "cityCode": "39203",
+      "wikidataId": "Q417825",
+      "label": "安芸市",
+      "commonsCategory": "Aki, Kochi",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.516388888,
+          "longitude": 133.906111111
+        },
+        {
+          "latitude": 33.590833333,
+          "longitude": 133.951111111
+        }
+      ]
+    },
+    "kochi/nankoku": {
+      "cityCode": "39204",
+      "wikidataId": "Q861621",
+      "label": "南国市",
+      "commonsCategory": "Nankoku, Kochi",
+      "latitude": 33.575694444,
+      "longitude": 133.641472222
+    },
+    "kochi/tosa-shi": {
+      "cityCode": "39205",
+      "wikidataId": "Q851163",
+      "label": "土佐市",
+      "commonsCategory": "Tosa, Kochi (city)",
+      "latitude": 33.496055555,
+      "longitude": 133.425361111
+    },
+    "kochi/susaki": {
+      "cityCode": "39206",
+      "wikidataId": "Q751154",
+      "label": "須崎市",
+      "commonsCategory": "Susaki, Kochi",
+      "latitude": 33.400722222,
+      "longitude": 133.282916666
+    },
+    "kochi/sukumo": {
+      "cityCode": "39208",
+      "wikidataId": "Q655258",
+      "label": "宿毛市",
+      "commonsCategory": "Sukumo, Kochi",
+      "latitude": 32.939027777,
+      "longitude": 132.726222222
+    },
+    "kochi/tosashimizu": {
+      "cityCode": "39209",
+      "wikidataId": "Q573115",
+      "label": "土佐清水市",
+      "commonsCategory": "Tosashimizu, Kochi",
+      "latitude": 32.781472222,
+      "longitude": 132.954888888
+    },
+    "kochi/shimanto-shi": {
+      "cityCode": "39210",
+      "wikidataId": "Q166946",
+      "label": "四万十市",
+      "commonsCategory": "Shimanto, Kochi (city)",
+      "latitude": 32.991277777,
+      "longitude": 132.933694444
+    },
+    "kochi/konan": {
+      "cityCode": "39211",
+      "wikidataId": "Q877209",
+      "label": "香南市",
+      "commonsCategory": "Konan, Kochi",
+      "latitude": 33.564166666,
+      "longitude": 133.7005
+    },
+    "kochi/kami": {
+      "cityCode": "39212",
+      "wikidataId": "Q877689",
+      "label": "香美市",
+      "commonsCategory": "Kami, Kochi",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.603694444,
+          "longitude": 133.686055555
+        },
+        {
+          "latitude": 33.708055555,
+          "longitude": 133.853333333
+        }
+      ]
+    },
+    "fukuoka/kitakyushu": {
+      "cityCode": "40100",
+      "wikidataId": "Q188806",
+      "label": "北九州市",
+      "commonsCategory": "Kitakyushu, Fukuoka",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.85181,
+          "longitude": 130.84659
+        },
+        {
+          "latitude": 33.883416666,
+          "longitude": 130.875194444
+        }
+      ]
+    },
+    "fukuoka/fukuoka": {
+      "cityCode": "40130",
+      "wikidataId": "Q26600",
+      "label": "福岡市",
+      "commonsCategory": "Fukuoka, Fukuoka",
+      "latitude": 33.590138888,
+      "longitude": 130.401722222
+    },
+    "fukuoka/omuta": {
+      "cityCode": "40202",
+      "wikidataId": "Q385623",
+      "label": "大牟田市",
+      "commonsCategory": "Omuta, Fukuoka",
+      "latitude": 33.030277777,
+      "longitude": 130.445972222
+    },
+    "fukuoka/kurume": {
+      "cityCode": "40203",
+      "wikidataId": "Q320934",
+      "label": "久留米市",
+      "commonsCategory": "Kurume, Fukuoka",
+      "latitude": 33.31925,
+      "longitude": 130.508333333
+    },
+    "fukuoka/nogata": {
+      "cityCode": "40204",
+      "wikidataId": "Q861296",
+      "label": "直方市",
+      "commonsCategory": "Nogata, Fukuoka",
+      "latitude": 33.744138888,
+      "longitude": 130.729666666
+    },
+    "fukuoka/iizuka": {
+      "cityCode": "40205",
+      "wikidataId": "Q328605",
+      "label": "飯塚市",
+      "commonsCategory": "Iizuka, Fukuoka",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.613611111,
+          "longitude": 130.661111111
+        },
+        {
+          "latitude": 33.646555555,
+          "longitude": 130.691111111
+        }
+      ]
+    },
+    "fukuoka/tagawa": {
+      "cityCode": "40206",
+      "wikidataId": "Q850332",
+      "label": "田川市",
+      "commonsCategory": "Tagawa, Fukuoka",
+      "latitude": 33.638888888,
+      "longitude": 130.806111111
+    },
+    "fukuoka/yanagawa": {
+      "cityCode": "40207",
+      "wikidataId": "Q585630",
+      "label": "柳川市",
+      "commonsCategory": "Yanagawa, Fukuoka",
+      "latitude": 33.163055555,
+      "longitude": 130.405805555
+    },
+    "fukuoka/yame": {
+      "cityCode": "40210",
+      "wikidataId": "Q850492",
+      "label": "八女市",
+      "commonsCategory": "Yame, Fukuoka",
+      "latitude": 33.212,
+      "longitude": 130.557861111
+    },
+    "fukuoka/chikugo": {
+      "cityCode": "40211",
+      "wikidataId": "Q601137",
+      "label": "筑後市",
+      "commonsCategory": "Chikugo, Fukuoka",
+      "latitude": 33.212222222,
+      "longitude": 130.502083333
+    },
+    "fukuoka/okawa": {
+      "cityCode": "40212",
+      "wikidataId": "Q385248",
+      "label": "大川市",
+      "commonsCategory": "Okawa, Fukuoka",
+      "latitude": 33.206583333,
+      "longitude": 130.383888888
+    },
+    "fukuoka/yukuhashi": {
+      "cityCode": "40213",
+      "wikidataId": "Q851668",
+      "label": "行橋市",
+      "commonsCategory": "Yukuhashi, Fukuoka",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.714166666,
+          "longitude": 130.971111111
+        },
+        {
+          "latitude": 33.72875,
+          "longitude": 130.982944444
+        }
+      ]
+    },
+    "fukuoka/buzen": {
+      "cityCode": "40214",
+      "wikidataId": "Q633601",
+      "label": "豊前市",
+      "commonsCategory": "Buzen, Fukuoka",
+      "latitude": 33.6115,
+      "longitude": 131.130194444
+    },
+    "fukuoka/nakama": {
+      "cityCode": "40215",
+      "wikidataId": "Q847601",
+      "label": "中間市",
+      "commonsCategory": "Nakama, Fukuoka",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.82081,
+          "longitude": 130.70862
+        },
+        {
+          "latitude": 33.816611111,
+          "longitude": 130.709027777
+        }
+      ]
+    },
+    "fukuoka/ogori": {
+      "cityCode": "40216",
+      "wikidataId": "Q683248",
+      "label": "小郡市",
+      "commonsCategory": "Ogori, Fukuoka",
+      "latitude": 33.396388888,
+      "longitude": 130.555555555
+    },
+    "fukuoka/chikushino": {
+      "cityCode": "40217",
+      "wikidataId": "Q844140",
+      "label": "筑紫野市",
+      "commonsCategory": "Chikushino, Fukuoka",
+      "latitude": 33.487416666,
+      "longitude": 130.525833333
+    },
+    "fukuoka/kasuga": {
+      "cityCode": "40218",
+      "wikidataId": "Q47084",
+      "label": "春日市",
+      "commonsCategory": "Kasuga, Fukuoka",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.524166666,
+          "longitude": 130.456388888
+        },
+        {
+          "latitude": 33.532722222,
+          "longitude": 130.470194444
+        }
+      ]
+    },
+    "fukuoka/onojo": {
+      "cityCode": "40219",
+      "wikidataId": "Q385762",
+      "label": "大野城市",
+      "commonsCategory": "Onojo, Fukuoka",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.536277777,
+          "longitude": 130.478694444
+        },
+        {
+          "latitude": 33.513055555,
+          "longitude": 130.479166666
+        }
+      ]
+    },
+    "fukuoka/munakata": {
+      "cityCode": "40220",
+      "wikidataId": "Q819603",
+      "label": "宗像市",
+      "commonsCategory": "Munakata, Fukuoka",
+      "latitude": 33.805527777,
+      "longitude": 130.540777777
+    },
+    "fukuoka/dazaifu": {
+      "cityCode": "40221",
+      "wikidataId": "Q728218",
+      "label": "太宰府市",
+      "commonsCategory": "Dazaifu, Fukuoka",
+      "latitude": 33.512861111,
+      "longitude": 130.52375
+    },
+    "fukuoka/koga": {
+      "cityCode": "40223",
+      "wikidataId": "Q768356",
+      "label": "古賀市",
+      "commonsCategory": "Koga, Fukuoka",
+      "latitude": 33.72875,
+      "longitude": 130.47
+    },
+    "fukuoka/fukutsu": {
+      "cityCode": "40224",
+      "wikidataId": "Q825700",
+      "label": "福津市",
+      "commonsCategory": "Fukutsu, Fukuoka",
+      "latitude": 33.766805555,
+      "longitude": 130.491083333
+    },
+    "fukuoka/ukiha": {
+      "cityCode": "40225",
+      "wikidataId": "Q850373",
+      "label": "うきは市",
+      "commonsCategory": "Ukiha, Fukuoka",
+      "latitude": 33.347444444,
+      "longitude": 130.755027777
+    },
+    "fukuoka/miyawaka": {
+      "cityCode": "40226",
+      "wikidataId": "Q990431",
+      "label": "宮若市",
+      "commonsCategory": "Miyawaka, Fukuoka",
+      "latitude": 33.723694444,
+      "longitude": 130.667388888
+    },
+    "fukuoka/kama": {
+      "cityCode": "40227",
+      "wikidataId": "Q376901",
+      "label": "嘉麻市",
+      "commonsCategory": "Kama, Fukuoka",
+      "latitude": 33.598444444,
+      "longitude": 130.719444444
+    },
+    "fukuoka/asakura": {
+      "cityCode": "40228",
+      "wikidataId": "Q720625",
+      "label": "朝倉市",
+      "commonsCategory": "Asakura, Fukuoka",
+      "latitude": 33.423416666,
+      "longitude": 130.665527777
+    },
+    "fukuoka/miyama": {
+      "cityCode": "40229",
+      "wikidataId": "Q990465",
+      "label": "みやま市",
+      "commonsCategory": "Miyama, Fukuoka",
+      "latitude": 33.152416666,
+      "longitude": 130.47475
+    },
+    "fukuoka/itoshima": {
+      "cityCode": "40230",
+      "wikidataId": "Q1011145",
+      "label": "糸島市",
+      "commonsCategory": "Itoshima, Fukuoka",
+      "latitude": 33.557305555,
+      "longitude": 130.1955
+    },
+    "fukuoka/nakagawa": {
+      "cityCode": "40231",
+      "wikidataId": "Q1206001",
+      "label": "那珂川市",
+      "commonsCategory": "Nakagawa, Fukuoka",
+      "latitude": 33.499583333,
+      "longitude": 130.422222222
+    },
+    "saga/saga": {
+      "cityCode": "41201",
+      "wikidataId": "Q209766",
+      "label": "佐賀市",
+      "commonsCategory": "Saga, Saga",
+      "latitude": 33.2635,
+      "longitude": 130.300833333
+    },
+    "saga/karatsu": {
+      "cityCode": "41202",
+      "wikidataId": "Q738275",
+      "label": "唐津市",
+      "commonsCategory": "Karatsu, Saga",
+      "latitude": 33.450083333,
+      "longitude": 129.96825
+    },
+    "saga/tosu": {
+      "cityCode": "41203",
+      "wikidataId": "Q860674",
+      "label": "鳥栖市",
+      "commonsCategory": "Tosu, Saga",
+      "latitude": 33.377833333,
+      "longitude": 130.506138888
+    },
+    "saga/taku": {
+      "cityCode": "41204",
+      "wikidataId": "Q877177",
+      "label": "多久市",
+      "commonsCategory": "Taku, Saga",
+      "latitude": 33.288555555,
+      "longitude": 130.110194444
+    },
+    "saga/imari": {
+      "cityCode": "41205",
+      "wikidataId": "Q857266",
+      "label": "伊万里市",
+      "commonsCategory": "Imari, Saga",
+      "latitude": 33.26475,
+      "longitude": 129.880805555
+    },
+    "saga/takeo": {
+      "cityCode": "41206",
+      "wikidataId": "Q877220",
+      "label": "武雄市",
+      "commonsCategory": "Takeo, Saga",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.204166666,
+          "longitude": 129.997777777
+        },
+        {
+          "latitude": 33.19475,
+          "longitude": 130.021472222
+        }
+      ]
+    },
+    "saga/kashima": {
+      "cityCode": "41207",
+      "wikidataId": "Q684494",
+      "label": "鹿島市",
+      "commonsCategory": "Kashima, Saga",
+      "latitude": 33.103833333,
+      "longitude": 130.098583333
+    },
+    "saga/ogi": {
+      "cityCode": "41208",
+      "wikidataId": "Q877227",
+      "label": "小城市",
+      "commonsCategory": "Ogi, Saga",
+      "latitude": 33.273666666,
+      "longitude": 130.216805555
+    },
+    "saga/ureshino": {
+      "cityCode": "41209",
+      "wikidataId": "Q634130",
+      "label": "嬉野市",
+      "commonsCategory": "Ureshino, Saga",
+      "latitude": 33.128083333,
+      "longitude": 130.060083333
+    },
+    "saga/kanzaki": {
+      "cityCode": "41210",
+      "wikidataId": "Q990392",
+      "label": "神埼市",
+      "commonsCategory": "Kanzaki, Saga",
+      "latitude": 33.311888888,
+      "longitude": 130.371472222
+    },
+    "nagasaki/nagasaki": {
+      "cityCode": "42201",
+      "wikidataId": "Q38234",
+      "label": "長崎市",
+      "commonsCategory": "Nagasaki",
+      "latitude": 32.749527777,
+      "longitude": 129.879638888
+    },
+    "nagasaki/sasebo": {
+      "cityCode": "42202",
+      "wikidataId": "Q328000",
+      "label": "佐世保市",
+      "commonsCategory": "Sasebo, Nagasaki",
+      "latitude": 33.18,
+      "longitude": 129.715
+    },
+    "nagasaki/shimabara": {
+      "cityCode": "42203",
+      "wikidataId": "Q847594",
+      "label": "島原市",
+      "commonsCategory": "Shimabara, Nagasaki",
+      "latitude": 32.788138888,
+      "longitude": 130.37025
+    },
+    "nagasaki/isahaya": {
+      "cityCode": "42204",
+      "wikidataId": "Q596469",
+      "label": "諫早市",
+      "commonsCategory": "Isahaya, Nagasaki",
+      "latitude": 32.843388888,
+      "longitude": 130.053138888
+    },
+    "nagasaki/omura": {
+      "cityCode": "42205",
+      "wikidataId": "Q385591",
+      "label": "大村市",
+      "commonsCategory": "Omura, Nagasaki",
+      "latitude": 32.9,
+      "longitude": 129.958333333
+    },
+    "nagasaki/hirado": {
+      "cityCode": "42207",
+      "wikidataId": "Q328601",
+      "label": "平戸市",
+      "commonsCategory": "Hirado, Nagasaki",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.315833333,
+          "longitude": 129.486944444
+        },
+        {
+          "latitude": 33.368055555,
+          "longitude": 129.553722222
+        }
+      ]
+    },
+    "nagasaki/matsura": {
+      "cityCode": "42208",
+      "wikidataId": "Q850465",
+      "label": "松浦市",
+      "commonsCategory": "Matsuura, Nagasaki",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.340972222,
+          "longitude": 129.709111111
+        },
+        {
+          "latitude": 33.353333333,
+          "longitude": 129.735
+        }
+      ]
+    },
+    "nagasaki/tsushima": {
+      "cityCode": "42209",
+      "wikidataId": "Q991032",
+      "label": "対馬市",
+      "commonsCategory": "Tsushima, Nagasaki",
+      "latitude": 34.202777777,
+      "longitude": 129.287527777
+    },
+    "nagasaki/iki": {
+      "cityCode": "42210",
+      "wikidataId": "Q861519",
+      "label": "壱岐市",
+      "commonsCategory": "Iki, Nagasaki",
+      "latitude": 33.749916666,
+      "longitude": 129.691333333
+    },
+    "nagasaki/goto": {
+      "cityCode": "42211",
+      "wikidataId": "Q201659",
+      "label": "五島市",
+      "commonsCategory": "Goto, Nagasaki",
+      "latitude": 32.695555555,
+      "longitude": 128.840805555
+    },
+    "nagasaki/saikai": {
+      "cityCode": "42212",
+      "wikidataId": "Q520267",
+      "label": "西海市",
+      "commonsCategory": "Saikai, Nagasaki",
+      "latitude": 32.933111111,
+      "longitude": 129.643
+    },
+    "nagasaki/unzen": {
+      "cityCode": "42213",
+      "wikidataId": "Q999453",
+      "label": "雲仙市",
+      "commonsCategory": "Unzen, Nagasaki",
+      "latitude": 32.835194444,
+      "longitude": 130.187527777
+    },
+    "nagasaki/minamishimabara": {
+      "cityCode": "42214",
+      "wikidataId": "Q990376",
+      "label": "南島原市",
+      "commonsCategory": "Minamishimabara, Nagasaki",
+      "latitude": 32.659805555,
+      "longitude": 130.297777777
+    },
+    "kumamoto/kumamoto": {
+      "cityCode": "43100",
+      "wikidataId": "Q199889",
+      "label": "熊本市",
+      "commonsCategory": "Kumamoto, Kumamoto",
+      "latitude": 32.803,
+      "longitude": 130.707861111
+    },
+    "kumamoto/yatsushiro": {
+      "cityCode": "43202",
+      "wikidataId": "Q734479",
+      "label": "八代市",
+      "commonsCategory": "Yatsushiro, Kumamoto",
+      "latitude": 32.507555555,
+      "longitude": 130.601722222
+    },
+    "kumamoto/hitoyoshi": {
+      "cityCode": "43203",
+      "wikidataId": "Q861292",
+      "label": "人吉市",
+      "commonsCategory": "Hitoyoshi, Kumamoto",
+      "latitude": 32.210027777,
+      "longitude": 130.762472222
+    },
+    "kumamoto/arao": {
+      "cityCode": "43204",
+      "wikidataId": "Q626118",
+      "label": "荒尾市",
+      "commonsCategory": "Arao, Kumamoto",
+      "latitude": 32.986722222,
+      "longitude": 130.433194444
+    },
+    "kumamoto/minamata": {
+      "cityCode": "43205",
+      "wikidataId": "Q386110",
+      "label": "水俣市",
+      "commonsCategory": "Minamata, Kumamoto",
+      "latitude": 32.211861111,
+      "longitude": 130.40875
+    },
+    "kumamoto/tamana": {
+      "cityCode": "43206",
+      "wikidataId": "Q861610",
+      "label": "玉名市",
+      "commonsCategory": "Tamana, Kumamoto",
+      "latitude": 32.935277777,
+      "longitude": 130.562777777
+    },
+    "kumamoto/yamaga": {
+      "cityCode": "43208",
+      "wikidataId": "Q861214",
+      "label": "山鹿市",
+      "commonsCategory": "Yamaga, Kumamoto",
+      "latitude": 33.0175,
+      "longitude": 130.69125
+    },
+    "kumamoto/kikuchi": {
+      "cityCode": "43210",
+      "wikidataId": "Q911709",
+      "label": "菊池市",
+      "commonsCategory": "Kikuchi, Kumamoto",
+      "latitude": 32.979444444,
+      "longitude": 130.81325
+    },
+    "kumamoto/uto": {
+      "cityCode": "43211",
+      "wikidataId": "Q861262",
+      "label": "宇土市",
+      "commonsCategory": "Uto, Kumamoto",
+      "latitude": 32.688,
+      "longitude": 130.659777777
+    },
+    "kumamoto/kamiamakusa": {
+      "cityCode": "43212",
+      "wikidataId": "Q877232",
+      "label": "上天草市",
+      "commonsCategory": "Kamiamakusa, Kumamoto",
+      "latitude": 32.587416666,
+      "longitude": 130.430416666
+    },
+    "kumamoto/uki": {
+      "cityCode": "43213",
+      "wikidataId": "Q782825",
+      "label": "宇城市",
+      "commonsCategory": "Uki, Kumamoto",
+      "latitude": 32.647777777,
+      "longitude": 130.684277777
+    },
+    "kumamoto/aso": {
+      "cityCode": "43214",
+      "wikidataId": "Q733681",
+      "label": "阿蘇市",
+      "commonsCategory": "Aso, Kumamoto",
+      "latitude": 32.952055555,
+      "longitude": 131.121277777
+    },
+    "kumamoto/amakusa": {
+      "cityCode": "43215",
+      "wikidataId": "Q452634",
+      "label": "天草市",
+      "commonsCategory": "Amakusa, Kumamoto",
+      "latitude": 32.458666666,
+      "longitude": 130.193
+    },
+    "kumamoto/koshi": {
+      "cityCode": "43216",
+      "wikidataId": "Q873558",
+      "label": "合志市",
+      "commonsCategory": "Koshi, Kumamoto",
+      "latitude": 32.885972222,
+      "longitude": 130.78975
+    },
+    "oita/oita": {
+      "cityCode": "44201",
+      "wikidataId": "Q199609",
+      "label": "大分市",
+      "commonsCategory": "Oita, Oita",
+      "latitude": 33.239555555,
+      "longitude": 131.609361111
+    },
+    "oita/beppu": {
+      "cityCode": "44202",
+      "wikidataId": "Q273880",
+      "label": "別府市",
+      "commonsCategory": "Beppu, Oita",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 33.285833333,
+          "longitude": 131.452777777
+        },
+        {
+          "latitude": 33.284611111,
+          "longitude": 131.491277777
+        }
+      ]
+    },
+    "oita/nakatsu": {
+      "cityCode": "44203",
+      "wikidataId": "Q861221",
+      "label": "中津市",
+      "commonsCategory": "Nakatsu, Oita",
+      "latitude": 33.598305555,
+      "longitude": 131.188277777
+    },
+    "oita/hita": {
+      "cityCode": "44204",
+      "wikidataId": "Q386968",
+      "label": "日田市",
+      "commonsCategory": "Hita, Oita",
+      "latitude": 33.321305555,
+      "longitude": 130.941138888
+    },
+    "oita/saiki": {
+      "cityCode": "44205",
+      "wikidataId": "Q847546",
+      "label": "佐伯市",
+      "commonsCategory": "Saiki, Oita",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 32.886111111,
+          "longitude": 131.776111111
+        },
+        {
+          "latitude": 32.959722222,
+          "longitude": 131.9
+        }
+      ]
+    },
+    "oita/usuki": {
+      "cityCode": "44206",
+      "wikidataId": "Q845792",
+      "label": "臼杵市",
+      "commonsCategory": "Usuki, Oita",
+      "latitude": 33.126111111,
+      "longitude": 131.80525
+    },
+    "oita/tsukumi": {
+      "cityCode": "44207",
+      "wikidataId": "Q840580",
+      "label": "津久見市",
+      "commonsCategory": "Tsukumi, Oita",
+      "latitude": 33.072166666,
+      "longitude": 131.86125
+    },
+    "oita/taketa": {
+      "cityCode": "44208",
+      "wikidataId": "Q850508",
+      "label": "竹田市",
+      "commonsCategory": "Taketa, Oita",
+      "latitude": 32.973611111,
+      "longitude": 131.397777777
+    },
+    "oita/bungotakada": {
+      "cityCode": "44209",
+      "wikidataId": "Q857281",
+      "label": "豊後高田市",
+      "commonsCategory": "Bungotakada, Oita",
+      "latitude": 33.556222222,
+      "longitude": 131.446972222
+    },
+    "oita/kitsuki": {
+      "cityCode": "44210",
+      "wikidataId": "Q850359",
+      "label": "杵築市",
+      "commonsCategory": "Kitsuki, Oita",
+      "latitude": 33.417,
+      "longitude": 131.616138888
+    },
+    "oita/usa": {
+      "cityCode": "44211",
+      "wikidataId": "Q114147",
+      "label": "宇佐市",
+      "commonsCategory": "Usa, Oita",
+      "latitude": 33.532,
+      "longitude": 131.349472222
+    },
+    "oita/bungoono": {
+      "cityCode": "44212",
+      "wikidataId": "Q850366",
+      "label": "豊後大野市",
+      "commonsCategory": "Bungo-ono, Oita",
+      "latitude": 32.9775,
+      "longitude": 131.584222222
+    },
+    "oita/yufu": {
+      "cityCode": "44213",
+      "wikidataId": "Q990455",
+      "label": "由布市",
+      "commonsCategory": "Yufu, Oita",
+      "latitude": 33.180083333,
+      "longitude": 131.426777777
+    },
+    "oita/kunisaki": {
+      "cityCode": "44214",
+      "wikidataId": "Q873572",
+      "label": "国東市",
+      "commonsCategory": "Kunisaki, Oita",
+      "latitude": 33.563333333,
+      "longitude": 131.732222222
+    },
+    "miyazaki/miyazaki": {
+      "cityCode": "45201",
+      "wikidataId": "Q204308",
+      "label": "宮崎市",
+      "commonsCategory": "Miyazaki, Miyazaki",
+      "latitude": 31.907722222,
+      "longitude": 131.420194444
+    },
+    "miyazaki/miyakonojo": {
+      "cityCode": "45202",
+      "wikidataId": "Q638301",
+      "label": "都城市",
+      "commonsCategory": "Miyakonojo, Miyazaki",
+      "latitude": 31.7195,
+      "longitude": 131.061694444
+    },
+    "miyazaki/nobeoka": {
+      "cityCode": "45203",
+      "wikidataId": "Q653389",
+      "label": "延岡市",
+      "commonsCategory": "Nobeoka, Miyazaki",
+      "latitude": 32.582277777,
+      "longitude": 131.664888888
+    },
+    "miyazaki/nichinan": {
+      "cityCode": "45204",
+      "wikidataId": "Q860669",
+      "label": "日南市",
+      "commonsCategory": "Nichinan, Miyazaki",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 31.6375,
+          "longitude": 131.334166666
+        },
+        {
+          "latitude": 31.601944444,
+          "longitude": 131.37875
+        }
+      ]
+    },
+    "miyazaki/kobayashi": {
+      "cityCode": "45205",
+      "wikidataId": "Q861283",
+      "label": "小林市",
+      "commonsCategory": "Kobayashi, Miyazaki",
+      "latitude": 31.996722222,
+      "longitude": 130.972583333
+    },
+    "miyazaki/hyuga": {
+      "cityCode": "45206",
+      "wikidataId": "Q850388",
+      "label": "日向市",
+      "commonsCategory": "Hyuga, Miyazaki",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 32.377222222,
+          "longitude": 131.522777777
+        },
+        {
+          "latitude": 32.422888888,
+          "longitude": 131.623916666
+        }
+      ]
+    },
+    "miyazaki/kushima": {
+      "cityCode": "45207",
+      "wikidataId": "Q845800",
+      "label": "串間市",
+      "commonsCategory": "Kushima, Miyazaki",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 31.4645,
+          "longitude": 131.228388888
+        },
+        {
+          "latitude": 31.485833333,
+          "longitude": 131.264722222
+        }
+      ]
+    },
+    "miyazaki/saito": {
+      "cityCode": "45208",
+      "wikidataId": "Q850479",
+      "label": "西都市",
+      "commonsCategory": "Saito, Miyazaki",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 32.172777777,
+          "longitude": 131.315555555
+        },
+        {
+          "latitude": 32.108527777,
+          "longitude": 131.401361111
+        }
+      ]
+    },
+    "miyazaki/ebino": {
+      "cityCode": "45209",
+      "wikidataId": "Q374701",
+      "label": "えびの市",
+      "commonsCategory": "Ebino, Miyazaki",
+      "latitude": 32.045361111,
+      "longitude": 130.810805555
+    },
+    "kagoshima/kagoshima": {
+      "cityCode": "46201",
+      "wikidataId": "Q15674",
+      "label": "鹿児島市",
+      "commonsCategory": "Kagoshima",
+      "latitude": 31.596805555,
+      "longitude": 130.557138888
+    },
+    "kagoshima/kanoya": {
+      "cityCode": "46203",
+      "wikidataId": "Q819578",
+      "label": "鹿屋市",
+      "commonsCategory": "Kanoya, Kagoshima",
+      "latitude": 31.378222222,
+      "longitude": 130.852222222
+    },
+    "kagoshima/makurazaki": {
+      "cityCode": "46204",
+      "wikidataId": "Q548493",
+      "label": "枕崎市",
+      "commonsCategory": "Makurazaki, Kagoshima",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 31.272916666,
+          "longitude": 130.296916666
+        },
+        {
+          "latitude": 31.291388888,
+          "longitude": 130.306944444
+        }
+      ]
+    },
+    "kagoshima/akune": {
+      "cityCode": "46206",
+      "wikidataId": "Q15732",
+      "label": "阿久根市",
+      "commonsCategory": "Akune, Kagoshima",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 32.014527777,
+          "longitude": 130.192666666
+        },
+        {
+          "latitude": 32.025277777,
+          "longitude": 130.197777777
+        }
+      ]
+    },
+    "kagoshima/izumi": {
+      "cityCode": "46208",
+      "wikidataId": "Q15734",
+      "label": "出水市",
+      "commonsCategory": "Izumi, Kagoshima",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 32.090444444,
+          "longitude": 130.352666666
+        },
+        {
+          "latitude": 32.064166666,
+          "longitude": 130.360833333
+        }
+      ]
+    },
+    "kagoshima/ibusuki": {
+      "cityCode": "46210",
+      "wikidataId": "Q19712",
+      "label": "指宿市",
+      "commonsCategory": "Ibusuki, Kagoshima",
+      "latitude": 31.252777777,
+      "longitude": 130.633055555
+    },
+    "kagoshima/nishinomote": {
+      "cityCode": "46213",
+      "wikidataId": "Q847602",
+      "label": "西之表市",
+      "commonsCategory": "Nishinoomote, Kagoshima",
+      "latitude": 30.732444444,
+      "longitude": 130.997027777
+    },
+    "kagoshima/tarumizu": {
+      "cityCode": "46214",
+      "wikidataId": "Q847591",
+      "label": "垂水市",
+      "commonsCategory": "Tarumizu, Kagoshima",
+      "latitude": 31.492777777,
+      "longitude": 130.700944444
+    },
+    "kagoshima/satsumasendai": {
+      "cityCode": "46215",
+      "wikidataId": "Q15720",
+      "label": "薩摩川内市",
+      "commonsCategory": "Satsumasendai, Kagoshima",
+      "latitude": 31.813472222,
+      "longitude": 130.303972222
+    },
+    "kagoshima/hioki": {
+      "cityCode": "46216",
+      "wikidataId": "Q15716",
+      "label": "日置市",
+      "commonsCategory": "Hioki, Kagoshima",
+      "latitude": 31.633722222,
+      "longitude": 130.402444444
+    },
+    "kagoshima/so": {
+      "cityCode": "46217",
+      "wikidataId": "Q858382",
+      "label": "曽於市",
+      "commonsCategory": "Soo, Kagoshima",
+      "latitude": 31.653638888,
+      "longitude": 131.019361111
+    },
+    "kagoshima/kirishima": {
+      "cityCode": "46218",
+      "wikidataId": "Q858352",
+      "label": "霧島市",
+      "commonsCategory": "Kirishima, Kagoshima",
+      "latitude": 31.741,
+      "longitude": 130.763222222
+    },
+    "kagoshima/ichikikushikino": {
+      "cityCode": "46219",
+      "wikidataId": "Q15725",
+      "label": "いちき串木野市",
+      "commonsCategory": "Ichikikushikino, Kagoshima",
+      "latitude": 31.714555555,
+      "longitude": 130.271944444
+    },
+    "kagoshima/minamisatsuma": {
+      "cityCode": "46220",
+      "wikidataId": "Q15754",
+      "label": "南さつま市",
+      "commonsCategory": "Minamisatsuma, Kagoshima",
+      "latitude": 31.416638888,
+      "longitude": 130.323388888
+    },
+    "kagoshima/shibushi": {
+      "cityCode": "46221",
+      "wikidataId": "Q858378",
+      "label": "志布志市",
+      "commonsCategory": "Shibushi, Kagoshima",
+      "latitude": 31.477166666,
+      "longitude": 131.099888888
+    },
+    "kagoshima/amami": {
+      "cityCode": "46222",
+      "wikidataId": "Q453502",
+      "label": "奄美市",
+      "commonsCategory": "Amami, Kagoshima",
+      "latitude": null,
+      "longitude": null,
+      "coordinateCandidates": [
+        {
+          "latitude": 28.377222222,
+          "longitude": 129.493805555
+        },
+        {
+          "latitude": 28.345555555,
+          "longitude": 129.502222222
+        }
+      ]
+    },
+    "kagoshima/minamikyushu": {
+      "cityCode": "46223",
+      "wikidataId": "Q19701",
+      "label": "南九州市",
+      "commonsCategory": "Minamikyushu, Kagoshima",
+      "latitude": 31.378277777,
+      "longitude": 130.441666666
+    },
+    "kagoshima/isa": {
+      "cityCode": "46224",
+      "wikidataId": "Q15736",
+      "label": "伊佐市",
+      "commonsCategory": "Isa, Kagoshima",
+      "latitude": 32.057027777,
+      "longitude": 130.612916666
+    },
+    "kagoshima/aira": {
+      "cityCode": "46225",
+      "wikidataId": "Q407947",
+      "label": "姶良市",
+      "commonsCategory": "Aira, Kagoshima",
+      "latitude": 31.728222222,
+      "longitude": 130.627805555
+    },
+    "okinawa/naha": {
+      "cityCode": "47201",
+      "wikidataId": "Q181966",
+      "label": "那覇市",
+      "commonsCategory": "Naha",
+      "latitude": 26.212222222,
+      "longitude": 127.679166666
+    },
+    "okinawa/ginowan": {
+      "cityCode": "47205",
+      "wikidataId": "Q592065",
+      "label": "宜野湾市",
+      "commonsCategory": "Ginowan, Okinawa",
+      "latitude": 26.2815,
+      "longitude": 127.778527777
+    },
+    "okinawa/ishigaki": {
+      "cityCode": "47207",
+      "wikidataId": "Q838366",
+      "label": "石垣市",
+      "commonsCategory": "Ishigaki, Okinawa",
+      "latitude": 24.3445,
+      "longitude": 124.18525
+    },
+    "okinawa/urasoe": {
+      "cityCode": "47208",
+      "wikidataId": "Q695895",
+      "label": "浦添市",
+      "commonsCategory": "Urasoe, Okinawa",
+      "latitude": 26.245694444,
+      "longitude": 127.721861111
+    },
+    "okinawa/nago": {
+      "cityCode": "47209",
+      "wikidataId": "Q117604",
+      "label": "名護市",
+      "commonsCategory": "Nago, Okinawa",
+      "latitude": 26.591555555,
+      "longitude": 127.977555555
+    },
+    "okinawa/itoman": {
+      "cityCode": "47210",
+      "wikidataId": "Q860662",
+      "label": "糸満市",
+      "commonsCategory": "Itoman, Okinawa",
+      "latitude": 26.1235,
+      "longitude": 127.665777777
+    },
+    "okinawa/okinawa": {
+      "cityCode": "47211",
+      "wikidataId": "Q328615",
+      "label": "沖縄市",
+      "commonsCategory": "Okinawa, Okinawa",
+      "latitude": 26.334277777,
+      "longitude": 127.805722222
+    },
+    "okinawa/tomigusuku": {
+      "cityCode": "47212",
+      "wikidataId": "Q371446",
+      "label": "豊見城市",
+      "commonsCategory": "Tomigusuku, Okinawa",
+      "latitude": 26.177166666,
+      "longitude": 127.68125
+    },
+    "okinawa/uruma": {
+      "cityCode": "47213",
+      "wikidataId": "Q694313",
+      "label": "うるま市",
+      "commonsCategory": "Uruma, Okinawa",
+      "latitude": 26.379166666,
+      "longitude": 127.857416666
+    },
+    "okinawa/miyakojima": {
+      "cityCode": "47214",
+      "wikidataId": "Q714636",
+      "label": "宮古島市",
+      "commonsCategory": "Miyakojima, Okinawa",
+      "latitude": 24.790055555,
+      "longitude": 125.294888888
+    },
+    "okinawa/nanjo": {
+      "cityCode": "47215",
+      "wikidataId": "Q874691",
+      "label": "南城市",
+      "commonsCategory": "Nanjo, Okinawa",
+      "latitude": 26.163333333,
+      "longitude": 127.770555555
+    }
+  }
+}

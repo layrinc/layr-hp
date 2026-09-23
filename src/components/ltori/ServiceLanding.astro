@@ -6,6 +6,7 @@ import ConsultBanner from './ConsultBanner.astro';
 import AreaLinks from './AreaLinks.astro';
 import RegionalContent from './RegionalContent.astro';
 import {regionalFaqsFor} from '../../lib/ltori-local-content.mjs';
+import {getSeedCityPhotos, renderCityPhotos} from '../../lib/ltori-city-photos.mjs';
 import { areaPath, areaKey, consultationHref } from '../../lib/ltori-seo.mjs';
 import '../../styles/ltori.css';
 import '../../styles/ltori-area.css';
@@ -85,7 +86,7 @@ const jsonLd = [
           <div class="lt-benefit lt-benefit-price"><p>運用サポート<strong>月<span>{service.plans[0].price/10000}</span>万円〜</strong><small>税別・初期費用別</small></p></div>
         </div>
       </section>
-      <div class="lt-marquee" aria-hidden="true"><span>CONNECT PEOPLE.</span><i>✳</i><span>CREATE POSSIBILITIES.</span><i>✳</i><span>CONNECT PEOPLE.</span><i>✳</i></div>
+      <div data-city-photos-slot>{area ? <Fragment set:html={renderCityPhotos(area, getSeedCityPhotos(area.slug))} /> : <div class="lt-marquee" aria-hidden="true"><span>CONNECT PEOPLE.</span><i>✳</i><span>CREATE POSSIBILITIES.</span><i>✳</i><span>CONNECT PEOPLE.</span><i>✳</i></div>}</div>
 
       <section class="lt-section lt-about" id="about">
         <div class="lt-wrap">
@@ -176,6 +177,8 @@ const jsonLd = [
     <div class="lt-mobile-sticky"><a href={service.source} target="_blank" rel="noopener" data-lt-doc>サービス資料</a><a href={consult} data-lt-cta="sticky">無料相談をする <span aria-hidden="true">↗</span></a></div>
   </div>
   <script>
+    import {initCityPhotoStrips} from '../../lib/ltori-city-photos-client.mjs';
+    initCityPhotoStrips();
     const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-lt-tab]'));
     function activateTab(index: number) {
       tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;const panel=document.getElementById(`lt-panel-${i}`);if(panel)panel.hidden=i!==index;});

@@ -52,6 +52,9 @@ jobs:
       - name: 既存LPの全国展開（792市・47日・AI不使用・地域別表示）
         run: node --test tests/seo-regional-lp-*.test.mjs
 
+      - name: 地域写真（出典・利用条件・取得対象・スライド操作）
+        run: node --test tests/ltori-city-photos*.test.mjs tests/seo-city-photos*.test.mjs
+
       - name: Design gate regression（基準値から1項目でも悪化していれば失敗）
         run: bash scripts/gate-regression.sh
 

@@ -1,6 +1,7 @@
 import service from '../src/data/service-ltori.json' with { type: 'json' };
 import { ARTICLE_TEMPLATE_PATH, publicPath, publicSource, resolveCity, qualityIssues, isSafeSourceUrl } from '../src/lib/seo-manager/editorial-model.mjs';
 import {escapeHtml, renderRegionalIndustries, renderRegionalCoverage, renderRegionalProvider, regionalLandingFaqs, renderRegionalFaqList, regionalFaqStructuredData} from './seo-regional-lp-sections.mjs';
+import {getSeedCityPhotos, renderCityPhotos} from '../src/lib/ltori-city-photos.mjs';
 
 export { ARTICLE_TEMPLATE_PATH };
 export {escapeHtml};
@@ -98,6 +99,7 @@ export async function renderDocument(baseResponse, document, options = {}) {
       }
     } });
   if (city) rewriter = rewriter
+    .on('[data-city-photos-slot]', {element(element) {element.setInnerContent(renderCityPhotos(city, Object.hasOwn(options, 'cityPhotos') ? options.cityPhotos : getSeedCityPhotos(city.slug)), {html: true});}})
     .on('#lt-hero-title', { element(element) { element.setInnerContent(renderCityHeading(document), { html: true }); } })
     .on('.lt-hero-kicker', { element(element) { element.setInnerContent(`<span>採用 × LINE</span> ${escapeHtml(city.fullName)}の企業さまへ`, {html: true}); } })
     .on('.lt-hero-description', { element(element) { element.setInnerContent(`${escapeHtml(city.fullName)}の採用活動を、オンラインでサポート。<br>構築・配信・改善まで、採用LINEは${escapeHtml(service.name)}に。`, {html: true}); } })
