@@ -95,6 +95,12 @@ test('built service template produces city LP sections identical to the existing
         const trackedLinks = all(dom, node => node.tagName === 'a' && (attr(node, 'data-lt-cta') !== undefined || attr(node, 'data-lt-diagnosis') !== undefined));
         assert.ok(trackedLinks.length >= 7);
         for (const anchor of trackedLinks) assert.equal(new URL(attr(anchor, 'href'), 'https://layr.co.jp').searchParams.get('source'), `area/${slug}`);
+        for (const [index, plan] of service.plans.entries()) {
+          const anchor = trackedLinks.find(node => attr(node, 'data-lt-cta') === `plan-${index}`);
+          assert.ok(anchor, `${plan.name} CTA is present`);
+          const url = new URL(attr(anchor, 'href'), 'https://layr.co.jp');
+          assert.deepEqual([...url.searchParams], [['service', 'ltori'], ['plan', plan.name], ['source', `area/${slug}`]], `${plan.name} CTA retains its real parameter names and value`);
+        }
         assert.equal(all(dom, node => node.tagName === 'a' && attr(node, 'href') === '/service/ltori/area/').length, 0);
         const jsonLd = all(dom, node => node.tagName === 'script' && attr(node, 'type') === 'application/ld+json').flatMap(node => JSON.parse(text(node)));
         const faqSchema = jsonLd.filter(value => value['@type'] === 'FAQPage'); assert.equal(faqSchema.length, 1);
@@ -104,6 +110,23 @@ test('built service template produces city LP sections identical to the existing
         assert.equal(jsonLd.find(value => value['@type'] === 'Service').url, `https://layr.co.jp/service/ltori/area/${slug}/`);
         assert.doesNotMatch(html, /fixture@example\.test/);
       }
+    });
+    await t.test('HTML-encoded CTA separators are decoded once while values and fragments are preserved', async () => {
+      for (const separator of ['&amp;', '&AMP;', '&#38;', '&#x26;', '&']) {
+        const href = `/contact/?service=ltori${separator}plan=${encodeURIComponent('ライト; &相談')}${separator}campaign=q%26a${separator}source=previous#plans`;
+        const asset = `<html><head></head><body><div data-seo-editorial-slot></div><a id="cta" href="${href}">相談</a><a id="external" href="https://example.test/contact/?service=ltori${separator}plan=other">外部</a></body></html>`;
+        const response = await mf.dispatchFetch('http://localhost/__fixture', {method: 'POST', body: JSON.stringify({template: asset, document: fixture('hokkaido/sapporo')})});
+        assert.equal(response.status, 200);
+        const dom = parse(await response.text()), url = new URL(attr(byId(dom, 'cta'), 'href'), 'https://layr.co.jp');
+        assert.deepEqual([...url.searchParams], [['service', 'ltori'], ['plan', 'ライト; &相談'], ['campaign', 'q&a'], ['source', 'area/hokkaido/sapporo']], separator);
+        assert.equal(url.hash, '#plans');
+        assert.equal(attr(byId(dom, 'external'), 'href'), 'https://example.test/contact/?service=ltori&plan=other');
+      }
+      const asset = '<html><head></head><body><div data-seo-editorial-slot></div><a id="cta" href="/contact/?service=ltori&amp;amp;plan=literal">相談</a></body></html>';
+      const response = await mf.dispatchFetch('http://localhost/__fixture', {method: 'POST', body: JSON.stringify({template: asset, document: fixture('hokkaido/sapporo')})});
+      const url = new URL(attr(byId(parse(await response.text()), 'cta'), 'href'), 'https://layr.co.jp');
+      assert.equal(url.searchParams.get('plan'), null, 'Double-encoded input must not become a plan parameter');
+      assert.equal(url.searchParams.get('amp;plan'), 'literal');
     });
     await t.test('article rendering remains article-only without injecting service FAQ or regional sections', async () => {
       const doc = {...fixture('mie/nabari'), type: 'article', slug: 'city-free-article', title: '採用の案内', heading: '採用の案内'};

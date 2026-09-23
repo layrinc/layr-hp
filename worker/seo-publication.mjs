@@ -85,12 +85,16 @@ export async function renderDocument(baseResponse, document, options = {}) {
       const href = element.getAttribute('href');
       if (!href) return;
       let url;
-      try { url = new URL(href, PUBLIC_ORIGIN); } catch { return; }
+      // HTMLRewriter exposes raw attribute entities. Decode the trusted
+      // template's query separators once before URLSearchParams reads them.
+      try { url = new URL(href.replace(/&(?:amp|AMP|#0*38|#[xX]0*26);/g, '&'), PUBLIC_ORIGIN); } catch { return; }
       if (url.origin !== PUBLIC_ORIGIN) return;
       if (city && url.pathname === '/service/ltori/area/') { element.remove(); return; }
       if ((url.pathname === '/contact/' && url.searchParams.get('service') === 'ltori') || url.pathname === '/document/ltori-service/' || url.pathname === '/service/ltori/diagnosis/') {
         url.searchParams.set('source', source);
-        element.setAttribute('href', `${url.pathname}${url.search}${url.hash}`);
+        // setAttribute does not escape ampersands; preserve literal parameter
+        // names such as "amp;plan" when the browser parses the resulting HTML.
+        element.setAttribute('href', escapeHtml(`${url.pathname}${url.search}${url.hash}`));
       }
     } });
   if (city) rewriter = rewriter
