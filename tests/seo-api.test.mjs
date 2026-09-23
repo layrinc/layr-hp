@@ -60,14 +60,21 @@ test('draft saving ignores client approval and incomplete drafts cannot be appro
   assert.deepEqual(await getPublished(db), []);
 });
 
-test('city restrictions and protected repository URLs apply at the API boundary', async t => {
+test('municipal routes are accepted while prefectures and protected repository URLs remain rejected', async t => {
   const db = sqliteD1(t);
-  for (const slug of ['mie', 'mie/meiwa', 'hokkaido/sapporo-chuo', '../contact']) {
+  for (const slug of ['mie', '../contact']) {
     assert.equal((await call(db, '/api/seo/documents', {document: document({slug})})).status, 400, slug);
+  }
+  for(const slug of ['mie/meiwa','hokkaido/sapporo-chuo']) {
+    const created=await call(db,'/api/seo/documents',{document:document({slug})});
+    assert.equal(created.status,201,slug);
+    const saved=(await created.json()).document;
+    assert.equal(saved.path,`/service/ltori/area/${slug}/`);
+    assert.equal(saved.status,'draft');
   }
   const protectedResponse = await call(db, '/api/seo/documents', {document: document()}, {}, {staticPages: [{path: '/service/ltori/area/mie/nabari/'}]});
   assert.equal(protectedResponse.status, 409);
-  assert.equal((await getDocuments(db)).length, 0);
+  assert.equal((await getDocuments(db)).length, 2);
 });
 
 test('approval uses verified identity and draft edits preserve the previous public snapshot', async t => {
@@ -96,9 +103,17 @@ test('the API blocks identical body approvals and never trusts a client-defined 
   assert.equal((await call(db, `/api/seo/documents/${first.id}/approve`, {version: first.version})).status, 200);
   const second = (await (await call(db, '/api/seo/documents', {document: document({slug: 'mie/toba', title: '鳥羽市の採用LINE', heading: '鳥羽市の採用LINE運用'})})).json()).document;
   assert.equal((await call(db, `/api/seo/documents/${second.id}/approve`, {version: second.version})).status, 422);
-  const settings = await call(db, '/api/seo/settings', {paused: false, dailyLimit: 999});
-  assert.equal((await settings.json()).settings.dailyLimit, 10);
+  const settings = await call(db, '/api/seo/settings', {paused: false, dailyLimit: 999, limits:{regional:{daily:999},media:{monthly:999}}});
+  const configured=(await settings.json()).settings;
+  assert.equal(configured.dailyLimit, 20);
+  assert.deepEqual(configured.limits,{regional:{daily:20},media:{monthly:10,daily:1,minimumIntervalDays:3}});
+  const dashboard=await (await call(db, '/api/seo/dashboard')).json();
+  assert.deepEqual(dashboard.settings,configuredWithoutDate(configured));
+  assert.equal(dashboard.publicationStats.byScope.regional.dailyLimit,20);
+  assert.equal(dashboard.publicationStats.byScope.media.monthlyLimit,10);
 });
+
+function configuredWithoutDate({updatedAt,...settings}) {return settings;}
 
 test('workspace updates use revision checks and backups remain private', async t => {
   const db = sqliteD1(t);

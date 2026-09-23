@@ -33,14 +33,14 @@ export function createMunicipalityAreas(records = master.areas) {
 }
 export const municipalityAreas = createMunicipalityAreas();
 export const regionalAreas = [...prefectureAreas, ...municipalityAreas];
-export const isEligibleArea = area => area.kind === 'prefecture' || area.locality.endsWith('市');
-export const cityAreas = municipalityAreas.filter(isEligibleArea);
+export const isEligibleArea = area => area.kind === 'prefecture' || area.kind === 'municipality';
+export const cityAreas = municipalityAreas.filter(area => area.locality.endsWith('市'));
 export const eligibleAreas = regionalAreas.filter(isEligibleArea);
 export const areasBySlug = new Map(regionalAreas.map(area => [area.slug, area]));
 export const municipalitiesFor = slug => municipalityAreas.filter(area => area.prefectureSlug === slug);
 export const parentPrefecture = area => prefectureBySlug.get(area.prefectureSlug);
 export const sourceLabels = Object.fromEntries([
-  ['area', '都道府県・市別の採用LINE'],
+  ['area', '都道府県・市区町村別の採用LINE'],
   ...regionalAreas.map(area => [areaKey(area), `${area.fullName}の採用LINE`]),
 ]);
 export const areaFaq = area => ({

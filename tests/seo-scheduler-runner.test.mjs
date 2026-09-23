@@ -16,7 +16,7 @@ const json = (body, options) => Response.json(body, options);
 const done = (kind = 'publish') => ({
   status: 'completed', kind, runId: '123', runAttempt: '1',
   results: kind === 'publish'
-    ? [{ kind: 'publish', status: 'completed', publishedCount: 10, day: '2026-09-22' }]
+    ? [{ kind: 'publish', status: 'completed', publishedCount: 21, day: '2026-09-22' }]
     : [{ kind: 'analytics', status: 'completed', outcome: 'not_configured' }, { kind: 'inspection', status: 'completed', outcome: 'completed' }],
 });
 
@@ -40,7 +40,7 @@ function harness(responses, extra = {}) {
 test('runner uses a fixed audience and endpoint, awaits completion, and logs no credentials', async () => {
   const h = harness([json({ value: 'oidc.payload.signature' }), json({ ...done(), diagnostic: 'PRIVATE server detail' })]);
   const result = await runSeoGrowthJob('publish', h.options);
-  assert.equal(result.results[0].publishedCount, 10);
+  assert.equal(result.results[0].publishedCount, 21);
   assert.equal(h.calls.length, 2);
   const oidc = new URL(h.calls[0].url);
   assert.equal(oidc.searchParams.get('audience'), SCHEDULER_ENDPOINT);
@@ -133,7 +133,7 @@ test('successful HTTP responses still fail if a job is incomplete, duplicated, o
     { ...done(), status: 'running' },
     { ...done(), kind: 'maintenance' },
     { ...done(), results: [] },
-    { ...done(), results: [{ kind: 'publish', status: 'completed', publishedCount: 11 }] },
+    { ...done(), results: [{ kind: 'publish', status: 'completed', publishedCount: Number.MAX_SAFE_INTEGER + 1 }] },
     { ...done(), results: [{ kind: 'publish', status: 'completed', publishedCount: 2, error: 'PRIVATE' }] },
     { ...done(), results: [{ kind: 'publish', status: 'queued', publishedCount: 2 }] },
   ];

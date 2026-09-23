@@ -87,7 +87,7 @@ function publicationDetail(state) {
   if (state.settings.paused) return '公開待ちの原稿は保持しています。再開するまで自動公開しません。';
   const schedule = state.scheduler?.publish;
   const successAt = Date.parse(schedule?.lastSuccessAt), serverNow = Date.parse(state.serverTime);
-  const parts = [`毎日${state.settings.publishTime || '09:17'}（日本時間）に公開を確認し、10:17にも再確認します。合計で1日最大10本。実行時刻は遅れる場合があります。承認済み原稿がない日は追加しません。`];
+  const parts = [`毎日${state.settings.publishTime || '09:17'}（日本時間）に公開を確認し、10:17にも再確認します。全国SEOは1日20地域まで、採用ノートは月10本まで・原則3日以上の間隔です。実行時刻は遅れる場合があります。承認済み原稿がない日は追加しません。`];
   parts.push(Number.isFinite(successAt) ? `公開処理の最終成功：${date(schedule.lastSuccessAt)}。` : '自動公開の実行成功はまだ確認できていません。');
   if (schedule?.status === 'error') parts.push('直近の処理でエラーがありました。GitHub Actionsの実行履歴を確認してください。');
   else if (schedule?.status === 'running') parts.push('公開処理を実行中です。しばらくして最新の情報に更新してください。');
@@ -98,7 +98,10 @@ function render() {
   const stats = data.publicationStats || {}, queued = array(data.documents).filter(doc => ['approved', 'scheduled'].includes(doc.status)).length;
   $('growth-publication-state').textContent = data.settings.paused ? '自動公開を一時停止中' : '承認済みの原稿を順次公開';
   $('growth-publication-detail').textContent = publicationDetail(data);
-  $('growth-daily-count').textContent = `${number(stats.todayPublished)} / ${number(data.settings.dailyLimit ?? 10)}`;
+  const regional = stats.byScope?.regional, media = stats.byScope?.media;
+  $('growth-daily-count').textContent = `${number(regional?.todayPublished)} / ${number(regional?.dailyLimit ?? data.settings.limits?.regional?.daily ?? 20)}地域`;
+  $('growth-monthly-count').textContent = `${number(media?.monthPublished)} / ${number(media?.monthlyLimit ?? data.settings.limits?.media?.monthly ?? 10)}本`;
+  if (regional && media) $('growth-publication-detail').textContent += ` 現在の公開準備済み：全国SEO ${number(regional.dueReady)}地域、採用ノート ${number(media.dueReady)}本。${regional.dueReady === 0 ? '全国SEOの原稿補充・確認が必要です。' : ''}`;
   $('growth-queue-count').textContent = `${number(stats.queued ?? queued)}本`;
   $('growth-pause').textContent = data.settings.paused ? '自動公開を再開' : '自動公開を一時停止';
   renderOverview(); renderDocuments(); renderLeads(); renderHealth();
@@ -243,7 +246,7 @@ function openEditor(doc = null) {
   $('growth-editor-title').textContent = doc ? '原稿を編集' : '原稿を作成';
   $('growth-edit-type').value = doc?.type || 'city'; $('growth-edit-type').disabled = !!doc;
   const catalog = array(data.catalog);
-  $('growth-edit-city').replaceChildren(option('', '市を選んでください'), ...catalog.map(city => option(city.slug, city.fullName || city.name)));
+  $('growth-edit-city').replaceChildren(option('', '市区町村を選んでください'), ...catalog.map(city => option(city.slug, city.fullName || city.name)));
   $('growth-edit-city').value = doc?.type === 'city' ? doc.slug : ''; $('growth-edit-city').disabled = !!doc;
   $('growth-edit-slug').value = doc?.type === 'article' ? doc.slug : ''; $('growth-edit-slug').readOnly = !!doc;
   for (const key of ['title', 'description', 'heading', 'lead', 'intent']) $(`growth-edit-${key}`).value = doc?.[key] || (key === 'intent' ? 'unknown' : '');
@@ -336,7 +339,7 @@ async function initialize() {
   });
   $('growth-editor-approve').addEventListener('click', () => {
     if (!editDoc || dirty) return;
-    if (!confirm('プレビューと出典を確認しましたか？承認すると、公開希望日時以降に1日10本の上限内で自動公開されます。')) return;
+    if (!confirm('プレビューと出典を確認しましたか？承認すると、公開希望日時以降に全国SEOは1日20地域、採用ノートは月10本・原則3日以上の間隔の公開枠で自動公開されます。')) return;
     void operation(async () => { await api(`/documents/${encodeURIComponent(editDoc.id)}/approve`, {version: editDoc.version}); await refresh(); openEditor(data.documents.find(item => item.id === editDoc.id)); }, '原稿を承認しました。公開待ちに追加しています。', 'growth-editor-error');
   });
   $('growth-new-lead').addEventListener('click', () => openLead()); $('growth-lead-close').addEventListener('click', closeLead);

@@ -86,7 +86,7 @@ function render(){
   for(const row of slice) {
     const tr=document.createElement('tr'),{page,edit,keyword,metric}=row;
     if(!keyword){const td=document.createElement('td'),label=text('label','','kw-check'),check=document.createElement('input');check.type='checkbox';check.checked=selected.has(page.id);check.setAttribute('aria-label',`${page.fullName}を選択`);check.addEventListener('change',()=>{check.checked?selected.add(page.id):selected.delete(page.id);render();});label.append(check);td.append(label);tr.append(td);}
-    const name=text('td','','kw-name');name.append(button(keyword?keyword.query:page.fullName,()=>openEditor(page.id),''),text('small',keyword?page.fullName:`${page.kind==='prefecture'?'都道府県LP':page.publication==='excluded'?'対象外の旧地域':'市LP'} / ${{published:'公開中',draft:'下書き',excluded:'対象外'}[page.publication]}`));tr.append(name);
+    const name=text('td','','kw-name');name.append(button(keyword?keyword.query:page.fullName,()=>openEditor(page.id),''),text('small',keyword?page.fullName:`${page.kind==='prefecture'?'都道府県LP':page.publication==='excluded'?'対象外の旧地域':'市区町村LP'} / ${{published:'公開中',draft:'下書き',excluded:'対象外'}[page.publication]}`));tr.append(name);
     const status=text('td','','kw-status');status.append(text('span',keyword?(row.paused?'保留':'対象'):STATUS[edit.status],`kw-tag ${(keyword?!row.paused:edit.status==='improving')?'is-active':''}`));tr.append(status,text('td',PRIORITY[edit.priority]));
     tr.append(text('td',format(metric?.clicks),'kw-number'),text('td',format(metric?.impressions),'kw-number'));
     if(keyword)tr.append(text('td',rate(metric),'kw-number'));

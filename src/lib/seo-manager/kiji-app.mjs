@@ -7,21 +7,33 @@ export async function mountKijiWorkbench({api = createKijiApi(), mountImprovemen
   const $ = id => document.getElementById(`kiji-${id}`), all = selector => [...root.querySelectorAll(selector)];
   const node = (tag,text,className) => { const el = document.createElement(tag); if (text !== undefined) el.textContent = String(text ?? ''); if (className) el.className = className; return el; };
   const help = text => node('p',text,'kw-help');
-  const button = (text,action,primary = false,mutation = false) => { const el = node('button',text,`kw-button${primary ? ' kw-primary' : ''}`); el.type = 'button'; if (mutation) { el.dataset.kijiMutation = ''; el.disabled = lock.busy; } el.addEventListener('click',action); return el; };
+  const button = (text,action,primary = false,mutation = false,production = false) => { const el = node('button',text,`kw-button${primary ? ' kw-primary' : ''}`); el.type = 'button'; if (mutation) { el.dataset.kijiMutation = ''; el.disabled = lock.busy; } if (production) { el.dataset.kijiProduction = ''; el.disabled = lock.busy || automationPaused !== false; } el.addEventListener('click',action); return el; };
   const error = (id,message = '') => { $(id).textContent = message; $(id).hidden = !message; };
   const notify = message => error('message',message);
   const reads = new Map(); const read = key => { if (!reads.has(key)) reads.set(key,createLatestRead()); return reads.get(key); };
-  const dirtyDialogs = new Set(); let settingsDirty = false, selectedKeyword = null, articleData = null, articleDraft = null, articleEditing = false, actionPending = null, mode = null, settingsLoaded = false, metricsConnected = false;
+  const dirtyDialogs = new Set(); let settingsDirty = false, selectedKeyword = null, articleData = null, articleDraft = null, articleEditing = false, actionPending = null, mode = null, settingsLoaded = false, metricsConnected = false, automationPaused = null;
   const disabledBefore = new Map();
   const lock = createOperationLock(busy => {
     $('operation').hidden = !busy; $('operation').textContent = busy ? '処理中です。完了までこの画面を開いたままお待ちください。' : '';
-    all('button[data-kiji-mutation], form input, form textarea, form select').forEach(el => { if (busy) { disabledBefore.set(el,el.disabled); el.disabled = true; } else { el.disabled = el.dataset.kijiUnavailable === 'true' || (!el.hasAttribute('data-kiji-mutation') && (disabledBefore.get(el) ?? false)); } });
+    all('button[data-kiji-mutation], form input, form textarea, form select').forEach(el => { if (busy) { disabledBefore.set(el,el.disabled); el.disabled = true; } else { el.disabled = (el.hasAttribute('data-kiji-production') && automationPaused !== false) || el.dataset.kijiUnavailable === 'true' || (!el.hasAttribute('data-kiji-mutation') && (disabledBefore.get(el) ?? false)); } });
     if (!busy) disabledBefore.clear();
     all('[data-kiji-close]').forEach(el => { el.disabled = busy; });
     $('article-toggle').disabled = busy;
   });
-  const available = (id,enabled) => { $(id).dataset.kijiUnavailable = String(!enabled); $(id).disabled = !enabled || lock.busy; };
+  const available = (id,enabled) => { $(id).dataset.kijiUnavailable = String(!enabled); $(id).disabled = !enabled || lock.busy || ($(id).hasAttribute('data-kiji-production') && automationPaused !== false); };
   const mutate = async (errorId,work) => lock.run(async () => { error(errorId); try { await work(); } catch (err) { error(errorId,err.message); } });
+  function showAutomationState(value) {
+    automationPaused = typeof value === 'boolean' ? value : null;
+    $('automation-state').textContent = automationPaused === true ? '公式メディアは保留中です。制作・公開用の変更作成を停止し、原稿と公開済み記事を保持しています。アクセス計測は継続します。' : automationPaused === false ? '公式メディアは稼働中です。運転設定に従って制作を進めます。' : '保留状態を取得できませんでした。設定を更新するまで制作・公開操作は利用できません。';
+    $('automation-toggle').textContent = automationPaused === true ? '公式メディアの制作・公開を再開' : automationPaused === false ? '公式メディアを保留にする' : '保留状態を確認中';
+    available('automation-toggle',automationPaused !== null);
+    all('[data-kiji-production]').forEach(el => { el.disabled = automationPaused !== false || lock.busy || el.dataset.kijiUnavailable === 'true'; });
+  }
+  async function loadAutomationState() {
+    const channel = read('automation'), token = channel.begin();
+    try { const data = await api('/settings'); if (channel.current(token)) showAutomationState(['0','1'].includes(data.settings?.automation_paused) ? data.settings.automation_paused === '1' : null); }
+    catch { if (channel.current(token)) showAutomationState(null); }
+  }
   const stats = (id,values) => { $(id).replaceChildren(...values.map(([label,value,note]) => { const div = node('div'); div.append(node('dt',label),node('dd',value)); if (note) div.append(node('small',note)); return div; })); };
   const cells = values => { const tr = node('tr'); values.forEach(value => { const cell = node('td'); cell.append(value?.nodeType ? value : document.createTextNode(String(value ?? '—'))); tr.append(cell); }); return tr; };
   const summary = (primary,secondary) => { const div = node('div'); div.append(node('strong',primary || '—')); if (secondary) div.append(help(secondary)); return div; };
@@ -54,7 +66,9 @@ export async function mountKijiWorkbench({api = createKijiApi(), mountImprovemen
       stats('stats',[['承認待ち',number(pending),`要確認 ${number(needsHuman)}本`],['今週の公開',number(data.articles.publishedThisWeek),`週の目標 ${number(data.articles.weeklyTarget)}本`],['登録キーワード',number(data.keywords.total),`未分類 ${number(unclassified)}件`],['キーワード消化率',data.keywords.consumed == null ? '—' : `${data.keywords.consumed}%`,`生成中 ${number(inflight)}本`]]);
       $('generation-status').textContent = data.apiKeys?.anthropic ? '設定あり（接続は未確認）' : '設定が必要'; $('publish-status').textContent = data.apiKeys?.github ? '設定あり（接続は未確認）' : '設定が必要';
       mode = ['full','approval'].includes(data.autopilot) ? data.autopilot : null;
+      showAutomationState(data.automationPaused);
       $('mode').textContent = mode === 'full' ? '運転モード：自動制作。品質判定9/9の原稿は公開用の変更が作成されます。確認・マージ後に公開状態を確認してください。' : mode === 'approval' ? '運転モード：確認後に公開（朝承認）。生成された原稿は「確認・公開」で承認して公開用の変更を作成し、確認・マージ後に公開します。' : '運転モードを確認できません。設定を確認してください。';
+      if (automationPaused) $('mode').textContent = $('mode').textContent.replace('運転モード：','再開時の運転モード：');
       available('tick',!!mode && !data.operation?.busy); if (data.operation?.busy) $('tick-result').textContent = `別の制作処理が進行中です（開始：${date(data.operation.startedAt)}）。完了後に最新の状態へ更新してください。`;
       const logs = items(data,'recentLog'); $('log').replaceChildren(...(logs.length ? logs.map(item => { const div = node('div',undefined,'kiji-list-row'); div.append(node('span',{approve:'承認',reject:'差戻し',discard:'破棄',retry:'再試行'}[item.action] || item.action,'kw-tag'),summary(item.title || `原稿 #${item.article_id}`,date(item.created_at))); return div; }) : [help('履歴はまだありません。')]));
     } catch (err) { error('dash-error',err.message); }
@@ -92,10 +106,11 @@ export async function mountKijiWorkbench({api = createKijiApi(), mountImprovemen
       const gates = plainArray(article.gate_json); const failed = gates.filter(gate => !gate.pass); if (failed.length) card.append(help(`要確認：${failed.map(gate => `${gate.label || gate.id} ${gate.reason || ''}`).join(' / ')}`));
       if (article.last_error) card.append(help(`直近のエラー：${article.last_error}`));
       if (article.publication) { card.append(help('公開処理の結果を照合してください。照合が終わるまで編集・再承認を停止しています。'),actions(button('原稿を確認',() => openArticle(article.id)),button('公開状態を照合',() => checkPublication(article,'queue-error'),false,true))); }
-      else card.append(actions(button('原稿を確認',() => openArticle(article.id)),button('公開用の変更を作成',() => confirmArticleAction('approve',article),true,true),button('差戻し',() => confirmArticleAction('reject',article),false,true),button('破棄',() => confirmArticleAction('discard',article),false,true))); return card;
+      else card.append(actions(button('原稿を確認',() => openArticle(article.id)),button('公開用の変更を作成',() => confirmArticleAction('approve',article),true,true,true),button('差戻し',() => confirmArticleAction('reject',article),false,true,true),button('破棄',() => confirmArticleAction('discard',article),false,true))); return card;
     }) : [help('確認待ちの原稿はありません。生成された原稿がここに並びます。')]));
   }
   function confirmArticleAction(action,article) {
+    if (action === 'approve' && automationPaused !== false) return notify('公式メディアは保留中、または運転状態が未確認です。設定を確認してください。');
     if (article.publication) return notify('公開処理の結果を照合してから操作してください。');
     const title = article.title || `原稿 #${article.id}`; const options = {
       approve:{title:'公開用の変更を作成',description:`「${title}」を承認し、公式メディアへ反映するための変更を作成します。品質判定は ${gateLabel(article)} です。未合格項目を含めて内容を確認してください。ここではまだ公開されません。変更の確認・マージ後に、原稿一覧で公開状態を確認してください。`,label:'この原稿の公開用の変更を作成'},
@@ -182,6 +197,7 @@ export async function mountKijiWorkbench({api = createKijiApi(), mountImprovemen
     if (settingsDirty && (!force || !confirm('保存していない運転設定があります。変更を破棄して保存済みの設定を読み込みますか？'))) return;
     const data = await loadPanel('settings',() => api('/settings')); if (!data) return;
     if (!data.settings || typeof data.settings !== 'object') { error('settings-error','設定の形式を確認できません。'); return; }
+    showAutomationState(['0','1'].includes(data.settings.automation_paused) ? data.settings.automation_paused === '1' : null);
     settingFields().forEach(field => { const key = field.dataset.kijiSetting; const value = data.settings[key] ?? ''; field.value = key === 'categories' ? plainArray(value).join(',') : String(value); }); settingsDirty = false; settingsLoaded = true; $('settings-fields').disabled = false; await loadEvidence();
   }
   async function loadEvidence() {
@@ -217,11 +233,18 @@ export async function mountKijiWorkbench({api = createKijiApi(), mountImprovemen
   $('action-form').addEventListener('submit',event => { event.preventDefault(); if (!actionPending) return; void mutate('action-error',async () => { await actionPending(); closeDialog($('action-dialog'),true); actionPending = null; }); });
   $('article-toggle').addEventListener('click',() => { if (!articleData || articleData.article.publication) return; if (articleEditing) articleDraft = articleValues(); articleEditing = !articleEditing; renderArticle(); if (articleEditing) $('article-edit-title').focus(); }); $('article-form').addEventListener('submit',event => { event.preventDefault(); void saveArticle(); });
   $('article-form').addEventListener('input',() => { dirtyDialogs.add('article-dialog'); available('article-regate',false); }); $('article-regate').addEventListener('click',() => { if (!articleData || articleData.article.publication || dirtyDialogs.has('article-dialog')) return; void mutate('article-error',async () => { const id = articleData.article.id; await api(`/articles/${id}/regate`,{method:'POST',body:{}}); articleData = await api(`/articles/${id}`); renderArticle(); notify('保存済み原稿の品質を再判定しました。'); await loadQueue(); }); });
-  $('tick').addEventListener('click',() => { if (!mode) return; $('action-title').textContent = '制作を1工程進める'; $('action-description').textContent = mode === 'full' ? '現在は自動制作モードです。次の工程が実行され、条件を満たした原稿の公開用の変更が作成される場合があります。1工程進めますか？' : '現在は確認後に公開するモードです。キーワード分類・構成・本文・図解・品質判定の次の工程を1つ実行します。進めますか？'; $('action-submit').textContent = '1工程を実行する'; $('reject-label').hidden = true; $('reject-note').required = false; actionPending = async () => { const result = await api('/tick',{method:'POST',body:{}}); $('tick-result').textContent = result.detail || result.did || '工程を実行しました。'; notify('工程の実行結果を制作状況に反映しました。'); await loadDash(); }; showDialog('action-dialog'); });
+  $('tick').addEventListener('click',() => { if (!mode || automationPaused !== false) return; $('action-title').textContent = '制作を1工程進める'; $('action-description').textContent = mode === 'full' ? '現在は自動制作モードです。次の工程が実行され、条件を満たした原稿の公開用の変更が作成される場合があります。1工程進めますか？' : '現在は確認後に公開するモードです。キーワード分類・構成・本文・図解・品質判定の次の工程を1つ実行します。進めますか？'; $('action-submit').textContent = '1工程を実行する'; $('reject-label').hidden = true; $('reject-note').required = false; actionPending = async () => { const result = await api('/tick',{method:'POST',body:{}}); $('tick-result').textContent = result.detail || result.did || '工程を実行しました。'; notify('工程の実行結果を制作状況に反映しました。'); await loadDash(); }; showDialog('action-dialog'); });
   $('metrics-pull').addEventListener('click',() => { if (metricsConnected) void mutate('metrics-error',async () => { const result = await api('/metrics/pull',{method:'POST',body:{days:3}}); notify(result.detail || '取込処理を実行しました。'); await loadMetrics(); }); });
+  $('automation-toggle').addEventListener('click',() => {
+    if (automationPaused === null) return;
+    const pause = !automationPaused;
+    if (!confirm(pause ? '公式メディアの制作・公開用の変更作成を保留にします。原稿と公開済み記事は保持します。' : '公式メディアの保留を解除します。保存済みの運転設定に従って制作と公開用の変更作成が再開します。')) return;
+    void mutate('settings-error',async () => { await api('/settings',{method:'PUT',body:{automation_paused:pause ? '1' : '0'}}); await loadAutomationState(); await loadDash(); notify(pause ? '公式メディアを保留にしました。' : '公式メディアの保留を解除しました。'); });
+  });
   $('settings-form').addEventListener('input',() => { settingsDirty = true; read('settings').invalidate(); }); $('settings-form').addEventListener('submit',event => { event.preventDefault(); if (!settingsLoaded || !$('settings-form').reportValidity()) return; const body = Object.fromEntries(settingFields().map(field => [field.dataset.kijiSetting,field.dataset.kijiSetting === 'categories' ? field.value.split(',').map(value => value.trim()).filter(Boolean) : field.value])); if (Number(body.article_min_chars) > Number(body.article_max_chars)) return error('settings-error','本文の最大文字数は最小文字数以上にしてください。'); if (!confirm(`運転設定を保存します。モード：${body.autopilot === 'full' ? '自動制作（条件を満たす原稿の公開用の変更を作成）' : '確認後に公開'}、1日の公開上限：${body.daily_cap}本、週の目標：${body.weekly_target}本。この設定で保存しますか？`)) return; void mutate('settings-error',async () => { await api('/settings',{method:'PUT',body}); settingsDirty = false; notify('運転設定を保存しました。'); await loadDash(); }); });
   $('evidence-form').addEventListener('submit',event => { event.preventDefault(); if (!$('evidence-form').reportValidity()) return; const body = {label:$('evidence-label').value.trim(),value:$('evidence-value').value.trim(),source:$('evidence-source').value.trim()}; void mutate('evidence-error',async () => { await api('/evidence',{method:'POST',body}); $('evidence-form').reset(); notify('一次データを登録しました。'); await loadEvidence(); }); });
   $('publication-check').addEventListener('click',async () => { const button = $('publication-check'); if (button.disabled) return; button.disabled = true; $('publication-status').textContent = '公開先への接続を確認しています。'; try { const result = await api('/publication/status'); $('publish-status').textContent = result.connected || result.readable ? '読み取り確認済み（書込未確認）' : '読み取り接続を確認できません'; $('publication-status').textContent = `${result.connected || result.readable ? '公開先の読み取り接続を確認しました。' : '公開先への接続を確認できません。'} ${result.message || ''} この確認では書き込み権限を検証していません。`; } catch (err) { $('publication-status').textContent = err.message; } finally { button.disabled = false; } });
+  await loadAutomationState();
   await selectTab(location.hash.slice(1));
   return {apiBase:API_BASE,selectTab};
 }

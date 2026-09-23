@@ -9,6 +9,17 @@ export const SCHEMA = [
   `CREATE TABLE IF NOT EXISTS seo_activity (id TEXT PRIMARY KEY, kind TEXT NOT NULL, message TEXT NOT NULL, created_at TEXT NOT NULL)`,
 ];
 export const japanDay = now => new Intl.DateTimeFormat('sv-SE', {timeZone:'Asia/Tokyo'}).format(now);
+export const PUBLICATION_LIMITS = Object.freeze({
+  regional: Object.freeze({daily:20}),
+  media: Object.freeze({monthly:10,daily:1,minimumIntervalDays:3}),
+});
+export function publicationSettings(value={}) {
+  // dailyLimit remains a regional-only alias for older clients. There is no
+  // shared daily pool: note articles have their own monthly editorial cadence.
+  return {dailyLimit:PUBLICATION_LIMITS.regional.daily,limits:PUBLICATION_LIMITS,paused:value?.paused===true,timezone:'Asia/Tokyo',publishTime:'09:17'};
+}
+const shiftDay=(day,amount)=>new Date(Date.parse(`${day}T00:00:00Z`)+amount*86400000).toISOString().slice(0,10);
+const nextMonth=day=>{const [year,month]=day.split('-').map(Number);return new Date(Date.UTC(year,month,1)).toISOString().slice(0,10);};
 export class HttpError extends Error { constructor(status, message) { super(message); this.status = status; } }
 export async function ensureDatabase(db) {
   if (!db?.prepare) throw new HttpError(503, '共通データベースが未接続です。CloudflareのSEO_DBバインディングを確認してください。');
@@ -110,29 +121,65 @@ export async function pauseDocument(db,id,version,now=new Date()) {
   if(!result[0].meta.changes)throw new HttpError(409,'原稿の版が変わりました。再読み込みしてください。');
 }
 export async function publishDue(db,now=new Date()) {
-  const day=japanDay(now),iso=now.toISOString(),run=crypto.randomUUID();
-  // D1 batch is transactional. Selection and the remaining daily quota are evaluated
-  // in the same transaction; retries/overlapping cron deliveries cannot exceed ten.
+  const day=japanDay(now),iso=now.toISOString(),run=crypto.randomUUID(),month=day.slice(0,7);
+  const eligible=`d.status='scheduled' AND d.reviewed_version=d.version AND d.scheduled_at<=?
+    AND COALESCE((SELECT json_extract(value,'$.paused') FROM seo_kv WHERE namespace='settings' AND key='publication'),0)=0
+    AND NOT EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=d.id AND r.version=d.version)`;
+  const firstArticles=`SELECT r.document_id,MIN(r.day) AS first_day FROM seo_release_events r
+    JOIN seo_documents d ON d.id=r.document_id WHERE d.type='article' GROUP BY r.document_id`;
+  // Each selection and remaining quota is evaluated inside the same D1 batch
+  // transaction. Repeated/overlapping cron deliveries cannot spend a slot twice.
+  // Document IDs/type/path are immutable through the editor API. Count regions,
+  // not revisions, and allow reviewed article corrections without charging a new
+  // article slot. Existing release history is retained and counted on upgrade.
   await db.batch([
     db.prepare(`INSERT OR IGNORE INTO seo_release_events(id,day,document_id,version,run_id,created_at)
-      SELECT lower(hex(randomblob(16))),?,id,version,?,? FROM seo_documents
-      WHERE status='scheduled' AND reviewed_version=version AND scheduled_at<=?
-      AND COALESCE((SELECT json_extract(value,'$.paused') FROM seo_kv WHERE namespace='settings' AND key='publication'),0)=0
-      AND NOT EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=seo_documents.id AND r.version=seo_documents.version)
-      ORDER BY scheduled_at,id LIMIT MAX(0,10-(SELECT COUNT(*) FROM seo_release_events WHERE day=?))`).bind(day,run,iso,iso,day),
+      SELECT lower(hex(randomblob(16))),?,d.id,d.version,?,? FROM seo_documents d WHERE ${eligible}
+      AND ((d.type='city' AND EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=d.id AND r.day=?))
+        OR (d.type='article' AND EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=d.id)))`).bind(day,run,iso,iso,day),
+    db.prepare(`INSERT OR IGNORE INTO seo_release_events(id,day,document_id,version,run_id,created_at)
+      SELECT lower(hex(randomblob(16))),?,d.id,d.version,?,? FROM seo_documents d WHERE ${eligible} AND d.type='city'
+      AND NOT EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=d.id AND r.day=?)
+      ORDER BY d.scheduled_at,d.id LIMIT MAX(0,?-(SELECT COUNT(DISTINCT r.document_id) FROM seo_release_events r
+        JOIN seo_documents d ON d.id=r.document_id WHERE r.day=? AND d.type='city'))`).bind(day,run,iso,iso,day,PUBLICATION_LIMITS.regional.daily,day),
+    db.prepare(`INSERT OR IGNORE INTO seo_release_events(id,day,document_id,version,run_id,created_at)
+      SELECT lower(hex(randomblob(16))),?,d.id,d.version,?,? FROM seo_documents d WHERE ${eligible} AND d.type='article'
+      AND NOT EXISTS(SELECT 1 FROM seo_release_events r WHERE r.document_id=d.id)
+      AND (SELECT COUNT(*) FROM (${firstArticles}) WHERE first_day LIKE ?)< ?
+      AND COALESCE((SELECT MAX(first_day) FROM (${firstArticles})),'0000-00-00')<=?
+      ORDER BY d.scheduled_at,d.id LIMIT 1`).bind(day,run,iso,iso,`${month}-%`,PUBLICATION_LIMITS.media.monthly,shiftDay(day,-PUBLICATION_LIMITS.media.minimumIntervalDays)),
     db.prepare(`INSERT INTO seo_published(id,path,value,version,published_at)
       SELECT d.id,d.path,json_set(d.value,'$.status','published','$.publishedAt',?),d.version,? FROM seo_documents d JOIN seo_release_events r ON r.document_id=d.id AND r.version=d.version WHERE r.run_id=?
       ON CONFLICT(id) DO UPDATE SET path=excluded.path,value=excluded.value,version=excluded.version,published_at=excluded.published_at`).bind(iso,iso,run),
     db.prepare("UPDATE seo_documents SET status='published',value=json_set(value,'$.status','published','$.publishedAt',?),updated_at=? WHERE id IN (SELECT document_id FROM seo_release_events WHERE run_id=?)").bind(iso,iso,run),
   ]);
-  const {results}=await db.prepare('SELECT document_id FROM seo_release_events WHERE run_id=?').bind(run).all();
+  const {results}=await db.prepare('SELECT r.document_id,d.type FROM seo_release_events r JOIN seo_documents d ON d.id=r.document_id WHERE r.run_id=?').bind(run).all();
   if(results.length)await activity(db,'publish',`${day}に${results.length}件を公開しました。`,now);
-  return {day,published:results.map(row=>row.document_id),dailyLimit:10};
+  return {day,published:results.map(row=>row.document_id),dailyLimit:PUBLICATION_LIMITS.regional.daily,limits:PUBLICATION_LIMITS,
+    byScope:{regional:{published:results.filter(row=>row.type==='city').map(row=>row.document_id)},media:{published:results.filter(row=>row.type==='article').map(row=>row.document_id)}}};
 }
 export async function publicationStats(db,now=new Date()) {
-  const row=await db.prepare('SELECT COUNT(*) AS count FROM seo_release_events WHERE day=?').bind(japanDay(now)).first();
-  const queue=await db.prepare("SELECT COUNT(*) AS count FROM seo_documents WHERE status='scheduled' AND reviewed_version=version").first();
-  return {todayPublished:row.count,queued:queue.count,dailyLimit:10,day:japanDay(now)};
+  const day=japanDay(now),month=day.slice(0,7),iso=now.toISOString();
+  // One statement reads all counters from the same database snapshot.
+  const row=await db.prepare(`WITH releases AS (
+      SELECT r.*,d.type FROM seo_release_events r JOIN seo_documents d ON d.id=r.document_id
+    ),first_articles AS (SELECT document_id,MIN(day) AS first_day FROM releases WHERE type='article' GROUP BY document_id),
+    queue AS (SELECT * FROM seo_documents WHERE status='scheduled' AND reviewed_version=version)
+    SELECT (SELECT COUNT(DISTINCT document_id) FROM releases WHERE type='city' AND day=?) AS regional_today,
+      (SELECT COUNT(*) FROM queue WHERE type='city') AS regional_queued,
+      (SELECT COUNT(*) FROM queue WHERE type='city' AND scheduled_at<=?) AS regional_ready,
+      (SELECT COUNT(*) FROM first_articles WHERE first_day LIKE ?) AS media_month,
+      (SELECT COUNT(*) FROM first_articles WHERE first_day=?) AS media_today,
+      (SELECT MAX(first_day) FROM first_articles) AS media_last_day,
+      (SELECT COUNT(*) FROM queue WHERE type='article') AS media_queued,
+      (SELECT COUNT(*) FROM queue WHERE type='article' AND scheduled_at<=?) AS media_ready,
+      (SELECT COUNT(*) FROM seo_release_events WHERE day=?) AS release_count_today`).bind(day,iso,`${month}-%`,day,iso,day).first();
+  let nextEligibleDay=day;
+  if(row.media_last_day)nextEligibleDay=[nextEligibleDay,shiftDay(row.media_last_day,PUBLICATION_LIMITS.media.minimumIntervalDays)].sort().at(-1);
+  if(row.media_month>=PUBLICATION_LIMITS.media.monthly)nextEligibleDay=[nextEligibleDay,nextMonth(day)].sort().at(-1);
+  const regional={todayPublished:row.regional_today,queued:row.regional_queued,dueReady:row.regional_ready,dailyLimit:PUBLICATION_LIMITS.regional.daily};
+  const media={month,todayPublished:row.media_today,monthPublished:row.media_month,queued:row.media_queued,dueReady:row.media_ready,monthlyLimit:PUBLICATION_LIMITS.media.monthly,dailyLimit:PUBLICATION_LIMITS.media.daily,minimumIntervalDays:PUBLICATION_LIMITS.media.minimumIntervalDays,nextEligibleAt:`${nextEligibleDay}T09:17:00+09:00`};
+  return {todayPublished:regional.todayPublished,queued:regional.queued+media.queued,dailyLimit:regional.dailyLimit,day,releaseCountToday:row.release_count_today,byScope:{regional,media}};
 }
 export async function backup(db) {
   const tables=['seo_kv','seo_documents','seo_published','seo_release_events','seo_activity'];const result={schemaVersion:1,exportedAt:new Date().toISOString(),tables:{}};
