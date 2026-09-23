@@ -3,6 +3,19 @@ import assert from 'node:assert/strict';
 import { build } from 'esbuild';
 import { Miniflare, convertV4MiniflareOptions } from 'miniflare';
 import { normalizeDocument } from '../src/lib/seo-manager/editorial-model.mjs';
+import {publicFetch,resolveSource} from '../worker/seo-runtime.mjs';
+
+test('exact retired directory aliases redirect GET and HEAD without any database or asset access',async()=>{
+  let touched=0;
+  const ASSETS={fetch(){touched++;throw Error('Retired directory must not reach assets');}};
+  const unavailable={ASSETS,get SEO_DB(){touched++;throw Error('Retired directory must not read the database');}};
+  for(const env of [{ASSETS},unavailable])for(const path of ['/service/ltori/area','/service/ltori/area/','/service/ltori/area/index.html'])for(const method of ['GET','HEAD'])for(const query of ['', '?source=area&utm_campaign=a%2Bb&term=%E6%8E%A1%E7%94%A8']) {
+    const result=await publicFetch(new Request(`https://layr.co.jp${path}${query}`,{method}),env);
+    assert.equal(result.status,301);assert.equal(result.headers.get('Location'),`https://layr.co.jp/service/ltori/${query}`);assert.equal(await result.text(),'');
+  }
+  assert.equal(touched,0);
+  assert.deepEqual(await resolveSource(unavailable,'area'),{key:'area',label:'採用LINEの対応地域',path:'/service/ltori/'});assert.equal(touched,0);
+});
 
 // Exercise native HTMLRewriter: fake selectors cannot catch escaping or streaming bugs.
 test('native renderer keeps reviewed city/article metadata, escaped content and attribution consistent', { timeout: 60000 }, async () => {
@@ -113,7 +126,11 @@ test('native public routing reads one body per URL and only selected related cit
     for (const slug of ['mie/nabari', 'mie/toba', 'wakayama/hashimoto']) assert(metrics.report.pages.some(page => page.path === `/service/ltori/area/${slug}/`));
     const existing = await mf.dispatchFetch('https://layr.co.jp/service/ltori/area/mie/nabari/');
     assert.equal(existing.status, 200); assert.equal(await existing.text(), 'existing static page');
-    for (const path of ['/sitemap-ltori-growth.xml', '/service/ltori/media/', '/service/ltori/area/']) {
+    for(const path of ['/service/ltori/area','/service/ltori/area/','/service/ltori/area/index.html'])for(const method of ['GET','HEAD']) {
+      const retired=await mf.dispatchFetch(`https://layr.co.jp${path}?ref=old%2Bdirectory`,{method,redirect:'manual'});
+      assert.equal(retired.status,301);assert.equal(retired.headers.get('Location'),'https://layr.co.jp/service/ltori/?ref=old%2Bdirectory');assert.equal(await retired.text(),'');assert.deepEqual(selects(retired),[]);
+    }
+    for (const path of ['/sitemap-ltori-growth.xml', '/service/ltori/media/']) {
       const listing = await mf.dispatchFetch(`https://layr.co.jp${path}`);
       assert.equal(listing.status, 200); assert.deepEqual(selects(listing), ['SELECT * FROM seo_published ORDER BY published_at DESC,id']);
     }

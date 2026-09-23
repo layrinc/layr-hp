@@ -31,14 +31,15 @@ test('one candidate uses the same gate as the complete set, including official t
   assert.equal(normalizeCityPhoto({...candidate, license: 'CC BY-NC 4.0'}), null);
 });
 
-test('optional Japanese captions change only the photo label and retain the original title in credits', () => {
+test('photos have no visible captions while original titles remain in attribution', () => {
   const caption = '札幌市の街並み <冬景色> & 公園';
   const originalTitle = 'Sapporo City Skyline Original Photograph';
   const candidate = photo(1, {title: originalTitle, caption});
   assert.equal(normalizeCityPhoto(candidate).caption, caption);
   assert.deepEqual(normalizeCityPhoto(normalizeCityPhoto(candidate)), normalizeCityPhoto(candidate));
   const dom = parseFragment(renderCityPhotos(area, record([candidate, photo(2), photo(3)])));
-  assert.deepEqual(nodes(dom, node => node.tagName === 'figcaption').map(text), [caption, photo(2).title, photo(3).title]);
+  assert.equal(nodes(dom, node => node.tagName === 'figcaption').length, 0);
+  assert.ok(!text(dom).includes(caption));
   assert.ok(nodes(dom, node => node.tagName === 'a').some(node => text(node) === originalTitle));
   assert.equal(nodes(dom, node => !['section', 'div', 'p', 'h2', 'button', 'ul', 'li', 'figure', 'img', 'figcaption', 'details', 'summary', 'a'].includes(node.tagName) && node.tagName !== undefined).length, 0);
   for (const value of ['', '  ', '行\n区切り', null, 123, 'あ'.repeat(101)]) assert.equal(normalizeCityPhoto(photo(1, {caption: value})), null);
@@ -48,7 +49,8 @@ test('optional Japanese captions change only the photo label and retain the orig
   const legacy = photo(1, {title: 'A'.repeat(150)});
   assert.deepEqual(normalizeCityPhoto(normalizeCityPhoto(legacy)), normalizeCityPhoto(legacy));
   const legacyDom = parseFragment(renderCityPhotos(area, record([legacy, photo(2), photo(3)])));
-  assert.equal(text(nodes(legacyDom, node => node.tagName === 'figcaption')[0]), legacy.title);
+  assert.equal(nodes(legacyDom, node => node.tagName === 'figcaption').length, 0);
+  assert.ok(nodes(legacyDom, node => node.tagName === 'a').some(node => text(node) === legacy.title));
 });
 
 test('ready records keep three or four unique valid photos without mutating the source', () => {

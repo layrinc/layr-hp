@@ -7,18 +7,16 @@
 .lt-area-service > span { display: inline-block; }
 .lt-area-links { background: var(--lt-gray); }
 /* City photographs share one native horizontal viewport on static and runtime LPs. */
-.lt-city-photos { padding: 22px 0; background: var(--lt-white); }
-.lt-city-photos-head { display: flex; align-items: end; justify-content: space-between; gap: 22px; margin-bottom: 22px; }
-.lt-city-photos-city { color: var(--lt-green-ink); font-size: 14px; font-weight: 500; margin-bottom: 6px !important; scroll-margin-top: 150px; }
+.lt-city-photos { padding: 22px 0; background: var(--lt-white); scroll-margin-top: 150px; }
+.lt-city-photos-head { display: flex; align-items: end; justify-content: flex-end; gap: 22px; margin-bottom: 22px; }
 .lt-city-photos-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
 .lt-city-photos-controls button { min-width: 44px; min-height: 44px; border: 1px solid color-mix(in srgb, var(--lt-ink) 25%, transparent); border-radius: var(--radius); background: var(--lt-white); color: var(--lt-ink); padding: 6px 12px; font-size: 12px; }
 .lt-city-photos-controls button:hover { border-color: var(--lt-green-ink); }
 .lt-city-photos-controls button:disabled { color: color-mix(in srgb, var(--lt-ink) 70%, var(--lt-white)); cursor: default; }
 .lt-city-photos-viewport { max-width: 100%; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scroll-padding-inline: max(48px, calc((100vw - 1240px) / 2)); scrollbar-width: thin; }
 .lt-city-photos-track { display: flex; width: max-content; gap: 22px; padding: 0 max(48px, calc((100vw - 1240px) / 2)) 6px !important; }
-.lt-city-photo { width: 360px; flex: 0 0 auto; scroll-snap-align: start; }
-.ltori .lt-city-photo img { width: 100%; height: 220px; object-fit: cover; border-radius: var(--radius); background: var(--lt-gray); }
-.lt-city-photo figcaption { margin-top: 6px; font-size: 14px; font-weight: 500; overflow-wrap: anywhere; }
+.lt-city-photo { width: 440px; flex: 0 0 auto; scroll-snap-align: start; }
+.ltori .lt-city-photo img { width: 100%; height: 268px; object-fit: cover; border-radius: var(--radius); background: var(--lt-gray); }
 .lt-city-photo-credits { margin-top: 22px; font-size: 12px; }
 .lt-city-photo-credits summary { display: flex; align-items: center; gap: 6px; min-height: 44px; width: fit-content; cursor: pointer; }
 .lt-city-photo-credits summary::before { content: '+'; }

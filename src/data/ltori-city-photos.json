@@ -3,55 +3,98 @@
     "schemaVersion": 1,
     "citySlug": "hokkaido/sapporo",
     "status": "ready",
-    "fetchedAt": "2026-09-23T07:40:37.067646+00:00",
+    "selectionVersion": "landmarks-v2",
+    "fetchedAt": "2026-09-23T13:41:15.942486+00:00",
     "photos": [
       {
-        "id": "File:2024-09-22 Odori Park.jpg",
-        "title": "大通公園とさっぽろテレビ塔（2024年）",
-        "alt": "札幌市の大通公園とさっぽろテレビ塔",
-        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/2024-09-22_Odori_Park.jpg/960px-2024-09-22_Odori_Park.jpg",
-        "sourceUrl": "https://commons.wikimedia.org/wiki/File:2024-09-22_Odori_Park.jpg",
-        "author": "ノボホショコロトソ",
-        "license": "CC BY 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
-        "width": 960,
-        "height": 720
-      },
-      {
-        "id": "File:Sapporo City Skyline Views from Norbesa20230312.jpg",
-        "title": "ノルベサから望む札幌（2023年）",
-        "alt": "札幌市のノルベサから望む市街地",
-        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9c/Sapporo_City_Skyline_Views_from_Norbesa20230312.jpg/960px-Sapporo_City_Skyline_Views_from_Norbesa20230312.jpg",
-        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sapporo_City_Skyline_Views_from_Norbesa20230312.jpg",
-        "author": "Nryate",
+        "id": "File:Former Hokkaido Government Office 202507.jpg",
+        "title": "Former Hokkaido Government Office 202507.jpg",
+        "alt": "札幌市の北海道庁旧本庁舎と緑の庭園",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Former_Hokkaido_Government_Office_202507.jpg/1280px-Former_Hokkaido_Government_Office_202507.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Former_Hokkaido_Government_Office_202507.jpg",
+        "author": "掬茶",
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "width": 960,
-        "height": 720
+        "width": 1280,
+        "height": 853
       },
       {
-        "id": "File:Asahiyama Memorial Park.jpg",
-        "title": "旭山記念公園（2009年）",
-        "alt": "札幌市中央区の旭山記念公園",
-        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c5/Asahiyama_Memorial_Park.jpg/960px-Asahiyama_Memorial_Park.jpg",
-        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Asahiyama_Memorial_Park.jpg",
-        "author": "Ozizo",
-        "license": "PD",
-        "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
-        "width": 960,
-        "height": 720
-      },
-      {
-        "id": "File:Kotoni okurayama 01.jpg",
-        "title": "大倉山から望む琴似（2014年）",
-        "alt": "札幌市の大倉山から望む琴似とその周辺",
-        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Kotoni_okurayama_01.jpg/960px-Kotoni_okurayama_01.jpg",
-        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kotoni_okurayama_01.jpg",
-        "author": "Asacyan",
+        "id": "File:Glass pyramid in Moerenuma Park 202607a.jpg",
+        "title": "Glass pyramid in Moerenuma Park 202607a.jpg",
+        "alt": "札幌市のモエレ沼公園にあるガラスのピラミッド",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Glass_pyramid_in_Moerenuma_Park_202607a.jpg/1280px-Glass_pyramid_in_Moerenuma_Park_202607a.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Glass_pyramid_in_Moerenuma_Park_202607a.jpg",
+        "author": "掬茶",
         "license": "CC BY-SA 4.0",
         "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "width": 960,
-        "height": 540
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "id": "File:定山渓二見吊橋 (Jozankei Futami suspension bridge) - panoramio.jpg",
+        "title": "定山渓二見吊橋 (Jozankei Futami suspension bridge) - panoramio.jpg",
+        "alt": "札幌市の定山渓で紅葉の渓谷に架かる二見吊橋",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/%E5%AE%9A%E5%B1%B1%E6%B8%93%E4%BA%8C%E8%A6%8B%E5%90%8A%E6%A9%8B_%28Jozankei_Futami_suspension_bridge%29_-_panoramio.jpg/1280px-%E5%AE%9A%E5%B1%B1%E6%B8%93%E4%BA%8C%E8%A6%8B%E5%90%8A%E6%A9%8B_%28Jozankei_Futami_suspension_bridge%29_-_panoramio.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E5%AE%9A%E5%B1%B1%E6%B8%93%E4%BA%8C%E8%A6%8B%E5%90%8A%E6%A9%8B_(Jozankei_Futami_suspension_bridge)_-_panoramio.jpg",
+        "author": "t-konno",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "width": 1280,
+        "height": 839
+      },
+      {
+        "id": "File:Sapporo - Sapporo7175.jpg",
+        "title": "Sapporo - Sapporo7175.jpg",
+        "alt": "札幌市中心部を東西に延びる大通公園と街並み",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/Sapporo_-_Sapporo7175.jpg/1280px-Sapporo_-_Sapporo7175.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Sapporo_-_Sapporo7175.jpg",
+        "author": "lumoplank",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "width": 1280,
+        "height": 960
+      }
+    ],
+    "sourceEvidence": [
+      {
+        "photoId": "File:Former Hokkaido Government Office 202507.jpg",
+        "landmark": "北海道庁旧本庁舎",
+        "tourismUrl": "https://www.sapporo.travel/spot/facility/former_hokkaido_government_office/",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/File:Former_Hokkaido_Government_Office_202507.jpg",
+        "originalWidth": 6000,
+        "originalHeight": 4000,
+        "dateTimeOriginal": "2025-07-27 11:12:02",
+        "visuallyReviewed": true
+      },
+      {
+        "photoId": "File:Glass pyramid in Moerenuma Park 202607a.jpg",
+        "landmark": "モエレ沼公園",
+        "tourismUrl": "https://www.sapporo.travel/spot/facility/moerenuma_park/",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/File:Glass_pyramid_in_Moerenuma_Park_202607a.jpg",
+        "originalWidth": 6000,
+        "originalHeight": 3376,
+        "dateTimeOriginal": "2026-07-03 09:11:48",
+        "visuallyReviewed": true
+      },
+      {
+        "photoId": "File:定山渓二見吊橋 (Jozankei Futami suspension bridge) - panoramio.jpg",
+        "landmark": "定山渓二見吊橋",
+        "tourismUrl": "https://jozankei.jp/en/spot/163/",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/File:%E5%AE%9A%E5%B1%B1%E6%B8%93%E4%BA%8C%E8%A6%8B%E5%90%8A%E6%A9%8B_(Jozankei_Futami_suspension_bridge)_-_panoramio.jpg",
+        "originalWidth": 3567,
+        "originalHeight": 2337,
+        "dateTimeOriginal": "Taken on 9 October 2016",
+        "visuallyReviewed": true
+      },
+      {
+        "photoId": "File:Sapporo - Sapporo7175.jpg",
+        "landmark": "大通公園",
+        "tourismUrl": "https://www.sapporo.travel/spot/facility/odori_park/",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/File:Sapporo_-_Sapporo7175.jpg",
+        "originalWidth": 5184,
+        "originalHeight": 3888,
+        "dateTimeOriginal": "2026-02-27",
+        "visuallyReviewed": true
       }
     ]
   },
@@ -59,56 +102,1121 @@
     "schemaVersion": 1,
     "citySlug": "mie/nabari",
     "status": "ready",
-    "fetchedAt": "2026-09-23T07:41:24.570612+00:00",
+    "fetchedAt": "2026-09-23T13:40:21.324697+00:00",
+    "selectionVersion": "landmarks-v2",
     "photos": [
       {
-        "id": "File:Aerial view of Nabari City.jpg",
-        "title": "空から望む名張市（2025年）",
-        "alt": "三重県名張市の市街地を上空から撮影した風景",
-        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/46/Aerial_view_of_Nabari_City.jpg/960px-Aerial_view_of_Nabari_City.jpg",
-        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Aerial_view_of_Nabari_City.jpg",
-        "author": "掬茶",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "width": 960,
-        "height": 640
-      },
-      {
-        "id": "File:View from train near Nabari Station.jpg",
-        "title": "名張駅付近の車窓（2019年）",
-        "alt": "名張市の名張駅西側、近鉄大阪線の列車内から望む風景",
-        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/db/View_from_train_near_Nabari_Station.jpg/960px-View_from_train_near_Nabari_Station.jpg",
-        "sourceUrl": "https://commons.wikimedia.org/wiki/File:View_from_train_near_Nabari_Station.jpg",
-        "author": "そらみみ",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "width": 960,
+        "id": "File:Ninai Falls (15624436142).jpg",
+        "title": "Ninai Falls (15624436142).jpg",
+        "alt": "名張市の赤目四十八滝にある荷担滝と緑の渓谷",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Ninai_Falls_%2815624436142%29.jpg/1280px-Ninai_Falls_%2815624436142%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Ninai_Falls_(15624436142).jpg",
+        "author": "coniferconifer from japan",
+        "license": "CC BY 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.0/",
+        "width": 1280,
         "height": 720
       },
       {
-        "id": "File:Nabaricyuuoukouen.jpg",
-        "title": "名張中央公園（2020年）",
-        "alt": "名張市の名張中央公園の風景",
-        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Nabaricyuuoukouen.jpg/960px-Nabaricyuuoukouen.jpg",
-        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nabaricyuuoukouen.jpg",
-        "author": "Fmtw2cx40",
-        "license": "CC BY-SA 4.0",
-        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
-        "width": 960,
-        "height": 720
+        "id": "File:青蓮寺湖 - panoramio.jpg",
+        "title": "青蓮寺湖 - panoramio.jpg",
+        "alt": "名張市の青蓮寺湖に映る湖畔の木々",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/%E9%9D%92%E8%93%AE%E5%AF%BA%E6%B9%96_-_panoramio.jpg/1280px-%E9%9D%92%E8%93%AE%E5%AF%BA%E6%B9%96_-_panoramio.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:%E9%9D%92%E8%93%AE%E5%AF%BA%E6%B9%96_-_panoramio.jpg",
+        "author": "400a",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+        "width": 1280,
+        "height": 765
       },
       {
-        "id": "File:Akame 48 Waterfalls, Fudo Falls.jpg",
-        "title": "赤目四十八滝・不動滝（2020年）",
-        "alt": "三重県名張市の赤目四十八滝にある不動滝",
-        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Akame_48_Waterfalls%2C_Fudo_Falls.jpg/960px-Akame_48_Waterfalls%2C_Fudo_Falls.jpg",
-        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Akame_48_Waterfalls,_Fudo_Falls.jpg",
+        "id": "File:Former Hosokawa House 2021-11 ac (1).jpg",
+        "title": "Former Hosokawa House 2021-11 ac (1).jpg",
+        "alt": "名張市新町にある旧細川邸やなせ宿の外観",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Former_Hosokawa_House_2021-11_ac_%281%29.jpg/1280px-Former_Hosokawa_House_2021-11_ac_%281%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Former_Hosokawa_House_2021-11_ac_(1).jpg",
+        "author": "Asturio Cantabrio",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 851
+      }
+    ],
+    "sourceEvidence": [
+      {
+        "photoId": "File:Ninai Falls (15624436142).jpg",
+        "landmark": "赤目四十八滝・荷担滝",
+        "tourismUrl": "https://kankou-nabari.jp/3620",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/File:Ninai_Falls_(15624436142).jpg",
+        "originalWidth": 4608,
+        "originalHeight": 2592,
+        "dateTimeOriginal": "2014-10-18 14:00",
+        "visuallyReviewed": true
+      },
+      {
+        "photoId": "File:青蓮寺湖 - panoramio.jpg",
+        "landmark": "青蓮寺湖",
+        "tourismUrl": "https://kankou-nabari.jp/42",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/File:%E9%9D%92%E8%93%AE%E5%AF%BA%E6%B9%96_-_panoramio.jpg",
+        "originalWidth": 3264,
+        "originalHeight": 1952,
+        "dateTimeOriginal": "Taken on 31 October 2012",
+        "visuallyReviewed": true
+      },
+      {
+        "photoId": "File:Former Hosokawa House 2021-11 ac (1).jpg",
+        "landmark": "旧細川邸やなせ宿",
+        "tourismUrl": "https://kankou-nabari.jp/nabari-okashi/spots/19",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/File:Former_Hosokawa_House_2021-11_ac_(1).jpg",
+        "originalWidth": 5768,
+        "originalHeight": 3835,
+        "dateTimeOriginal": "2021-11",
+        "visuallyReviewed": true
+      }
+    ]
+  },
+  "mie/matsusaka": {
+    "schemaVersion": 1,
+    "citySlug": "mie/matsusaka",
+    "status": "ready",
+    "fetchedAt": "2026-09-23T13:47:47.799695+00:00",
+    "photos": [
+      {
+        "id": "File:Gojōban Yashiki 2018-2.jpg",
+        "title": "Gojōban Yashiki 2018-2",
+        "caption": "御城番屋敷",
+        "alt": "松阪市の御城番屋敷の石畳と生垣",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Goj%C5%8Dban_Yashiki_2018-2.jpg/1280px-Goj%C5%8Dban_Yashiki_2018-2.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Goj%C5%8Dban_Yashiki_2018-2.jpg",
+        "author": "Suikotei",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 960
+      },
+      {
+        "id": "File:Matsusaka Castleruins.jpg",
+        "title": "Matsusaka Castleruins",
+        "caption": "松坂城跡",
+        "alt": "松阪市の松坂城跡の石垣と入口",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Matsusaka_Castleruins.jpg/1280px-Matsusaka_Castleruins.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Matsusaka_Castleruins.jpg",
+        "author": "勘右衛門",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 960
+      },
+      {
+        "id": "File:Takarazuka Kofun (Matsusaka)-1, dejima-1.jpg",
+        "title": "Takarazuka Kofun (Matsusaka)-1, dejima-1",
+        "caption": "宝塚古墳公園",
+        "alt": "松阪市の宝塚古墳公園の埴輪が並ぶ出島状施設",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Takarazuka_Kofun_%28Matsusaka%29-1%2C_dejima-1.jpg/1280px-Takarazuka_Kofun_%28Matsusaka%29-1%2C_dejima-1.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Takarazuka_Kofun_(Matsusaka)-1,_dejima-1.jpg",
         "author": "Saigen Jiro",
         "license": "CC0",
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
-        "width": 960,
-        "height": 638
+        "width": 1280,
+        "height": 851
+      }
+    ],
+    "curation": {
+      "requiredDistinctLandmarks": 3,
+      "licenseVerified": true,
+      "municipalLocationVerified": true,
+      "selectionNote": "4枚を埋めるより品質を優先し、確認済みの3つの別名所だけを採用。公式市写真は事前申請が必要なため未利用。",
+      "legalCreditNote": "画像の大きな説明キャプションは不要だが、写真ごとに原題・著作者・出典URL・CCライセンスリンクを識別可能な形で残す。CSSのトリミング等を行う場合は表示上の加工を明記。"
+    },
+    "selectionVersion": "landmarks-v2",
+    "sourceEvidence": [
+      {
+        "originalWidth": 3264,
+        "originalHeight": 2448,
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Goj%C5%8Dban_Yashiki_2018-2.jpg",
+        "pageId": 65732082,
+        "landmarkKey": "gojoban-yashiki",
+        "officialLandmarkUrl": "https://www.city.matsusaka.mie.jp/site/kanko/kankousopottoshasinn.html",
+        "visualReview": {
+          "status": "accepted",
+          "reviewedAt": "2026-09-23T13:47:47.799695+00:00",
+          "method": "1280px photo viewed directly in browser",
+          "note": "石畳の通りと生垣を左右対称に捉えた明るい構図。道路の雑景写真ではなく公式観光名所の歴史的景観。"
+        },
+        "sourceDescription": "御城番屋敷の通り",
+        "id": "File:Gojōban Yashiki 2018-2.jpg",
+        "landmark": "御城番屋敷"
+      },
+      {
+        "originalWidth": 4032,
+        "originalHeight": 3024,
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/8/84/Matsusaka_Castleruins.jpg",
+        "pageId": 172097963,
+        "landmarkKey": "matsusaka-castle",
+        "officialLandmarkUrl": "https://www.city.matsusaka.mie.jp/site/kanko/kankousopottoshasinn.html",
+        "visualReview": {
+          "status": "accepted",
+          "reviewedAt": "2026-09-23T13:47:47.799695+00:00",
+          "method": "1280px photo viewed directly in browser",
+          "note": "石垣と松坂城跡の石碑が明確。冬の撮影で桜の華やかさはないが、観光名所として識別可能。地面主体の別候補は不採用。"
+        },
+        "sourceDescription": "松坂城跡です。",
+        "id": "File:Matsusaka Castleruins.jpg",
+        "landmark": "松坂城跡"
+      },
+      {
+        "originalWidth": 6016,
+        "originalHeight": 4000,
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/d/df/Takarazuka_Kofun_%28Matsusaka%29-1%2C_dejima-1.jpg",
+        "pageId": 63233802,
+        "landmarkKey": "takarazuka-kofun",
+        "officialLandmarkUrl": "https://matsusaka-info.jp/photo/",
+        "visualReview": {
+          "status": "accepted",
+          "reviewedAt": "2026-09-23T13:47:47.799695+00:00",
+          "method": "1280px photo viewed directly in browser",
+          "note": "埴輪と出島状施設、緑地がまとまって見える全景。名所としての対象が明確。木立と地面だけの別候補は不採用。"
+        },
+        "sourceDescription": "宝塚1号墳 出島状施設全景",
+        "id": "File:Takarazuka Kofun (Matsusaka)-1, dejima-1.jpg",
+        "landmark": "宝塚古墳公園"
       }
     ]
+  },
+  "aomori/hirosaki": {
+    "schemaVersion": 1,
+    "citySlug": "aomori/hirosaki",
+    "status": "ready",
+    "selectionVersion": "landmarks-v2",
+    "fetchedAt": "2026-09-23T13:58:58.328532+00:00",
+    "photos": [
+      {
+        "id": "File:Cherry blossoms along the moat of Hirosaki Castle at night 20260420g.jpg",
+        "title": "Cherry blossoms along the moat of Hirosaki Castle at night 20260420g",
+        "alt": "弘前市・弘前公園の濠に映る夜桜",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Cherry_blossoms_along_the_moat_of_Hirosaki_Castle_at_night_20260420g.jpg/1280px-Cherry_blossoms_along_the_moat_of_Hirosaki_Castle_at_night_20260420g.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Cherry_blossoms_along_the_moat_of_Hirosaki_Castle_at_night_20260420g.jpg",
+        "author": "掬茶",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "id": "File:Fujita Memorial Garden in June 2022 (2).jpg",
+        "title": "Fujita Memorial Garden in June 2022 (2)",
+        "alt": "弘前市・藤田記念庭園の緑と池泉回遊式庭園",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Fujita_Memorial_Garden_in_June_2022_%282%29.jpg/1280px-Fujita_Memorial_Garden_in_June_2022_%282%29.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Fujita_Memorial_Garden_in_June_2022_(2).jpg",
+        "author": "掬茶",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 853
+      },
+      {
+        "id": "File:Old Hirosaki City Library.jpg",
+        "title": "Old Hirosaki City Library",
+        "alt": "弘前市・赤い双塔が特徴の旧弘前市立図書館",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/29/Old_Hirosaki_City_Library.jpg/1280px-Old_Hirosaki_City_Library.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Old_Hirosaki_City_Library.jpg",
+        "author": "掬茶",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 853
+      }
+    ],
+    "sourceEvidence": [
+      {
+        "id": "File:Cherry blossoms along the moat of Hirosaki Castle at night 20260420g.jpg",
+        "pageId": 190704027,
+        "landmarkKey": "hirosaki-park",
+        "landmarkName": "弘前公園",
+        "officialLandmarkUrl": "https://www.city.hirosaki.aomori.jp/gaiyou/shisetsu/2014-1206-1528-48.html",
+        "categoryPath": [
+          "Category:Sakura at Hirosaki Castle"
+        ],
+        "categoryEvidenceType": "direct_file_category",
+        "originalWidth": 6000,
+        "originalHeight": 3376,
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Cherry_blossoms_along_the_moat_of_Hirosaki_Castle_at_night_20260420g.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "sourceDescription": "Cherry blossoms along the moat of Hirosaki Castle (Hirosaki, Aomori, Japan)",
+        "photographedAt": "2026-04-20 20:21:57",
+        "licenseMetadataVerifiedAt": "2026-09-23T13:58:58.328532+00:00",
+        "visualReview": {
+          "status": "accepted",
+          "reviewedAt": "2026-09-23T13:58:58.328532+00:00",
+          "method": "1280px image visually inspected in browser",
+          "note": "濠沿いの夜桜と水面の反射が画面を占める鮮明な横構図。道路・看板・駐車場主体ではない。"
+        },
+        "locationEvidence": "Commonsの画像説明・名所カテゴリと弘前市公式施設情報を照合。市名だけの近似一致では選定していない。"
+      },
+      {
+        "id": "File:Fujita Memorial Garden in June 2022 (2).jpg",
+        "pageId": 119723769,
+        "landmarkKey": "fujita-memorial-garden",
+        "landmarkName": "藤田記念庭園",
+        "officialLandmarkUrl": "https://www.city.hirosaki.aomori.jp/gaiyou/shisetsu/2014-1206-1549-48.html",
+        "categoryPath": [
+          "Category:Fujita Memorial Garden"
+        ],
+        "categoryEvidenceType": "direct_file_category",
+        "originalWidth": 6000,
+        "originalHeight": 4000,
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4d/Fujita_Memorial_Garden_in_June_2022_%282%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "sourceDescription": "青森県弘前市、藤田記念庭園の池泉回遊式庭園",
+        "photographedAt": "2022-06-18 14:05:51",
+        "licenseMetadataVerifiedAt": "2026-09-23T13:58:58.328532+00:00",
+        "visualReview": {
+          "status": "accepted",
+          "reviewedAt": "2026-09-23T13:58:58.328532+00:00",
+          "method": "1280px image visually inspected in browser",
+          "note": "青空、池泉、整えられた樹木、緑地の広がりを捉えた庭園全景。暗い入口と一般道路主体の別写真は除外。"
+        },
+        "locationEvidence": "Commonsの画像説明・名所カテゴリと弘前市公式施設情報を照合。市名だけの近似一致では選定していない。"
+      },
+      {
+        "id": "File:Old Hirosaki City Library.jpg",
+        "pageId": 119686474,
+        "landmarkKey": "former-hirosaki-city-library",
+        "landmarkName": "旧弘前市立図書館",
+        "officialLandmarkUrl": "https://city.hirosaki.aomori.jp/gaiyou/shisetsu/kyuutosyo.html",
+        "categoryPath": [
+          "Category:Former Hirosaki City Library"
+        ],
+        "categoryEvidenceType": "direct_file_category",
+        "originalWidth": 5256,
+        "originalHeight": 3504,
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/2/29/Old_Hirosaki_City_Library.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "sourceDescription": "旧弘前市立図書館",
+        "photographedAt": "2022-06-18 16:17:41",
+        "licenseMetadataVerifiedAt": "2026-09-23T13:58:58.328532+00:00",
+        "visualReview": {
+          "status": "accepted",
+          "reviewedAt": "2026-09-23T13:58:58.328532+00:00",
+          "method": "1280px image visually inspected in browser",
+          "note": "青空を背景に赤い双塔と洋館の正面全体が明確。花壇が入り、外観の特徴が読み取れる。"
+        },
+        "locationEvidence": "Commonsの画像説明・名所カテゴリと弘前市公式施設情報を照合。市名だけの近似一致では選定していない。"
+      }
+    ]
+  },
+  "hokkaido/furano": {
+    "schemaVersion": 1,
+    "citySlug": "hokkaido/furano",
+    "status": "ready",
+    "selectionVersion": "landmarks-v2",
+    "fetchedAt": "2026-09-23T13:59:52.107281+00:00",
+    "photos": [
+      {
+        "id": "File:Furano Winery.jpg",
+        "title": "Furano Winery.jpg",
+        "alt": "富良野市清水山のふらのワイン工場と夏の青空",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/Furano_Winery.jpg/1280px-Furano_Winery.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Furano_Winery.jpg",
+        "author": "Drivephotographer",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "width": 1280,
+        "height": 720
+      },
+      {
+        "id": "File:130503 Ningle Terrace Furano Hokkaido Japan07s10.jpg",
+        "title": "130503 Ningle Terrace Furano Hokkaido Japan07s10.jpg",
+        "alt": "富良野市中御料のニングルテラスに灯る夕暮れの明かり",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/130503_Ningle_Terrace_Furano_Hokkaido_Japan07s10.jpg/1280px-130503_Ningle_Terrace_Furano_Hokkaido_Japan07s10.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:130503_Ningle_Terrace_Furano_Hokkaido_Japan07s10.jpg",
+        "author": "663highland",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 960
+      },
+      {
+        "id": "File:Torinuma park - panoramio.jpg",
+        "title": "Torinuma park - panoramio.jpg",
+        "alt": "富良野市鳥沼公園の木立と芝生に差し込む光",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Torinuma_park_-_panoramio.jpg/1280px-Torinuma_park_-_panoramio.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Torinuma_park_-_panoramio.jpg",
+        "author": "Katsumasa Miyazaki",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "width": 1280,
+        "height": 960
+      }
+    ],
+    "sourceEvidence": [
+      {
+        "photoId": "File:Furano Winery.jpg",
+        "landmark": "ふらのワイン工場",
+        "tourismUrl": "https://www.furanotourism.com/jp/spot/spot_D.php?id=398",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/File:Furano_Winery.jpg",
+        "originalWidth": 4000,
+        "originalHeight": 2250,
+        "dateTimeOriginal": "2021-08-13 08:14:14",
+        "visuallyReviewed": true,
+        "verifiedAddress": "富良野市清水山",
+        "commonsDescription": "Furano Winery",
+        "latitude": "43.359257",
+        "longitude": "142.374009"
+      },
+      {
+        "photoId": "File:130503 Ningle Terrace Furano Hokkaido Japan07s10.jpg",
+        "landmark": "ニングルテラス",
+        "tourismUrl": "https://www.furanotourism.com/jp/spot/spot_D.php?id=2",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/File:130503_Ningle_Terrace_Furano_Hokkaido_Japan07s10.jpg",
+        "originalWidth": 4896,
+        "originalHeight": 3672,
+        "dateTimeOriginal": "2013-05-03",
+        "visuallyReviewed": true,
+        "verifiedAddress": "富良野市中御料 新富良野プリンスホテル内",
+        "commonsDescription": "Ningle Terrace in Furano, Hokkaido prefecture, Japan",
+        "latitude": "43.323346",
+        "longitude": "142.356943"
+      },
+      {
+        "photoId": "File:Torinuma park - panoramio.jpg",
+        "landmark": "鳥沼公園",
+        "tourismUrl": "https://www.furanotourism.com/jp/spot/spot_D.php?id=405",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/File:Torinuma_park_-_panoramio.jpg",
+        "originalWidth": 2592,
+        "originalHeight": 1944,
+        "dateTimeOriginal": "Taken on 1 July 2006",
+        "visuallyReviewed": true,
+        "verifiedAddress": "富良野市鳥沼",
+        "commonsDescription": "torinuma park",
+        "latitude": "43.341566",
+        "longitude": "142.436800"
+      }
+    ],
+    "municipalitySourceUrl": "https://www.city.furano.hokkaido.jp/index.html",
+    "municipalitySourceNote": "富良野市公式サイトが観光情報の参照先として案内する一般社団法人ふらの観光協会の各名所ページで富良野市内の住所を確認。",
+    "visualReviews": [
+      {
+        "photoId": "File:Furano Winery.jpg",
+        "localPath": "/tmp/furano-city-photos/winery-2.jpg",
+        "assessment": "明るい青空と赤い屋根の工場外観。建物名が判別でき、室内写真・周辺自治体の写真ではない。前面の道路を含む16:9の横構図。",
+        "reviewedAt": "2026-09-23T13:59:52.107281+00:00",
+        "reviewSize": "API-provided 1280px thumbnail"
+      },
+      {
+        "photoId": "File:130503 Ningle Terrace Furano Hokkaido Japan07s10.jpg",
+        "localPath": "/tmp/furano-park-photos/candidate-7.jpg",
+        "assessment": "第一候補。林間に連なるログハウス、木道、明かりが判別できる。青い空と暖色の照明に色彩差があり、3枚組のアクセントになる。夜景のため暗部ノイズはあるがブレは認めない。5月撮影の残雪風景。",
+        "reviewedAt": "2026-09-23T13:56:50.493184+00:00",
+        "reviewSize": "API-provided 1280px thumbnail"
+      },
+      {
+        "photoId": "File:Torinuma park - panoramio.jpg",
+        "localPath": "/tmp/furano-park-photos/candidate-1.jpg",
+        "assessment": "第二候補。木々と芝生の輪郭は鮮明。画面下部は日陰でかなり暗いため、明るい写真を優先する構成なら代替対象。池の水面を見せる写真ではないので「透明な沼」「水鏡」のaltにしない。遠方に小さな来園者が写る。",
+        "reviewedAt": "2026-09-23T13:56:50.493184+00:00",
+        "reviewSize": "API-provided 1280px thumbnail"
+      }
+    ],
+    "rawMetadataFiles": [
+      "/tmp/furano-city-photos/wine-candidates.json",
+      "/tmp/furano-park-commons-search.json"
+    ],
+    "urlNormalization": "Commons imageinfo APIが返した1280px thumburlのUTMクエリのみ除去。ホスト・パス・サイズ文字列は変更していない。",
+    "excludedAreas": [
+      "ファーム富田など中富良野町",
+      "美瑛町",
+      "上富良野町",
+      "南富良野スキー場など南富良野町"
+    ],
+    "selectionNote": "3つの異なる名所を選定。ニングルテラスは夜景、鳥沼公園は下部が日陰の写真。原題・作者・出典・ライセンスをクレジット用に保持。",
+    "rejected": [
+      {
+        "photoId": "File:Torinuma-park 6300074鳥沼公園.jpg",
+        "reason": "元画像1024×768で寸法不足。"
+      },
+      {
+        "photoId": "File:Torinuma-park 6300098鳥沼公園.jpg",
+        "reason": "元画像1024×768で寸法不足。"
+      },
+      {
+        "photoId": "File:ニングルの秋（Fall of Ninguru） - panoramio.jpg",
+        "reason": "元画像1600×1200だが1280px表示でも細部のブレと甘さが目立ち、画質改善向けとして除外。"
+      },
+      {
+        "photoId": "File:130503 Ningle Terrace Furano Hokkaido Japan01s3.jpg",
+        "reason": "木立の向こうに建物背面が並び、梯子・道具が写るため、明かりと木道が主題の07を優先。"
+      },
+      {
+        "photoId": "File:130503 Ningle Terrace Furano Hokkaido Japan04bs16.jpg",
+        "reason": "縦長のため対象外。"
+      },
+      {
+        "photoId": "File:Furano Winery-2.jpg",
+        "reason": "ワイン貯蔵庫の屋内写真で、今回の観光地風景に合わない。"
+      },
+      {
+        "photoId": "File:Minami Furano Ski area.jpg",
+        "reason": "南富良野町であり富良野市ではない。"
+      },
+      {
+        "photoId": "File:Furano Snow Resort view1.JPG",
+        "reason": "富良野市内だが曇天・霞の強い景観で、今回の明るいワイン工場外観を優先。"
+      },
+      {
+        "photoId": "File:Furano Snow Resort view2.JPG",
+        "reason": "富良野市内だが灰色がかったスキー場風景で、異なる3名所の組合せを優先。"
+      },
+      {
+        "photoId": "File:Furano Snow Resort view3.JPG",
+        "reason": "富良野市内だが曇天・灰色がかったゲレンデ風景で今回の3名所を優先。"
+      }
+    ]
+  },
+  "hokkaido/noboribetsu": {
+    "schemaVersion": 1,
+    "citySlug": "hokkaido/noboribetsu",
+    "status": "ready",
+    "selectionVersion": "landmarks-v2",
+    "fetchedAt": "2026-09-23T13:52:23.509Z",
+    "photos": [
+      {
+        "id": "File:Noboribetsu hot spring jigokudani.JPG",
+        "title": "Noboribetsu hot spring jigokudani",
+        "caption": "登別温泉",
+        "alt": "北海道登別市の観光名所・登別温泉",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Noboribetsu_hot_spring_jigokudani.JPG/1280px-Noboribetsu_hot_spring_jigokudani.JPG",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Noboribetsu_hot_spring_jigokudani.JPG",
+        "author": "User:欅",
+        "license": "CC BY-SA 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0/",
+        "width": 1280,
+        "height": 960
+      },
+      {
+        "id": "File:Nixe Castle of Noboribetsu Marine Park NIXE 20260822b.jpg",
+        "title": "Nixe Castle of Noboribetsu Marine Park NIXE 20260822b",
+        "caption": "登別マリンパークニクス",
+        "alt": "北海道登別市の観光名所・登別マリンパークニクス",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Nixe_Castle_of_Noboribetsu_Marine_Park_NIXE_20260822b.jpg/1280px-Nixe_Castle_of_Noboribetsu_Marine_Park_NIXE_20260822b.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Nixe_Castle_of_Noboribetsu_Marine_Park_NIXE_20260822b.jpg",
+        "author": "掬茶",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 853
+      },
+      {
+        "id": "File:Noboribetsu & Usuzan - Noboribetsu7129.jpg",
+        "title": "Noboribetsu & Usuzan - Noboribetsu7129.jpg",
+        "alt": "登別市の大湯沼から立ち上る湯気と秋の木々",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Noboribetsu_%26_Usuzan_-_Noboribetsu7129.jpg/1280px-Noboribetsu_%26_Usuzan_-_Noboribetsu7129.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Noboribetsu_%26_Usuzan_-_Noboribetsu7129.jpg",
+        "author": "lumoplank",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "width": 1280,
+        "height": 962
+      }
+    ],
+    "sourceEvidence": [
+      {
+        "id": "File:Noboribetsu hot spring jigokudani.JPG",
+        "pageId": 4008105,
+        "landmark": "登別温泉",
+        "landmarkPageId": 120735,
+        "landmarkWikidataId": "Q3888689",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E7%99%BB%E5%88%A5%E6%B8%A9%E6%B3%89",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E7%99%BB%E5%88%A5%E5%B8%82",
+        "cityWikidataId": "Q428989",
+        "section": "観光 / 観光スポット",
+        "interest": {
+          "views": 1740,
+          "observedDays": 30
+        },
+        "locationExcerpt": "登別温泉（のぼりべつおんせん、英: Noboribetsu Onsen）は、北海道登別市にある温泉。江戸時代から温泉の存在が知られており、明治時代に温泉宿が設けられてからは保養地・観光地となった。「にっぽんの温泉100選・総合ランキング」では毎年上位にランクインしている日本有数の温泉地となっている。地名の語源はアイヌ語の「ヌプル・ペツ」（水色の濃い川）に由来している。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/51/Noboribetsu_hot_spring_jigokudani.JPG",
+        "originalWidth": 3648,
+        "originalHeight": 2736
+      },
+      {
+        "id": "File:Nixe Castle of Noboribetsu Marine Park NIXE 20260822b.jpg",
+        "pageId": 198395654,
+        "landmark": "登別マリンパークニクス",
+        "landmarkPageId": 1062160,
+        "landmarkWikidataId": "Q11579106",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E7%99%BB%E5%88%A5%E3%83%9E%E3%83%AA%E3%83%B3%E3%83%91%E3%83%BC%E3%82%AF%E3%83%8B%E3%82%AF%E3%82%B9",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E7%99%BB%E5%88%A5%E5%B8%82",
+        "cityWikidataId": "Q428989",
+        "section": "観光 / 観光スポット",
+        "interest": {
+          "views": 734,
+          "observedDays": 30
+        },
+        "locationExcerpt": "登別マリンパークニクス（のぼりべつマリンパークニクス）は、北海道登別市に所在する日本の水族館。\n「北欧ロマンと海洋ファンタジー」をテーマにしている。登別駅より徒歩約5分。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Nixe_Castle_of_Noboribetsu_Marine_Park_NIXE_20260822b.jpg",
+        "originalWidth": 6000,
+        "originalHeight": 4000
+      },
+      {
+        "photoId": "File:Noboribetsu & Usuzan - Noboribetsu7129.jpg",
+        "landmark": "大湯沼",
+        "tourismUrl": "https://noboribetsu-spa.jp/spot/spot0055/",
+        "commonsUrl": "https://commons.wikimedia.org/wiki/File:Noboribetsu_%26_Usuzan_-_Noboribetsu7129.jpg",
+        "originalWidth": 4973,
+        "originalHeight": 3736,
+        "dateTimeOriginal": "26 February 2026 (upload date)",
+        "dateNote": "Commonsはアップロード日を表示。実際の撮影日は未確認。",
+        "visuallyReviewed": true,
+        "verifiedAddress": "北海道登別市登別温泉町",
+        "commonsDescription": "Oyunuma, a boiling sulfuric pond in the Noboribetsu volcanic valley, emitting steam, surrounded by autumn foliage.",
+        "originalSourceUrl": "https://www.flickr.com/photos/199350666@N08/55117128971",
+        "licenseEvidence": "Commons imageinfoのCC0・CC-Zeroカテゴリ・Flickr images reviewed by FlickreviewR 2を確認。"
+      }
+    ],
+    "curation": {
+      "reviewedAt": "2026-09-23T14:17:43.707627+00:00",
+      "method": "browser visual review",
+      "note": "地獄谷・登別マリンパークニクス・大湯沼の別名所3枚。暗い道路写真は除外。"
+    }
+  },
+  "aomori/misawa": {
+    "schemaVersion": 1,
+    "citySlug": "aomori/misawa",
+    "status": "ready",
+    "selectionVersion": "landmarks-v2",
+    "fetchedAt": "2026-09-23T13:50:07.597Z",
+    "photos": [
+      {
+        "id": "File:Komaki Onsen Misawa Aomori pref Japan02n.jpg",
+        "title": "Komaki Onsen Misawa Aomori pref Japan02n",
+        "caption": "古牧温泉",
+        "alt": "青森県三沢市の観光名所・古牧温泉",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c9/Komaki_Onsen_Misawa_Aomori_pref_Japan02n.jpg/1280px-Komaki_Onsen_Misawa_Aomori_pref_Japan02n.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Komaki_Onsen_Misawa_Aomori_pref_Japan02n.jpg",
+        "author": "663highland",
+        "license": "CC BY 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.5/",
+        "width": 1280,
+        "height": 853
+      },
+      {
+        "id": "File:151101 Misawa Aviation & Science Museum, Aomori Japan03s3.jpg",
+        "title": "151101 Misawa Aviation & Science Museum, Aomori Japan03s3",
+        "caption": "青森県立三沢航空科学館",
+        "alt": "青森県三沢市の観光名所・青森県立三沢航空科学館",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/151101_Misawa_Aviation_%26_Science_Museum%2C_Aomori_Japan03s3.jpg/1280px-151101_Misawa_Aviation_%26_Science_Museum%2C_Aomori_Japan03s3.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:151101_Misawa_Aviation_%26_Science_Museum,_Aomori_Japan03s3.jpg",
+        "author": "663highland",
+        "license": "CC BY 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.5/",
+        "width": 1280,
+        "height": 853
+      },
+      {
+        "id": "File:151101 Shuji Terayama Museum Misawa Aomori pref Japan03s3.jpg",
+        "title": "151101 Shuji Terayama Museum Misawa Aomori pref Japan03s3",
+        "caption": "三沢市寺山修司記念館",
+        "alt": "青森県三沢市の観光名所・三沢市寺山修司記念館",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/151101_Shuji_Terayama_Museum_Misawa_Aomori_pref_Japan03s3.jpg/1280px-151101_Shuji_Terayama_Museum_Misawa_Aomori_pref_Japan03s3.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:151101_Shuji_Terayama_Museum_Misawa_Aomori_pref_Japan03s3.jpg",
+        "author": "663highland",
+        "license": "CC BY 2.5",
+        "licenseUrl": "https://creativecommons.org/licenses/by/2.5/",
+        "width": 1280,
+        "height": 853
+      }
+    ],
+    "sourceEvidence": [
+      {
+        "id": "File:Komaki Onsen Misawa Aomori pref Japan02n.jpg",
+        "pageId": 20318129,
+        "landmark": "古牧温泉",
+        "landmarkPageId": 2276711,
+        "landmarkWikidataId": "Q11411462",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E5%8F%A4%E7%89%A7%E6%B8%A9%E6%B3%89",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E4%B8%89%E6%B2%A2%E5%B8%82",
+        "cityWikidataId": "Q496401",
+        "section": "名所・旧跡・観光スポット・祭事・催事 / 観光スポット・名所・旧跡",
+        "interest": {
+          "views": 953,
+          "observedDays": 30
+        },
+        "locationExcerpt": "古牧温泉（こまきおんせん）は、青森県三沢市（旧国陸奥国）にある温泉である。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/c/c9/Komaki_Onsen_Misawa_Aomori_pref_Japan02n.jpg",
+        "originalWidth": 4800,
+        "originalHeight": 3200
+      },
+      {
+        "id": "File:151101 Misawa Aviation & Science Museum, Aomori Japan03s3.jpg",
+        "pageId": 44731640,
+        "landmark": "青森県立三沢航空科学館",
+        "landmarkPageId": 1392064,
+        "landmarkWikidataId": "Q11662211",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E9%9D%92%E6%A3%AE%E7%9C%8C%E7%AB%8B%E4%B8%89%E6%B2%A2%E8%88%AA%E7%A9%BA%E7%A7%91%E5%AD%A6%E9%A4%A8",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E4%B8%89%E6%B2%A2%E5%B8%82",
+        "cityWikidataId": "Q496401",
+        "section": "名所・旧跡・観光スポット・祭事・催事 / 観光スポット・名所・旧跡",
+        "interest": {
+          "views": 375,
+          "observedDays": 30
+        },
+        "locationExcerpt": "青森県立三沢航空科学館（あおもりけんりつみさわこうくうかがくかん）とは、青森県三沢市にある博物館である。三沢市大空ひろばの一角にあり大空と飛翔をテーマとした航空と科学の博物館。2003年8月8日に開館した。三沢市大空ひろばについても述べる。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/80/151101_Misawa_Aviation_%26_Science_Museum%2C_Aomori_Japan03s3.jpg",
+        "originalWidth": 6000,
+        "originalHeight": 4000
+      },
+      {
+        "id": "File:151101 Shuji Terayama Museum Misawa Aomori pref Japan03s3.jpg",
+        "pageId": 45234329,
+        "landmark": "三沢市寺山修司記念館",
+        "landmarkPageId": 3320619,
+        "landmarkWikidataId": "Q21654765",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E4%B8%89%E6%B2%A2%E5%B8%82%E5%AF%BA%E5%B1%B1%E4%BF%AE%E5%8F%B8%E8%A8%98%E5%BF%B5%E9%A4%A8",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E4%B8%89%E6%B2%A2%E5%B8%82",
+        "cityWikidataId": "Q496401",
+        "section": "名所・旧跡・観光スポット・祭事・催事 / 観光スポット・名所・旧跡",
+        "interest": {
+          "views": 182,
+          "observedDays": 30
+        },
+        "locationExcerpt": "三沢市寺山修司記念館（みさわしてらやましゅうじきねんかん）は、青森県三沢市ゆかりの芸術家寺山修司の記念館・文学館。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/b/b4/151101_Shuji_Terayama_Museum_Misawa_Aomori_pref_Japan03s3.jpg",
+        "originalWidth": 6000,
+        "originalHeight": 4000,
+        "officialLandmarkUrl": "https://www.terayamaworld.com/about/",
+        "locationEvidence": "市設置施設の指定管理者公式案内で住所を青森県三沢市大字三沢字淋代平116-2955と確認。"
+      }
+    ],
+    "source": {
+      "wikidataId": "Q496401",
+      "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E4%B8%89%E6%B2%A2%E5%B8%82"
+    },
+    "requests": {
+      "wikidataCalls": 1,
+      "cityCalls": 1,
+      "candidateCalls": 1,
+      "detailCalls": 3
+    },
+    "curation": {
+      "reviewedAt": "2026-09-23T14:28:28.853834+00:00",
+      "method": "browser visual review and official location verification",
+      "note": "全画像の構図・画質・実在する観光名所との対応を確認。所在地の導入文が曖昧な名所は公式情報で補完。"
+    }
+  },
+  "hokkaido/tomakomai": {
+    "schemaVersion": 1,
+    "citySlug": "hokkaido/tomakomai",
+    "status": "ready",
+    "selectionVersion": "landmarks-v2",
+    "fetchedAt": "2026-09-23T13:52:53.606Z",
+    "photos": [
+      {
+        "id": "File:Mount Tarumae seen from the SSE.jpg",
+        "title": "Mount Tarumae seen from the SSE",
+        "caption": "樽前山",
+        "alt": "北海道苫小牧市の観光名所・樽前山",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/96/Mount_Tarumae_seen_from_the_SSE.jpg/1280px-Mount_Tarumae_seen_from_the_SSE.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mount_Tarumae_seen_from_the_SSE.jpg",
+        "author": "Ray Swi-hymn",
+        "license": "CC BY-SA 2.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/2.0/",
+        "width": 1280,
+        "height": 610
+      },
+      {
+        "id": "File:Northern Horse Park 20260703f.jpg",
+        "title": "Northern Horse Park 20260703f",
+        "caption": "ノーザンホースパーク",
+        "alt": "北海道苫小牧市の観光名所・ノーザンホースパーク",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Northern_Horse_Park_20260703f.jpg/1280px-Northern_Horse_Park_20260703f.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Northern_Horse_Park_20260703f.jpg",
+        "author": "掬茶",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 853
+      },
+      {
+        "id": "File:Tarumaezan Shrine - Gate.jpg",
+        "title": "Tarumaezan Shrine - Gate",
+        "caption": "樽前山神社",
+        "alt": "北海道苫小牧市の観光名所・樽前山神社",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/Tarumaezan_Shrine_-_Gate.jpg/1280px-Tarumaezan_Shrine_-_Gate.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Tarumaezan_Shrine_-_Gate.jpg",
+        "author": "禁樹なずな",
+        "license": "CC BY 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+        "width": 1280,
+        "height": 848
+      }
+    ],
+    "sourceEvidence": [
+      {
+        "id": "File:Mount Tarumae seen from the SSE.jpg",
+        "pageId": 91850299,
+        "landmark": "樽前山",
+        "landmarkPageId": 34868,
+        "landmarkWikidataId": "Q1057979",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E6%A8%BD%E5%89%8D%E5%B1%B1",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E8%8B%AB%E5%B0%8F%E7%89%A7%E5%B8%82",
+        "cityWikidataId": "Q390413",
+        "section": "観光 / 観光スポット",
+        "interest": {
+          "views": 1846,
+          "observedDays": 30
+        },
+        "locationExcerpt": "樽前山（たるまえさん、たるまえざん、たるまいさん、たるまいざん）は、北海道の道央地方南部にある支笏湖の南側、苫小牧市の北西部に位置する活火山。日本二百名山。標高は最高点の樽前ドームで1,041m、一等三角点（点名「樽前岳」）の東山で1,022m、三等三角点（点名「樽前山」）の西山で994m。この樽前ドームは、立ち入り禁止となっている火口原にある溶岩ドームで、周辺との比高は約120m、最大径は約450m。\n支笏洞爺国立公園に属する。風不死岳、恵庭岳とともに支笏三山の一つに数えられている。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/9/96/Mount_Tarumae_seen_from_the_SSE.jpg",
+        "originalWidth": 2000,
+        "originalHeight": 953,
+        "officialLandmarkUrl": "https://www.city.tomakomai.hokkaido.jp/kankojoho/kankoannai/tarumaezan/tarumaezannitsuite/tarumaezan.html",
+        "locationEvidence": "苫小牧市公式の観光案内が樽前山を掲載。北海道公式観光案内でも所在地を北海道苫小牧市樽前と確認。"
+      },
+      {
+        "id": "File:Northern Horse Park 20260703f.jpg",
+        "pageId": 196897181,
+        "landmark": "ノーザンホースパーク",
+        "landmarkPageId": 688358,
+        "landmarkWikidataId": "Q11325852",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E3%83%8E%E3%83%BC%E3%82%B6%E3%83%B3%E3%83%9B%E3%83%BC%E3%82%B9%E3%83%91%E3%83%BC%E3%82%AF",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E8%8B%AB%E5%B0%8F%E7%89%A7%E5%B8%82",
+        "cityWikidataId": "Q390413",
+        "section": "観光 / 観光スポット",
+        "interest": {
+          "views": 1708,
+          "observedDays": 30
+        },
+        "locationExcerpt": "ノーザンホースパーク（Northern Horse Park）は、北海道苫小牧市字美沢にある社台グループの体験型公園・テーマパーク。株式会社ノーザンホースパークが運営している。1989年（平成元年）7月開園。広さは478,982 m2。\n「馬と大地と人との絆」をテーマにしているように、乗馬・馬車・ハッピー ポニーショーなどの馬のアトラクション、蹄鉄に装飾するホースシュースタンド作りなどの体験プログラムのほか、家族で楽しめる各種イベント、レストラン、馬グッズを集めた売店などが用意されている。\n毎年7月に行なわれる競走馬のセリ市場、セレクトセールの会場でもある。\n2007年にバーベキューハウス「バックヤードグリル」が、2011年にチャペル&パーティレストラン「ディアド ブエナビスタ」がオープンした。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/7/73/Northern_Horse_Park_20260703f.jpg",
+        "originalWidth": 6000,
+        "originalHeight": 4000
+      },
+      {
+        "id": "File:Tarumaezan Shrine - Gate.jpg",
+        "pageId": 147853267,
+        "landmark": "樽前山神社",
+        "landmarkPageId": 754181,
+        "landmarkWikidataId": "Q11543697",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E6%A8%BD%E5%89%8D%E5%B1%B1%E7%A5%9E%E7%A4%BE",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E8%8B%AB%E5%B0%8F%E7%89%A7%E5%B8%82",
+        "cityWikidataId": "Q390413",
+        "section": "観光 / 観光スポット",
+        "interest": {
+          "views": 179,
+          "observedDays": 30
+        },
+        "locationExcerpt": "樽前山神社（たるまえざんじんじゃ）は、北海道苫小牧市にある神社である。旧社格は県社。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/3/3a/Tarumaezan_Shrine_-_Gate.jpg",
+        "originalWidth": 4928,
+        "originalHeight": 3264
+      }
+    ],
+    "source": {
+      "wikidataId": "Q390413",
+      "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E8%8B%AB%E5%B0%8F%E7%89%A7%E5%B8%82"
+    },
+    "requests": {
+      "wikidataCalls": 1,
+      "cityCalls": 1,
+      "candidateCalls": 2,
+      "detailCalls": 4
+    },
+    "curation": {
+      "reviewedAt": "2026-09-23T14:28:28.853834+00:00",
+      "method": "browser visual review and official location verification",
+      "note": "全画像の構図・画質・実在する観光名所との対応を確認。所在地の導入文が曖昧な名所は公式情報で補完。"
+    }
+  },
+  "mie/owase": {
+    "schemaVersion": 1,
+    "citySlug": "mie/owase",
+    "status": "ready",
+    "selectionVersion": "landmarks-v2",
+    "fetchedAt": "2026-09-23T13:53:48.572Z",
+    "photos": [
+      {
+        "id": "File:Owase Shrine (Jinja) - panoramio.jpg",
+        "title": "Owase Shrine (Jinja) - panoramio",
+        "caption": "尾鷲神社",
+        "alt": "三重県尾鷲市の観光名所・尾鷲神社",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Owase_Shrine_%28Jinja%29_-_panoramio.jpg/1280px-Owase_Shrine_%28Jinja%29_-_panoramio.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Owase_Shrine_(Jinja)_-_panoramio.jpg",
+        "author": "HIRATA Yasuyuki",
+        "license": "CC BY 3.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by/3.0/",
+        "width": 1280,
+        "height": 960
+      },
+      {
+        "id": "File:Mount Tengura from Mount Binshi (2015-09-19).JPG",
+        "title": "Mount Tengura from Mount Binshi (2015-09-19)",
+        "caption": "天狗倉山 (三重県)",
+        "alt": "三重県尾鷲市の観光名所・天狗倉山 (三重県)",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Mount_Tengura_from_Mount_Binshi_%282015-09-19%29.JPG/1280px-Mount_Tengura_from_Mount_Binshi_%282015-09-19%29.JPG",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Mount_Tengura_from_Mount_Binshi_(2015-09-19).JPG",
+        "author": "Alpsdake",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 853
+      },
+      {
+        "id": "File:Kuki Jinja Juso. Warm-climate trees. A.jpg",
+        "title": "Kuki Jinja Juso. Warm-climate trees. A",
+        "caption": "九木神社樹叢",
+        "alt": "三重県尾鷲市の観光名所・九木神社樹叢",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Kuki_Jinja_Juso._Warm-climate_trees._A.jpg/1280px-Kuki_Jinja_Juso._Warm-climate_trees._A.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Kuki_Jinja_Juso._Warm-climate_trees._A.jpg",
+        "author": "国土地理院",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 853
+      }
+    ],
+    "sourceEvidence": [
+      {
+        "id": "File:Owase Shrine (Jinja) - panoramio.jpg",
+        "pageId": 49895445,
+        "landmark": "尾鷲神社",
+        "landmarkPageId": 4270232,
+        "landmarkWikidataId": "Q104353219",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E5%B0%BE%E9%B7%B2%E7%A5%9E%E7%A4%BE",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E5%B0%BE%E9%B7%B2%E5%B8%82",
+        "cityWikidataId": "Q847554",
+        "section": "名所・旧跡・観光スポット / 名所・旧跡",
+        "interest": {
+          "views": 147,
+          "observedDays": 30
+        },
+        "locationExcerpt": "尾鷲神社（おわせじんじゃ）は、三重県尾鷲市北浦町12-5にある神社。尾鷲七郷の総鎮守（氏神）であり、例大祭のヤーヤ祭りで知られる。近代社格制度に基づく旧社格は郷社。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/5/5d/Owase_Shrine_%28Jinja%29_-_panoramio.jpg",
+        "originalWidth": 3264,
+        "originalHeight": 2448
+      },
+      {
+        "id": "File:Mount Tengura from Mount Binshi (2015-09-19).JPG",
+        "pageId": 45990906,
+        "landmark": "天狗倉山 (三重県)",
+        "landmarkPageId": 3339923,
+        "landmarkWikidataId": "Q22127261",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E5%A4%A9%E7%8B%97%E5%80%89%E5%B1%B1_(%E4%B8%89%E9%87%8D%E7%9C%8C)",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E5%B0%BE%E9%B7%B2%E5%B8%82",
+        "cityWikidataId": "Q847554",
+        "section": "名所・旧跡・観光スポット / 景勝地",
+        "interest": {
+          "views": 48,
+          "observedDays": 30
+        },
+        "locationExcerpt": "天狗倉山（てんぐらやま、てんぐらさん）は、紀伊山地台高山脈南部の三重県尾鷲市と北牟婁郡紀北町にまたがる標高522 mの山。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Mount_Tengura_from_Mount_Binshi_%282015-09-19%29.JPG",
+        "originalWidth": 5184,
+        "originalHeight": 3456,
+        "officialLandmarkUrl": "https://www.city.owase.lg.jp/owatabi/index.html",
+        "locationEvidence": "尾鷲市公式観光情報サイトで天狗倉山を尾鷲の観光名所として掲載。市境の山であるため市単独の所在地とは表示しない。"
+      },
+      {
+        "id": "File:Kuki Jinja Juso. Warm-climate trees. A.jpg",
+        "pageId": 132402054,
+        "landmark": "九木神社樹叢",
+        "landmarkPageId": 4783776,
+        "landmarkWikidataId": "Q118765940",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E4%B9%9D%E6%9C%A8%E7%A5%9E%E7%A4%BE%E6%A8%B9%E5%8F%A2",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E5%B0%BE%E9%B7%B2%E5%B8%82",
+        "cityWikidataId": "Q847554",
+        "section": "名所・旧跡・観光スポット / 名所・旧跡",
+        "interest": {
+          "views": 45,
+          "observedDays": 27
+        },
+        "locationExcerpt": "九木神社樹叢（くきじんじゃじゅそう）は、三重県尾鷲市九鬼町に鎮座する九木神社の境内にある暖地性樹種に覆われた緑豊かな樹叢で、境内全域の植物相が国の天然記念物に指定されている。\n尾鷲の南方にある九鬼湾に突き出した小さな岬の上に所在し、古くから九木神社の社叢としてだけでなく、九鬼地区の漁師の間で魚つき林としても手厚く保護されてきた。この樹叢の特筆すべき点は、ヘゴ属のクサマルハチが本州で最初に発見された場所であることで、一帯にはリュウビンタイなど希少なシダ植物をはじめ様々な亜熱帯性植物が生育している。うっそうとした深緑の木々が海岸の縁まで生い茂り、深い入り江の波静かな藍色の海面に映えて爽快な景観を呈し、植物分布地理上重要な地域かつ典型的な海岸暖地性の原生林であることから、1937年（昭和12年）4月17日に国の天然記念物に指定された。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Kuki_Jinja_Juso._Warm-climate_trees._A.jpg",
+        "originalWidth": 6000,
+        "originalHeight": 4000
+      }
+    ],
+    "source": {
+      "wikidataId": "Q847554",
+      "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E5%B0%BE%E9%B7%B2%E5%B8%82"
+    },
+    "requests": {
+      "wikidataCalls": 1,
+      "cityCalls": 1,
+      "candidateCalls": 4,
+      "detailCalls": 4
+    },
+    "curation": {
+      "reviewedAt": "2026-09-23T14:28:28.853834+00:00",
+      "method": "browser visual review and official location verification",
+      "note": "全画像の構図・画質・実在する観光名所との対応を確認。所在地の導入文が曖昧な名所は公式情報で補完。"
+    }
+  },
+  "mie/shima": {
+    "schemaVersion": 1,
+    "citySlug": "mie/shima",
+    "status": "ready",
+    "selectionVersion": "landmarks-v2",
+    "fetchedAt": "2026-09-23T14:28:28.853834+00:00",
+    "photos": [
+      {
+        "id": "File:Yokoyama Viewpoint 001.jpg",
+        "title": "Yokoyama Viewpoint 001",
+        "caption": "横山展望台",
+        "alt": "三重県志摩市の観光名所・横山展望台",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Yokoyama_Viewpoint_001.jpg/1280px-Yokoyama_Viewpoint_001.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Yokoyama_Viewpoint_001.jpg",
+        "author": "Naokijp",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 960
+      },
+      {
+        "id": "File:Daiosaki Lighthouse s2.jpg",
+        "title": "Daiosaki Lighthouse s2",
+        "alt": "志摩市の大王埼灯台",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/Daiosaki_Lighthouse_s2.jpg/1280px-Daiosaki_Lighthouse_s2.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Daiosaki_Lighthouse_s2.jpg",
+        "author": "Alpsdake",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 854
+      },
+      {
+        "id": "File:Izawa-no-miya 07.jpg",
+        "title": "Izawa-no-miya 07",
+        "caption": "伊雑宮",
+        "alt": "三重県志摩市の観光名所・伊雑宮",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Izawa-no-miya_07.jpg/1280px-Izawa-no-miya_07.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Izawa-no-miya_07.jpg",
+        "author": "N yotarou",
+        "license": "CC BY-SA 4.0",
+        "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+        "width": 1280,
+        "height": 853
+      },
+      {
+        "id": "File:Anorisaki Lighthouse 202505.jpg",
+        "title": "Anorisaki Lighthouse 202505",
+        "alt": "志摩市の安乗埼灯台",
+        "url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/Anorisaki_Lighthouse_202505.jpg/1280px-Anorisaki_Lighthouse_202505.jpg",
+        "sourceUrl": "https://commons.wikimedia.org/wiki/File:Anorisaki_Lighthouse_202505.jpg",
+        "author": "Sashimiteishoku",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+        "width": 1280,
+        "height": 960
+      }
+    ],
+    "sourceEvidence": [
+      {
+        "id": "File:Izawa-no-miya 07.jpg",
+        "pageId": 40440685,
+        "landmark": "伊雑宮",
+        "landmarkPageId": 136660,
+        "landmarkWikidataId": "Q10885171",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E4%BC%8A%E9%9B%91%E5%AE%AE",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E5%BF%97%E6%91%A9%E5%B8%82",
+        "cityWikidataId": "Q338009",
+        "section": "名所・旧跡・観光スポット・祭事・催事 / 旧跡・文化 / 社寺",
+        "interest": {
+          "views": 1177,
+          "observedDays": 30
+        },
+        "locationExcerpt": "伊雑宮（いざわのみや、正式名：伊雜宮）は、三重県志摩市磯部町上之郷にある神社。式内社（大社）論社で、志摩国一宮。\n皇大神宮（伊勢神宮内宮）の別宮の一社。度会郡大紀町の瀧原宮とともに、「天照大神の遙宮（とおのみや）」と呼ばれる。2013年（平成25年）の年間参拝者数は93,267人。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/fa/Izawa-no-miya_07.jpg",
+        "originalWidth": 3000,
+        "originalHeight": 2000,
+        "visualReview": {
+          "status": "approved",
+          "reviewedAt": "2026-09-23T14:28:28.853834+00:00",
+          "method": "browser image inspection"
+        }
+      },
+      {
+        "id": "File:Yokoyama Viewpoint 001.jpg",
+        "pageId": 119914602,
+        "landmark": "横山展望台",
+        "landmarkPageId": 2415772,
+        "landmarkWikidataId": "Q11542547",
+        "landmarkUrl": "https://ja.wikipedia.org/wiki/%E6%A8%AA%E5%B1%B1%E5%B1%95%E6%9C%9B%E5%8F%B0",
+        "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E5%BF%97%E6%91%A9%E5%B8%82",
+        "cityWikidataId": "Q338009",
+        "section": "名所・旧跡・観光スポット・祭事・催事 / 自然景観",
+        "interest": {
+          "views": 167,
+          "observedDays": 30
+        },
+        "locationExcerpt": "横山展望台（よこやまてんぼうだい）は志摩半島南部の三重県志摩市阿児町鵜方にある標高203 mの横山に設置されている展望台。横山の名は、沖合からこの山を眺めると横長に見えるからとされる。\n横山展望台は、2018年に横山天空カフェテラスという名でリニューアルし、他にも木漏れ日テラス、そよ風テラスも同年にリニューアルしている。現在、それら横山にある複数の展望台を横山展望台とよんでいる。",
+        "originalImageUrl": "https://upload.wikimedia.org/wikipedia/commons/4/4c/Yokoyama_Viewpoint_001.jpg",
+        "originalWidth": 3264,
+        "originalHeight": 2448,
+        "visualReview": {
+          "status": "approved",
+          "reviewedAt": "2026-09-23T14:28:28.853834+00:00",
+          "method": "browser image inspection"
+        }
+      },
+      {
+        "id": "File:Daiosaki Lighthouse s2.jpg",
+        "pageId": 85830814,
+        "landmarkKey": "daiosaki-lighthouse",
+        "landmarkName": "大王埼灯台",
+        "officialLandmarkUrl": "https://www.city.shima.mie.jp/kakuka/sangyoshinkobu/kanko/kankojoho/toudai01/8433.html",
+        "categoryPath": [
+          "Category:Daiosaki Lighthouse"
+        ],
+        "categoryEvidenceType": "direct_file_category",
+        "originalWidth": 5727,
+        "originalHeight": 3819,
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/0/0a/Daiosaki_Lighthouse_s2.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "sourceDescription": "Daiosaki Lighthouse in Shima, Mie Prefecture, Japan.",
+        "photographedAt": "Taken on 19 December 2019, 11:59:53",
+        "licenseMetadataVerifiedAt": "2026-09-23T14:20:34.959779+00:00",
+        "locationEvidence": "志摩市公式ページが大王埼灯台を志摩市大王町波切54、安乗埼灯台を志摩市阿児町安乗794-1として掲載。両施設を現行参観灯台として紹介。",
+        "visualReview": {
+          "status": "approved",
+          "reviewedAt": "2026-09-23T14:28:28.853834+00:00",
+          "method": "browser image inspection"
+        }
+      },
+      {
+        "id": "File:Anorisaki Lighthouse 202505.jpg",
+        "pageId": 198035109,
+        "landmarkKey": "anorisaki-lighthouse",
+        "landmarkName": "安乗埼灯台",
+        "officialLandmarkUrl": "https://www.city.shima.mie.jp/kakuka/sangyoshinkobu/kanko/kankojoho/toudai01/8433.html",
+        "categoryPath": [
+          "Category:Anorisaki Lighthouse (1948)"
+        ],
+        "categoryEvidenceType": "direct_file_category",
+        "originalWidth": 3264,
+        "originalHeight": 2448,
+        "originalUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Anorisaki_Lighthouse_202505.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+        "sourceDescription": "安乗埼灯台",
+        "photographedAt": "2025-05-07 11:56:58",
+        "licenseMetadataVerifiedAt": "2026-09-23T14:20:34.959779+00:00",
+        "locationEvidence": "志摩市公式ページが大王埼灯台を志摩市大王町波切54、安乗埼灯台を志摩市阿児町安乗794-1として掲載。両施設を現行参観灯台として紹介。",
+        "visualReview": {
+          "status": "approved",
+          "reviewedAt": "2026-09-23T14:28:28.853834+00:00",
+          "method": "browser image inspection"
+        }
+      }
+    ],
+    "source": {
+      "wikidataId": "Q338009",
+      "cityArticleUrl": "https://ja.wikipedia.org/wiki/%E5%BF%97%E6%91%A9%E5%B8%82"
+    },
+    "requests": {
+      "wikidataCalls": 1,
+      "cityCalls": 1,
+      "candidateCalls": 4,
+      "detailCalls": 4
+    },
+    "curation": {
+      "reviewedAt": "2026-09-23T14:28:28.853834+00:00",
+      "method": "browser visual review",
+      "note": "展望台・神宮・2か所の灯台。閉館施設と単なる石碑中心の公園画像は除外。"
+    }
   }
 }

@@ -31,7 +31,7 @@ test('every regional LP has its own canonical, metadata, h1, schema, sitemap and
   const sitemap = readFileSync(new URL('sitemap-0.xml', root), 'utf8');
   const titles = new Set(), descriptions = new Set(), checkedLinks = new Set();
   const base = readPage('/service/ltori/');
-  assert.ok(base.includes('href="/service/ltori/area/"'), 'generic service LP still links to the area directory');
+  assert.ok(!base.includes('href="/service/ltori/area/"'), 'generic service LP no longer links to the retired directory');
   const baseSections = [...base.matchAll(/<section\b[^>]*\bid="([^"]+)"/g)].map(m => m[1]);
   for (const area of publishedAreas) {
     const path = areaPath(area), html = readPage(path);
@@ -72,15 +72,29 @@ test('every regional LP has its own canonical, metadata, h1, schema, sitemap and
   assert.ok(!existsSync(new URL('service/ltori/industry/manufacturing/index.html', root)), 'superseded unshipped guide removed');
 });
 
-test('directory and sitemap contain only reviewed published pages; no stale drafts are deployable', () => {
+test('retired directory redirects to the service and sitemap retains only reviewed published city pages', () => {
   const directory = readPage('/service/ltori/area/');
   const sitemap = readFileSync(new URL('sitemap-0.xml', root), 'utf8');
+  assert.match(directory, /http-equiv="refresh" content="0;url=\/service\/ltori\/"/);
+  assert.ok(!directory.includes('data-seo-city-directory'));
+  assert.ok(!sitemap.includes('<loc>https://layr.co.jp/service/ltori/area/</loc>'));
   for (const area of regionalAreas) {
     const live=publicationFor(area)==='published';
-    assert.equal(directory.includes(`href="${areaPath(area)}"`),live,areaPath(area));
+    assert.equal(directory.includes(`href="${areaPath(area)}"`),false,areaPath(area));
     assert.equal(sitemap.includes(`<loc>https://layr.co.jp${areaPath(area)}</loc>`),live,areaPath(area));
     assert.equal(existsSync(new URL(areaPath(area).slice(1)+'index.html',root)),live,areaPath(area));
   }
+});
+
+test('directory retirement keeps the regional metric prefix and source attribution identity',async()=>{
+  const {WORKSPACE_PROJECTS}=await import('../src/lib/seo-manager/workspace-projects.mjs');
+  const regional=WORKSPACE_PROJECTS.find(project=>project.id==='regional');
+  assert.equal(regional.prefix,'/service/ltori/area/');assert.equal(regional.publicUrl,'https://layr.co.jp/service/ltori/');
+  const {resolveSource}=await import('../worker/seo-runtime.mjs');
+  assert.deepEqual(await resolveSource({},'area'),{key:'area',label:'採用LINEの対応地域',path:'/service/ltori/'});
+  const redirects=readFileSync(new URL('../public/_redirects',import.meta.url),'utf8');
+  for(const alias of ['/service/ltori/area','/service/ltori/area/','/service/ltori/area/index.html'])assert.ok(redirects.split('\n').includes(`${alias} /service/ltori/ 301`));
+  assert.ok(!redirects.includes('/service/ltori/area/*'));
 });
 
 test('the contact form recognizes every route without accepting arbitrary source text', () => {

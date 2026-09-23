@@ -6,3 +6,6 @@
 /blog/ /media/ 308
 /blog/:slug/ /media/:slug/ 308
 /blog/:slug /media/:slug/ 308
+/service/ltori/area /service/ltori/ 301
+/service/ltori/area/ /service/ltori/ 301
+/service/ltori/area/index.html /service/ltori/ 301

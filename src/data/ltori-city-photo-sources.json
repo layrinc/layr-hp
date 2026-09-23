@@ -39,7 +39,10 @@
       "label": "函館市",
       "commonsCategory": "Hakodate, Hokkaido",
       "latitude": 41.768666666,
-      "longitude": 140.728916666
+      "longitude": 140.728916666,
+      "excludedPhotoIds": [
+        "File:Yunokawa Onsen Hakodate Hokkaido Japan17n.jpg"
+      ]
     },
     "hokkaido/otaru": {
       "cityCode": "01203",
@@ -47,7 +50,10 @@
       "label": "小樽市",
       "commonsCategory": "Otaru, Hokkaido",
       "latitude": 43.190722222,
-      "longitude": 140.994361111
+      "longitude": 140.994361111,
+      "excludedPhotoIds": [
+        "File:Otaru city museum main entrance.jpg"
+      ]
     },
     "hokkaido/asahikawa": {
       "cityCode": "01204",
@@ -55,7 +61,10 @@
       "label": "旭川市",
       "commonsCategory": "Asahikawa, Hokkaido",
       "latitude": 43.770638888,
-      "longitude": 142.365
+      "longitude": 142.365,
+      "excludedPhotoIds": [
+        "File:旭川市忠和公園体育館.JPG"
+      ]
     },
     "hokkaido/muroran": {
       "cityCode": "01205",
@@ -71,7 +80,10 @@
       "label": "釧路市",
       "commonsCategory": "Kushiro, Hokkaido (city)",
       "latitude": 42.984888888,
-      "longitude": 144.381722222
+      "longitude": 144.381722222,
+      "excludedPhotoIds": [
+        "File:Kushiro-City-Zoo.JPG"
+      ]
     },
     "hokkaido/obihiro": {
       "cityCode": "01207",
@@ -87,7 +99,11 @@
       "label": "北見市",
       "commonsCategory": "Kitami, Hokkaido",
       "latitude": 43.803055555,
-      "longitude": 143.894722222
+      "longitude": 143.894722222,
+      "excludedPhotoIds": [
+        "File:Onneyu onsengai.JPG",
+        "File:北きつね牧場7.jpg"
+      ]
     },
     "hokkaido/yubari": {
       "cityCode": "01209",
@@ -103,7 +119,12 @@
       "label": "岩見沢市",
       "commonsCategory": "Iwamizawa, Hokkaido",
       "latitude": 43.196166666,
-      "longitude": 141.775888888
+      "longitude": 141.775888888,
+      "excludedPhotoIds": [
+        "File:Hokkaido-Green-Land group-hotel-Sun-Plaza.JPG",
+        "File:Iwamizawa-Shrine Hamaya.JPG",
+        "File:Iwamizawa-park overlook.JPG"
+      ]
     },
     "hokkaido/abashiri": {
       "cityCode": "01211",
@@ -127,7 +148,10 @@
       "label": "苫小牧市",
       "commonsCategory": "Tomakomai, Hokkaido",
       "latitude": 42.634055555,
-      "longitude": 141.605527777
+      "longitude": 141.605527777,
+      "excludedPhotoIds": [
+        "File:Idemitsu Culture Park.jpg"
+      ]
     },
     "hokkaido/wakkanai": {
       "cityCode": "01214",
@@ -145,6 +169,9 @@
           "latitude": 45.3325,
           "longitude": 141.828333333
         }
+      ],
+      "excludedPhotoIds": [
+        "File:Soya Fureai park multifield.jpg"
       ]
     },
     "hokkaido/bibai": {
@@ -179,7 +206,10 @@
       "label": "江別市",
       "commonsCategory": "Ebetsu, Hokkaido",
       "latitude": 43.103722222,
-      "longitude": 141.536194444
+      "longitude": 141.536194444,
+      "excludedPhotoIds": [
+        "File:Nishikiyama Tenman-gū.JPG"
+      ]
     },
     "hokkaido/akabira": {
       "cityCode": "01218",
@@ -303,6 +333,9 @@
           "latitude": 42.41275,
           "longitude": 141.106583333
         }
+      ],
+      "excludedPhotoIds": [
+        "File:Karurusu Onsengai 2011.JPG"
       ]
     },
     "hokkaido/eniwa": {
@@ -311,7 +344,10 @@
       "label": "恵庭市",
       "commonsCategory": "Eniwa, Hokkaido",
       "latitude": 42.882555555,
-      "longitude": 141.577777777
+      "longitude": 141.577777777,
+      "excludedPhotoIds": [
+        "File:Eniwa onsen la foret.jpg"
+      ]
     },
     "hokkaido/date": {
       "cityCode": "01233",
@@ -335,7 +371,10 @@
       "label": "石狩市",
       "commonsCategory": "Ishikari, Hokkaido",
       "latitude": 43.171361111,
-      "longitude": 141.3155
+      "longitude": 141.3155,
+      "excludedPhotoIds": [
+        "File:Aoba Park of Ishikari.jpg"
+      ]
     },
     "hokkaido/hokuto": {
       "cityCode": "01236",
@@ -367,7 +406,10 @@
       "label": "八戸市",
       "commonsCategory": "Hachinohe, Aomori",
       "latitude": 40.512277777,
-      "longitude": 141.488388888
+      "longitude": 141.488388888,
+      "excludedPhotoIds": [
+        "File:Hachinohe-Higashi.JPG"
+      ]
     },
     "aomori/kuroishi": {
       "cityCode": "02204",
@@ -4117,7 +4159,11 @@
       "label": "津市",
       "commonsCategory": "Tsu, Mie",
       "latitude": 34.718444444,
-      "longitude": 136.505777777
+      "longitude": 136.505777777,
+      "excludedPhotoIds": [
+        "File:CKK20221-C4-13.jpg",
+        "File:Kiriyama Castle ruins.jpg"
+      ]
     },
     "mie/yokkaichi": {
       "cityCode": "24202",
@@ -4125,7 +4171,10 @@
       "label": "四日市市",
       "commonsCategory": "Yokkaichi, Mie",
       "latitude": 34.965027777,
-      "longitude": 136.624416666
+      "longitude": 136.624416666,
+      "excludedPhotoIds": [
+        "File:Yokkaichi-Stadium.jpg"
+      ]
     },
     "mie/ise": {
       "cityCode": "24203",
@@ -4133,7 +4182,10 @@
       "label": "伊勢市",
       "commonsCategory": "Ise, Mie",
       "latitude": 34.4875,
-      "longitude": 136.709305555
+      "longitude": 136.709305555,
+      "excludedPhotoIds": [
+        "File:Futami Sea Paradise 20100516.jpg"
+      ]
     },
     "mie/matsusaka": {
       "cityCode": "24204",
@@ -4149,7 +4201,10 @@
       "label": "桑名市",
       "commonsCategory": "Kuwana, Mie",
       "latitude": 35.062194444,
-      "longitude": 136.683666666
+      "longitude": 136.683666666,
+      "excludedPhotoIds": [
+        "File:Kuwana castle tower foundation (ruin of Donjon).JPG"
+      ]
     },
     "mie/suzuka": {
       "cityCode": "24207",
@@ -4173,7 +4228,11 @@
       "label": "尾鷲市",
       "commonsCategory": "Owase, Mie",
       "latitude": 34.070777777,
-      "longitude": 136.190972222
+      "longitude": 136.190972222,
+      "excludedPhotoIds": [
+        "File:Nakamurayama Castle (Owase).JPG",
+        "File:Owase Kuki jinja ac (3).jpg"
+      ]
     },
     "mie/kameyama": {
       "cityCode": "24210",
@@ -4189,7 +4248,10 @@
       "label": "鳥羽市",
       "commonsCategory": "Toba, Mie",
       "latitude": 34.481333333,
-      "longitude": 136.843416666
+      "longitude": 136.843416666,
+      "excludedPhotoIds": [
+        "File:鳥羽城2.jpg"
+      ]
     },
     "mie/kumano": {
       "cityCode": "24212",
@@ -4213,7 +4275,11 @@
       "label": "志摩市",
       "commonsCategory": "Shima, Mie",
       "latitude": 34.328194444,
-      "longitude": 136.829666666
+      "longitude": 136.829666666,
+      "excludedPhotoIds": [
+        "File:Kashikojima Maruyama Park.jpg",
+        "File:Shima Marine Land, Renewed in 2016.jpg"
+      ]
     },
     "mie/iga": {
       "cityCode": "24216",
@@ -4221,7 +4287,11 @@
       "label": "伊賀市",
       "commonsCategory": "Iga, Mie",
       "latitude": 34.749861111,
-      "longitude": 136.142277777
+      "longitude": 136.142277777,
+      "excludedPhotoIds": [
+        "File:Oyamada Onsen Sarubino-01.jpg",
+        "File:青山高原 円山草原から伊勢湾方面 - panoramio (1).jpg"
+      ]
     },
     "shiga/otsu": {
       "cityCode": "25201",
