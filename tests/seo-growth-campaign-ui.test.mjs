@@ -137,3 +137,16 @@ test('provider or budget interruptions are visible instead of reporting uninterr
  campaign.day.status='disabled';ui.render(campaign,{regionalPreparation:{enabled:true}});
  assert.match(ui.get('growth-regional-preparation').textContent,/停止中（公開日程の設定待ち）/);
 });
+
+test('template preparation explains reuse without AI charges and shows configuration errors accurately',()=>{
+ const ui=client(),campaign=campaignFixture();
+ const regionalPreparation={mode:'lp_template',enabled:true,paidAiRequired:false,ready:35,blocked:0,pending:0};
+ ui.render(campaign,{regionalPreparation});
+ assert.match(ui.get('growth-regional-preparation').textContent,/既存LPの地域展開：稼働中.*有料AIは使用しません.*準備済み 35市/);
+ assert.doesNotMatch(ui.get('growth-regional-preparation').textContent,/自動調査・制作/);
+ ui.render(campaign,{regionalPreparation:{...regionalPreparation,lastRun:{status:'error'}}});
+ assert.match(ui.get('growth-regional-preparation').textContent,/地域データ・公開設定を確認/);
+ assert.doesNotMatch(ui.get('growth-regional-preparation').textContent,/費用上限/);
+ campaign.day.status='completed';ui.render(campaign,{regionalPreparation});
+ assert.match(ui.get('growth-regional-preparation').textContent,/日程終了/);
+});

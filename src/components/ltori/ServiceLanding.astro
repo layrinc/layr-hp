@@ -159,8 +159,8 @@ const jsonLd = [
         <p class="lt-note">※面談予約・自動応答・配信の出し分けなどは、ご要望とシステムの仕様を確認して設計します。</p>
       </div></section>
 
-      {area && <RegionalContent area={area} section="industries" />}
-      {area && <AreaLinks area={area} />}
+      {area ? <RegionalContent area={area} section="industries" /> : <template data-seo-regional-industries-slot></template>}
+      {area ? <AreaLinks area={area} /> : <template data-seo-regional-coverage-slot></template>}
       <section class="lt-section lt-pricing" id="plan"><div class="lt-wrap">
         <div class="lt-section-heading lt-heading-center"><p class="lt-eyebrow">Plan</p><h2>採用の体制に合わせて、<br /><mark><b>3</b>つの運用プラン。</mark></h2><p>初期構築で基盤を整え、月々の運用で育てていきます。</p></div>
         <div class="lt-initial"><div><span class="lt-eyebrow">INITIAL SETUP</span><h3>採用LINEの初期設計・構築</h3></div><p class="lt-price"><strong>{service.initialPrice/10000}</strong>万円<small>（税別）</small></p><ul>{service.initialIncludes.map(x=><li>{x}</li>)}</ul></div>
@@ -170,7 +170,7 @@ const jsonLd = [
 
       <section class="lt-section lt-flow" id="flow"><div class="lt-wrap"><div class="lt-section-heading"><p class="lt-eyebrow">Flow</p><h2>ご相談から運用改善まで、<br /><mark><b>5</b>つのステップ。</mark></h2></div><ol class="lt-flow-list">{flow.map(([h,p],i)=><li><span class="lt-flow-number">0{i+1}</span><div><h3>{h}</h3><p>{p}</p></div></li>)}</ol></div></section>
       <section class="lt-section lt-faq-section" id="faq"><div class="lt-wrap lt-faq-layout"><div class="lt-section-heading"><p class="lt-eyebrow">FAQ</p><h2>{area && <>{area.fullName}の採用LINE<br /></>}よくある<br class="lt-desktop-break" />ご質問</h2><img src="/service/ltori/isometric-support.webp" width="1536" height="1024" loading="lazy" decoding="async" alt="" /></div><div class="lt-faq-list">{faqs.map(f=><details><summary><span class="lt-q">Q.</span><span>{f.q}</span><span class="lt-faq-toggle" aria-hidden="true">+</span></summary><div class="lt-answer"><span>A.</span><p>{f.a}</p></div></details>)}</div></div></section>
-      {area && <RegionalContent area={area} section="provider" />}
+      {area ? <RegionalContent area={area} section="provider" /> : <template data-seo-regional-provider-slot></template>}
       <section class="lt-final" id="contact"><div class="lt-wrap"><ConsultBanner placement="bottom" consultHref={consult} areaName={area?.fullName} /><p class="lt-operated">{service.name}は、{company.name}が運営する{service.descriptor}サービスです。</p>{!area && <p><a class="lt-text-link" href="/service/ltori/area/">都道府県・市区町村別の採用LINE構築・運用支援 <span aria-hidden="true">↗</span></a></p>}<a class="lt-text-link" href="/service/">LAYRのサービス一覧へ <span aria-hidden="true">↗</span></a></div></section>
     </div>
     <div class="lt-mobile-sticky"><a href={service.source} target="_blank" rel="noopener" data-lt-doc>サービス資料</a><a href={consult} data-lt-cta="sticky">無料相談をする <span aria-hidden="true">↗</span></a></div>

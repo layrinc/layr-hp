@@ -1,11 +1,10 @@
 import service from '../src/data/service-ltori.json' with { type: 'json' };
 import { ARTICLE_TEMPLATE_PATH, publicPath, publicSource, resolveCity, qualityIssues, isSafeSourceUrl } from '../src/lib/seo-manager/editorial-model.mjs';
+import {escapeHtml, renderRegionalIndustries, renderRegionalCoverage, renderRegionalProvider, regionalLandingFaqs, renderRegionalFaqList, regionalFaqStructuredData} from './seo-regional-lp-sections.mjs';
 
 export { ARTICLE_TEMPLATE_PATH };
+export {escapeHtml};
 export const PUBLIC_ORIGIN = 'https://layr.co.jp';
-export function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>"']/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character]);
-}
 const paragraphs = values => (Array.isArray(values) ? values : []).map(value => `<p>${escapeHtml(value).replace(/\n/g, '<br>')}</p>`).join('');
 const safeDate = value => Number.isFinite(Date.parse(value)) ? new Date(value).toISOString() : null;
 const published = document => document?.status === 'published' && publicPath(document) && safeDate(document.publishedAt);
@@ -55,9 +54,11 @@ export async function renderDocument(baseResponse, document, options = {}) {
   const title = document.title || '採用LINE活用ガイド';
   const pageUrl = canonical(document);
   const source = publicSource(document);
+  const regionalFaqs = city ? regionalLandingFaqs(city) : null;
   const structured = JSON.stringify([
     { '@context': 'https://schema.org', '@type': 'Organization', '@id': `${PUBLIC_ORIGIN}/#organization`, name: '株式会社LAYR', url: `${PUBLIC_ORIGIN}/` },
     documentStructuredData(document),
+    ...(regionalFaqs ? [regionalFaqStructuredData(regionalFaqs)] : []),
   ]).replace(/</g, '\\u003c');
   const setText = value => ({ element(element) { element.setInnerContent(value); } });
   const setContent = value => ({ element(element) { element.setAttribute('content', value); } });
@@ -94,9 +95,15 @@ export async function renderDocument(baseResponse, document, options = {}) {
     } });
   if (city) rewriter = rewriter
     .on('#lt-hero-title', { element(element) { element.setInnerContent(renderCityHeading(document), { html: true }); } })
-    .on('.lt-hero-kicker', setText(`採用 × LINE　${city.fullName}の企業さまへ`))
-    .on('.lt-hero-description', setText(`${city.fullName}の採用活動を、オンラインでサポート。構築・配信・改善まで、採用LINEは${service.name}に。`))
-    .on('.lt-hero-actions small', setText(`${city.locality}での採用のお悩みに`));
+    .on('.lt-hero-kicker', { element(element) { element.setInnerContent(`<span>採用 × LINE</span> ${escapeHtml(city.fullName)}の企業さまへ`, {html: true}); } })
+    .on('.lt-hero-description', { element(element) { element.setInnerContent(`${escapeHtml(city.fullName)}の採用活動を、オンラインでサポート。<br>構築・配信・改善まで、採用LINEは${escapeHtml(service.name)}に。`, {html: true}); } })
+    .on('.lt-hero-actions small', setText(`${city.locality}での採用のお悩みに`))
+    .on('[data-seo-regional-industries-slot]', {element(element) {element.replace(renderRegionalIndustries(city), {html: true});}})
+    .on('[data-seo-regional-coverage-slot]', {element(element) {element.replace(renderRegionalCoverage(city), {html: true});}})
+    .on('[data-seo-regional-provider-slot]', {element(element) {element.replace(renderRegionalProvider(city), {html: true});}})
+    .on('#faq .lt-section-heading h2', {element(element) {element.setInnerContent(`${escapeHtml(city.fullName)}の採用LINE<br>よくある<br class="lt-desktop-break">ご質問`, {html: true});}})
+    .on('#faq .lt-faq-list', {element(element) {element.setInnerContent(renderRegionalFaqList(regionalFaqs), {html: true});}})
+    .on('.lt-consult-kicker', setText(`${city.fullName}の採用担当者さまへ`));
   const headers = new Headers(baseResponse.headers);
   for (const name of ['content-length', 'content-encoding', 'etag', 'last-modified', 'location']) headers.delete(name);
   headers.set('content-type', 'text/html; charset=utf-8');

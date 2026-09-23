@@ -49,6 +49,9 @@ jobs:
       - name: 定期実行のGitHub認証・重複防止
         run: node --test tests/seo-scheduler*.test.mjs
 
+      - name: 既存LPの全国展開（792市・47日・AI不使用・地域別表示）
+        run: node --test tests/seo-regional-lp-*.test.mjs
+
       - name: Design gate regression（基準値から1項目でも悪化していれば失敗）
         run: bash scripts/gate-regression.sh
 
