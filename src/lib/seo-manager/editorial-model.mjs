@@ -1,18 +1,18 @@
-import { cityAreas, areasBySlug } from '../ltori-seo.mjs';
+import { municipalityAreas, areasBySlug } from '../ltori-seo.mjs';
 
 export const EDITORIAL_STATUSES = ['draft', 'approved', 'scheduled', 'published', 'paused'];
 export const EDITORIAL_TYPES = ['city', 'article'];
-export const DAILY_PUBLICATION_LIMIT = 10;
+export const DAILY_PUBLICATION_LIMIT = 20;
 export const ARTICLE_TEMPLATE_PATH = '/service/ltori/article-template/';
-export const cityCatalog = cityAreas.map(({ code, slug, name, fullName, prefectureName }) => ({ code, slug, name, fullName, prefectureName }));
+export const cityCatalog = municipalityAreas.map(({ code, slug, name, fullName, prefectureName }) => ({ code, slug, name, fullName, prefectureName }));
 const text = value => typeof value === 'string' ? value.replace(/\u0000/g, '').trim() : '';
 const list = value => Array.isArray(value) ? value : [];
 const strings = value => list(value).map(text).filter(Boolean);
 const issue = (code, message, field, severity = 'error') => ({ code, message, field, severity });
 
 export function resolveCity(slugOrCode) {
-  const area = areasBySlug.get(text(slugOrCode)) || cityAreas.find(city => city.code === text(slugOrCode));
-  return area?.kind === 'municipality' && area.locality.endsWith('市') ? area : null;
+  const area = areasBySlug.get(text(slugOrCode)) || municipalityAreas.find(city => city.code === text(slugOrCode));
+  return area?.kind === 'municipality' ? area : null;
 }
 export function isArticleSlug(slug) {
   return /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug) && slug.length <= 100 && !['index', 'about', 'contact', 'category', 'article-template', 'feed', 'sitemap', 'assets'].includes(slug);
@@ -66,7 +66,7 @@ export function normalizeDocument(input = {}, options = {}) {
 export function qualityIssues(document, { now = Date.now(), requireReview = false } = {}) {
   const issues = [];
   if (!EDITORIAL_TYPES.includes(document?.type)) issues.push(issue('type', 'ページの種類を選んでください。', 'type'));
-  if (!publicPath(document)) issues.push(issue('path', document?.type === 'city' ? '対象は市のみです。市の一覧から選んでください。' : 'URLには半角英数字とハイフンを使用してください。予約済みの名前は使えません。', 'slug'));
+  if (!publicPath(document)) issues.push(issue('path', document?.type === 'city' ? '市区町村・行政区の一覧から対象地域を選んでください。' : 'URLには半角英数字とハイフンを使用してください。予約済みの名前は使えません。', 'slug'));
   if (document?.intent !== 'employer') issues.push(issue('intent', '企業の採用担当者向けの検索意図を確認してください。', 'intent'));
   const limits = { title: 160, description: 500, heading: 160, lead: 3000 };
   for (const [field, max] of Object.entries(limits)) {
@@ -74,7 +74,7 @@ export function qualityIssues(document, { now = Date.now(), requireReview = fals
     else if (document[field].length > max) issues.push(issue(`length_${field}`, `${field}が長すぎます（最大${max}文字）。`, field));
   }
   const city = document?.type === 'city' ? resolveCity(document.slug) : null;
-  if (city && (!text(document.title).includes(city.locality) || !text(document.heading).includes(city.locality))) issues.push(issue('city_context', 'タイトルと主見出しに対象の市名を含めてください。', 'heading'));
+  if (city && (!text(document.title).includes(city.locality) || !text(document.heading).includes(city.locality))) issues.push(issue('city_context', 'タイトルと主見出しに対象の地域名を含めてください。', 'heading'));
   const sections = list(document?.sections);
   if (sections.length < 3 || sections.length > 20) issues.push(issue('sections', '課題・具体策・実施手順など、3〜20の節を用意してください。', 'sections'));
   const seen = new Set();
@@ -99,8 +99,8 @@ export function qualityIssues(document, { now = Date.now(), requireReview = fals
     else if (new Date(`${source.checkedAt}T00:00:00Z`).valueOf() < new Date(now).valueOf() - 366 * 86400000) issues.push(issue('source_age', '確認から1年以上経過した資料があります。内容の更新を確認してください。', field, 'warning'));
     if (!text(source?.geographicScope)) issues.push(issue('source_scope', `${index + 1}番目の資料が扱う範囲（市・県・全国など）を明記してください。`, field));
   });
-  for (const slug of list(document?.relatedCitySlugs)) if (!resolveCity(slug)) issues.push(issue('related_city', '関連記事の市リンクは有効な市を選んでください。', 'relatedCitySlugs'));
-  if (list(document?.relatedCitySlugs).length > 3) issues.push(issue('related_city_limit', '記事から紹介する市は内容に関係する3市までにしてください。', 'relatedCitySlugs'));
+  for (const slug of list(document?.relatedCitySlugs)) if (!resolveCity(slug)) issues.push(issue('related_city', '関連記事の地域リンクは有効な市区町村を選んでください。', 'relatedCitySlugs'));
+  if (list(document?.relatedCitySlugs).length > 3) issues.push(issue('related_city_limit', '記事から紹介する地域は内容に関係する3地域までにしてください。', 'relatedCitySlugs'));
   if (requireReview && (!text(document?.review?.reviewedBy) || !Number.isFinite(Date.parse(document?.review?.reviewedAt)))) issues.push(issue('review', 'ログインした担当者の確認・承認が必要です。', 'review'));
   return issues;
 }

@@ -33,7 +33,7 @@ const draft={id:7,title:'採用LINEの費用',description:'元の説明',slug:'l
 function fixture(){const root=convert(parse(readFileSync(new URL('../dist/tools/ltori-seo/articles/index.html',import.meta.url),'utf8')));const doc={getElementById:id=>{let found;const visit=node=>{if(node.id===id)found=node;for(const child of node.children)visit(child);};visit(root);return found;},querySelectorAll:selector=>root.querySelectorAll(selector),createElement:tag=>new Element(tag),createTextNode:text=>new Element('#text',{},text),activeElement:null};return doc;}
 async function harness(overrides={},options={}){
   const original=Object.fromEntries(['document','window','location','history','confirm'].map(key=>[key,globalThis[key]]));const document=fixture();const mediaListeners=[];const media={matches:options.compact??false,addEventListener(type,handler){if(type==='change')mediaListeners.push(handler);}};const history=[];globalThis.document=document;globalThis.window=Object.assign(new EventTarget(),{matchMedia:()=>media});globalThis.location={pathname:'/articles/',search:'',hash:options.hash??''};globalThis.history={replaceState(_state,_title,url){history.push(url);}};globalThis.confirm=()=>true;
-  const calls=[];const api=async(path,options={})=>{calls.push({path,...options});if(overrides[path])return overrides[path](options);if(path==='/overview')return {articles:{byStatus:[{status:'pending_approval',n:1}],publishedThisWeek:0,weeklyTarget:3},keywords:{byLayer:[],total:10,consumed:0},apiKeys:{anthropic:true,github:true},autopilot:'approval',recentLog:[]};if(path.startsWith('/articles?status=pending_approval'))return {items:[{...draft}]};if(path.startsWith('/articles?'))return {items:[]};if(path==='/articles/7')return {article:{...draft},keyword:{keyword:draft.keyword}};if(path.startsWith('/keywords?'))return {items:[{id:5,keyword:'採用LINE',layer:'収益',experience_fit:1,intent_explicit:'費用',intent_latent:'工数削減',status:'new'}]};throw new Error('unexpected '+path);};
+  const calls=[];const api=async(path,options={})=>{calls.push({path,...options});if(overrides[path])return overrides[path](options);if(path==='/settings')return {ok:true,settings:{automation_paused:'0',autopilot:'approval',daily_cap:'1',weekly_target:'3',article_min_chars:'2000',article_max_chars:'6000'}};if(path==='/evidence')return {ok:true,items:[]};if(path==='/overview')return {automationPaused:false,articles:{byStatus:[{status:'pending_approval',n:1}],publishedThisWeek:0,weeklyTarget:3},keywords:{byLayer:[],total:10,consumed:0},apiKeys:{anthropic:true,github:true},autopilot:'approval',recentLog:[]};if(path.startsWith('/articles?status=pending_approval'))return {items:[{...draft}]};if(path.startsWith('/articles?'))return {items:[]};if(path==='/articles/7')return {article:{...draft},keyword:{keyword:draft.keyword}};if(path.startsWith('/keywords?'))return {items:[{id:5,keyword:'採用LINE',layer:'収益',experience_fit:1,intent_explicit:'費用',intent_latent:'工数削減',status:'new'}]};throw new Error('unexpected '+path);};
   let improvementsMounted=0;const app=await mountKijiWorkbench({api,mountImprovement:async()=>{improvementsMounted++;}});const $=id=>document.getElementById('kiji-'+id);return {app,$,calls,api,document,history,get improvementsMounted(){return improvementsMounted;},setCompact(value){media.matches=value;mediaListeners.forEach(handler=>handler());},cleanup:()=>{for(const [key,value] of Object.entries(original)){if(value===undefined)delete globalThis[key];else globalThis[key]=value;}}};
 }
 
@@ -63,7 +63,7 @@ test('sidebar follows vertical or horizontal keyboard orientation, wraps, and pr
 });
 
 test('initial deep links select the requested sidebar panel without loading unrelated data',async()=>{
-  for(const key of ['keywords','improve']){const h=await harness({},{hash:`#${key}`,compact:true});try{assertSelection(h,key);assert.equal(h.calls.some(call=>call.path==='/overview'),false);assert.equal(h.$('navigation').getAttribute('aria-orientation'),'horizontal');if(key==='improve'){assert.equal(h.improvementsMounted,1);assert.equal(h.calls.length,0);}}finally{h.cleanup();}}
+  for(const key of ['keywords','improve']){const h=await harness({},{hash:`#${key}`,compact:true});try{assertSelection(h,key);assert.equal(h.calls.some(call=>call.path==='/overview'),false);assert.equal(h.$('navigation').getAttribute('aria-orientation'),'horizontal');if(key==='improve'){assert.equal(h.improvementsMounted,1);assert.deepEqual(h.calls.map(call=>call.path),['/settings']);}}finally{h.cleanup();}}
 });
 
 test('hash changes select known tabs without intercepting skip links or inherited object keys',async()=>{
@@ -109,4 +109,18 @@ test('linked, writing and published keywords keep metadata editing but cannot be
       const saved=h.calls.find(call=>call.method==='PATCH');assert.equal(saved.body.intent_explicit,'確認済みのニーズ');assert.equal(Object.hasOwn(saved.body,'status'),false);
     }finally{h.cleanup();}
   }
+});
+
+
+test('hold is visible on deep links, blocks production controls, and normal settings save never clears it',async()=>{
+  const h=await harness({'/settings':async options=>options.method?{ok:true}:{ok:true,settings:{automation_paused:'1',autopilot:'approval',daily_cap:'1',weekly_target:'3',article_min_chars:'2000',article_max_chars:'6000'}}},{hash:'#settings'});try{
+    assert.match(h.$('automation-state').textContent,/保留中/);assert.equal(h.$('tick').disabled,true);assert.equal(h.$('classify').disabled,true);assert.equal(h.$('expand').disabled,true);assert.match(h.$('automation-toggle').textContent,/再開/);
+    await h.$('settings-form').fire('submit');await flush();const save=h.calls.find(call=>call.path==='/settings'&&call.method==='PUT');assert.ok(save);assert.equal(Object.hasOwn(save.body,'automation_paused'),false);
+  }finally{h.cleanup();}
+});
+test('pause toggle sends only the dedicated state, and unknown state prevents production actions',async()=>{
+  let paused='1';const h=await harness({'/settings':async options=>{if(options.method){paused=options.body.automation_paused;return {ok:true};}return {ok:true,settings:{automation_paused:paused}};}},{hash:'#settings'});try{
+    await h.$('automation-toggle').fire('click');await flush();const writes=h.calls.filter(call=>call.method);assert.equal(writes.length,1);assert.deepEqual(writes[0].body,{automation_paused:'0'});
+  }finally{h.cleanup();}
+  const unknown=await harness({'/settings':async()=>{throw new Error('offline');}},{hash:'#queue'});try{assert.match(unknown.$('automation-state').textContent,/取得できません/);assert.equal(unknown.$('tick').disabled,true);assert.equal(unknown.$('automation-toggle').disabled,true);const approve=unknown.$('queue-list').querySelectorAll('button').find(el=>el.textContent==='公開用の変更を作成');assert.equal(approve.disabled,true);assert.ok(unknown.calls.every(call=>!call.method));}finally{unknown.cleanup();}
 });

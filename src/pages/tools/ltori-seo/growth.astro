@@ -39,11 +39,11 @@ import service from '../../../data/service-ltori.json';
       <noscript><p class="kw-notice">この管理画面にはJavaScriptが必要です。</p></noscript>
       <p class="kw-notice" id="growth-message" role="status" hidden></p>
       <section class="growth-publishing" aria-labelledby="growth-publishing-title">
-        <div><p class="kw-label" id="growth-publishing-title">自動公開の状態（全施策共通）</p><strong id="growth-publication-state">確認中</strong><p id="growth-publication-detail">承認済みの原稿だけが公開対象です。</p></div>
-        <dl><div><dt>今日の新規公開</dt><dd id="growth-daily-count">— / 10</dd></div><div><dt>公開待ち</dt><dd id="growth-queue-count">—</dd></div></dl>
+        <div><p class="kw-label" id="growth-publishing-title">全国SEO・採用ノートの自動公開</p><strong id="growth-publication-state">確認中</strong><p id="growth-publication-detail">承認済みの原稿だけが公開対象です。</p></div>
+        <dl><div><dt>全国SEO・今日の公開地域</dt><dd id="growth-daily-count">— / 20</dd></div><div><dt>採用ノート・今月の新規公開</dt><dd id="growth-monthly-count">— / 10</dd></div><div><dt>公開待ち</dt><dd id="growth-queue-count">—</dd></div></dl>
         <button class="kw-button" type="button" id="growth-pause" data-requires-data disabled>自動公開を一時停止</button>
       </section>
-      <p class="kw-help">公開上限と一時停止・再開は、この公開機能を利用する全施策に共通です。原稿の種類を絞り込んでも、上限や停止の対象範囲は変わりません。</p>
+      <p class="kw-help">全国SEOは1日20地域まで、採用ノートは月10本まで・原則3日以上の間隔で公開します。この一時停止ボタンは両方が対象です。公式メディアの運転設定は公式メディア画面で管理します。</p>
       <section data-growth-view="overview" aria-labelledby="growth-overview-title">
         <div class="kw-section-head"><div><h2 id="growth-overview-title">成果を確認する</h2><p id="growth-report-period">検索・アクセスの集計期間は取得後に表示します。</p></div><button class="kw-button" id="growth-sync" type="button" data-requires-data disabled>Googleデータを取得</button></div>
         <dl class="kw-stats growth-stats">
@@ -62,8 +62,8 @@ import service from '../../../data/service-ltori.json';
       </section>
       <section data-growth-view="documents" aria-labelledby="growth-documents-title" hidden>
         <div class="kw-section-head"><div><h2 id="growth-documents-title">原稿・公開予約</h2><p>本文を保存し、プレビューと根拠を確認してから公開待ちに追加します。</p></div><button class="kw-button kw-primary" type="button" id="growth-new-document" data-requires-data disabled>原稿を作成</button></div>
-        <div class="growth-filters"><label>原稿を検索<input id="growth-document-search" type="search" placeholder="市名・タイトルで検索" /></label><label>公開状況<select id="growth-document-status"><option value="">すべて</option><option value="draft">下書き</option><option value="approved">承認済み</option><option value="scheduled">公開予約</option><option value="published">公開中</option><option value="paused">公開停止</option></select></label><label>種類<select id="growth-document-type"><option value="">すべて</option><option value="city">市のLP</option><option value="article">採用コラム</option></select></label></div>
-        <p class="kw-help">1日の公開上限は、すべての原稿を合わせて10本です。承認済み原稿が10本に満たない日は、承認された分だけ公開します。公開時刻は日本時間です。</p>
+        <div class="growth-filters"><label>原稿を検索<input id="growth-document-search" type="search" placeholder="地域名・タイトルで検索" /></label><label>公開状況<select id="growth-document-status"><option value="">すべて</option><option value="draft">下書き</option><option value="approved">承認済み</option><option value="scheduled">公開予約</option><option value="published">公開中</option><option value="paused">公開停止</option></select></label><label>種類<select id="growth-document-type"><option value="">すべて</option><option value="city">市区町村のLP</option><option value="article">採用コラム</option></select></label></div>
+        <p class="kw-help">全国SEOと採用ノートは別々の公開枠です。根拠資料・検索意図・具体例を確認し、承認された原稿だけが公開対象です。原稿が足りない日は、準備済みの分だけ公開します。日本時間で集計します。</p>
         <div class="kw-table-wrap" role="region" aria-label="原稿と公開予約。横にスクロールできます" tabindex="0"><table class="kw-table"><thead><tr><th scope="col">原稿</th><th scope="col">状態</th><th scope="col">確認事項</th><th scope="col">公開予定・更新</th><th scope="col">操作</th></tr></thead><tbody id="growth-document-rows"></tbody></table><p id="growth-document-empty" class="growth-empty" hidden>該当する原稿がありません。原稿を作成するか、検索条件を変更してください。</p></div>
         <div class="kw-pagination"><p class="kw-help" id="growth-document-count"></p><div><button class="kw-button" id="growth-documents-prev" type="button">前へ</button><span id="growth-documents-page">1 / 1</span><button class="kw-button" id="growth-documents-next" type="button">次へ</button></div></div>
       </section>
@@ -86,7 +86,7 @@ import service from '../../../data/service-ltori.json';
     <header class="growth-dialog-header"><div><p class="kw-label">原稿の編集</p><h2 id="growth-editor-title">原稿を作成</h2></div><button type="button" class="kw-button" id="growth-editor-close">閉じる</button></header>
     <form id="growth-editor-form">
       <p class="kw-notice" id="growth-editor-error" role="alert" hidden></p>
-      <div class="kw-form-grid"><label>ページの種類<select id="growth-edit-type"><option value="city">市のLP</option><option value="article">採用コラム</option></select></label><label id="growth-edit-city-wrap">対象の市<select id="growth-edit-city"><option value="">市を選んでください</option></select></label><label id="growth-edit-slug-wrap" hidden>URLの末尾（半角英数字・ハイフン）<input id="growth-edit-slug" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxlength="100" placeholder="interview-follow-up" /></label></div>
+      <div class="kw-form-grid"><label>ページの種類<select id="growth-edit-type"><option value="city">市区町村のLP</option><option value="article">採用コラム</option></select></label><label id="growth-edit-city-wrap">対象の市区町村<select id="growth-edit-city"><option value="">市区町村を選んでください</option></select></label><label id="growth-edit-slug-wrap" hidden>URLの末尾（半角英数字・ハイフン）<input id="growth-edit-slug" pattern="[a-z0-9]+(?:-[a-z0-9]+)*" maxlength="100" placeholder="interview-follow-up" /></label></div>
       <p class="kw-help" id="growth-edit-url">URLは保存すると確定します。</p>
       <label>検索結果のタイトル<input id="growth-edit-title" maxlength="160" required /></label>
       <label>検索結果の説明文<textarea id="growth-edit-description" rows="3" maxlength="500"></textarea></label>
@@ -96,7 +96,7 @@ import service from '../../../data/service-ltori.json';
       <section class="growth-form-section"><div class="kw-section-head"><div><h3>そのページで伝える内容</h3><p>地域の根拠、採用課題、具体的な提案を、それぞれの見出しで記載します。</p></div><button type="button" class="kw-button" id="growth-add-section">見出しを追加</button></div><div id="growth-edit-sections" class="growth-edit-list"></div></section>
       <section class="growth-form-section"><h3>LINE活用の作例</h3><p class="kw-help">実際の導入実績と混同されないよう「作例」と表示します。</p><label>作例のタイトル<input id="growth-edit-example-title" maxlength="200" /></label><label>配信・運用の具体例<textarea id="growth-edit-example-body" rows="5" maxlength="5000"></textarea></label></section>
       <section class="growth-form-section"><div class="kw-section-head"><div><h3>出典と確認日</h3><p>市・都道府県・全国など、資料が対象とする範囲も記録します。</p></div><button type="button" class="kw-button" id="growth-add-source">出典を追加</button></div><div id="growth-edit-sources" class="growth-edit-list"></div></section>
-      <section class="growth-form-section" id="growth-related-cities" hidden><h3>記事から紹介する市のLP</h3><p class="kw-help">記事の内容に関係する市を3市まで選べます。公開済みの市だけが記事内に表示されます。</p><div class="kw-form-grid" id="growth-edit-related"></div></section>
+      <section class="growth-form-section" id="growth-related-cities" hidden><h3>記事から紹介する市区町村のLP</h3><p class="kw-help">記事の内容に関係する地域を3地域まで選べます。公開済みの地域だけが記事内に表示されます。</p><div class="kw-form-grid" id="growth-edit-related"></div></section>
       <section class="growth-form-section"><h3>公開前の確認</h3><ul id="growth-edit-issues" class="growth-issues"><li>保存後に確認事項を表示します。</li></ul><p class="kw-help">地名の差し替えだけになっていないか、地域情報の根拠と企業に役立つ提案をプレビューで確認してください。</p></section>
       <footer class="growth-editor-actions"><button class="kw-button kw-primary" type="submit" id="growth-editor-save">下書きを保存</button><a class="kw-button" id="growth-editor-preview" href="#" target="_blank" rel="noopener noreferrer" hidden>保存した原稿をプレビュー ↗</a><button class="kw-button" id="growth-editor-approve" type="button" disabled>内容を確認して公開待ちに追加</button></footer>
       <p class="kw-help" id="growth-editor-save-hint">編集内容を保存してから、プレビュー・承認に進みます。</p>

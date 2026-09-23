@@ -1,7 +1,7 @@
 ---
 import SeoWorkspace from '../../../layouts/SeoWorkspace.astro';
 import {WORKSPACE_PROJECTS} from '../../../lib/seo-manager/workspace-projects.mjs';
-import {cityAreas, prefectureAreas} from '../../../lib/ltori-seo.mjs';
+import {municipalityAreas, prefectureAreas} from '../../../lib/ltori-seo.mjs';
 import {getCollection} from 'astro:content';
 const corporatePosts = await getCollection('blog', ({data}) => !data.draft);
 const roles = [
@@ -52,7 +52,7 @@ const portfolios = [
     <div class="kw-section-head"><div><h2 id="strategy-regional-title">全国SEO：地域ごとの根拠を揃える</h2><p>地名の差し替えだけで公開せず、地域の採用担当者が使える情報を用意します。</p></div></div>
     <div class="workspace-strategy-grid">
       <article class="kw-panel"><h3>公開前に確認する材料</h3><ul class="workspace-notes"><li>自治体・労働局などの資料URL、対象地域・期間、確認日。</li><li>勤務地・職種・勤務形態などの事実と、それに対応する採用課題。</li><li>応募・見学・面接・入社前に使うLINE案内の具体的な作例。</li><li>地域実績や現地拠点を推測で付け加えていないか。</li><li>他地域の記事と異なる判断材料があるか。</li></ul></article>
-      <article class="kw-panel"><h3>現在の対象範囲</h3><p>現行の公開対象判定は{prefectureAreas.length}都道府県と{cityAreas.length}市です。これは公開済み件数ではありません。</p><p>町・村・区の旧データは保持していますが、現在の新規公開対象には含みません。町村への拡張は地域データ・機能・編集基準を確認してから進めます。</p><a class="kw-button" href="/regional/">全国SEOの対象を確認する</a></article>
+      <article class="kw-panel"><h3>現在の対象範囲</h3><p>現行の公開対象判定は{prefectureAreas.length}都道府県と{municipalityAreas.length}市区町村・行政区です。これは公開済み件数ではありません。</p><p>市・町・村・区の原稿を保存・確認・予約できます。全国SEOは1日20地域まで、採用ノートは月10本程度を目安に品質確認を重視します。公式メディアは別の運転設定で管理します。</p><a class="kw-button" href="/regional/">全国SEOの対象を確認する</a></article>
     </div>
   </section>
 

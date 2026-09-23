@@ -5,7 +5,7 @@ import WorkspaceNav from '../../../components/seo-manager/WorkspaceNav.astro';
 import service from '../../../data/service-ltori.json';
 import AnalyticsPanel from '../../../components/seo-manager/AnalyticsPanel.astro';
 import {publicationFor} from '../../../lib/ltori-publication.mjs';
-import {regionalAreas, prefectureAreas, eligibleAreas, cityAreas} from '../../../lib/ltori-seo.mjs';
+import {regionalAreas, prefectureAreas, eligibleAreas, municipalityAreas} from '../../../lib/ltori-seo.mjs';
 import {catalogFromAreas, PATTERNS, STATUS, PRIORITY, INDEX} from '../../../lib/seo-manager/model.mjs';
 const catalog=catalogFromAreas(regionalAreas).map((page,i)=>({...page,publication:publicationFor(regionalAreas[i])}));
 const eligibleCount=eligibleAreas.length;
@@ -44,7 +44,7 @@ const options=(record)=>Object.entries(record);
       <a class="kw-outlink" href="https://hub.layr.co.jp/" target="_blank" rel="noopener noreferrer">LAYR HUBへ ↗</a>
     </aside>
     <main id="kw-main" class="kw-main">
-      <header class="kw-heading"><div><p class="kw-label">NATIONAL SEARCH MANAGEMENT</p><h1>全国SEOキーワード管理</h1><p>47都道府県・{cityAreas.length.toLocaleString('ja-JP')}市の検索流入を育てる。</p></div><button class="kw-button kw-primary" type="button" id="kw-open-import">検索実績を取り込む</button></header>
+      <header class="kw-heading"><div><p class="kw-label">NATIONAL SEARCH MANAGEMENT</p><h1>全国SEOキーワード管理</h1><p>47都道府県・{municipalityAreas.length.toLocaleString('ja-JP')}市区町村・行政区の検索流入を育てる。</p></div><button class="kw-button kw-primary" type="button" id="kw-open-import">検索実績を取り込む</button></header>
       <noscript><p class="kw-notice">この管理ツールにはJavaScriptが必要です。ブラウザの設定で有効にしてください。</p></noscript>
       <p id="kw-message" role="status" class="kw-notice" hidden></p>
       <p id="kw-storage-error" role="alert" class="kw-notice" hidden></p>
@@ -63,7 +63,7 @@ const options=(record)=>Object.entries(record);
           <label>優先度<select id="kw-priority"><option value="">すべて</option>{options(PRIORITY).map(([value,label])=><option value={value}>{label}</option>)}</select></label>
           <label>並び順<select id="kw-sort"><option value="area">地域順</option><option value="priority">優先度が高い順</option><option value="due">期限が近い順</option><option value="clicks">クリックが多い順</option><option value="impressions">表示回数が多い順</option><option value="position">掲載順位が高い順</option></select></label>
         </div>
-        <div class="kw-subfilters"><label>表示する検索実績<select id="kw-report"><option value="">実績は未取り込み</option></select></label><label>公開区分<select id="kw-publication"><option value="">対象の都道府県・市</option><option value="published" selected>公開中</option><option value="draft">下書き</option><option value="excluded">対象外（旧データ）</option></select></label><label id="kw-enabled-wrap" hidden>対策対象<select id="kw-enabled"><option value="">すべて</option><option value="active">対策対象</option><option value="paused">保留</option></select></label><button type="button" class="kw-button" id="kw-reset">条件をリセット</button></div>
+        <div class="kw-subfilters"><label>表示する検索実績<select id="kw-report"><option value="">実績は未取り込み</option></select></label><label>公開区分<select id="kw-publication"><option value="">対象の都道府県・市区町村</option><option value="published" selected>公開中</option><option value="draft">下書き</option><option value="excluded">対象外（旧データ）</option></select></label><label id="kw-enabled-wrap" hidden>対策対象<select id="kw-enabled"><option value="">すべて</option><option value="active">対策対象</option><option value="paused">保留</option></select></label><button type="button" class="kw-button" id="kw-reset">条件をリセット</button></div>
         <p id="kw-scope" class="kw-help">未取り込みの数値は「—」で表示します。</p>
         <div id="kw-bulk" class="kw-bulk" hidden><strong id="kw-selected-count"></strong><label>対応状況<select id="kw-bulk-status"><option value="">変更しない</option>{options(STATUS).map(([v,l])=><option value={v}>{l}</option>)}</select></label><label>優先度<select id="kw-bulk-priority"><option value="">変更しない</option>{options(PRIORITY).map(([v,l])=><option value={v}>{l}</option>)}</select></label><button class="kw-button kw-primary" type="button" id="kw-bulk-apply">選択した地域に適用</button><button class="kw-button" type="button" id="kw-deselect">選択を解除</button></div>
         <div class="kw-table-wrap" tabindex="0" role="region" aria-label="管理一覧。横にスクロールできます"><table class="kw-table"><thead id="kw-thead"></thead><tbody id="kw-tbody"></tbody></table><p class="kw-empty" id="kw-empty" hidden>条件に一致するデータがありません。検索条件を変更してください。</p></div>
@@ -90,7 +90,7 @@ const options=(record)=>Object.entries(record);
           </section>
         </div>
         <section class="kw-panel"><h3>保存した検索実績</h3><p class="kw-help">同じ期間・条件・集計軸の再取り込みは置換します。数値はCSV内の行の合計で、Search Consoleの画面合計と異なる場合があります。</p><div id="kw-report-history" class="kw-history"></div></section>
-        <details class="kw-help-details"><summary>運用の進め方・数値の読み方</summary><ol><li>地域・ページから優先度、担当者、次の作業と期限を設定します。</li><li>標準5種類はキーワード候補です。地域ごとの需要を調べ、不要な候補は保留にし、実際の検索語を追加します。</li><li>公開後は同じ期間幅・条件でSearch Console CSVを取り込みます。平均掲載順位は集計値であり固定の順位ではありません。</li><li>表示回数があるのにクリックされないページ、改善中のページを絞り込み、本文や見出しを改善します。</li><li>このツールで対応済みと記録しても、LP本文や公開状態は変更されません。</li></ol><p>「アクセス・問い合わせ」でGoogleの読み取り専用接続またはGA4 CSVの取り込みを利用できます。インデックス状態は手動確認です。町・村・区の旧編集データは「対象外」で保管します。下書きはサイトに公開されていません。原稿・成果の運用画面で承認・予約した原稿を、日本時間9時に1日最大10件公開します。この画面の作業メモだけを変更しても公開されません。</p><a href="https://support.google.com/webmasters/answer/7576553?hl=ja" target="_blank" rel="noopener noreferrer">Googleの指標説明を読む ↗</a></details>
+        <details class="kw-help-details"><summary>運用の進め方・数値の読み方</summary><ol><li>地域・ページから優先度、担当者、次の作業と期限を設定します。</li><li>標準5種類はキーワード候補です。地域ごとの需要を調べ、不要な候補は保留にし、実際の検索語を追加します。</li><li>公開後は同じ期間幅・条件でSearch Console CSVを取り込みます。平均掲載順位は集計値であり固定の順位ではありません。</li><li>表示回数があるのにクリックされないページ、改善中のページを絞り込み、本文や見出しを改善します。</li><li>このツールで対応済みと記録しても、LP本文や公開状態は変更されません。</li></ol><p>「アクセス・問い合わせ」でGoogleの読み取り専用接続またはGA4 CSVの取り込みを利用できます。インデックス状態は手動確認です。市・町・村・区を管理対象とし、既存の編集データを保持しています。下書きはサイトに公開されていません。原稿・成果の運用画面で承認・予約した原稿を、日本時間9:17に1日最大20地域公開します。この画面の作業メモだけを変更しても公開されません。</p><a href="https://support.google.com/webmasters/answer/7576553?hl=ja" target="_blank" rel="noopener noreferrer">Googleの指標説明を読む ↗</a></details>
       </section>
     </main>
   </div>

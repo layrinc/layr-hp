@@ -33,45 +33,180 @@ async function enqueue(db, count, {start = 0, scheduledAt} = {}) {
     await approveDocument(db, saved, saved.version, 'owner@example.test', beforeMidnight);
   }
 }
+async function enqueueArticles(db,count,{scheduledAt='2026-09-01T00:00:00.000Z',start=0}={}) {
+  for(let index=start;index<start+count;index++) {
+    const id=`article-${String(index).padStart(3,'0')}`;
+    const saved=await saveDocument(db,document(index,{id,type:'article',path:`/service/ltori/media/${id}/`,scheduledAt}),0,beforeMidnight);
+    await approveDocument(db,saved,saved.version,'owner@example.test',beforeMidnight);
+  }
+}
 
-test('16 approved pages publish at most 10 in one Japan day, including overlapping and repeated deliveries', async t => {
+test('26 approved regions publish at most 20 in one Japan day, including overlapping and repeated deliveries', async t => {
   const db = sqliteD1(t);
   await ensureDatabase(db);
-  await enqueue(db, 16);
+  await enqueue(db, 26);
   const runs = await Promise.all([publishDue(db, beforeMidnight), publishDue(db, beforeMidnight), publishDue(db, beforeMidnight)]);
-  assert.equal(runs.reduce((sum, run) => sum + run.published.length, 0), 10);
-  assert.equal((await getPublished(db)).length, 10);
+  assert.equal(runs.reduce((sum, run) => sum + run.published.length, 0), 20);
+  assert.equal((await getPublished(db)).length, 20);
   const stats = await publicationStats(db, beforeMidnight);
-  assert.deepEqual(stats, {todayPublished: 10, queued: 6, dailyLimit: 10, day: '2026-09-21'});
+  assert.deepEqual(stats.byScope.regional, {todayPublished: 20, queued: 6, dueReady:6, dailyLimit: 20});
+  assert.equal(stats.day, '2026-09-21');
+  assert.equal(stats.todayPublished, 20);
+  assert.equal(stats.queued, 6);
+  assert.equal(stats.dailyLimit, 20);
+  assert.equal(stats.releaseCountToday, 20);
   assert.equal((await publishDue(db, beforeMidnight)).published.length, 0);
   const exported = await backup(db);
-  assert.equal(exported.tables.seo_release_events.length, 10);
-  assert.equal(new Set(exported.tables.seo_release_events.map(row => `${row.document_id}:${row.version}`)).size, 10);
+  assert.equal(exported.tables.seo_release_events.length, 20);
+  assert.equal(new Set(exported.tables.seo_release_events.map(row => `${row.document_id}:${row.version}`)).size, 20);
 });
 
 test('the daily budget resets exactly at midnight Japan time, not UTC midnight', async t => {
   const db = sqliteD1(t);
   await ensureDatabase(db);
-  await enqueue(db, 16);
+  await enqueue(db, 26);
   await publishDue(db, beforeMidnight);
   const next = await publishDue(db, afterMidnight);
   assert.equal(next.day, '2026-09-22');
   assert.equal(next.published.length, 6);
-  assert.equal((await getPublished(db)).length, 16);
+  assert.equal((await getPublished(db)).length, 26);
   assert.equal((await publicationStats(db, afterMidnight)).todayPublished, 6);
+});
+
+test('regional and note quotas are independent and repeated deliveries cannot publish two new articles', async t => {
+  const db=sqliteD1(t);await ensureDatabase(db);
+  await enqueue(db,22);await enqueueArticles(db,4);
+  const runs=await Promise.all([publishDue(db,beforeMidnight),publishDue(db,beforeMidnight),publishDue(db,beforeMidnight)]);
+  assert.equal(runs.flatMap(run=>run.byScope.regional.published).length,20);
+  assert.equal(runs.flatMap(run=>run.byScope.media.published).length,1);
+  assert.equal((await getPublished(db)).length,21);
+  const stats=await publicationStats(db,beforeMidnight);
+  assert.deepEqual(stats.byScope.regional,{todayPublished:20,queued:2,dueReady:2,dailyLimit:20});
+  assert.equal(stats.byScope.media.monthPublished,1);
+  assert.equal(stats.byScope.media.todayPublished,1);
+  assert.equal(stats.byScope.media.queued,3);
+  assert.equal(stats.byScope.media.dueReady,3);
+  assert.equal(stats.byScope.media.nextEligibleAt,'2026-09-24T09:17:00+09:00');
+  assert.equal(stats.releaseCountToday,21);
+});
+
+test('note articles wait three Japan calendar days even when overdue reservations are queued', async t => {
+  const db=sqliteD1(t);await ensureDatabase(db);await enqueueArticles(db,3);
+  assert.equal((await publishDue(db,beforeMidnight)).published.length,1);
+  assert.equal((await publishDue(db,new Date('2026-09-23T14:59:59Z'))).published.length,0);
+  const released=await publishDue(db,new Date('2026-09-23T15:00:00Z'));
+  assert.equal(released.day,'2026-09-24');
+  assert.equal(released.published.length,1);
+  assert.equal((await publishDue(db,new Date('2026-09-23T15:00:00Z'))).published.length,0);
+});
+
+test('ten new note articles consume the monthly budget and it resets at Japan month boundary', async t => {
+  const db=sqliteD1(t);await ensureDatabase(db);await enqueueArticles(db,12);
+  for(let day=1;day<=28;day+=3) {
+    const now=new Date(`2026-10-${String(day).padStart(2,'0')}T00:17:00Z`);
+    assert.equal((await publishDue(db,now)).published.length,1);
+  }
+  // October 31 is three days after the tenth article, so the monthly ceiling
+  // must block this release independently of the minimum spacing rule.
+  const monthEnd=new Date('2026-10-31T14:59:59Z');
+  assert.equal((await publishDue(db,monthEnd)).published.length,0);
+  const stats=await publicationStats(db,monthEnd);
+  assert.equal(stats.byScope.media.monthPublished,10);
+  assert.equal(stats.byScope.media.nextEligibleAt,'2026-11-01T09:17:00+09:00');
+  const nextMonthStart=new Date('2026-10-31T15:00:00Z');
+  assert.equal((await publishDue(db,nextMonthStart)).published.length,1);
+  assert.equal((await publicationStats(db,nextMonthStart)).byScope.media.monthPublished,1);
+  assert.equal((await getPublished(db)).length,11);
+});
+
+test('note cadence carries across month boundaries instead of releasing on consecutive days', async t => {
+  const db=sqliteD1(t);await ensureDatabase(db);await enqueueArticles(db,2);
+  await publishDue(db,new Date('2026-09-30T00:17:00Z'));
+  const octoberFirst=new Date('2026-09-30T15:00:00Z');
+  assert.equal((await publishDue(db,octoberFirst)).published.length,0);
+  const stats=await publicationStats(db,octoberFirst);
+  assert.equal(stats.byScope.media.monthPublished,0);
+  assert.equal(stats.byScope.media.nextEligibleAt,'2026-10-03T09:17:00+09:00');
+  assert.equal((await publishDue(db,new Date('2026-10-02T15:00:00Z'))).published.length,1);
+});
+
+test('reviewed regional corrections do not consume another municipality slot or release a twenty-first region', async t => {
+  const db=sqliteD1(t);await ensureDatabase(db);await enqueue(db,21);
+  await publishDue(db,beforeMidnight);
+  const live=await getDocument(db,'city-000');
+  const draft=await saveDocument(db,{...live,body:'Reviewed correction'},live.version,beforeMidnight);
+  await approveDocument(db,draft,draft.version,'owner@example.test',beforeMidnight);
+  assert.deepEqual((await publishDue(db,beforeMidnight)).published,['city-000']);
+  const stats=await publicationStats(db,beforeMidnight);
+  assert.equal(stats.byScope.regional.todayPublished,20);
+  assert.equal(stats.releaseCountToday,21);
+  assert.equal((await getDocument(db,'city-020')).status,'scheduled');
+});
+
+test('article corrections preserve first-publication history, monthly quota and new-article spacing', async t => {
+  const db=sqliteD1(t);await ensureDatabase(db);await enqueueArticles(db,2);
+  await publishDue(db,beforeMidnight);
+  const live=await getDocument(db,'article-000');
+  const draft=await saveDocument(db,{...live,body:'Corrected fact with review'},live.version,beforeMidnight);
+  await approveDocument(db,draft,draft.version,'owner@example.test',beforeMidnight);
+  assert.deepEqual((await publishDue(db,beforeMidnight)).published,['article-000']);
+  let stats=await publicationStats(db,beforeMidnight);
+  assert.equal(stats.byScope.media.monthPublished,1);
+  assert.equal(stats.byScope.media.nextEligibleAt,'2026-09-24T09:17:00+09:00');
+  const october=new Date('2026-10-01T00:17:00Z');
+  const current=await getDocument(db,'article-000');
+  const octoberDraft=await saveDocument(db,{...current,body:'Next month correction'},current.version,october);
+  await approveDocument(db,octoberDraft,octoberDraft.version,'owner@example.test',october);
+  const released=await publishDue(db,october);
+  assert.deepEqual(new Set(released.published),new Set(['article-000','article-001']));
+  stats=await publicationStats(db,october);
+  assert.equal(stats.byScope.media.monthPublished,1);
+  assert.equal(stats.byScope.media.todayPublished,1);
+  assert.equal(stats.releaseCountToday,2);
+});
+
+test('legacy release events consume regional/monthly quotas without rewriting history', async t => {
+  const db=sqliteD1(t);await ensureDatabase(db);await enqueue(db,26);await enqueueArticles(db,12);
+  const historical=[];
+  for(const doc of (await getDocuments(db)).filter(doc=>doc.id.startsWith('city-')?Number(doc.id.slice(5))<10:Number(doc.id.slice(8))<10)) {
+    const id=`legacy:${doc.id}`;historical.push(id);
+    const releasedDay=doc.type==='city'?'2026-09-21':'2026-09-01';
+    await db.prepare('INSERT INTO seo_release_events(id,day,document_id,version,run_id,created_at) VALUES(?,?,?,?,?,?)').bind(id,releasedDay,doc.id,doc.version,'legacy-shared-ten',`${releasedDay}T00:17:00Z`).run();
+    await db.prepare("UPDATE seo_documents SET status='published',value=json_set(value,'$.status','published') WHERE id=?").bind(doc.id).run();
+  }
+  const released=await publishDue(db,beforeMidnight);
+  assert.equal(released.byScope.regional.published.length,10);
+  assert.equal(released.byScope.media.published.length,0);
+  const stats=await publicationStats(db,beforeMidnight);
+  assert.equal(stats.byScope.regional.todayPublished,20);
+  assert.equal(stats.byScope.media.monthPublished,10);
+  const retained=(await backup(db)).tables.seo_release_events.filter(row=>row.run_id==='legacy-shared-ten');
+  assert.deepEqual(new Set(retained.map(row=>row.id)),new Set(historical));
+});
+
+test('due-ready counts exclude future reservations and unreviewed edits for each scope', async t => {
+  const db=sqliteD1(t);await ensureDatabase(db);
+  await enqueue(db,2);await enqueue(db,1,{start:2,scheduledAt:'2026-09-22T09:00:00Z'});
+  await enqueueArticles(db,2);await enqueueArticles(db,1,{start:2,scheduledAt:'2026-09-22T09:00:00Z'});
+  const article=await getDocument(db,'article-001');await saveDocument(db,article,article.version,beforeMidnight);
+  const stats=await publicationStats(db,beforeMidnight);
+  assert.equal(stats.byScope.regional.queued,3);assert.equal(stats.byScope.regional.dueReady,2);
+  assert.equal(stats.byScope.media.queued,2);assert.equal(stats.byScope.media.dueReady,1);
 });
 
 test('global pause retains approved queue without consuming the publication budget', async t => {
   const db = sqliteD1(t);
   await ensureDatabase(db);
   await enqueue(db, 3);
+  await enqueueArticles(db,3);
   const store = createStore(db);
   await store.upsert('settings', 'publication', {paused: true});
   assert.equal((await publishDue(db, beforeMidnight)).published.length, 0);
-  assert.equal((await publicationStats(db, beforeMidnight)).queued, 3);
+  assert.equal((await publicationStats(db, beforeMidnight)).queued, 6);
+  assert.equal((await publicationStats(db, beforeMidnight)).byScope.media.monthPublished,0);
   assert.equal((await getPublished(db)).length, 0);
   await store.upsert('settings', 'publication', {paused: false});
-  assert.equal((await publishDue(db, beforeMidnight)).published.length, 3);
+  assert.equal((await publishDue(db, beforeMidnight)).published.length, 4);
 });
 
 test('unreviewed drafts, future reservations, and individually paused pages never leak into publication', async t => {
@@ -119,7 +254,8 @@ test('editing a live page leaves the approved live snapshot intact until reviewe
   await publishDue(db, beforeMidnight);
   assert.equal((await getPublished(db))[0].version, reviewed.version);
   assert.equal((await getPublished(db))[0].title, 'Unapproved replacement');
-  assert.equal((await publicationStats(db, beforeMidnight)).todayPublished, 2);
+  assert.equal((await publicationStats(db, beforeMidnight)).todayPublished, 1);
+  assert.equal((await publicationStats(db, beforeMidnight)).releaseCountToday, 2);
 });
 
 test('pausing a live page withdraws the public snapshot but preserves an editable original', async t => {

@@ -12,16 +12,16 @@ const meta={start:'2026-09-18',end:'2026-09-30',property:'123456'},path='/servic
 const config={clientId:'test-client.apps.googleusercontent.com',property:'123456',site:'sc-domain:layr.co.jp'};
 const csv='Path,Views,TotalUsers,Sessions,Inquiries\n'+path+',10,8,6,0';
 
-test('scope is 792 cities and 47 prefectures; only three reviewed pages release, towns/villages/wards remain excluded',()=>{
-  assert.equal(cityAreas.length,792);assert.equal(eligibleAreas.length,839);assert.equal(publishedAreas.length,3);
+test('all catalog municipalities are eligible, but unreviewed towns/villages/wards stay unpublished',()=>{
+  assert.equal(cityAreas.length,792);assert.equal(eligibleAreas.length,regionalAreas.length);assert.equal(publishedAreas.length,3);
   assert.deepEqual(publishedAreas.map(a=>a.slug).sort(),['mie/nabari','mie/toba','wakayama/hashimoto']);
-  for(const area of regionalAreas.filter(a=>a.kind!=='prefecture'&&!a.locality.endsWith('市')))assert.equal(publicationFor(area),'excluded');
+  for(const area of regionalAreas.filter(a=>a.kind!=='prefecture'&&!a.locality.endsWith('市')))assert.equal(publicationFor(area),'draft');
   const invalid=structuredClone(policy);invalid.releases[0].slug='unknown/no-town';assert.throws(()=>validateReleases(invalid,regionalAreas,cityEditorial));
   assert.throws(()=>validateReleases({...policy,releases:[...policy.releases,policy.releases[0]]},regionalAreas,cityEditorial),/duplicate/);
-  const extra=eligibleAreas.filter(a=>!cityEditorial[a.slug]).slice(0,8);
+  const extra=eligibleAreas.filter(a=>!cityEditorial[a.slug]).slice(0,18);
   const extraCopy=Object.fromEntries(extra.map(a=>[a.slug,cityEditorial['mie/nabari']]));
   const extraReleases=extra.map(a=>({...policy.releases[0],slug:a.slug}));
-  assert.equal(validateReleases({...policy,releases:[...policy.releases,...extraReleases.slice(0,7)]},regionalAreas,{...cityEditorial,...extraCopy}).length,10);
+  assert.equal(validateReleases({...policy,releases:[...policy.releases,...extraReleases.slice(0,17)]},regionalAreas,{...cityEditorial,...extraCopy}).length,20);
   assert.throws(()=>validateReleases({...policy,releases:[...policy.releases,...extraReleases]},regionalAreas,{...cityEditorial,...extraCopy}),/Daily/);
   assert.throws(()=>validateReleases(policy,regionalAreas,{}),/Editorial/);
 });

@@ -129,7 +129,9 @@ function completedSummary(body, kind) {
     const row = matches[0];
     const result = { kind: jobKind, status: 'completed' };
     if (jobKind === 'publish') {
-      if (!Number.isInteger(row.publishedCount) || row.publishedCount < 0 || row.publishedCount > 10) {
+      // Quotas are enforced transactionally by the server per scope. The count
+      // also includes approved corrections, so it has no shared daily ceiling.
+      if (!Number.isSafeInteger(row.publishedCount) || row.publishedCount < 0) {
         throw new JobError('invalid_publish_count');
       }
       result.publishedCount = row.publishedCount;

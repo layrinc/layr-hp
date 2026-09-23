@@ -4,7 +4,7 @@ export const WORKSPACE_ORIGIN = 'https://seo.layr.co.jp';
 export const INTERNAL_ORIGIN = 'https://kiji-workspace.internal';
 export const MAX_REQUEST_BYTES = 2 * 1024 * 1024;
 export const MAX_RESPONSE_BYTES = 8 * 1024 * 1024;
-export const SETTINGS_FIELDS = ['autopilot','stock_target','daily_cap','weekly_target','auto_pick','supervisor','categories','article_min_chars','article_max_chars','model_body','model_outline'];
+export const SETTINGS_FIELDS = ['automation_paused','autopilot','stock_target','daily_cap','weekly_target','auto_pick','supervisor','categories','article_min_chars','article_max_chars','model_body','model_outline'];
 export class WorkspaceError extends Error { constructor(status, message) { super(message); this.status = status; } }
 const fail = (status, message) => { throw new WorkspaceError(status, message); };
 const positiveId = '[1-9][0-9]{0,9}';
@@ -71,6 +71,7 @@ export async function readWorkspaceBody(request, path) {
   if ('offset' in body && (!Number.isSafeInteger(body.offset) || body.offset < 0)) fail(400, '読み込み位置を確認してください。');
   if ('days' in body && (!Number.isInteger(body.days) || body.days < 1 || body.days > 3)) fail(400, '計測取得は1〜3日で指定してください。');
   if (path === '/api/settings') {
+    if ('automation_paused' in body && !['0','1'].includes(body.automation_paused)) fail(400, '保留・再開の設定を確認してください。');
     if ('autopilot' in body && !['full','approval'].includes(body.autopilot)) fail(400, '運転モードを確認してください。');
     if ('auto_pick' in body && !['0','1',0,1].includes(body.auto_pick)) fail(400, '自動選定の設定を確認してください。');
     for (const [key, min, max] of [['stock_target',1,10],['daily_cap',1,5],['weekly_target',1,10],['article_min_chars',500,30000],['article_max_chars',500,30000]]) {

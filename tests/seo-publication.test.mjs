@@ -11,16 +11,16 @@ function fixture(overrides = {}) {
     { heading: '面接前の案内', steps: ['集合場所と連絡先を案内する'] },
   ], example: { title: '面接の案内例', body: '当日の連絡先をご案内します。' }, sources: [{ title: '名張市', url: 'https://www.city.nabari.lg.jp/', checkedAt: '2026-09-21', geographicScope: '名張市' }], ...overrides }, { now, status: 'published', publishedAt: now, review: { reviewedBy: 'editor@example.com', reviewedAt: now } });
 }
-test('catalog accepts city slugs/codes and rejects prefectures, towns and wards', () => {
+test('catalog accepts municipal slugs/codes including towns and wards, rejecting prefectures and invalid paths', () => {
   assert.equal(resolveCity('24208').slug, 'mie/nabari');
   assert.equal(resolveCity('mie/nabari').locality, '名張市');
   assert.equal(resolveCity('mie'), null);
-  assert.equal(resolveCity('hokkaido/sapporo-chuo'), null);
-  assert.equal(resolveCity('mie/meiwa'), null);
+  assert.equal(resolveCity('hokkaido/sapporo-chuo').code, '01101');
+  assert.equal(resolveCity('mie/meiwa').locality, '明和町');
   assert.equal(publicPath({ type: 'city', slug: '../contact' }), null);
   assert.equal(publicPath({ type: 'article', slug: 'category' }), null);
   assert.equal(publicPath({ type: 'article', slug: 'interview-reminder' }), '/service/ltori/media/interview-reminder/');
-  assert.equal(DAILY_PUBLICATION_LIMIT, 10);
+  assert.equal(DAILY_PUBLICATION_LIMIT, 20);
 });
 test('untrusted client cannot assign review, publication state or publication dates', () => {
   const doc = normalizeDocument({ ...fixture(), status: 'published', review: { reviewedBy: 'fake' }, publishedAt: now }, { now });

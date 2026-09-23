@@ -1,6 +1,6 @@
 import {handleKijiWorkspace} from './kiji-workspace.mjs';
 import {protectedResponse,MANAGER_ORIGIN} from './seo-access.mjs';
-import {ensureDatabase,createStore,HttpError,getDocuments,getDocument,getPublished,getWorkspace,saveWorkspace,saveDocument,approveDocument,pauseDocument,publicationStats,activity,backup} from './seo-store.mjs';
+import {ensureDatabase,createStore,HttpError,getDocuments,getDocument,getPublished,getWorkspace,saveWorkspace,saveDocument,approveDocument,pauseDocument,publicationStats,publicationSettings,activity,backup} from './seo-store.mjs';
 import {validateDocument,qualityIssues,publicPath,cityCatalog} from '../src/lib/seo-manager/editorial-model.mjs';
 import {getAnalyticsConfiguration} from './seo-analytics.mjs';
 import {readMediaAnalytics} from './seo-media-analytics.mjs';
@@ -83,11 +83,11 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
     }
     if(path==='/api/seo/dashboard'&&request.method==='GET') {
       const [documents,published,leads,snapshots,integrations,inspections,health,statistics,settings,events,publishSchedule,maintenanceSchedule]=await Promise.all([
-        getDocuments(db),getPublished(db),store.list('leads'),store.list('analytics'),store.list('integrations'),store.list('inspections'),store.list('health'),publicationStats(db),store.get('settings','publication'),db.prepare('SELECT kind,message,created_at AS createdAt FROM seo_activity ORDER BY created_at DESC LIMIT 50').all(),store.get('scheduler','publish'),store.get('scheduler','maintenance'),
+        getDocuments(db),getPublished(db),store.list('leads'),store.list('analytics'),store.list('integrations'),store.list('inspections'),store.list('health'),publicationStats(db,now),store.get('settings','publication'),db.prepare('SELECT kind,message,created_at AS createdAt FROM seo_activity ORDER BY created_at DESC LIMIT 50').all(),store.get('scheduler','publish'),store.get('scheduler','maintenance'),
       ]);
       const flat=rows=>rows.map(row=>row.value);
       const pages=[...(services.staticPages||[]),...published.map(doc=>({path:publicPath(doc),title:doc.title,type:doc.type,publishedAt:doc.publishedAt}))];
-      return json({settings:{dailyLimit:10,paused:settings?.paused===true,timezone:'Asia/Tokyo',publishTime:'09:17'},scheduler:{publish:schedulerStatus(publishSchedule),maintenance:schedulerStatus(maintenanceSchedule)},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots:ltoriGrowthSnapshots(snapshots),integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
+      return json({settings:publicationSettings(settings),scheduler:{publish:schedulerStatus(publishSchedule),maintenance:schedulerStatus(maintenanceSchedule)},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots:ltoriGrowthSnapshots(snapshots),integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
     }
     if(path==='/api/seo/publication'&&request.method==='GET') {
       const [docs,live]=await Promise.all([getDocuments(db),getPublished(db)]);const liveIds=new Set(live.map(doc=>doc.id));
@@ -118,7 +118,7 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
     }
     if(path==='/api/seo/settings'&&request.method==='POST') {
       const input=await body(request);if(typeof input.paused!=='boolean')throw new HttpError(400,'停止設定を確認してください。');
-      const settings={dailyLimit:10,paused:input.paused,updatedAt:now.toISOString()};await store.upsert('settings','publication',settings);await activity(db,'settings',input.paused?'自動公開を一時停止しました。':'自動公開を再開しました。',now);return json({settings});
+      const settings={...publicationSettings(input),updatedAt:now.toISOString()};await store.upsert('settings','publication',settings);await activity(db,'settings',input.paused?'自動公開を一時停止しました。':'自動公開を再開しました。',now);return json({settings});
     }
     if(path==='/api/seo/leads'&&request.method==='POST') {const input=await body(request);return json({lead:await saveLead(db,input.lead||{},version(input.expectedVersion??0),now)});}
     if(['/api/seo/sync','/api/seo/inspect'].includes(path)&&request.method==='POST') {

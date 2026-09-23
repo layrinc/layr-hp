@@ -36,3 +36,11 @@ test('redirects, exceptions and timeouts reveal no internal details or cookies',
  const res=await handleKijiWorkspace(request('tick','POST',{}),binding(()=>new Promise(()=>{})),{timeoutMs:10});assert.equal(res.status,504);assert.match(await res.text(),/自動再試行はしません/);
  assert.equal((await handleKijiWorkspace(request(),{})).status,503);
 });
+
+
+test('pause state is visible and accepts explicit string values without broad settings changes',async()=>{
+ let body;const env=binding(async req=>{if(req.method==='PUT')body=await req.json();return Response.json({ok:true,settings:{automation_paused:'1',publish_repo:'hidden'}});});
+ assert.deepEqual((await(await handleKijiWorkspace(request('settings'),env)).json()).settings,{automation_paused:'1'});
+ assert.equal((await handleKijiWorkspace(request('settings','PUT',{automation_paused:'1'}),env)).status,200);assert.deepEqual(body,{automation_paused:'1'});
+ for(const value of [true,false,0,1,null,'yes'])assert.equal((await handleKijiWorkspace(request('settings','PUT',{automation_paused:value}),binding(()=>assert.fail()))).status,400);
+});
