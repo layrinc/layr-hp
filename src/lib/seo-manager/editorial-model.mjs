@@ -2,7 +2,8 @@ import { municipalityAreas, areasBySlug } from '../ltori-seo.mjs';
 
 export const EDITORIAL_STATUSES = ['draft', 'approved', 'scheduled', 'published', 'paused'];
 export const EDITORIAL_TYPES = ['city', 'article'];
-export const DAILY_PUBLICATION_LIMIT = 20;
+// Regional publication follows the prefecture calendar, not a city-count cap.
+export const DAILY_PUBLICATION_LIMIT = null;
 export const ARTICLE_TEMPLATE_PATH = '/service/ltori/article-template/';
 export const cityCatalog = municipalityAreas.map(({ code, slug, name, fullName, prefectureName }) => ({ code, slug, name, fullName, prefectureName }));
 const text = value => typeof value === 'string' ? value.replace(/\u0000/g, '').trim() : '';

@@ -128,3 +128,12 @@ test('preparation configuration and blocked cities remain separate from publishe
   assert.match(ui.get('growth-regional-preparation').textContent, /未確認.*準備済み —.*要確認 —/);
   assert.equal(ui.get('growth-regional-blocked').hidden, true);
 });
+
+
+test('provider or budget interruptions are visible instead of reporting uninterrupted generation',()=>{
+ const ui=client(),campaign=campaignFixture();
+ ui.render(campaign,{regionalPreparation:{enabled:true,lastRun:{status:'completed',result:{outcome:'provider_blocked'}}}});
+ assert.match(ui.get('growth-regional-preparation').textContent,/要確認（費用上限・接続・設定を確認）/);
+ campaign.day.status='disabled';ui.render(campaign,{regionalPreparation:{enabled:true}});
+ assert.match(ui.get('growth-regional-preparation').textContent,/停止中（公開日程の設定待ち）/);
+});

@@ -42,13 +42,14 @@ function summarize(kind, job) {
   if (job?.status !== 'completed') throw new Error('Job not complete');
   const result = job.result || {};
   if (kind === 'publish') return {kind, status:'completed', publishedCount:Array.isArray(result.published) ? result.published.length : 0, day:result.day};
+  if(kind==='prepare')return {kind,status:'completed',done:result.done===true,outcome:result.outcome,blockedCount:result.blockedCount||0};
   const states = kind === 'analytics' ? (result.statuses || []).map(row=>row.status) : [result.status];
   if (states.some(status=>status === 'error' || status === 'partial')) throw new Error('Integration failed');
   return {kind, status:'completed', outcome:states.length && states.every(status=>status === 'not_configured') ? 'not_configured' : 'completed'};
 }
 
-// A separate machine identity grants only these two jobs. It cannot read drafts,
-// edit content, approve documents or authenticate to the Access-protected UI.
+// A separate machine identity grants fixed jobs, never arbitrary documents,
+// prompts or an Access session. Preparation has a separately budgeted provider.
 export async function handleSchedulerRequest(request, env, {verify=verifySchedulerToken, initialize=initializeGrowth, execute=runJob}={}) {
   const url = new URL(request.url);
   if (url.pathname !== '/api/seo-scheduler/run') return null;
@@ -69,9 +70,11 @@ export async function handleSchedulerRequest(request, env, {verify=verifySchedul
     const body=new Uint8Array(size);let offset=0;for(const part of parts){body.set(part,offset);offset+=part.byteLength;}
     input=JSON.parse(new TextDecoder().decode(body));
   } catch {return response({error:'Invalid JSON'},400);}
-  if (!input || Array.isArray(input) || Object.keys(input).length !== 1 || !['publish','maintenance'].includes(input.kind)) return response({error:'Invalid job'},400);
+  const preparation=input?.kind==='prepare';
+  if (!input || Array.isArray(input) || !['publish','maintenance','prepare'].includes(input.kind)
+    || (preparation ? Object.keys(input).sort().join(',')!=='kind,step'||!Number.isInteger(input.step)||input.step<0||input.step>=240 : Object.keys(input).length!==1)) return response({error:'Invalid job'},400);
 
-  const {kind}=input, {runId,runAttempt}=identity, key=`${runId}:${runAttempt}:${kind}`;
+  const {kind}=input, {runId,runAttempt}=identity, key=`${runId}:${runAttempt}:${kind}${preparation?`:${input.step}`:""}`;
   const startedAt=new Date().toISOString(); let store, claimed=false;
   try {
     await initialize(env);
@@ -87,7 +90,7 @@ export async function handleSchedulerRequest(request, env, {verify=verifySchedul
     // Wait for real completion while the caller remains connected. Do not return
     // 202 before long analytics/inspection work has finished.
     // One failed Google integration must not skip independent page health checks.
-    const jobs=kind === 'publish' ? ['publish'] : ['analytics','inspection'];
+    const jobs=kind === 'publish' ? ['publish'] : kind==='prepare'?['prepare']:['analytics','inspection'];
     const outcomes=await Promise.allSettled(jobs.map(async job=>summarize(job,await execute(env,job))));
     if(outcomes.some(outcome=>outcome.status !== 'fulfilled'))throw new Error('Job incomplete');
     const results=outcomes.map(outcome=>outcome.value);

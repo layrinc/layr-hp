@@ -263,3 +263,14 @@ test('the production Worker routes anonymous scheduler requests before assets an
   assert.equal(response.status, 401);
   assert.equal(touched, false);
 });
+
+test('preparation only accepts a bounded step and replays it without returning draft content',async t=>{
+  const env={SEO_DB:sqliteD1(t)};let calls=0;
+  const execute=async()=>{calls++;return {status:'completed',result:{done:false,outcome:'progress',blockedCount:0,privateDraft:'SECRET ARTICLE'}};};
+  const services={verify:verified,initialize,execute};
+  const req=step=>request({body:{kind:'prepare',step}});
+  for(const body of [{kind:'prepare'},{kind:'prepare',step:-1},{kind:'prepare',step:240},{kind:'prepare',step:0,prompt:'custom'}])assert.equal((await handleSchedulerRequest(request({body}),env,services)).status,400);
+  const first=await handleSchedulerRequest(req(0),env,services);assert.equal(first.status,200);assert.doesNotMatch(await first.clone().text(),/SECRET|privateDraft/);
+  await handleSchedulerRequest(req(0),env,services);assert.equal(calls,1);
+  await handleSchedulerRequest(req(1),env,services);assert.equal(calls,2);
+});

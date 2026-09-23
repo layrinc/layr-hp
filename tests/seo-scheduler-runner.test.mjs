@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { runSeoGrowthJob, SCHEDULER_ENDPOINT } from '../scripts/run-seo-growth-job.mjs';
+import { runSeoGrowthJob, runRegionalPreparation, SCHEDULER_ENDPOINT } from '../scripts/run-seo-growth-job.mjs';
 
 const env = {
   GITHUB_ACTIONS: 'true',
@@ -227,7 +227,22 @@ test('the scheduled workflow pins official actions and only runs trusted main ev
   assert.match(workflow, /actions\/checkout@11d5960a326750d5838078e36cf38b85af677262/);
   assert.match(workflow, /actions\/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38/);
   assert.match(workflow, /persist-credentials: false/);
-  assert.match(workflow, /timeout-minutes: 30/);
+  assert.match(workflow, /timeout-minutes: 90/);
   assert.match(workflow, /group: seo-growth-jobs\s+cancel-in-progress: false/);
   assert.match(workflow, /run: node scripts\/run-seo-growth-job\.mjs "\$SEO_JOB_KIND"/);
+});
+
+
+test('preparation advances bounded steps with fresh tokens and stops after completion',async()=>{
+ const step=(done,outcome)=>json({status:'completed',kind:'prepare',results:[{kind:'prepare',status:'completed',done,outcome,blockedCount:0}]});
+ const h=harness([json({value:'oidc.payload.signature'}),step(false,'progress'),json({value:'oidc.payload.signature'}),step(true,'prepared')]);
+ await runRegionalPreparation(h.options);
+ assert.deepEqual(h.calls.filter(c=>c.init.method==='POST').map(c=>JSON.parse(c.init.body)),[{kind:'prepare',step:0},{kind:'prepare',step:1}]);
+});
+
+test('preparation raises an actionable failure for held drafts or missing budget instead of claiming completion',async()=>{
+ for(const outcome of ['needs_review','provider_blocked','provider_unavailable','state_changed']) {
+  const h=harness([json({value:'oidc.payload.signature'}),json({status:'completed',kind:'prepare',results:[{kind:'prepare',status:'completed',done:true,outcome,blockedCount:1}]})]);
+  await assert.rejects(runRegionalPreparation(h.options),/requires_attention/);assert.equal(h.calls.length,2);
+ }
 });
