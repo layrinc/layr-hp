@@ -40,10 +40,26 @@ import service from '../../../data/service-ltori.json';
       <p class="kw-notice" id="growth-message" role="status" hidden></p>
       <section class="growth-publishing" aria-labelledby="growth-publishing-title">
         <div><p class="kw-label" id="growth-publishing-title">全国SEO・採用ノートの自動公開</p><strong id="growth-publication-state">確認中</strong><p id="growth-publication-detail">承認済みの原稿だけが公開対象です。</p></div>
-        <dl><div><dt>全国SEO・今日の公開地域</dt><dd id="growth-daily-count">— / 20</dd></div><div><dt>採用ノート・今月の新規公開</dt><dd id="growth-monthly-count">— / 10</dd></div><div><dt>公開待ち</dt><dd id="growth-queue-count">—</dd></div></dl>
+        <dl><div><dt>全国市LP・今日の新規公開</dt><dd id="growth-daily-count">—市</dd></div><div><dt>採用ノート・今月の新規公開</dt><dd id="growth-monthly-count">— / 10</dd></div><div><dt>公開待ち</dt><dd id="growth-queue-count">—</dd></div></dl>
         <button class="kw-button" type="button" id="growth-pause" data-requires-data disabled>自動公開を一時停止</button>
       </section>
-      <p class="kw-help">全国SEOは1日20地域まで、採用ノートは月10本まで・原則3日以上の間隔で公開します。この一時停止ボタンは両方が対象です。公式メディアの運転設定は公式メディア画面で管理します。</p>
+      <p class="kw-help">全国市LPは北海道から沖縄県へ1日1都道府県、その都道府県の全市を対象に47日間で進めます。採用ノートは月10本まで・原則3日以上の間隔です。一時停止ボタンは両方が対象です。公式メディアの運転設定は公式メディア画面で管理します。</p>
+      <div class="kw-panel growth-metric-details" role="region" aria-labelledby="growth-regional-title">
+        <h2 id="growth-regional-title">全国市の公開予定</h2>
+        <p id="growth-regional-day" role="status">都道府県別の予定を確認中です。</p>
+        <p class="kw-help" id="growth-regional-preparation">自動調査・制作：未確認</p>
+        <details id="growth-regional-blocked" hidden><summary>準備の確認が必要な市を表示</summary><ul id="growth-regional-blocked-cities" class="growth-issues"></ul></details>
+        <p class="kw-help" id="growth-regional-period">公開予定と実際の公開状況を取得して表示します。</p>
+        <dl id="growth-regional-totals" class="growth-metric-list"></dl>
+        <details>
+          <summary>47都道府県の公開予定と準備状況を確認</summary>
+          <p class="kw-help" id="growth-regional-calendar-help">準備済みは未公開のうち承認を終えた市、準備未完了はまだ公開できない市です。未取得は「—」で表示します。予定日を過ぎた未公開分は確認が必要です。</p>
+          <div class="kw-table-wrap" role="region" aria-label="都道府県別の公開予定。横にスクロールできます" aria-describedby="growth-regional-calendar-help" tabindex="0">
+            <table class="kw-table"><thead><tr><th scope="col">日数</th><th scope="col">都道府県</th><th scope="col">公開予定日</th><th scope="col">対象市</th><th scope="col">公開中</th><th scope="col">未公開</th><th scope="col">準備済み</th><th scope="col">準備未完了</th><th scope="col">状況</th></tr></thead><tbody id="growth-regional-rows"></tbody></table>
+            <p class="growth-empty" id="growth-regional-empty">公開予定はまだ取得できていません。</p>
+          </div>
+        </details>
+      </div>
       <section data-growth-view="overview" aria-labelledby="growth-overview-title">
         <div class="kw-section-head"><div><h2 id="growth-overview-title">成果を確認する</h2><p id="growth-report-period">検索・アクセスの集計期間は取得後に表示します。</p></div><button class="kw-button" id="growth-sync" type="button" data-requires-data disabled>Googleデータを取得</button></div>
         <dl class="kw-stats growth-stats">
@@ -63,7 +79,7 @@ import service from '../../../data/service-ltori.json';
       <section data-growth-view="documents" aria-labelledby="growth-documents-title" hidden>
         <div class="kw-section-head"><div><h2 id="growth-documents-title">原稿・公開予約</h2><p>本文を保存し、プレビューと根拠を確認してから公開待ちに追加します。</p></div><button class="kw-button kw-primary" type="button" id="growth-new-document" data-requires-data disabled>原稿を作成</button></div>
         <div class="growth-filters"><label>原稿を検索<input id="growth-document-search" type="search" placeholder="地域名・タイトルで検索" /></label><label>公開状況<select id="growth-document-status"><option value="">すべて</option><option value="draft">下書き</option><option value="approved">承認済み</option><option value="scheduled">公開予約</option><option value="published">公開中</option><option value="paused">公開停止</option></select></label><label>種類<select id="growth-document-type"><option value="">すべて</option><option value="city">市区町村のLP</option><option value="article">採用コラム</option></select></label></div>
-        <p class="kw-help">全国SEOと採用ノートは別々の公開枠です。根拠資料・検索意図・具体例を確認し、承認された原稿だけが公開対象です。原稿が足りない日は、準備済みの分だけ公開します。日本時間で集計します。</p>
+        <p class="kw-help">全国市LPは1日1都道府県の全市、採用ノートは月10本・原則3日以上の間隔で進めます。根拠資料・検索意図・具体例を確認し、承認された原稿だけが公開対象です。市の原稿が足りない場合は準備済みの分を公開し、残りを未公開として表示します。日本時間で集計します。</p>
         <div class="kw-table-wrap" role="region" aria-label="原稿と公開予約。横にスクロールできます" tabindex="0"><table class="kw-table"><thead><tr><th scope="col">原稿</th><th scope="col">状態</th><th scope="col">確認事項</th><th scope="col">公開予定・更新</th><th scope="col">操作</th></tr></thead><tbody id="growth-document-rows"></tbody></table><p id="growth-document-empty" class="growth-empty" hidden>該当する原稿がありません。原稿を作成するか、検索条件を変更してください。</p></div>
         <div class="kw-pagination"><p class="kw-help" id="growth-document-count"></p><div><button class="kw-button" id="growth-documents-prev" type="button">前へ</button><span id="growth-documents-page">1 / 1</span><button class="kw-button" id="growth-documents-next" type="button">次へ</button></div></div>
       </section>
@@ -92,7 +108,7 @@ import service from '../../../data/service-ltori.json';
       <label>検索結果の説明文<textarea id="growth-edit-description" rows="3" maxlength="500"></textarea></label>
       <label>ページの主見出し<input id="growth-edit-heading" maxlength="160" /></label>
       <label>導入文<textarea id="growth-edit-lead" rows="4" maxlength="3000"></textarea></label>
-      <div class="kw-form-grid"><label>検索する人の目的<select id="growth-edit-intent"><option value="employer">企業の採用担当者向け</option><option value="unknown">まだ確認していない</option><option value="jobseeker">求職者向け</option></select></label><label>公開希望日時（日本時間）<input id="growth-edit-scheduled" type="datetime-local" /><span class="kw-help">未指定なら、承認後の次回公開処理から対象になります。</span></label></div>
+      <div class="kw-form-grid"><label>検索する人の目的<select id="growth-edit-intent"><option value="employer">企業の採用担当者向け</option><option value="unknown">まだ確認していない</option><option value="jobseeker">求職者向け</option></select></label><label>公開希望日時（日本時間）<input id="growth-edit-scheduled" type="datetime-local" /><span class="kw-help">全国市LPは都道府県別の予定日に、採用ノートは月次枠と公開間隔に沿って判定します。指定した日時より前には公開しません。</span></label></div>
       <section class="growth-form-section"><div class="kw-section-head"><div><h3>そのページで伝える内容</h3><p>地域の根拠、採用課題、具体的な提案を、それぞれの見出しで記載します。</p></div><button type="button" class="kw-button" id="growth-add-section">見出しを追加</button></div><div id="growth-edit-sections" class="growth-edit-list"></div></section>
       <section class="growth-form-section"><h3>LINE活用の作例</h3><p class="kw-help">実際の導入実績と混同されないよう「作例」と表示します。</p><label>作例のタイトル<input id="growth-edit-example-title" maxlength="200" /></label><label>配信・運用の具体例<textarea id="growth-edit-example-body" rows="5" maxlength="5000"></textarea></label></section>
       <section class="growth-form-section"><div class="kw-section-head"><div><h3>出典と確認日</h3><p>市・都道府県・全国など、資料が対象とする範囲も記録します。</p></div><button type="button" class="kw-button" id="growth-add-source">出典を追加</button></div><div id="growth-edit-sources" class="growth-edit-list"></div></section>

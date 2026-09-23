@@ -87,21 +87,72 @@ function publicationDetail(state) {
   if (state.settings.paused) return '公開待ちの原稿は保持しています。再開するまで自動公開しません。';
   const schedule = state.scheduler?.publish;
   const successAt = Date.parse(schedule?.lastSuccessAt), serverNow = Date.parse(state.serverTime);
-  const parts = [`毎日${state.settings.publishTime || '09:17'}（日本時間）に公開を確認し、10:17にも再確認します。全国SEOは1日20地域まで、採用ノートは月10本まで・原則3日以上の間隔です。実行時刻は遅れる場合があります。承認済み原稿がない日は追加しません。`];
+  const parts = [`毎日${state.settings.publishTime || '09:17'}（日本時間）に公開を確認し、10:17にも再確認します。全国市LPは北海道から沖縄県へ1日1都道府県の全市を対象に47日間で進め、採用ノートは月10本まで・原則3日以上の間隔です。実行時刻は遅れる場合があります。準備が終わっていない市は未公開として残します。`];
   parts.push(Number.isFinite(successAt) ? `公開処理の最終成功：${date(schedule.lastSuccessAt)}。` : '自動公開の実行成功はまだ確認できていません。');
   if (schedule?.status === 'error') parts.push('直近の処理でエラーがありました。GitHub Actionsの実行履歴を確認してください。');
   else if (schedule?.status === 'running') parts.push('公開処理を実行中です。しばらくして最新の情報に更新してください。');
   if (Number.isFinite(successAt) && Number.isFinite(serverNow) && serverNow - successAt > 36 * 60 * 60 * 1000) parts.push('前回の成功から36時間以上経過しています。自動処理が停止していないかGitHub Actionsで確認してください。');
   return parts.join(' ');
 }
+const knownCount = value => typeof value === 'number' && Number.isSafeInteger(value) && value >= 0;
+const cityCount = value => knownCount(value) ? `${number(value)}市` : '—';
+const campaignDate = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) ? value : '未設定';
+function regionalDayDescription(campaign, paused) {
+  if (!campaign?.day) return '都道府県別の公開予定を取得できていません。最新の情報に更新してください。';
+  const current = campaign.day, target = campaign.currentDay;
+  let detail;
+  if (current.status === 'disabled') detail = campaign.config?.valid === false ? '全国市の公開設定を確認できません。設定の確認が必要です。' : '都道府県別の自動公開は停止中です。';
+  else if (current.status === 'upcoming') detail = `${campaignDate(current.startDate)}から開始予定です。北海道から順に進めます。`;
+  else if (current.status === 'active') detail = `${number(current.dayNumber)} / 47日目：${string(current.prefecture?.name) || '都道府県を確認中'}。対象 ${cityCount(target?.total)}、公開中 ${cityCount(target?.live)}、準備済み ${cityCount(target?.ready)}、準備未完了 ${cityCount(target?.missing)}。${current.readyToPublish ? '本日の公開予定時刻を迎えています。' : `本日の公開予定：${date(current.publishAt)}。`}`;
+  else if (current.status === 'completed') detail = `47日間の公開日程が終了しました。未公開 ${cityCount(campaign.totals?.remaining)}。日程の終了は、全市の公開完了を意味しません。`;
+  else detail = '都道府県別の公開状態を確認できません。';
+  return paused ? `共通の自動公開を一時停止中です。${detail}` : detail;
+}
+function regionalRowStatus(row, current) {
+  if (knownCount(row.total) && row.total > 0 && row.live === row.total) return '全市公開中';
+  if (row.overdue === true) return '予定日経過・未公開あり';
+  if (current?.status === 'disabled') return '設定停止中';
+  if (row.plannedOn && row.plannedOn === current?.day) return '今日の対象';
+  if (row.plannedOn && current?.day && row.plannedOn > current.day) return '公開予定';
+  return knownCount(row.remaining) && row.remaining > 0 ? '未公開あり' : '確認中';
+}
+function renderRegionalCampaign(regional, paused, preparation) {
+  const campaign = regional?.campaign, current = campaign?.day;
+  $('growth-regional-day').textContent = regionalDayDescription(campaign, paused);
+  const preparationState = preparation?.enabled === false ? '停止中' : preparation?.enabled === true ? paused ? '停止中（共通の一時停止）' : '稼働中' : '未確認';
+  $('growth-regional-preparation').textContent = `自動調査・制作：${preparationState}。準備済み ${cityCount(preparation?.ready)}、要確認 ${cityCount(preparation?.blocked)}、処理中・待機中 ${cityCount(preparation?.pending)}。`;
+  const blocked = $('growth-regional-blocked-cities'); blocked.replaceChildren();
+  for (const city of array(preparation?.blockedCities)) blocked.append(node('li', `${string(city?.name) || '市名を確認中'}：原稿・根拠資料の確認が必要です。`));
+  $('growth-regional-blocked').hidden = blocked.children.length === 0;
+  $('growth-regional-period').textContent = campaign ? `予定期間：${campaignDate(current?.startDate)}〜${campaignDate(current?.endDate)}。北海道→沖縄県の47都道府県を1日ずつ進めます。公開中の市は再公開しません。` : '公開予定と実際の公開状況を取得して表示します。';
+  const totals = $('growth-regional-totals'); totals.replaceChildren();
+  for (const [label, key] of [['対象市', 'total'], ['公開中', 'live'], ['未公開', 'remaining'], ['準備済み（未公開）', 'ready'], ['準備未完了（未公開）', 'missing']]) {
+    const item = node('div'); item.append(node('dt', label), node('dd', cityCount(campaign?.totals?.[key]))); totals.append(item);
+  }
+  const target = $('growth-regional-rows'); target.replaceChildren();
+  for (const row of array(campaign?.prefectures)) {
+    const tr = node('tr'), prefecture = node('td', string(row.name) || '確認中');
+    tr.append(node('td', knownCount(row.dayNumber) ? `${number(row.dayNumber)}日目` : '—'), prefecture, node('td', campaignDate(row.plannedOn)));
+    for (const key of ['total', 'live', 'remaining', 'ready', 'missing']) tr.append(node('td', cityCount(row[key]), 'kw-number'));
+    const status = node('td'); status.append(node('span', regionalRowStatus(row, current), 'kw-tag')); tr.append(status); target.append(tr);
+  }
+  $('growth-regional-empty').hidden = target.children.length > 0;
+}
+function approvalMessage(doc) {
+  const cadence = doc?.type === 'city'
+    ? '全国市LPは北海道から沖縄県へ1日1都道府県、その都道府県の全市を対象に47日間で進めます。この原稿は都道府県の予定日と公開希望日時に沿って公開対象になります。予定日を過ぎた未公開分は確認が必要です。'
+    : '採用ノートは公開希望日時以降に、月10本まで・原則3日以上の間隔で自動公開されます。';
+  return `プレビューと出典を確認しましたか？承認すると公開待ちに追加します。${cadence} 自動公開の一時停止中は公開しません。`;
+}
 function render() {
   const stats = data.publicationStats || {}, queued = array(data.documents).filter(doc => ['approved', 'scheduled'].includes(doc.status)).length;
   $('growth-publication-state').textContent = data.settings.paused ? '自動公開を一時停止中' : '承認済みの原稿を順次公開';
   $('growth-publication-detail').textContent = publicationDetail(data);
   const regional = stats.byScope?.regional, media = stats.byScope?.media;
-  $('growth-daily-count').textContent = `${number(regional?.todayPublished)} / ${number(regional?.dailyLimit ?? data.settings.limits?.regional?.daily ?? 20)}地域`;
+  $('growth-daily-count').textContent = cityCount(regional?.todayPublished);
   $('growth-monthly-count').textContent = `${number(media?.monthPublished)} / ${number(media?.monthlyLimit ?? data.settings.limits?.media?.monthly ?? 10)}本`;
-  if (regional && media) $('growth-publication-detail').textContent += ` 現在の公開準備済み：全国SEO ${number(regional.dueReady)}地域、採用ノート ${number(media.dueReady)}本。${regional.dueReady === 0 ? '全国SEOの原稿補充・確認が必要です。' : ''}`;
+  if (media) $('growth-publication-detail').textContent += ` 採用ノートの公開準備済み：${number(media.dueReady)}本。`;
+  renderRegionalCampaign(regional, data.settings.paused, data.regionalPreparation);
   $('growth-queue-count').textContent = `${number(stats.queued ?? queued)}本`;
   $('growth-pause').textContent = data.settings.paused ? '自動公開を再開' : '自動公開を一時停止';
   renderOverview(); renderDocuments(); renderLeads(); renderHealth();
@@ -339,7 +390,7 @@ async function initialize() {
   });
   $('growth-editor-approve').addEventListener('click', () => {
     if (!editDoc || dirty) return;
-    if (!confirm('プレビューと出典を確認しましたか？承認すると、公開希望日時以降に全国SEOは1日20地域、採用ノートは月10本・原則3日以上の間隔の公開枠で自動公開されます。')) return;
+    if (!confirm(approvalMessage(editDoc))) return;
     void operation(async () => { await api(`/documents/${encodeURIComponent(editDoc.id)}/approve`, {version: editDoc.version}); await refresh(); openEditor(data.documents.find(item => item.id === editDoc.id)); }, '原稿を承認しました。公開待ちに追加しています。', 'growth-editor-error');
   });
   $('growth-new-lead').addEventListener('click', () => openLead()); $('growth-lead-close').addEventListener('click', closeLead);
