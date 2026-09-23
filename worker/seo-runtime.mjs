@@ -6,6 +6,7 @@ import {getPublishedAreas} from '../src/lib/ltori-publication.mjs';
 import {runAnalyticsSync,runInspections} from './seo-analytics.mjs';
 import {runHealthChecks,acquireJob,releaseJob} from './seo-health.mjs';
 import {contactRelay} from './seo-leads.mjs';
+import {prepareRegionalStep} from './seo-regional-preparation.mjs';
 
 export const getStaticPages=(now=new Date())=>[
   ...getPublishedAreas(now).map(area=>({path:`/service/ltori/area/${area.slug}/`,title:`${area.fullName}の採用LINE構築・運用支援`,type:'city'})),
@@ -86,9 +87,10 @@ export async function runJob(env,kind,{now=new Date()}={}) {
   if(!token)return {status:'running',message:'同じ処理を実行中です。'};
   try {
     await store.upsert('jobs',kind,{status:'running',startedAt:now.toISOString()});
-    const published=await getPublished(db),paths=[...getStaticPages(now).map(row=>row.path),...published.map(publicPath)];
+    const published=kind==='prepare'?[]:await getPublished(db),paths=[...getStaticPages(now).map(row=>row.path),...published.map(publicPath)];
     let result;
     if(kind==='publish')result=await publishDue(db,now);
+    else if(kind==='prepare')result=await prepareRegionalStep(env,{now});
     else if(kind==='analytics')result=await runAnalyticsSync(env,{store,publishedPaths:paths,now});
     else if(kind==='inspection'){result=await runInspections(env,{store,publishedPaths:paths,now});await runHealthChecks(env,{paths,now});}
     else throw new HttpError(400,'処理の種類を確認してください。');

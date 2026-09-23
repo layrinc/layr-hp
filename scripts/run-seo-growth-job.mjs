@@ -4,7 +4,7 @@ export const SCHEDULER_ENDPOINT = 'https://layr.co.jp/api/seo-scheduler/run';
 const WORKFLOW_REF = 'layrinc/layr-hp/.github/workflows/seo-growth-schedule.yml@refs/heads/main';
 const MAX_ATTEMPTS = 3;
 const MAX_BODY_BYTES = 65_536;
-const REQUEST_TIMEOUT_MS = { publish: 120_000, maintenance: 480_000 };
+const REQUEST_TIMEOUT_MS = { publish: 120_000, maintenance: 480_000, prepare: 180_000 };
 const OUTCOMES = new Set(['completed', 'not_configured']);
 
 class JobError extends Error {
@@ -17,7 +17,7 @@ class JobError extends Error {
 }
 
 function requestUrl(env, kind) {
-  if (!['publish', 'maintenance'].includes(kind)) throw new JobError('invalid_job_kind');
+  if (!['publish', 'maintenance', 'prepare'].includes(kind)) throw new JobError('invalid_job_kind');
   if (env.GITHUB_EVENT_NAME === 'push' && kind !== 'publish') throw new JobError('invalid_bootstrap_job');
   if (env.GITHUB_ACTIONS !== 'true' || env.GITHUB_REPOSITORY !== 'layrinc/layr-hp'
       || env.GITHUB_REF !== 'refs/heads/main' || env.GITHUB_WORKFLOW_REF !== WORKFLOW_REF
@@ -117,7 +117,7 @@ async function waitForDeployment({ fetchImpl, sleep, log }) {
 }
 
 function completedSummary(body, kind) {
-  const expected = kind === 'publish' ? ['publish'] : ['analytics', 'inspection'];
+  const expected = kind === 'publish' ? ['publish'] : kind==='prepare'?['prepare']:['analytics', 'inspection'];
   if (body.status !== 'completed' || body.kind !== kind || !Array.isArray(body.results)
       || body.results.length !== expected.length) throw new JobError('job_not_completed');
   const results = [];
@@ -136,7 +136,11 @@ function completedSummary(body, kind) {
       }
       result.publishedCount = row.publishedCount;
     }
-    if (jobKind !== 'publish') {
+    if(jobKind==='prepare') {
+      if(typeof row.done!=='boolean'||!['disabled','paused','calendar_finished','needs_review','prepared','provider_unavailable','provider_blocked','progress','ready','state_changed'].includes(row.outcome)||!Number.isSafeInteger(row.blockedCount)||row.blockedCount<0)throw new JobError('invalid_preparation_result');
+      Object.assign(result,{done:row.done,outcome:row.outcome,blockedCount:row.blockedCount});
+    }
+    if (!['publish','prepare'].includes(jobKind)) {
       if (!OUTCOMES.has(row.outcome)) throw new JobError('job_not_completed');
       result.outcome = row.outcome;
     }
@@ -152,8 +156,10 @@ export async function runSeoGrowthJob(kind, {
   sleep = ms => new Promise(resolve => setTimeout(resolve, ms)),
   log = message => console.log(message),
   timeoutMs = REQUEST_TIMEOUT_MS[kind],
+  step = 0,
 } = {}) {
   const oidcUrl = requestUrl(env, kind);
+  if(kind==='prepare'&&(!Number.isInteger(step)||step<0||step>=240))throw new JobError('invalid_preparation_step');
   if (!Number.isFinite(timeoutMs) || timeoutMs <= 0 || timeoutMs > REQUEST_TIMEOUT_MS[kind]) {
     throw new JobError('invalid_request_timeout');
   }
@@ -176,7 +182,7 @@ export async function runSeoGrowthJob(kind, {
       const jobResponse = await fetchImpl(SCHEDULER_ENDPOINT, {
         method: 'POST', redirect: 'error', signal: controller.signal,
         headers: { Authorization: `Bearer ${token.value}`, 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ kind }),
+        body: JSON.stringify(kind==='prepare'?{kind,step}:{kind}),
       });
       const result = completedSummary(await responseJson(jobResponse, 'job', attempt), kind);
       log(`SEO scheduler completed: ${JSON.stringify(result)}`);
@@ -191,8 +197,20 @@ export async function runSeoGrowthJob(kind, {
   }
 }
 
+export async function runRegionalPreparation(options={}) {
+  for(let step=0;step<240;step++) {
+    const response=await runSeoGrowthJob('prepare',{...options,step});
+    const result=response.results[0];
+    if(result.done) {
+      if(['needs_review','provider_unavailable','provider_blocked','state_changed'].includes(result.outcome))throw new JobError('regional_preparation_requires_attention');
+      return response;
+    }
+  }
+  throw new JobError('regional_preparation_step_limit');
+}
+
 if (process.argv[1] && pathToFileURL(process.argv[1]).href === import.meta.url) {
-  runSeoGrowthJob(process.argv[2]).catch(error => {
+  (process.argv[2]==='prepare'?runRegionalPreparation():runSeoGrowthJob(process.argv[2])).catch(error => {
     console.error(error instanceof JobError ? error.message : 'SEO scheduler failed: unexpected_error.');
     process.exitCode = 1;
   });

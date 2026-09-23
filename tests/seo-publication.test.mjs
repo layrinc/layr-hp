@@ -20,7 +20,7 @@ test('catalog accepts municipal slugs/codes including towns and wards, rejecting
   assert.equal(publicPath({ type: 'city', slug: '../contact' }), null);
   assert.equal(publicPath({ type: 'article', slug: 'category' }), null);
   assert.equal(publicPath({ type: 'article', slug: 'interview-reminder' }), '/service/ltori/media/interview-reminder/');
-  assert.equal(DAILY_PUBLICATION_LIMIT, 20);
+  assert.equal(DAILY_PUBLICATION_LIMIT, null);
 });
 test('untrusted client cannot assign review, publication state or publication dates', () => {
   const doc = normalizeDocument({ ...fixture(), status: 'published', review: { reviewedBy: 'fake' }, publishedAt: now }, { now });

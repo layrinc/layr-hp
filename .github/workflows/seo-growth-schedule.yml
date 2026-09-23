@@ -9,7 +9,9 @@ on:
       - scripts/run-seo-growth-job.mjs
       - worker/seo-scheduler.mjs
   schedule:
-    - cron: '17 0 * * *' # 09:17 JST: publish up to the remaining daily limit.
+    - cron: '17 18 * * *' # 03:17 JST: research, draft and verify today's/next day's cities.
+    - cron: '17 20 * * *' # 05:17 JST: resume bounded preparation without repeating paid calls.
+    - cron: '17 0 * * *' # 09:17 JST: publish today's assigned prefecture; notes keep their own quota.
     - cron: '17 1 * * *' # 10:17 JST: recovery run; the server enforces the same daily limit.
     - cron: '17 21 * * *' # 06:17 JST: analytics, index inspection, and health checks.
   workflow_dispatch:
@@ -22,6 +24,7 @@ on:
         options:
           - publish
           - maintenance
+          - prepare
 
 permissions: {}
 
@@ -37,7 +40,7 @@ jobs:
       github.workflow_ref == 'layrinc/layr-hp/.github/workflows/seo-growth-schedule.yml@refs/heads/main' &&
       (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event_name == 'push')
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 90
     permissions:
       contents: read
       id-token: write
@@ -53,5 +56,5 @@ jobs:
           node-version: '24'
       - name: Run the authenticated SEO job
         env:
-          SEO_JOB_KIND: ${{ inputs.kind || (github.event.schedule == '17 21 * * *' && 'maintenance' || 'publish') }}
+          SEO_JOB_KIND: ${{ inputs.kind || ((github.event.schedule == '17 18 * * *' || github.event.schedule == '17 20 * * *') && 'prepare' || github.event.schedule == '17 21 * * *' && 'maintenance' || 'publish') }}
         run: node scripts/run-seo-growth-job.mjs "$SEO_JOB_KIND"

@@ -79,7 +79,7 @@ test('municipal routes are accepted while prefectures and protected repository U
 
 test('approval uses verified identity and draft edits preserve the previous public snapshot', async t => {
   const db = sqliteD1(t);
-  const create = await call(db, '/api/seo/documents', {document: document({review: {reviewedBy: 'forged'}})});
+  const create = await call(db, '/api/seo/documents', {document: document({type:'article',slug:'snapshot-test',review: {reviewedBy: 'forged'}})});
   const draft = (await create.json()).document;
   const response = await call(db, `/api/seo/documents/${draft.id}/approve`, {version: draft.version});
   assert.equal(response.status, 200);
@@ -88,7 +88,7 @@ test('approval uses verified identity and draft edits preserve the previous publ
   assert.equal(approved.status, 'scheduled');
   await publishDue(db, new Date(Date.now() + 100));
   const live = (await getPublished(db))[0]; assert.equal(live.title, draft.title);
-  const edited = await call(db, '/api/seo/documents', {document: document({title: '名張市の採用LINE・下書きで変更'}), expectedVersion: approved.version});
+  const edited = await call(db, '/api/seo/documents', {document: document({type:'article',slug:'snapshot-test',title: '名張市の採用LINE・下書きで変更'}), expectedVersion: approved.version});
   assert.equal(edited.status, 201);
   const updated = (await edited.json()).document;
   assert.equal(updated.review, null); assert.equal(updated.status, 'draft');
@@ -105,11 +105,11 @@ test('the API blocks identical body approvals and never trusts a client-defined 
   assert.equal((await call(db, `/api/seo/documents/${second.id}/approve`, {version: second.version})).status, 422);
   const settings = await call(db, '/api/seo/settings', {paused: false, dailyLimit: 999, limits:{regional:{daily:999},media:{monthly:999}}});
   const configured=(await settings.json()).settings;
-  assert.equal(configured.dailyLimit, 20);
-  assert.deepEqual(configured.limits,{regional:{daily:20},media:{monthly:10,daily:1,minimumIntervalDays:3}});
+  assert.equal(configured.dailyLimit, null);
+  assert.deepEqual(configured.limits,{regional:{daily:null,mode:'prefecture_campaign',prefectures:47},media:{monthly:10,daily:1,minimumIntervalDays:3}});
   const dashboard=await (await call(db, '/api/seo/dashboard')).json();
   assert.deepEqual(dashboard.settings,configuredWithoutDate(configured));
-  assert.equal(dashboard.publicationStats.byScope.regional.dailyLimit,20);
+  assert.equal(dashboard.publicationStats.byScope.regional.dailyLimit,null);
   assert.equal(dashboard.publicationStats.byScope.media.monthlyLimit,10);
 });
 

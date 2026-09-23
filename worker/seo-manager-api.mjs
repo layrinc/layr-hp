@@ -9,6 +9,7 @@ import {saveLead} from './seo-leads.mjs';
 import corporateCatalog from '../src/data/seo-corporate-catalog.json' with {type: 'json'};
 import {projectWorkspace, ltoriGrowthSnapshots} from './seo-workspace.mjs';
 import {canonicalWorkspacePath} from '../src/lib/seo-manager/workspace-projects.mjs';
+import {regionalPreparationSummary} from './seo-regional-preparation.mjs';
 
 const json=(value,status=200)=>protectedResponse(JSON.stringify(value),status,{'Content-Type':'application/json; charset=utf-8'});
 const allowedEmail='biz.oneservice@gmail.com';
@@ -87,7 +88,7 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
       ]);
       const flat=rows=>rows.map(row=>row.value);
       const pages=[...(services.staticPages||[]),...published.map(doc=>({path:publicPath(doc),title:doc.title,type:doc.type,publishedAt:doc.publishedAt}))];
-      return json({settings:publicationSettings(settings),scheduler:{publish:schedulerStatus(publishSchedule),maintenance:schedulerStatus(maintenanceSchedule)},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots:ltoriGrowthSnapshots(snapshots),integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
+      return json({regionalPreparation:await regionalPreparationSummary(db),settings:publicationSettings(settings),scheduler:{publish:schedulerStatus(publishSchedule),maintenance:schedulerStatus(maintenanceSchedule)},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots:ltoriGrowthSnapshots(snapshots),integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
     }
     if(path==='/api/seo/publication'&&request.method==='GET') {
       const [docs,live]=await Promise.all([getDocuments(db),getPublished(db)]);const liveIds=new Set(live.map(doc=>doc.id));
