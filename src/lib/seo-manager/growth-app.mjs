@@ -120,8 +120,10 @@ function renderRegionalCampaign(regional, paused, preparation) {
   const campaign = regional?.campaign, current = campaign?.day;
   $('growth-regional-day').textContent = regionalDayDescription(campaign, paused);
   const outcome = preparation?.lastRun?.result?.outcome;
-  const preparationState = preparation?.enabled === false ? '停止中' : preparation?.enabled === true ? paused ? '停止中（共通の一時停止）' : current?.status === 'disabled' ? '停止中（公開日程の設定待ち）' : preparation?.lastRun?.status === 'error' || ['provider_blocked','provider_unavailable','state_changed'].includes(outcome) ? '要確認（費用上限・接続・設定を確認）' : '稼働中' : '未確認';
-  $('growth-regional-preparation').textContent = `自動調査・制作：${preparationState}。準備済み ${cityCount(preparation?.ready)}、要確認 ${cityCount(preparation?.blocked)}、処理中・待機中 ${cityCount(preparation?.pending)}。`;
+  const templateMode = preparation?.mode === 'lp_template';
+  const attention = templateMode ? '要確認（地域データ・公開設定を確認）' : '要確認（費用上限・接続・設定を確認）';
+  const preparationState = preparation?.enabled === false ? '停止中' : preparation?.enabled === true ? paused ? '停止中（共通の一時停止）' : current?.status === 'disabled' ? '停止中（公開日程の設定待ち）' : current?.status === 'completed' ? '日程終了' : preparation?.lastRun?.status === 'error' || ['provider_blocked','provider_unavailable','state_changed'].includes(outcome) ? attention : '稼働中' : '未確認';
+  $('growth-regional-preparation').textContent = `${templateMode ? '既存LPの地域展開' : '自動調査・制作'}：${preparationState}。${templateMode ? '確認済みLPと地域マスターを使用。有料AIは使用しません。' : ''}準備済み ${cityCount(preparation?.ready)}、要確認 ${cityCount(preparation?.blocked)}、処理中・待機中 ${cityCount(preparation?.pending)}。`;
   const blocked = $('growth-regional-blocked-cities'); blocked.replaceChildren();
   for (const city of array(preparation?.blockedCities)) blocked.append(node('li', `${string(city?.name) || '市名を確認中'}：原稿・根拠資料の確認が必要です。`));
   $('growth-regional-blocked').hidden = blocked.children.length === 0;
