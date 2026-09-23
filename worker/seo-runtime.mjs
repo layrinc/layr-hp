@@ -1,6 +1,6 @@
 import {normalizedPath} from './seo-access.mjs';
 import {ensureDatabase,createStore,getPublished,getDocument,activity,publishDue,HttpError} from './seo-store.mjs';
-import {renderDocument,renderPublishedCards,renderPublishedCityLinks,renderPublicationSitemap,ARTICLE_TEMPLATE_PATH,escapeHtml} from './seo-publication.mjs';
+import {renderDocument,renderPublishedCards,renderPublicationSitemap,ARTICLE_TEMPLATE_PATH,escapeHtml} from './seo-publication.mjs';
 import {publicPath,resolveCity} from '../src/lib/seo-manager/editorial-model.mjs';
 import {getPublishedAreas} from '../src/lib/ltori-publication.mjs';
 import {runAnalyticsSync,runInspections} from './seo-analytics.mjs';
@@ -18,7 +18,7 @@ const response=(body,status=200,headers={})=>new Response(body,{status,headers:{
 const notFound=()=>response('ページが見つかりません。',404,{'X-Robots-Tag':'noindex'});
 export async function resolveSource(env,key) {
   if(key==='diagnosis')return {key,label:'採用LINE活用診断',path:'/service/ltori/diagnosis/'};
-  if(['area','media'].includes(key))return {key,label:key==='area'?'採用LINEの対応地域':'エルトリ採用ノート',path:`/service/ltori/${key}/`};
+  if(['area','media'].includes(key))return {key,label:key==='area'?'採用LINEの対応地域':'エルトリ採用ノート',path:key==='area'?'/service/ltori/':'/service/ltori/media/'};
   if(!/^(area\/[a-z0-9-]+\/[a-z0-9-]+|media\/[a-z0-9-]+)$/.test(key))return null;
   const path=`/service/ltori/${key}/`,known=getStaticPages().find(page=>page.path===path);if(known)return {key,label:known.title,path};
   if(!env.SEO_DB)return null;await ensureDatabase(env.SEO_DB);
@@ -34,7 +34,11 @@ function rewrittenAsset(response,selector,html) {
   return new HTMLRewriter().on(selector,{element(element){element.append(html,{html:true});}}).transform(new Response(response.body,{status:response.status,headers}));
 }
 export async function publicFetch(request,env) {
-  const url=new URL(request.url);let path;try{path=normalizedPath(url.pathname);}catch{return notFound();}
+  const url=new URL(request.url);
+  // Retire only the public directory. City URLs, data and publication schedules
+  // keep their existing routes; this redirect also works without a database.
+  if(['/service/ltori/area','/service/ltori/area/','/service/ltori/area/index.html'].includes(url.pathname))return response(null,301,{Location:`https://layr.co.jp/service/ltori/${url.search}`});
+  let path;try{path=normalizedPath(url.pathname);}catch{return notFound();}
   // All management API aliases fail closed outside the Access-protected host.
   if(path.toLowerCase().startsWith('/api/seo'))return response('管理用ドメインを利用してください。',403,{'X-Robots-Tag':'noindex'});
   if(path.toLowerCase().startsWith(ARTICLE_TEMPLATE_PATH.slice(0,-1)))return notFound();
@@ -43,20 +47,18 @@ export async function publicFetch(request,env) {
     if(request.method!=='GET')return response('Method not allowed',405);
     const source=await resolveSource(env,url.searchParams.get('key')||'');return response(JSON.stringify(source||{error:'公開ページが見つかりません。'}),source?200:404,{'Content-Type':'application/json; charset=utf-8'});
   }
-  const interesting=path==='/sitemap-ltori-growth.xml'||path==='/service/ltori/area/'||path==='/service/ltori/media/'||/^\/service\/ltori\/(?:area\/|media\/)/.test(path);
+  const interesting=path==='/sitemap-ltori-growth.xml'||path==='/service/ltori/media/'||/^\/service\/ltori\/(?:area\/|media\/)/.test(path);
   if(!interesting)return env.ASSETS.fetch(request);
   if(!['GET','HEAD'].includes(request.method))return response('Method not allowed',405);
   if(!env.SEO_DB){if(path==='/sitemap-ltori-growth.xml')return response('Database unavailable',503);return env.ASSETS.fetch(request);}
   await ensureDatabase(env.SEO_DB);
-  const listing=path==='/sitemap-ltori-growth.xml'||path==='/service/ltori/area/'||path==='/service/ltori/media/';
+  const listing=path==='/sitemap-ltori-growth.xml'||path==='/service/ltori/media/';
   if(listing) {
     const published=await getPublished(env.SEO_DB);
     if(path==='/sitemap-ltori-growth.xml')return response(request.method==='HEAD'?null:renderPublicationSitemap(published),200,{'Content-Type':'application/xml; charset=utf-8'});
     const asset=await env.ASSETS.fetch(request);
     if(!asset.ok||request.method==='HEAD')return asset;
-    return path==='/service/ltori/media/'
-      ?rewrittenAsset(asset,'#articles .lm-list',renderPublishedCards(published))
-      :rewrittenAsset(asset,'[data-seo-city-directory]',renderPublishedCityLinks(published));
+    return rewrittenAsset(asset,'#articles .lm-list',renderPublishedCards(published));
   }
   // Individual visits read one indexed public snapshot, never the nationwide
   // catalogue of full article bodies. Drafts remain in a separate table.

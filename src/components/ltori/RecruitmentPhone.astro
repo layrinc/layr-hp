@@ -1,0 +1,61 @@
+---
+const { scenario, index } = Astro.props;
+const replies = [
+  '製造スタッフのお仕事が気になります。',
+  '先輩インタビューを見てみたいです。',
+  'カジュアル面談を希望します。',
+  '案内を確認しました。入社日を楽しみにしています。',
+];
+---
+<figure class="lt-phone-scene">
+  <div class="lt-phone" role="group" aria-label={`${scenario.label}のトーク画面の作例`}>
+    <div class="lt-phone-screen">
+      <div class="lt-phone-status" aria-hidden="true">
+        <span>9:41</span>
+        <span class="lt-phone-island"><i></i></span>
+        <span class="lt-phone-indicators">
+          <svg viewBox="0 0 20 16" fill="currentColor"><path d="M1 11h3v4H1zm5-3h3v7H6zm5-4h3v11h-3zm5-3h3v14h-3z" /></svg>
+          <svg viewBox="0 0 20 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 5a13 13 0 0 1 16 0M5 8a8 8 0 0 1 10 0M8 11a3 3 0 0 1 4 0" /><circle cx="10" cy="14" r="1" fill="currentColor" stroke="none" /></svg>
+          <span class="lt-phone-battery"></span>
+        </span>
+      </div>
+      <div class="lt-phone-header">
+        <span class="lt-phone-back" aria-hidden="true">〈</span>
+        <b>みどり製作所｜採用</b>
+        <span class="lt-phone-header-icons" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 4 5-2 3c1 2 3 4 5 5l3-2 5 4-2 3C10 22 2 14 3 5Z" /></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+        </span>
+      </div>
+      <div class="lt-phone-chat" tabindex="0" role="region" aria-label={`${scenario.label}の会話例。上下にスクロールできます`}>
+        <p class="lt-chat-time"><span>{scenario.tag}</span></p>
+        <div class="lt-chat-incoming" role="group" aria-label="採用担当からのメッセージ">
+          <span class="lt-chat-avatar" aria-hidden="true">み</span>
+          <div class="lt-chat-message">
+            <p class="lt-chat-sender">みどり製作所</p>
+            <div class="lt-chat-bubble">{scenario.message.split('\n').map((line, j) => <Fragment>{j > 0 && <br />}{line}</Fragment>)}</div>
+            <p class="lt-chat-stamp"><time datetime="09:40">9:40</time></p>
+            <div class="lt-chat-choices">{scenario.choices.map(choice => <span>{choice}<span aria-hidden="true">›</span></span>)}</div>
+          </div>
+        </div>
+        <div class="lt-chat-outgoing" role="group" aria-label="候補者からの返信">
+          <p class="lt-chat-stamp">既読<br /><time datetime="09:41">9:41</time></p>
+          <div class="lt-chat-bubble">{replies[index]}</div>
+        </div>
+        <p class="lt-chat-note">一人ひとりに合わせた情報をお届け</p>
+      </div>
+      <div class="lt-rich-menu" role="group" aria-label="メニューの表示例">
+        <div class="lt-rich-main">私たちの仕事を知る<span>WORK WITH US ↗</span></div>
+        <span>採用情報</span><span>働く環境</span><span>よくある質問</span>
+      </div>
+      <div class="lt-phone-composer" aria-hidden="true">
+        <span class="lt-phone-plus">＋</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="m8 5 1-2h6l1 2h5v15H3V5Z" /><circle cx="12" cy="12" r="4" /></svg>
+        <span class="lt-phone-input">メッセージ<span>☺</span></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="9" y="2" width="6" height="12" rx="3" /><path d="M6 10v2a6 6 0 0 0 12 0v-2m-6 8v4m-3 0h6" /></svg>
+      </div>
+      <div class="lt-phone-home" aria-hidden="true"><span></span></div>
+    </div>
+  </div>
+  <figcaption class="lt-example-note">架空の企業の作例です</figcaption>
+</figure>
