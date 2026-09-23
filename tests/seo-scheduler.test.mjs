@@ -274,3 +274,13 @@ test('preparation only accepts a bounded step and replays it without returning d
   await handleSchedulerRequest(req(0),env,services);assert.equal(calls,1);
   await handleSchedulerRequest(req(1),env,services);assert.equal(calls,2);
 });
+
+test('photos is a separate authenticated bounded job with idempotent steps and sanitized results',async t=>{
+  const env={SEO_DB:sqliteD1(t)},kinds=[];
+  const services={verify:verified,initialize,execute:async(_env,kind)=>{kinds.push(kind);return {status:'completed',result:kind==='photos'?{done:false,outcome:'ready',photoCount:4,privateProvider:'SECRET PHOTO'}:{published:[]}};}};
+  for(const body of [{kind:'photos'},{kind:'photos',step:-1},{kind:'photos',step:240},{kind:'photos',step:0,city:'arbitrary'},{kind:'photos',step:0.5}])assert.equal((await handleSchedulerRequest(request({body}),env,services)).status,400);
+  const req=step=>request({body:{kind:'photos',step}});
+  const first=await handleSchedulerRequest(req(0),env,services);assert.equal(first.status,200);assert.doesNotMatch(await first.clone().text(),/SECRET|privateProvider/);assert.deepEqual((await first.json()).results,[{kind:'photos',status:'completed',done:false,outcome:'ready',photoCount:4}]);
+  await handleSchedulerRequest(req(0),env,services);assert.deepEqual(kinds,['photos']);
+  await handleSchedulerRequest(req(1),env,services);await handleSchedulerRequest(request(),env,services);assert.deepEqual(kinds,['photos','photos','publish']);
+});

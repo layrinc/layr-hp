@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { runSeoGrowthJob, runRegionalPreparation, SCHEDULER_ENDPOINT } from '../scripts/run-seo-growth-job.mjs';
+import { runSeoGrowthJob, runRegionalPreparation, runCityPhotoCollection, SCHEDULER_ENDPOINT } from '../scripts/run-seo-growth-job.mjs';
 
 const env = {
   GITHUB_ACTIONS: 'true',
@@ -216,7 +216,7 @@ test('bootstrap stops after 18 probes or unexpected responses and never authenti
 
 test('the scheduled workflow pins official actions and only runs trusted main events', async () => {
   const workflow = await readFile(new URL('../.github/workflows/seo-growth-schedule.yml', import.meta.url), 'utf8');
-  for (const cron of ['17 0 * * *', '17 1 * * *', '17 21 * * *']) assert.ok(workflow.includes(`cron: '${cron}'`));
+  for (const cron of ['17 0 * * *', '17 1 * * *', '17 21 * * *','47 20 * * *']) assert.ok(workflow.includes(`cron: '${cron}'`));
   assert.match(workflow, /permissions: \{\}/);
   assert.match(workflow, /github\.repository == 'layrinc\/layr-hp'/);
   assert.match(workflow, /github\.ref == 'refs\/heads\/main'/);
@@ -228,7 +228,8 @@ test('the scheduled workflow pins official actions and only runs trusted main ev
   assert.match(workflow, /actions\/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38/);
   assert.match(workflow, /persist-credentials: false/);
   assert.match(workflow, /timeout-minutes: 90/);
-  assert.match(workflow, /group: seo-growth-jobs\s+cancel-in-progress: false/);
+  assert.ok(workflow.includes("group: ${{ (inputs.kind == 'photos' || github.event.schedule == '47 20 * * *') && 'seo-city-photos' || 'seo-growth-jobs' }}"));
+  assert.match(workflow, /cancel-in-progress: false/);
   assert.match(workflow, /run: node scripts\/run-seo-growth-job\.mjs "\$SEO_JOB_KIND"/);
 });
 
@@ -245,4 +246,23 @@ test('preparation raises an actionable failure for held drafts or missing budget
   const h=harness([json({value:'oidc.payload.signature'}),json({status:'completed',kind:'prepare',results:[{kind:'prepare',status:'completed',done:true,outcome,blockedCount:1}]})]);
   await assert.rejects(runRegionalPreparation(h.options),/requires_attention/);assert.equal(h.calls.length,2);
  }
+});
+
+test('photo runner advances each city, skips unavailable photos and stops on the cache frontier',async()=>{
+  const step=(done,outcome,photoCount=0)=>json({status:'completed',kind:'photos',results:[{kind:'photos',status:'completed',done,outcome,photoCount,privateDetails:'PRIVATE'}]});
+  const h=harness([json({value:'oidc.payload.signature'}),step(false,'ready',4),json({value:'oidc.payload.signature'}),step(false,'unavailable'),json({value:'oidc.payload.signature'}),step(true,'cached')]);
+  await runCityPhotoCollection(h.options);assert.deepEqual(h.calls.filter(c=>c.init.method==='POST').map(c=>JSON.parse(c.init.body)),[0,1,2].map(step=>({kind:'photos',step})));assert.doesNotMatch(h.logs.join('\n'),/PRIVATE/);
+});
+
+test('photo provider outage stops its run without requesting publication or paid preparation',async()=>{
+  const h=harness([json({value:'oidc.payload.signature'}),json({status:'completed',kind:'photos',results:[{kind:'photos',status:'completed',done:true,outcome:'provider_unavailable',photoCount:0}]})]);
+  await assert.rejects(runCityPhotoCollection(h.options),/city_photo_provider_unavailable/);assert.equal(h.calls.length,2);
+  const forbidden=harness([],{env:{...env,GITHUB_EVENT_NAME:'push'}});await assert.rejects(runCityPhotoCollection(forbidden.options),/invalid_bootstrap_job/);assert.equal(forbidden.calls.length,0);
+});
+
+test('photo runner rejects invalid step and provider result',async()=>{
+  const h=harness([]);await assert.rejects(runSeoGrowthJob('photos',{...h.options,step:240}),/invalid_preparation_step/);assert.equal(h.calls.length,0);
+  for(const change of [{done:'yes'},{outcome:'arbitrary'},{photoCount:5}]) {
+    const next=harness([json({value:'oidc.payload.signature'}),json({status:'completed',kind:'photos',results:[{kind:'photos',status:'completed',done:false,outcome:'ready',photoCount:4,...change}]})]);await assert.rejects(runSeoGrowthJob('photos',next.options),/invalid_photo_result/);
+  }
 });

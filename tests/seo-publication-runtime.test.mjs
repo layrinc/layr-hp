@@ -85,7 +85,7 @@ test('native public routing reads one body per URL and only selected related cit
     await db.batch([city, article, unrelated].map(doc => db.prepare('INSERT INTO seo_published(id,path,value,version,published_at) VALUES(?,?,?,?,?)').bind(doc.id, `/service/ltori/${doc.type === 'city' ? 'area' : 'media'}/${doc.slug}/`, JSON.stringify(doc), 1, now)));
     const cityResponse = await mf.dispatchFetch('https://layr.co.jp/service/ltori/area/mie/tsu/');
     assert.equal(cityResponse.status, 200);
-    assert.deepEqual(selects(cityResponse), ['SELECT value,version,published_at FROM seo_published WHERE path=?']);
+    assert.deepEqual(selects(cityResponse), ['SELECT value,version,published_at FROM seo_published WHERE path=?',"SELECT value FROM seo_kv WHERE namespace='city_photos' AND key=?"]);
     assert((await cityResponse.text()).includes('津市の'));
     const articleResponse = await mf.dispatchFetch('https://layr.co.jp/service/ltori/media/hiring-guide/');
     assert.equal(articleResponse.status, 200);
