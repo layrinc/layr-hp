@@ -9,8 +9,7 @@
 /* City photographs share one native horizontal viewport on static and runtime LPs. */
 .lt-city-photos { padding: 22px 0; background: var(--lt-white); }
 .lt-city-photos-head { display: flex; align-items: end; justify-content: space-between; gap: 22px; margin-bottom: 22px; }
-.lt-city-photos-city { color: var(--lt-green-ink); font-size: 14px; font-weight: 500; margin-bottom: 6px !important; }
-.lt-city-photos-head h2 { font-size: 26px; scroll-margin-top: 150px; }
+.lt-city-photos-city { color: var(--lt-green-ink); font-size: 14px; font-weight: 500; margin-bottom: 6px !important; scroll-margin-top: 150px; }
 .lt-city-photos-controls { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
 .lt-city-photos-controls button { min-width: 44px; min-height: 44px; border: 1px solid color-mix(in srgb, var(--lt-ink) 25%, transparent); border-radius: var(--radius); background: var(--lt-white); color: var(--lt-ink); padding: 6px 12px; font-size: 12px; }
 .lt-city-photos-controls button:hover { border-color: var(--lt-green-ink); }
