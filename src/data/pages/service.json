@@ -1,7 +1,7 @@
 {
-  "title": "サービス一覧（LINE構築・運用／採用LINE／広告運用／AI導入支援）",
+  "title": "サービス一覧（LINE構築・運用／採用LINE／AI導入支援）",
   "h1": "サービス",
-  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング、広告運用代行、法人向けAI導入・業務実装支援「アッシュクAI by LAYR」。 採用特化LINE構築・運用支援「エルトリ」。",
+  "description": "株式会社LAYRのサービス一覧。LINE公式アカウントの構築・運用マーケティング、採用特化LINE構築・運用支援「エルトリ」、法人向けAI導入・業務実装支援「アッシュクAI」。",
   "blocks": [
     {
       "id": "sv-head",
@@ -9,7 +9,7 @@
       "p": {
         "en": "SERVICE",
         "title_jp": "LAYRのサービス",
-        "lead": "LAYRの支援は、大きく4つです。",
+        "lead": "LAYRの支援は、大きく3つです。",
         "align": "left"
       }
     },
@@ -53,68 +53,6 @@
       }
     },
     {
-      "id": "sv-iso2",
-      "type": "illust",
-      "p": {
-        "kind": "iso-chart",
-        "size": "l",
-        "align": "center"
-      }
-    },
-    {
-      "id": "sv-cap2",
-      "type": "capBox",
-      "p": {
-        "color": "dark",
-        "title": "広告運用代行",
-        "body": "Meta・Google・LINEヤフー広告の設計から、日々の運用・月次レポートまでを担当します。"
-      }
-    },
-    {
-      "id": "sv-btn2",
-      "type": "buttons",
-      "p": {
-        "align": "center",
-        "items": [
-          {
-            "label": "広告のサービスを見る",
-            "url": "/service/ad/",
-            "style": "dark"
-          }
-        ]
-      }
-    },
-    {
-      "id": "sv-sp2",
-      "type": "spacer",
-      "p": {
-        "size": "m"
-      }
-    },
-    {
-      "id": "sv-cap4",
-      "type": "capBox",
-      "p": {
-        "color": "green",
-        "title": "アッシュクAI by LAYR",
-        "body": "AIでムダな経費を減らし、会社の利益を上げる。バックオフィス・CS・月次業務をAIで効率化し、残業・外注・追加採用のコストを見直します。人を売上をつくる仕事へ回すため、業務整理から一括管理の仕組みづくりまで支援します。"
-      }
-    },
-    {
-      "id": "sv-btn4",
-      "type": "buttons",
-      "p": {
-        "align": "center",
-        "items": [
-          {
-            "label": "アッシュクAIを見る",
-            "url": "/service/ai/",
-            "style": "green"
-          }
-        ]
-      }
-    },
-    {
       "id": "sv-cap-ltori",
       "type": "capBox",
       "p": {
@@ -132,6 +70,36 @@
           {
             "label": "エルトリのサービスを見る",
             "url": "/service/ltori/",
+            "style": "green"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv-sp2",
+      "type": "spacer",
+      "p": {
+        "size": "m"
+      }
+    },
+    {
+      "id": "sv-cap4",
+      "type": "capBox",
+      "p": {
+        "color": "green",
+        "title": "アッシュクAI",
+        "body": "AIでムダな経費を減らし、会社の利益を上げる。バックオフィス・CS・月次業務をAIで効率化し、残業・外注・追加採用のコストを見直します。人を売上をつくる仕事へ回すため、業務整理から一括管理の仕組みづくりまで支援します。"
+      }
+    },
+    {
+      "id": "sv-btn4",
+      "type": "buttons",
+      "p": {
+        "align": "center",
+        "items": [
+          {
+            "label": "アッシュクAIを見る",
+            "url": "/service/ai/",
             "style": "green"
           }
         ]
