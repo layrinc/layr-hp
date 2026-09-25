@@ -1,0 +1,178 @@
+---
+import settings from '../../data/settings.json';
+import service from '../../data/service-online-school.json';
+import stylesheetUrl from '../../styles/online-school.css?url';
+const title = `${service.name}｜株式会社LAYR`;
+const description = 'オンラインスクールのLINE構築・運用を、戦略から改善まで。広告・LP・LINEから受講申込までの数字をつなぎ、売上につながる導線を改善します。';
+const canonical = new URL(service.path, Astro.site).href;
+---
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{title}</title>
+<meta name="description" content="オンラインスクールのLINE構築・運用を、戦略から改善まで。広告・LP・LINEから受講申込までの数字をつなぎ、売上につながる導線を改善します。">
+<meta name="theme-color" content="#06C755">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href={stylesheetUrl} /><script src="../../scripts/online-school.js"></script>
+<link rel="canonical" href={canonical} /><meta property="og:title" content={title} /><meta property="og:description" content={description} /><meta property="og:type" content="website" /><meta property="og:url" content={canonical} />
+{settings.ga_id && <script is:inline define:vars={{measurementId:settings.ga_id}}>
+if (location.hostname === 'layr.co.jp' || location.hostname === 'www.layr.co.jp') {
+  window.dataLayer = window.dataLayer || [];
+  window.gtag = function(){ window.dataLayer.push(arguments); };
+  window.gtag('js', new Date());
+  window.gtag('config', measurementId);
+  const tag = document.createElement('script');
+  tag.async = true;
+  tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(measurementId);
+  document.head.append(tag);
+}
+</script>}
+</head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+<header class="site-header">
+<a class="brand" href="#" aria-label="LAYR ページの先頭へ"><span class="brand-caption">スクール特化 LINEマーケティング支援</span><span class="brand-word">LAYR</span></a>
+<button class="menu-toggle" aria-expanded="false" aria-controls="global-nav" type="button">メニュー <span>＋</span></button>
+<nav id="global-nav" aria-label="メインナビゲーション"><a href="#strengths">サービスの強み</a><a href="#pricing">料金</a><a href="#cases">活用事例</a><a href="#flow">サービス導入までの流れ</a><a href="#faq">よくある質問</a><a class="button button-small" href="#contact">お問い合わせ</a><a class="button button-small button-line" href={settings.line_url} target="_blank" rel="noopener noreferrer" data-line-cta="header">LINEで相談する</a></nav>
+</header>
+<main id="main">
+<section class="hero" aria-labelledby="hero-title">
+<div class="container">
+<div class="hero-bubble"><h1 id="hero-title"><span>LINEから、</span><span><em>受講申込</em>を増やす。</span></h1></div>
+<div class="hero-body">
+<div class="hero-copy">
+<p class="hero-lead"><span class="lead-start">LINEから受講まで、</span><span class="marker">成果をつなぐ。</span></p>
+<p>スクールのLINE戦略・構築から<br>配信・分析・改善までお任せください。</p>
+<div class="hero-points">
+<div><span class="point-icon" aria-hidden="true">専門</span><strong>スクール</strong><small>専門の<br>LINEマーケ支援</small></div>
+<div><span class="point-icon" aria-hidden="true">費用</span><small>月額</small><strong>{service.prices.operationManYen}万円</strong><small>運用・改善</small></div>
+<div><span class="point-icon" aria-hidden="true">体制</span><strong>窓口1つ</strong><small>専門チームで<br>全体を統括</small></div>
+</div>
+</div>
+<div class="hero-art">
+<div class="funnel-panel"><img src="/service-assets/online-school/icons/01-conversation.svg" alt="" width="90" height="90" fetchpriority="high"><strong>受講につながるLINE</strong><ol><li>登録・情報提供</li><li>説明会・個別相談</li><li>受講申込</li></ol></div>
+<span class="art-tag tag-one">LINE</span><span class="art-tag tag-two">広告</span><span class="art-tag tag-three">LP</span><span class="art-tag tag-four">SNS</span><span class="art-tag tag-five">受講申込</span>
+</div>
+</div>
+<div class="center-cta"><p>まずは無料で</p><a class="button" href="#contact">売上導線診断を受ける <span>›</span></a><p class="micro">LINEのみのご相談も歓迎しています。</p></div>
+</div>
+</section>
+<div class="service-strip"><div class="container">
+<div class="proof-points"><p>構築から改善まで <strong>1</strong>チーム</p><p>広告から成約を <strong>1</strong>つの導線に</p></div>
+<p class="strip-copy">LINEの中だけでなく、前後の流れと数字も確認します。</p>
+<div class="channel-strip" aria-label="確認する売上導線"><span>広告 <b>→</b></span><span>LP <b>→</b></span><span>LINE <b>→</b></span><span>説明会 <b>→</b></span><span>個別相談 <b>→</b></span><span>受講申込</span></div>
+</div></div>
+
+<section class="problems" id="problems"><div class="container">
+<div class="section-heading"><h2>こんなお悩みはありませんか？</h2></div>
+<div class="worry-cloud">
+<p class="worry-bubble">広告・LP・LINEで<br>訴求がつながっていない</p>
+<p class="worry-bubble">友だちは増えたのに<br>受講申込につながらない</p>
+<p class="worry-bubble">配信する時間がなく<br>LINEの運用が止まっている</p>
+<p class="worry-bubble">登録単価は見ているが<br>成約まで追えていない</p>
+<p class="worry-bubble">説明会・個別相談への<br>予約や参加が増えない</p>
+<p class="worry-bubble">LINEの前後も含めて<br>まとめて改善したい</p>
+<span class="worry-question" aria-hidden="true">?</span>
+</div>
+</div></section>
+
+<section class="about" id="about"><div class="container">
+<div class="section-heading"><h2>そもそも <span class="brand-inline">LAYR</span>のLINE支援とは</h2><p>オンラインスクールのLINE構築・運用を、戦略から改善まで支援するサービスです。<br>必要に応じて広告・LPまで踏み込み、集客から受講申込までの導線をつなぎます。</p></div>
+<div class="about-frame">
+<div class="relationship">
+<div class="client-block"><div class="relationship-label">貴社</div><strong>スクール運営者</strong></div>
+<div class="relation-arrows"><span>←</span>改善提案<span>→</span>ご相談・依頼</div>
+<div class="director-block"><div><div class="relationship-label relationship-label-layr">LAYR</div><strong>LAYR ディレクター</strong></div><ul><li>LINE戦略・設計</li><li>構築・配信</li><li>分析・改善</li><li>広告・LPの改善提案</li><li>必要に応じた実行</li></ul></div>
+</div>
+<p class="about-conclusion">窓口は一つ。専門パートナーと連携し、全体の数字を見ながら<strong><span class="marker">売上につながるLINE運用を進めます。</span></strong></p>
+</div>
+</div></section>
+
+<section class="strengths" id="strengths"><div class="container">
+<div class="section-heading"><h2><span class="brand-inline">LAYR</span>の強み</h2></div>
+<div class="strength-grid">
+<article><span class="large-number">1</span><h3>オンラインスクールの<br>販売導線に特化</h3><p>受講単価や検討期間、説明会・個別相談の流れを踏まえ、見込み客の不安と疑問に応えるLINEを設計します。</p></article>
+<article><span class="large-number">2</span><h3>LINE登録から成約まで<br>数字をつなげて改善</h3><p>登録数だけでなく、予約・参加・成約まで確認。取得可能な範囲でキーワードや広告別に成果を追い、広告の改善へ反映します。</p></article>
+<article><span class="large-number">3</span><h3>上流を設計できる<br>専門チームが支援</h3><p>LAYRが窓口・戦略・進行を統括。LINEを中心に、必要に応じて広告・LP・クリエイティブ制作まで実行します。</p></article>
+</div>
+<p class="note">※計測可能な範囲は、広告媒体・タグ・LINEツール・成約データの共有状況によって異なります。初回診断で確認します。</p>
+<div class="center-cta"><p>まずは無料で</p><a class="button" href="#contact">売上導線診断を受ける <span>›</span></a></div>
+</div></section>
+
+<section class="scope" id="scope"><div class="container">
+<div class="section-heading"><h2><span class="brand-inline">LAYR</span>の対応範囲</h2><p>入口はLINEの構築・運用。最初からすべてをご依頼いただく必要はありません。<br>LINEの成果に必要な場合は、その前後の施策まで対応します。</p></div>
+<div class="scope-grid">
+<article><div class="scope-title"><img src="/service-assets/online-school/icons/02-target.svg" alt="" width="90" height="90" loading="lazy"><h3>戦略・導線設計</h3></div><p>商品・ターゲット・既存流入を整理し、受講申込から逆算。LINEの役割とKPIを決め、配信方針やシナリオを設計します。</p></article>
+<article><div class="scope-title"><img src="/service-assets/online-school/icons/03-workflow.svg" alt="" width="90" height="90" loading="lazy"><h3>LINE構築</h3></div><p>ステップ配信、フォーム、タグ、リッチメニュー、予約・リマインドまで。登録後の教育から個別相談へつながる流れを実装します。</p></article>
+<article><div class="scope-title"><img src="/service-assets/online-school/icons/04-send.svg" alt="" width="90" height="90" loading="lazy"><h3>配信・分析・改善</h3></div><p>配信企画・原稿作成から分析まで継続支援。月次レポートと定例会をもとに、翌月の改善アクションを実行します。</p></article>
+<p class="scope-bridge">LINEの成果に必要な場合は、広告・LPの実行もお任せください。</p>
+<article><div class="scope-title"><img src="/service-assets/online-school/icons/05-megaphone.svg" alt="" width="90" height="90" loading="lazy"><h3>広告運用<span class="scope-add">必要に応じた追加支援</span></h3></div><p>LINE登録後の反応や成約データも見ながら、配信先・予算・訴求を改善。既存の広告運用会社との連携も可能です。</p></article>
+<article><div class="scope-title"><img src="/service-assets/online-school/icons/06-layout.svg" alt="" width="90" height="90" loading="lazy"><h3>LP・制作<span class="scope-add">必要に応じた追加支援</span></h3></div><p>LP制作・LPO、バナー・動画等の制作に対応。広告・SNSでの期待とLINEで届ける情報をつなぎ、導線を整えます。</p></article>
+</div>
+<p class="note">※追加支援の実行範囲・制作量・費用は別途合意します。説明会・個別相談は数値分析までとし、営業実務は含みません。</p>
+</div></section>
+
+<section class="team" id="team"><div class="container">
+<div class="section-heading"><h2><span class="brand-inline">LAYR</span>の専門チーム</h2><p>マーケティング全体を設計する視点を持つパートナーと連携。<br>ご相談はLAYRが受け、必要な専門メンバーを組み合わせて支援します。</p></div>
+<div class="team-grid">
+<article class="team-card"><img src="/service-assets/online-school/icons/07-compass.svg" alt="" width="230" height="200" loading="lazy"><h3>ディレクター</h3><p class="team-role">全体戦略・進行管理</p><p>スクールの課題と目標を整理し、売上導線とKPIを設計。施策の優先順位を決め、進行・品質を統括します。</p></article>
+<article class="team-card"><img src="/service-assets/online-school/icons/08-sliders.svg" alt="" width="230" height="200" loading="lazy"><h3>LINE担当</h3><p class="team-role">構築・配信・改善</p><p>受講検討の流れに沿って、配信シナリオと予約導線を実装。運用後の反応を見ながら継続的に改善します。</p></article>
+<article class="team-card"><img src="/service-assets/online-school/icons/09-pen-tool.svg" alt="" width="230" height="200" loading="lazy"><h3>広告・制作担当</h3><p class="team-role">集客・LP・制作</p><p>流入の質と成約の関係を確認し、必要な広告運用・LP改善・クリエイティブ制作を担当します。</p></article>
+</div>
+<p class="note">※役割・支援体制の説明です。担当人数や追加領域の実行範囲は、ご契約内容によって異なります。</p>
+</div></section>
+
+<section class="section cases" id="cases"><div class="container"><div class="section-heading"><h2><span class="brand-inline">LAYR</span>の活用事例</h2><p>運用パートナーが過去に担当したスクール・講座の事例です。</p></div><div class="case-carousel"><div class="case-toolbar"><p>パートナー提供事例 <span class="micro">／ 匿名掲載</span></p><div><button class="round-button" id="case-prev" aria-label="前の事例" type="button">←</button><span id="case-count" aria-live="polite">1 / 3</span><button class="round-button" id="case-next" aria-label="次の事例" type="button">→</button></div></div><div class="case-track" id="case-track" aria-label="パートナー実績の一覧" tabindex="0"><article class="case-card is-active"><div class="case-cover"><p>LPのCVR</p><div><span><small>支援前</small>1.9<b>%</b></span><span class="case-change" aria-hidden="true">→</span><span><small>支援後</small><strong>3.4</strong><b>%</b></span></div><small>パートナー提供実績</small></div><div class="case-top"><span class="chip">CASE 01</span><p>マネジメント研修講座</p><h3>広告・LP・LINEをつなぎ、<br>説明会への転換を改善。</h3></div><div class="case-metrics"><div><small>LPのCVR</small><p>1.9% <span>→</span> <strong>3.4<small>%</small></strong></p></div><div><small>LINE登録→説明会参加</small><p>24% <span>→</span> <strong>36<small>%</small></strong></p></div></div><div class="case-body"><span class="mini-label">施策</span><p>広告からLINE登録を中間目標に設定。LPを受講者の変化が伝わる訴求へ見直し、LINEのステップ配信から説明会へ案内。</p><dl><dt>講座単価</dt><dd>30万〜50万円</dd><dt>担当領域</dt><dd>広告運用・LP制作・公式LINE構築</dd></dl></div></article><article class="case-card"><div class="case-cover"><p>LINE登録CPA</p><div><span><small>支援前</small>2,400<b>円</b></span><span class="case-change" aria-hidden="true">→</span><span><small>支援後</small><strong>1,450</strong><b>円</b></span></div><small>パートナー提供実績</small></div><div class="case-top"><span class="chip">CASE 02</span><p>オンライン投資スクール</p><h3>知識提供から信頼をつくり、<br>セミナー申込を促進。</h3></div><div class="case-metrics"><div><small>LINE登録CPA</small><p>2,400円 <span>→</span> <strong>1,450<small>円</small></strong></p></div><div><small>月間セミナー申込数</small><p>32件 <span>→</span> <strong>61<small>件</small></strong></p></div></div><div class="case-body"><span class="mini-label">施策</span><p>「利益」ではなく「学ぶ価値」が伝わる訴求へ。基礎コンテンツと10日間のステップ配信で理解を深め、セミナーへ誘導。</p><dl><dt>講座単価</dt><dd>30万〜80万円</dd><dt>担当領域</dt><dd>広告運用・LP制作・公式LINE構築</dd></dl></div></article><article class="case-card"><div class="case-cover"><p>個別相談への転換率</p><div><span><small>支援前</small>19<b>%</b></span><span class="case-change" aria-hidden="true">→</span><span><small>支援後</small><strong>32</strong><b>%</b></span></div><small>パートナー提供実績</small></div><div class="case-top"><span class="chip">CASE 03</span><p>就活支援オンライン講座</p><h3>相談への不安を減らし、<br>LINEから個別相談へ。</h3></div><div class="case-metrics"><div><small>LINE登録CPA</small><p>980円 <span>→</span> <strong>610<small>円</small></strong></p></div><div><small>LINE登録→個別相談</small><p>19% <span>→</span> <strong>32<small>%</small></strong></p></div></div><div class="case-body"><span class="mini-label">施策</span><p>無料の就活相談を入口に、悩みに寄り添うLPへ改善。LINEでは自己分析シートと就活ノウハウを届け、個別相談に案内。</p><dl><dt>対象</dt><dd>就活生向け講座・個別支援</dd><dt>担当領域</dt><dd>広告運用・LP制作・公式LINE構築</dd></dl></div></article></div></div><div class="case-dots" aria-label="事例を選択"><button type="button" data-case="0" aria-label="事例1" aria-current="true"></button><button type="button" data-case="1" aria-label="事例2" aria-current="false"></button><button type="button" data-case="2" aria-label="事例3" aria-current="false"></button></div><p class="note">※いずれも実績提供パートナーが過去に担当した事例です。株式会社LAYR単独の実績ではなく、同様の成果を保証するものではありません。数値はパートナー提供情報に基づきます。</p></div></section>
+<section class="school-types"><div class="container"><h2>さまざまなスクール・講座に対応！</h2><div class="type-list">
+<span>資格・専門スキル</span><span>ビジネス・研修</span><span>キャリア・就活</span><span>語学</span><span>スポーツ・指導</span><span>AI・ITスキル</span>
+</div><p class="micro">対象分野の例です。すべての分野での実績を示すものではありません。</p></div></section>
+
+<section class="reasons" id="reasons"><div class="container">
+<div class="section-heading"><h2>なぜ<span class="brand-inline">LAYR</span>は<br>LINEの前後まで見るのか</h2></div>
+<article class="reason-row"><div class="reason-copy"><h3>「登録が安い広告」から、<br>「受講につながる広告」へ。</h3><p>登録単価だけでは、広告の本当の成果は判断できません。検索広告のキーワードやSNS広告のクリエイティブごとに、取得可能な範囲でLINE登録から最終成約までを確認します。</p><p>成約につながる流入を見極め、広告の予算配分・入札・訴求の改善へ反映。LINEの先の成果から、集客を見直します。</p><p class="note">※全ユーザーの検索語句や成約を完全追跡できるという意味ではありません。取得粒度・連携方法は初回診断で設計します。</p></div><div class="reason-visual"><img src="/service-assets/online-school/icons/10-chart.svg" alt="" width="220" height="220" loading="lazy"></div></article>
+<article class="reason-row reverse"><div class="reason-copy"><h3>一斉配信から、<br>検討状況に合ったコミュニケーションへ。</h3><p>登録した理由も、受講への不安も、人によって違います。流入経路やアンケート、配信への反応をもとに、必要な情報を届けるシナリオを設計します。</p><p>教育コンテンツ、受講事例、説明会案内、予約後のリマインドまで。申込を急かすだけでなく、納得して次へ進める導線をつくります。</p></div><div class="reason-visual"><ol class="reason-sequence"><li><span>01</span>関心に合う情報</li><li><span>02</span>不安・疑問を解消</li><li><span>03</span>相談・申込へ</li></ol></div></article>
+<article class="reason-row"><div class="reason-copy"><h3>レポートで終わらず、<br>翌月の改善アクションまで。</h3><p>売上・受講申込数をゴールに、各段階の数値を確認。変化の理由を整理し、優先順位をつけて実行します。</p><p>スプレッドシートでの数字共有からスタートできます。必要なデータと集計方法を整え、月次レポート・定例会・翌月アクションで改善を積み重ねます。</p></div><div class="reason-visual"><div class="improvement-loop"><p>月次の改善サイクル</p><ol><li>数値を確認</li><li>課題を特定</li><li>施策を実行</li></ol><strong>次の改善へつなぐ</strong></div></div></article>
+</div></section>
+
+<section class="pricing" id="pricing"><div class="container">
+<div class="section-heading"><h2>ご利用料金</h2></div>
+<div class="price-banner"><div class="price-banner-title"><p>継続して成果を伸ばす</p><h3>LINE運用・改善プラン</h3></div><div class="price-display"><small>月額</small><strong>{service.prices.operationManYen}</strong><span>万円</span></div></div>
+<div class="price-includes">
+<div><p>戦略設計<small>受講申込から逆算</small></p></div>
+<div><p>LINE配信<small>企画・原稿・配信</small></p></div>
+<div><p>数値分析<small>流入から成約まで</small></p></div>
+<div><p>導線改善<small>シナリオ・予約</small></p></div>
+<div><p>月次報告<small>レポート・定例会</small></p></div>
+<div><p>改善提案<small>翌月のアクション</small></p></div>
+</div>
+<div class="extra-prices"><div><h3>LINE販売導線構築</h3><p><strong>{service.prices.initialManYen}</strong>万円〜</p></div><div><h3>広告・LPを含む伴走支援</h3><p>月額 <strong>{service.prices.expandedManYen}</strong>万円</p></div></div>
+<div class="price-notes"><p>※月次支援は最低3か月。支援内容・配信本数・制作量・既存環境により、個別にお見積もりします。</p><p>※広告媒体費・ツール利用料は別途。大規模な新規LP制作、撮影、大量のクリエイティブ制作は別途見積もりです。</p><p>※記載の料金は目安です。支援内容と税額を含む正式な総額は、お見積もり時にご案内します。</p></div>
+</div></section>
+
+<section class="flow" id="flow"><div class="container">
+<div class="section-heading"><h2>サービス導入までの流れ</h2></div>
+<div class="flow-sequence"><ol class="flow-list">
+<li><span class="flow-step">STEP 1</span><h3>お問い合わせ</h3><span class="flow-number" aria-hidden="true">01</span><p>スクールの概要や、現在のLINE運用の状況をお知らせください。</p></li>
+<li><span class="flow-step">STEP 2</span><h3>売上導線診断</h3><span class="flow-number" aria-hidden="true">02</span><p>流入から受講申込までの数字を確認し、課題と優先順位を整理します。</p></li>
+<li><span class="flow-step">STEP 3</span><h3>内容・費用のご提案</h3><span class="flow-number" aria-hidden="true">03</span><p>対応範囲、制作量、費用、スケジュールをご提案します。</p></li>
+<li><span class="flow-step">STEP 4</span><h3>ご契約・構築</h3><span class="flow-number" aria-hidden="true">04</span><p>合意した内容で設計・実装を進め、公開前に動作を確認します。</p></li>
+<li><span class="flow-step">STEP 5</span><h3>運用・改善</h3><span class="flow-number" aria-hidden="true">05</span><p>配信と分析を開始。月次の振り返りから、次の施策を実行します。</p></li>
+</ol>
+<div class="flow-timeline"><span>無料で現状を整理</span><span>ご契約後に支援開始</span></div></div>
+<p class="flow-conclusion">まずは、<span class="marker">無料の売上導線診断</span>から。</p>
+</div></section>
+<section class="section faq" id="faq"><div class="container narrow"><div class="section-heading"><p class="eyebrow">FAQ</p><h2>よくある質問</h2></div><details open><summary>LINEの構築・運用だけでも依頼できますか？</summary><p>はい。LINEを基本の支援範囲として、必要に応じて広告・LP等へ拡張できます。最初からすべてをご依頼いただく必要はありません。</p></details><details open><summary>すでに運用しているLINEの改善も可能ですか？</summary><p>可能です。既存の設定・配信・数値を確認し、活かせるものは残しながら改善します。ツールや契約状況によっては追加設定が必要になるため、初回診断で確認します。</p></details><details open><summary>広告キーワードごとの成約数までわかりますか？</summary><p>媒体や計測環境に応じて、取得可能な範囲でつなぎます。広告の識別情報、LPの計測、LINE流入経路、予約・成約データの照合方法を確認して設計します。すべての検索語句やユーザーを完全追跡できることを約束するものではありません。</p></details><details open><summary>広告運用を別の会社に依頼していますが、連携できますか？</summary><p>はい。既存の担当会社を変更せず、必要な数値を共有いただき、改善案を提案する形でも対応できます。実際の変更は、担当範囲と承認手順を合意したうえで進めます。</p></details><details open><summary>データがスプレッドシートにしかありません。</summary><p>まずは共有できる数字から始められます。売上・受講申込・説明会参加などの集計方法を整理し、足りない計測を段階的に整えます。個人別の紐付けに必要な情報がない場合は、集計単位で分析します。</p></details><details open><summary>契約期間と、成果が出るまでの目安を教えてください。</summary><p>月次支援の最低契約期間は3か月です。構築規模やデータ量、商材の検討期間によって成果が見える時期は異なります。初回診断後に進め方と確認指標をご提案します。売上や成約数を保証するものではありません。</p></details></div></section>
+
+<section class="line-consult" id="line-consult"><div class="container center-cta"><p>LINEからもご相談いただけます</p><a class="button" href={settings.line_url} target="_blank" rel="noopener noreferrer" data-line-cta="before-contact">LINEで相談する <span aria-hidden="true">›</span></a><p class="micro">友だち追加後、現在のお悩みをメッセージでお送りください。</p></div></section>
+<section class="contact" id="contact"><div class="container contact-layout">
+<div class="contact-intro"><h2>お問い合わせ</h2><p>LINEから受講申込までの課題と、改善の優先順位を整理します。<br>LINEのみのご相談も、お気軽にお寄せください。</p><p class="note">機密性の高い情報や受講生の個人情報は、フォームには記載しないでください。</p></div>
+<form id="contact-form" class="contact-form"><p class="form-title">無料の売上導線診断を申し込む</p><div class="field"><label for="company">会社名・スクール名 <span>必須</span></label><input id="company" name="company" autocomplete="organization" required maxlength="120" placeholder="例：株式会社〇〇 / 〇〇スクール"></div><div class="field"><label for="name">お名前 <span>必須</span></label><input id="name" name="name" autocomplete="name" required maxlength="80" placeholder="例：山田 太郎"></div><div class="field"><label for="email">メールアドレス <span>必須</span></label><input id="email" name="email" type="email" autocomplete="email" required maxlength="160" placeholder="例：name@example.com"></div><div class="field"><label for="url">Webサイト・スクールURL <small>任意</small></label><input id="url" name="url" type="url" autocomplete="url" maxlength="300" placeholder="https://"></div><div class="field"><label for="consultation">ご相談内容 <span>必須</span></label><select id="consultation" name="consultation" required><option value="">選択してください</option><option>既存LINEの運用を改善したい</option><option>LINEの販売導線を新しく構築したい</option><option>広告・LPも含めて相談したい</option><option>まずは課題を整理したい</option></select></div><div class="field"><label for="message">現状・お困りごと <small>任意</small></label><textarea id="message" name="message" rows="4" maxlength="1500" placeholder="現在の集客方法や、LINE運用でお困りのことをお書きください。"></textarea></div><p class="form-notice">入力内容から相談メールの下書きを作成します。内容を確認し、メールアプリから送信してください。入力内容は保存・自動送信されません。</p><noscript><p class="form-notice">メール下書きの作成にはJavaScriptが必要です。上の「LINEで相談する」からご連絡ください。</p></noscript><button class="button form-submit" type="submit" disabled>相談メールの下書きを作成 <span>↗</span></button><div class="form-result" id="form-result" hidden tabindex="-1"><h3>メール下書きを作成しました</h3><p>まだ送信されていません。内容を確認して、メールアプリから送信してください。</p><a class="button" id="mail-link" href="mailto:info@layr.co.jp">メールアプリを開く ↗</a><button class="copy-button" id="copy-email" type="button">相談内容をコピー</button><p class="micro">宛先：<a href="mailto:info@layr.co.jp">info@layr.co.jp</a></p><textarea id="email-preview" readonly aria-label="相談メールの内容" rows="8"></textarea><p id="copy-status" role="status" class="micro"></p></div></form>
+</div></section>
+</main>
+<footer class="site-footer"><div class="container"><div class="footer-top"><div><a class="brand-word" href="#">LAYR</a><p>オンラインスクール特化 LINEマーケティング支援</p></div><a class="footer-link" href="https://layr.co.jp/" target="_blank" rel="noopener noreferrer">運営会社：株式会社LAYR ↗</a></div><div class="footer-bottom"><p class="micro">© LAYR Inc.　<a href="https://layr.co.jp/privacy/" target="_blank" rel="noopener noreferrer">プライバシーポリシー</a></p></div></div></footer>
+<a class="back-to-top" href="#main" aria-label="ページのトップへ戻る"><span aria-hidden="true">↑</span><small>トップへ</small></a>
+<aside class="floating-cta" aria-label="無料診断のご案内"><span>まずは無料で</span><p>売上導線を診断します</p><a href="#contact">無料で問い合わせる <b>⌄</b></a></aside>
+</body></html>

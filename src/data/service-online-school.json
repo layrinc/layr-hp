@@ -1,0 +1,12 @@
+{
+  "name": "オンラインスクール特化 LINEマーケティング支援",
+  "path": "/service/school/",
+  "prices": {
+    "initialManYen": 25,
+    "operationManYen": "5〜10",
+    "expandedManYen": "20〜30",
+    "taxStatus": "unconfirmed"
+  },
+  "minimumMonths": 3,
+  "source": "河出さんのサービス資料30問確定回答・2026-09-25〜26のLP公開依頼"
+}
