@@ -1,3 +1,4 @@
+import {MEDIA_PATH,rangedAsset} from './media-range.mjs';
 import {normalizedPath} from './seo-access.mjs';
 import {ensureDatabase,createStore,getPublished,getDocument,activity,publishDue,HttpError} from './seo-store.mjs';
 import {renderDocument,renderPublishedCards,renderPublicationSitemap,ARTICLE_TEMPLATE_PATH,escapeHtml} from './seo-publication.mjs';
@@ -48,6 +49,7 @@ export async function publicFetch(request,env) {
     const source=await resolveSource(env,url.searchParams.get('key')||'');return response(JSON.stringify(source||{error:'公開ページが見つかりません。'}),source?200:404,{'Content-Type':'application/json; charset=utf-8'});
   }
   const interesting=path==='/sitemap-ltori-growth.xml'||path==='/service/ltori/media/'||/^\/service\/ltori\/(?:area\/|media\/)/.test(path);
+  if(MEDIA_PATH.test(path))return rangedAsset(request,env);
   if(!interesting)return env.ASSETS.fetch(request);
   if(!['GET','HEAD'].includes(request.method))return response('Method not allowed',405);
   if(!env.SEO_DB){if(path==='/sitemap-ltori-growth.xml')return response('Database unavailable',503);return env.ASSETS.fetch(request);}
