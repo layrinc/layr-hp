@@ -39,7 +39,7 @@
         "items": [
           {
             "label": "LINEのサービスを見る",
-            "url": "/service/line/",
+            "url": "/service/school/",
             "style": "green"
           }
         ]
