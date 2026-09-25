@@ -19,7 +19,7 @@ export default defineConfig({
     sitemap({
       // 管理系・完了ページと廃止した地域一覧は検索エンジンに載せない。市LPは維持する。
       filter: (page) =>
-        !['/service/ltori/area', '/service/ltori/area/', '/service/ltori/area/index.html'].includes(new URL(page).pathname) && !page.includes('/dashboard') && !page.includes('/admin') && !page.includes('/document/thanks') && !page.includes('/partner') && !page.includes('/tools/ltori-seo') && !page.includes('/service/ltori/article-template'),
+        !['/service/ltori/area', '/service/ltori/area/', '/service/ltori/area/index.html'].includes(new URL(page).pathname) && !page.includes('/dashboard') && !page.includes('/admin') && !page.includes('/document/thanks') && !page.includes('/partner') && !page.includes('/tools/ltori-seo') && !page.includes('/service/ltori/article-template') && new URL(page).pathname !== '/ir/',
     }),
   ],
 });

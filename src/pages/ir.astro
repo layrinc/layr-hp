@@ -1,0 +1,174 @@
+---
+/**
+ * IR情報（/ir/）— 売上高・営業利益の推移。
+ * 数字は /api/ir/summary（Worker が freee会計から集計・万円単位）をブラウザで読み込んで描く。
+ * 上場企業ではないため開示義務はない。検索エンジンには載せず（noindex・サイトマップ除外）、フッターから小さくリンクする。
+ */
+import Base from '../layouts/Base.astro';
+
+const title = 'IR情報｜株式会社LAYR';
+const description = '株式会社LAYRの売上高・営業利益の推移です。会計データと連動して更新しています。';
+---
+<Base title={title} description={description} robots="noindex">
+  <section class="ir-sec">
+    <div class="ir-wrap">
+      <p class="sec-en">IR</p>
+      <h1 class="ir-title">IR情報</h1>
+      <p class="ir-lead">株式会社LAYRの売上高と営業利益を、会計データ（freee会計）と連動して公開しています。上場企業ではないため開示の義務はありませんが、経営の状況をありのままお伝えするために掲載しています。</p>
+
+      <div id="ir-app" class="ir-app" aria-live="polite">
+        <p class="ir-status">最新の数字を読み込んでいます…</p>
+      </div>
+      <noscript><p class="ir-status">このページの表示にはJavaScriptが必要です。</p></noscript>
+
+      <ul class="ir-notes">
+        <li>金額は万円単位（四捨五入）です。当月は速報値で、月末の締めまでに変わることがあります。</li>
+        <li>会計ソフト上の数値で、監査を受けたものではありません。</li>
+        <li>設立：2026年8月28日／決算期：12月</li>
+      </ul>
+    </div>
+  </section>
+</Base>
+
+<script>
+  type Month = { month: string; revenue: number; operatingIncome: number; provisional: boolean };
+  type Period = { label: string; start: string; end: string; months: Month[]; total: { revenue: number; operatingIncome: number }; inProgress: boolean };
+  type Summary = { status: string; unit?: string; lastSyncAt?: number | null; periods?: Period[] };
+
+  const app = document.getElementById('ir-app')!;
+  const esc = (s: string) => s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]!));
+  const man = (n: number) => `${n < 0 ? '−' : ''}${Math.abs(n).toLocaleString('ja-JP')}`;
+  const jpDate = (d: string) => { const [y, m, day] = d.split('-').map(Number); return `${y}年${m}月${day}日`; };
+  const monthLabel = (m: string) => `${Number(m.slice(5))}月`;
+  const monthLong = (m: string) => `${m.slice(0, 4)}年${Number(m.slice(5))}月`;
+  const synced = (t?: number | null) => t ? new Intl.DateTimeFormat('ja-JP', { timeZone: 'Asia/Tokyo', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(t)) : '—';
+
+  // 目盛り：0 を必ず含む「きりのいい」上端・下端
+  function niceStep(span: number) {
+    const raw = span / 4 || 1; const p = 10 ** Math.floor(Math.log10(raw)); const f = raw / p;
+    return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+  }
+
+  function chart(host: HTMLElement, months: Month[], key: 'revenue' | 'operatingIncome', name: string) {
+    const W = Math.max(280, host.clientWidth), H = 220, L = 52, R = 12, T = 22, B = 30;
+    const vals = months.map((m) => m[key]);
+    const step = niceStep(Math.max(...vals, 0) - Math.min(...vals, 0));
+    const hi = Math.max(step, Math.ceil(Math.max(...vals, 0) / step) * step);
+    const lo = Math.min(0, Math.floor(Math.min(...vals, 0) / step) * step);
+    const y = (v: number) => T + (H - T - B) * (hi - v) / (hi - lo);
+    const band = (W - L - R) / Math.max(months.length, 1);
+    const bw = Math.min(44, band * 0.62);
+    const ticks: number[] = []; for (let v = lo; v <= hi + 1e-9; v += step) ticks.push(v);
+    const last = months.length - 1;
+    const peak = vals.indexOf(Math.max(...vals));
+    const trough = Math.min(...vals) < 0 ? vals.indexOf(Math.min(...vals)) : -1;
+    const grid = ticks.map((v) => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" class="${v === 0 ? 'ir-zero' : 'ir-grid'}"/><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end" class="ir-tick">${man(v)}</text>`).join('');
+    const bars = months.map((m, i) => {
+      const v = m[key]; const cx = L + band * (i + 0.5); const x = cx - bw / 2; const y0 = y(0); const y1 = y(v);
+      const h = Math.abs(y1 - y0); const r = Math.min(4, h / 2, bw / 2);
+      // データ端だけ角を丸め、ゼロ線側は四角のまま
+      const d = h < 0.5 ? '' : v >= 0
+        ? `M${x},${y0}V${y1 + r}Q${x},${y1} ${x + r},${y1}H${x + bw - r}Q${x + bw},${y1} ${x + bw},${y1 + r}V${y0}Z`
+        : `M${x},${y0}V${y1 - r}Q${x},${y1} ${x + r},${y1}H${x + bw - r}Q${x + bw},${y1} ${x + bw},${y1 - r}V${y0}Z`;
+      const label = `${monthLong(m.month)} ${name} ${man(v)}万円${m.provisional ? '（速報）' : ''}`;
+      const showValue = i === last || i === peak || i === trough;
+      const vy = v >= 0 ? y1 - 6 : y1 + 14;
+      return `<g class="ir-bar-g" tabindex="0" role="img" aria-label="${esc(label)}" data-tip="${esc(label)}">
+        <rect x="${cx - band / 2}" y="${T}" width="${band}" height="${H - T - B}" class="ir-hit"/>
+        ${d ? `<path d="${d}" class="ir-bar${m.provisional ? ' is-prov' : ''}"/>` : ''}
+        ${showValue ? `<text x="${cx}" y="${vy}" text-anchor="middle" class="ir-val">${man(v)}</text>` : ''}
+        <text x="${cx}" y="${H - 10}" text-anchor="middle" class="ir-tick">${monthLabel(m.month)}${m.provisional ? '*' : ''}</text>
+      </g>`;
+    }).join('');
+    host.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" aria-hidden="false" focusable="false">
+      <defs><pattern id="ir-hatch-${key}" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" class="ir-hatch-bg"/><line x1="0" y1="0" x2="0" y2="6" class="ir-hatch-line"/></pattern></defs>
+      ${grid}${bars.replaceAll('class="ir-bar is-prov"', `class="ir-bar is-prov" style="fill:url(#ir-hatch-${key})"`)}
+    </svg><div class="ir-tip" hidden></div>`;
+    const tip = host.querySelector<HTMLElement>('.ir-tip')!;
+    host.querySelectorAll<SVGGElement>('.ir-bar-g').forEach((g) => {
+      const show = () => { const b = g.getBoundingClientRect(), h = host.getBoundingClientRect(); tip.textContent = g.dataset.tip || ''; tip.hidden = false; tip.style.left = `${Math.min(Math.max(b.left - h.left + b.width / 2, 70), h.width - 70)}px`; };
+      g.addEventListener('mouseenter', show); g.addEventListener('focus', show);
+      g.addEventListener('mouseleave', () => (tip.hidden = true)); g.addEventListener('blur', () => (tip.hidden = true));
+    });
+  }
+
+  function render(s: Summary) {
+    if (s.status !== 'ok' || !s.periods?.length) {
+      app.innerHTML = `<p class="ir-status">${s.status === 'unavailable' ? '数字を読み込めませんでした。時間をおいて開き直してください。' : '現在、会計データとの連携を準備しています。準備ができしだい、ここに売上高と営業利益を表示します。'}</p>`;
+      return;
+    }
+    const p = s.periods[s.periods.length - 1];
+    const past = s.periods.slice(0, -1).reverse();
+    app.innerHTML = `
+      <div class="ir-period"><h2>${esc(p.label)}</h2><span>${jpDate(p.start)}〜${jpDate(p.end)}${p.inProgress ? '（期中）' : ''}</span></div>
+      <div class="ir-kpis">
+        <div class="ir-kpi"><p>売上高（${p.inProgress ? '期首からの累計' : '通期'}）</p><strong>${man(p.total.revenue)}<small>万円</small></strong></div>
+        <div class="ir-kpi"><p>営業利益（${p.inProgress ? '期首からの累計' : '通期'}）</p><strong>${man(p.total.operatingIncome)}<small>万円</small></strong></div>
+      </div>
+      <figure class="ir-chart"><figcaption>月次の売上高<span>単位：万円</span></figcaption><div class="ir-plot" data-key="revenue" data-name="売上高"></div></figure>
+      <figure class="ir-chart"><figcaption>月次の営業利益<span>単位：万円</span></figcaption><div class="ir-plot" data-key="operatingIncome" data-name="営業利益"></div></figure>
+      <p class="ir-legend"><i aria-hidden="true"></i>斜線と「*」は速報値（当月）</p>
+      <table class="ir-table"><caption>月次の数値（単位：万円）</caption>
+        <thead><tr><th scope="col">月</th><th scope="col">売上高</th><th scope="col">営業利益</th><th scope="col">区分</th></tr></thead>
+        <tbody>${p.months.map((m) => `<tr><th scope="row">${monthLong(m.month)}</th><td>${man(m.revenue)}</td><td>${man(m.operatingIncome)}</td><td>${m.provisional ? '速報' : '月次'}</td></tr>`).join('')}</tbody>
+      </table>
+      ${past.length ? `<table class="ir-table"><caption>過去の期（単位：万円）</caption><thead><tr><th scope="col">期</th><th scope="col">売上高</th><th scope="col">営業利益</th></tr></thead><tbody>${past.map((q) => `<tr><th scope="row">${esc(q.label)}（${q.start.slice(0, 7).replace('-', '/')}〜${q.end.slice(0, 7).replace('-', '/')}）</th><td>${man(q.total.revenue)}</td><td>${man(q.total.operatingIncome)}</td></tr>`).join('')}</tbody></table>` : ''}
+      <p class="ir-synced">最終更新：${synced(s.lastSyncAt)}</p>`;
+    const draw = () => app.querySelectorAll<HTMLElement>('.ir-plot').forEach((el) => chart(el, p.months, el.dataset.key as 'revenue' | 'operatingIncome', el.dataset.name || ''));
+    draw();
+    let t = 0; addEventListener('resize', () => { clearTimeout(t); t = window.setTimeout(draw, 150); });
+  }
+
+  fetch('/api/ir/summary', { headers: { Accept: 'application/json' } })
+    .then((r) => r.json())
+    .then(render)
+    .catch(() => render({ status: 'unavailable' }));
+</script>
+
+<style>
+  .ir-sec{padding:150px 0 100px}
+  .ir-wrap{max-width:880px;margin:0 auto;padding-inline:24px}
+  .ir-title{font-size:calc(clamp(24px,3.4vw,32px) * var(--fs,1));margin:8px 0 16px}
+  .ir-lead{color:var(--muted);font-size:calc(15px * var(--fs,1));line-height:1.9;margin-bottom:36px;max-width:42em}
+  .ir-status{border:1px solid var(--line);border-radius:var(--radius);padding:28px 24px;font-size:calc(15px * var(--fs,1));color:var(--text)}
+  .ir-app :global(.ir-period){display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:16px}
+  .ir-app :global(.ir-period h2){font-size:calc(22px * var(--fs,1));margin:0}
+  .ir-app :global(.ir-period span){font-size:calc(13px * var(--fs,1));color:var(--muted)}
+  .ir-app :global(.ir-kpis){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:24px}
+  .ir-app :global(.ir-kpi){border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
+  .ir-app :global(.ir-kpi p){font-size:calc(13px * var(--fs,1));color:var(--muted);margin:0 0 6px}
+  .ir-app :global(.ir-kpi strong){font-size:calc(clamp(28px,4.4vw,40px) * var(--fs,1));font-weight:700;color:var(--black);font-variant-numeric:tabular-nums;line-height:1.2}
+  .ir-app :global(.ir-kpi small){font-size:calc(15px * var(--fs,1));margin-left:4px;font-weight:700}
+  .ir-app :global(.ir-chart){position:relative;border:1px solid var(--line);border-radius:var(--radius);padding:16px 16px 8px;margin:0 0 16px}
+  .ir-app :global(.ir-chart figcaption){display:flex;justify-content:space-between;align-items:baseline;font-size:calc(15px * var(--fs,1));font-weight:700;color:var(--black);margin-bottom:8px}
+  .ir-app :global(.ir-chart figcaption span){font-size:calc(13px * var(--fs,1));font-weight:400;color:var(--muted)}
+  .ir-app :global(.ir-plot){position:relative}
+  .ir-app :global(.ir-plot svg){display:block;color:var(--green-dark)}
+  .ir-app :global(.ir-grid){stroke:var(--line);stroke-width:1}
+  .ir-app :global(.ir-zero){stroke:var(--muted);stroke-width:1}
+  .ir-app :global(.ir-tick){fill:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+  .ir-app :global(.ir-val){fill:var(--black);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+  .ir-app :global(.ir-bar){fill:var(--green-dark)}
+  .ir-app :global(.ir-bar.is-prov){stroke:var(--green-dark);stroke-width:1}
+  .ir-app :global(.ir-hatch-bg){fill:var(--paper)}
+  .ir-app :global(.ir-hatch-line){stroke:var(--green-dark);stroke-width:2}
+  .ir-app :global(.ir-hit){fill:transparent}
+  .ir-app :global(.ir-bar-g){cursor:default;outline:none}
+  .ir-app :global(.ir-bar-g:focus-visible .ir-hit){fill:var(--green-pale)}
+  .ir-app :global(.ir-tip){position:absolute;top:0;transform:translateX(-50%);background:var(--black);color:var(--paper);font-size:calc(13px * var(--fs,1));padding:6px 10px;border-radius:var(--radius);white-space:nowrap;pointer-events:none}
+  .ir-app :global(.ir-legend){display:flex;align-items:center;gap:8px;font-size:calc(13px * var(--fs,1));color:var(--muted);margin:0 0 24px}
+  .ir-app :global(.ir-legend i){width:18px;height:12px;border:1px solid var(--green-dark);background:repeating-linear-gradient(45deg,var(--green-dark) 0 2px,var(--paper) 2px 5px)}
+  .ir-app :global(.ir-table){width:100%;border-collapse:collapse;margin:0 0 24px;font-size:calc(14.5px * var(--fs,1))}
+  .ir-app :global(.ir-table caption){text-align:left;font-weight:700;color:var(--black);margin-bottom:8px;font-size:calc(15px * var(--fs,1))}
+  .ir-app :global(.ir-table th),.ir-app :global(.ir-table td){border-top:1px solid var(--line);padding:10px 8px;text-align:left}
+  .ir-app :global(.ir-table td){text-align:right;font-variant-numeric:tabular-nums}
+  .ir-app :global(.ir-table thead th){font-size:calc(13px * var(--fs,1));color:var(--muted);font-weight:500}
+  .ir-app :global(.ir-table thead th:not(:first-child)){text-align:right}
+  .ir-app :global(.ir-synced){font-size:calc(13px * var(--fs,1));color:var(--muted);text-align:right;margin:0}
+  .ir-notes{margin:32px 0 0;padding-left:1.2em;font-size:calc(13px * var(--fs,1));color:var(--muted);line-height:1.9}
+  @media (max-width:640px){
+    .ir-sec{padding:120px 0 72px}
+    .ir-wrap{padding-inline:16px}
+    .ir-app :global(.ir-kpis){grid-template-columns:1fr}
+  }
+</style>
