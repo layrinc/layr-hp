@@ -89,25 +89,23 @@ const jsonLd = [
       </section>
       <div data-city-photos-slot>{area ? <Fragment set:html={renderCityPhotos(area, getSeedCityPhotos(area.slug))} /> : <div class="lt-marquee" aria-hidden="true"><span>CONNECT PEOPLE.</span><i>✳</i><span>CREATE POSSIBILITIES.</span><i>✳</i><span>CONNECT PEOPLE.</span><i>✳</i></div>}</div>
 
-      {!area && (
-        <section class="lt-section lt-movie" id="movie" aria-labelledby="lt-movie-title">
-          <div class="lt-wrap">
-            <div class="lt-section-heading lt-heading-center">
-              <p class="lt-eyebrow">Movie</p>
-              <h2 id="lt-movie-title">動画でわかる、<mark>{service.name}。</mark></h2>
-              <p>採用LINEで何ができるのか、約2分の動画でご紹介します。</p>
-            </div>
-            <div class="lt-movie-frame">
-              <video controls playsinline preload="none" width="1920" height="1080" poster="/service/ltori/ltori-intro-poster.webp" data-lt-movie>
-                <source src="/service/ltori/ltori-intro.mp4" type="video/mp4" />
-                <track kind="captions" src="/service/ltori/ltori-intro.ja.vtt" srclang="ja" label="日本語" />
-                <a href="/service/ltori/ltori-intro.mp4">動画を開く</a>
-              </video>
-            </div>
-            <p class="lt-note lt-movie-note">※動画内のトーク画面は架空の企業の作例です。ナレーションはAI音声です。</p>
+      <section class="lt-section lt-movie" id="movie" aria-labelledby="lt-movie-title">
+        <div class="lt-wrap">
+          <div class="lt-section-heading lt-heading-center">
+            <p class="lt-eyebrow">Movie</p>
+            <h2 id="lt-movie-title">動画でわかる、<mark>{service.name}。</mark></h2>
+            <p>採用LINEで何ができるのか、約2分の動画でご紹介します。</p>
           </div>
-        </section>
-      )}
+          <div class="lt-movie-frame">
+            <video controls playsinline preload="none" width="1920" height="1080" poster="/service/ltori/ltori-intro-poster.webp" data-lt-movie>
+              <source src="/service/ltori/ltori-intro.mp4" type="video/mp4" />
+              <track kind="captions" src="/service/ltori/ltori-intro.ja.vtt" srclang="ja" label="日本語" />
+              <a href="/service/ltori/ltori-intro.mp4">動画を開く</a>
+            </video>
+          </div>
+          <p class="lt-note lt-movie-note">※動画内のトーク画面は架空の企業の作例です。ナレーションはAI音声です。</p>
+        </div>
+      </section>
 
       <section class="lt-section lt-about" id="about">
         <div class="lt-wrap">
