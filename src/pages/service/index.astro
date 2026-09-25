@@ -13,6 +13,8 @@ import { ISO } from '../../lib/iso-illusts.mjs';
 const title = serviceData.title + '｜株式会社LAYR';
 const description = serviceData.description;
 const [aiConsulting, aiDevelopment, aiInvoice] = aiService.plans;
+// エルトリの紹介動画（YouTube）。youtubeId が空なら「動画でサービスを見る」は出さない
+const ltVideo = (ltoriService as any).video as { youtubeId?: string; title?: string; label?: string } | undefined;
 
 // JSONのブロック列から capBox（本文）と直後の buttons（リンク）を対で抽出
 type Svc = { title: string; body: string; label: string; url: string; color: string };
@@ -106,7 +108,17 @@ const jsonLd = [
               {META[i].chips.map((c) => <span>{c}</span>)}
             </div>
             <p class="sv-price"><b>料金</b>{META[i].price}</p>
-            <a class={`btn btn-lg ${s.color === 'dark' ? 'btn-black' : 'btn-green'}`} href={s.url}>{s.label}</a>
+            {s.url === ltoriService.path && ltVideo?.youtubeId ? (
+              <>
+                <div class="sv-cta-row">
+                  <a class={`btn btn-lg ${s.color === 'dark' ? 'btn-black' : 'btn-green'}`} href={s.url}>{s.label}</a>
+                  <a class="sv-video-toggle" href={`https://www.youtube.com/watch?v=${ltVideo.youtubeId}`} target="_blank" rel="noopener" data-video-toggle data-yt={ltVideo.youtubeId} data-title={ltVideo.title} aria-controls="sv-video-ltori"><span class="sv-pm" aria-hidden="true"></span>{ltVideo.label ?? '動画でサービスを見る'}</a>
+                </div>
+                <div class="sv-video" id="sv-video-ltori" hidden><div class="sv-video-frame"></div></div>
+              </>
+            ) : (
+              <a class={`btn btn-lg ${s.color === 'dark' ? 'btn-black' : 'btn-green'}`} href={s.url}>{s.label}</a>
+            )}
           </div>
         </div>
       </section>
@@ -125,6 +137,39 @@ const jsonLd = [
     </div>
   </section>
 </Base>
+
+<script>
+  // 「動画でサービスを見る」：＋で下に開いてYouTubeを読み込み、−で閉じて再生を止める。
+  // JSが無い環境ではYouTubeのページへのリンクとして動く。
+  document.querySelectorAll<HTMLAnchorElement>('[data-video-toggle]').forEach((t) => {
+    const panel = document.getElementById(t.getAttribute('aria-controls') || '');
+    const frame = panel?.querySelector('.sv-video-frame');
+    if (!panel || !frame) return;
+    t.setAttribute('role', 'button');
+    t.setAttribute('aria-expanded', 'false');
+    t.removeAttribute('target');
+    t.addEventListener('click', (e) => {
+      e.preventDefault();
+      const open = t.getAttribute('aria-expanded') !== 'true';
+      t.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      if (open) {
+        const f = document.createElement('iframe');
+        f.src = `https://www.youtube-nocookie.com/embed/${t.dataset.yt}?rel=0&autoplay=1&playsinline=1`;
+        f.title = t.dataset.title || '';
+        f.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        f.allowFullscreen = true;
+        f.referrerPolicy = 'strict-origin-when-cross-origin';
+        frame.replaceChildren(f);
+        const gtag = (window as Window & { gtag?: (...args: unknown[]) => void }).gtag;
+        if (typeof gtag === 'function') gtag('event', 'select_content', { content_type: 'service_video', content_id: 'ltori' });
+      } else {
+        frame.replaceChildren();
+      }
+    });
+    t.addEventListener('keydown', (e) => { if (e.key === ' ') { e.preventDefault(); t.click(); } });
+  });
+</script>
 
 <style>
   /* エルトリの写真は生成時の自然な色味で表示 */
@@ -181,6 +226,18 @@ const jsonLd = [
   .sv-btn-doc:hover{background:color-mix(in srgb, var(--black) 80%, #fff);color:#fff}
   .sv-guide .btn-black{background:var(--green);color:#fff}
   .sv-guide .btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.5)}
+  /* エルトリ：動画でサービスを見る（＋／−で下に開く） */
+  .sv-cta-row{display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px}
+  .sv-video-toggle{display:inline-flex;align-items:center;gap:10px;padding:16px 26px;border-radius:var(--r-pill);border:2px solid var(--green-line);background:var(--paper);color:var(--green-ink);font-size:calc(15px * var(--fs,1));font-weight:700;line-height:1.4;text-decoration:none;cursor:pointer;transition:background .2s cubic-bezier(.4,0,.2,1), border-color .2s cubic-bezier(.4,0,.2,1)}
+  .sv-video-toggle:hover{background:var(--green-pale);border-color:var(--green)}
+  .sv-video-toggle:focus-visible{outline:2px solid var(--green-ink);outline-offset:3px}
+  .sv-pm{position:relative;flex-shrink:0;width:22px;height:22px;border-radius:50%;background:var(--green-pale)}
+  .sv-pm::before,.sv-pm::after{content:"";position:absolute;left:50%;top:50%;width:10px;height:2px;margin:-1px 0 0 -5px;border-radius:var(--r-pill);background:var(--green-ink);transition:transform .25s cubic-bezier(.4,0,.2,1)}
+  .sv-pm::after{transform:rotate(90deg)}
+  .sv-video-toggle[aria-expanded="true"] .sv-pm::after{transform:rotate(0deg)}
+  .sv-video{margin-top:20px}
+  .sv-video-frame{width:100%;aspect-ratio:16/9;border-radius:var(--radius);overflow:hidden;background:var(--black);border:1px solid var(--line)}
+  .sv-video-frame :global(iframe){display:block;width:100%;height:100%;border:0}
   @media (max-width: 900px){
     .sv-about-in{grid-template-columns:1fr;gap:18px}
     .sv-item-in{grid-template-columns:1fr;gap:28px}
