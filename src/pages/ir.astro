@@ -1,20 +1,20 @@
 ---
 /**
  * IR情報（/ir/）— 売上高・営業利益の推移。
- * 数字は /api/ir/summary（Worker が freee会計から集計・万円単位）をブラウザで読み込んで描く。
+ * 数字は /api/ir/summary（Worker が freee会計の個人事業・株式会社LAYRを月ごとに合算・万円単位）をブラウザで読み込んで描く。
  * 上場企業ではないため開示義務はない。検索エンジンには載せず（noindex・サイトマップ除外）、フッターから小さくリンクする。
  */
 import Base from '../layouts/Base.astro';
 
 const title = 'IR情報｜株式会社LAYR';
-const description = '株式会社LAYRの売上高・営業利益の推移です。会計データと連動して更新しています。';
+const description = 'LAYRの事業全体（株式会社LAYRと代表の個人事業の合計）の売上高・営業利益の推移です。会計データと連動して更新しています。';
 ---
 <Base title={title} description={description} robots="noindex">
   <section class="ir-sec">
     <div class="ir-wrap">
       <p class="sec-en">IR</p>
       <h1 class="ir-title">IR情報</h1>
-      <p class="ir-lead">株式会社LAYRの売上高と営業利益を、会計データ（freee会計）と連動して公開しています。上場企業ではないため開示の義務はありませんが、経営の状況をありのままお伝えするために掲載しています。</p>
+      <p class="ir-lead">LAYRの事業全体の売上高と営業利益を、会計データ（freee会計）と連動して公開しています。数字は、株式会社LAYRと、法人化の前から続く代表の個人事業の合計です。上場企業ではないため開示の義務はありませんが、経営の状況をありのままお伝えするために掲載しています。</p>
 
       <div id="ir-app" class="ir-app" aria-live="polite">
         <p class="ir-status">最新の数字を読み込んでいます…</p>
@@ -24,7 +24,8 @@ const description = '株式会社LAYRの売上高・営業利益の推移です�
       <ul class="ir-notes">
         <li>金額は万円単位（四捨五入）です。当月は速報値で、月末の締めまでに変わることがあります。</li>
         <li>会計ソフト上の数値で、監査を受けたものではありません。</li>
-        <li>設立：2026年8月28日／決算期：12月</li>
+        <li>株式会社LAYR（2026年8月28日設立・12月決算）と代表の個人事業を、月ごとに合計して暦年で表示しています。</li>
+        <li>個人事業の営業利益は、売上から売上原価と経費を差し引いた額（青色申告特別控除の前）です。</li>
       </ul>
     </div>
   </section>
@@ -99,11 +100,13 @@ const description = '株式会社LAYRの売上高・営業利益の推移です�
     }
     const p = s.periods[s.periods.length - 1];
     const past = s.periods.slice(0, -1).reverse();
+    const now = p.months.find((m) => m.provisional);
     app.innerHTML = `
-      <div class="ir-period"><h2>${esc(p.label)}</h2><span>${jpDate(p.start)}〜${jpDate(p.end)}${p.inProgress ? '（期中）' : ''}</span></div>
-      <div class="ir-kpis">
-        <div class="ir-kpi"><p>売上高（${p.inProgress ? '期首からの累計' : '通期'}）</p><strong>${man(p.total.revenue)}<small>万円</small></strong></div>
-        <div class="ir-kpi"><p>営業利益（${p.inProgress ? '期首からの累計' : '通期'}）</p><strong>${man(p.total.operatingIncome)}<small>万円</small></strong></div>
+      <div class="ir-period"><h2>${esc(p.label)}</h2><span>${jpDate(p.start)}〜${jpDate(p.end)}${p.inProgress ? '（年の途中）' : ''}・事業全体の合計</span></div>
+      <div class="ir-kpis${now ? ' has-now' : ''}">
+        ${now ? `<div class="ir-kpi is-now"><p>${monthLong(now.month)}の売上高（速報）</p><strong>${man(now.revenue)}<small>万円</small></strong></div>` : ''}
+        <div class="ir-kpi"><p>売上高（${p.inProgress ? '1月からの累計' : '年間'}）</p><strong>${man(p.total.revenue)}<small>万円</small></strong></div>
+        <div class="ir-kpi"><p>営業利益（${p.inProgress ? '1月からの累計' : '年間'}）</p><strong>${man(p.total.operatingIncome)}<small>万円</small></strong></div>
       </div>
       <figure class="ir-chart"><figcaption>月次の売上高<span>単位：万円</span></figcaption><div class="ir-plot" data-key="revenue" data-name="売上高"></div></figure>
       <figure class="ir-chart"><figcaption>月次の営業利益<span>単位：万円</span></figcaption><div class="ir-plot" data-key="operatingIncome" data-name="営業利益"></div></figure>
@@ -112,7 +115,7 @@ const description = '株式会社LAYRの売上高・営業利益の推移です�
         <thead><tr><th scope="col">月</th><th scope="col">売上高</th><th scope="col">営業利益</th><th scope="col">区分</th></tr></thead>
         <tbody>${p.months.map((m) => `<tr><th scope="row">${monthLong(m.month)}</th><td>${man(m.revenue)}</td><td>${man(m.operatingIncome)}</td><td>${m.provisional ? '速報' : '月次'}</td></tr>`).join('')}</tbody>
       </table>
-      ${past.length ? `<table class="ir-table"><caption>過去の期（単位：万円）</caption><thead><tr><th scope="col">期</th><th scope="col">売上高</th><th scope="col">営業利益</th></tr></thead><tbody>${past.map((q) => `<tr><th scope="row">${esc(q.label)}（${q.start.slice(0, 7).replace('-', '/')}〜${q.end.slice(0, 7).replace('-', '/')}）</th><td>${man(q.total.revenue)}</td><td>${man(q.total.operatingIncome)}</td></tr>`).join('')}</tbody></table>` : ''}
+      ${past.length ? `<table class="ir-table"><caption>過去の年（単位：万円）</caption><thead><tr><th scope="col">年</th><th scope="col">売上高</th><th scope="col">営業利益</th></tr></thead><tbody>${past.map((q) => `<tr><th scope="row">${esc(q.label)}</th><td>${man(q.total.revenue)}</td><td>${man(q.total.operatingIncome)}</td></tr>`).join('')}</tbody></table>` : ''}
       <p class="ir-synced">最終更新：${synced(s.lastSyncAt)}</p>`;
     const draw = () => app.querySelectorAll<HTMLElement>('.ir-plot').forEach((el) => chart(el, p.months, el.dataset.key as 'revenue' | 'operatingIncome', el.dataset.name || ''));
     draw();
@@ -135,6 +138,7 @@ const description = '株式会社LAYRの売上高・営業利益の推移です�
   .ir-app :global(.ir-period h2){font-size:calc(22px * var(--fs,1));margin:0}
   .ir-app :global(.ir-period span){font-size:calc(13px * var(--fs,1));color:var(--muted)}
   .ir-app :global(.ir-kpis){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-bottom:24px}
+  .ir-app :global(.ir-kpis.has-now){grid-template-columns:repeat(3,minmax(0,1fr))}
   .ir-app :global(.ir-kpi){border:1px solid var(--line);border-radius:var(--radius);padding:20px 22px}
   .ir-app :global(.ir-kpi p){font-size:calc(13px * var(--fs,1));color:var(--muted);margin:0 0 6px}
   .ir-app :global(.ir-kpi strong){font-size:calc(clamp(28px,4.4vw,40px) * var(--fs,1));font-weight:700;color:var(--black);font-variant-numeric:tabular-nums;line-height:1.2}
@@ -169,6 +173,6 @@ const description = '株式会社LAYRの売上高・営業利益の推移です�
   @media (max-width:640px){
     .ir-sec{padding:120px 0 72px}
     .ir-wrap{padding-inline:16px}
-    .ir-app :global(.ir-kpis){grid-template-columns:1fr}
+    .ir-app :global(.ir-kpis),.ir-app :global(.ir-kpis.has-now){grid-template-columns:1fr}
   }
 </style>
