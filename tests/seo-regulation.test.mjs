@@ -4,10 +4,13 @@ import {readFile} from 'node:fs/promises';
 import regulation from '../src/data/seo-article-regulation.json' with {type: 'json'};
 
 test('article regulation lists the flow, both destinations and a non-empty checklist', () => {
-  assert.equal(regulation.flow.length, 9);
-  assert.deepEqual(regulation.flow.filter(row => row.owner === '河出さん').map(row => row.step), ['構成案の確認', '最終確認・公開']);
+  assert.equal(regulation.flow.length, 11);
+  assert.deepEqual(regulation.flow.filter(row => row.owner === '河出さん').map(row => row.step), ['構成案FB・修正指示', '初稿FB・修正指示', '最終内容確認', '公開']);
   assert.deepEqual(regulation.destinations.map(row => row.manage), ['/articles/', '/media/']);
-  assert.ok(regulation.checklist.length >= 8 && regulation.checklist.every(category => category.items.length > 0));
+  const items = regulation.checklist.flatMap(category => category.items);
+  assert.equal(items.filter(item => typeof item.no === 'number').length, 66, 'the 66 source items stay complete');
+  assert.deepEqual(items.filter(item => typeof item.no === 'number').map(item => item.no), Array.from({length: 66}, (_, index) => index + 1));
+  assert.equal(regulation.hyoki.length, 66); assert.equal(regulation.bunsho.length, 21);
 });
 
 test('regulation links open only Google Drive, Sheets or the public site', () => {

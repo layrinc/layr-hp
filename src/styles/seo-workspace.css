@@ -36,6 +36,8 @@
 .workspace-main .workspace-statement{padding-block:22px;border-block:1px solid var(--line);font-size:var(--kw-lead);font-weight:500;margin-block:32px}
 /* 記事制作レギュレーション：チェックリストと資料リンク */
 .rg-subhead{margin-top:22px}
+.rg-full{max-height:none}
+.rg-flow td:nth-child(3){white-space:nowrap}
 .rg-check-head{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:22px}
 .rg-check-head p{font-weight:500}
 .rg-checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:12px;align-items:start}
@@ -50,6 +52,11 @@
 .rg-group li label{flex-direction:row;align-items:flex-start;gap:12px;padding:12px 0;border-top:1px solid var(--line-soft);font-size:var(--kw-body);font-weight:400;cursor:pointer}
 .rg-group li input{margin-top:3px}
 .rg-group li input:checked+span{color:var(--muted)}
+.rg-group li span small{display:block;margin-top:6px;color:var(--muted);font-size:var(--kw-label)}
+.rg-no{display:inline-block;min-width:28px;margin-right:6px;color:var(--muted);font-weight:500;font-variant-numeric:tabular-nums}
+.rg-group .kw-table-wrap{margin:0 16px 16px;max-height:420px}
+.rg-group .kw-table{min-width:0}
+.kw-panel>.rg-group+.rg-group{margin-top:12px}
 .rg-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px;margin-top:22px;align-items:start}
 .rg-links h3{margin-bottom:12px}
 .rg-links ul{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:var(--radius);background:var(--paper)}
