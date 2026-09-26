@@ -37,7 +37,9 @@ export function toMan(yen) {
 
 // freee 試算表（損益計算書）から、指定期間の売上高と営業損益を取り出す。
 // closing_balance は期首からの累計のことがあるため、期間の金額は closing − opening で求める。
-const REVENUE_NAMES = ['売上高', '売上（収入）金額', '売上(収入)金額'];
+// 法人は「売上高」「営業損益金額」、個人事業は「収入金額」「営業損益」（2026-09-26 実データで確認）
+const REVENUE_NAMES = ['売上高', '収入金額', '売上（収入）金額', '売上(収入)金額'];
+const INCOME_NAMES = ['営業損益金額', '営業損益'];
 export function pickPl(json) {
   const balances = json?.trial_pl?.balances;
   if (!Array.isArray(balances)) throw new Error('試算表の形式を読み取れませんでした');
@@ -45,8 +47,8 @@ export function pickPl(json) {
   const find = name => balances.find(b => b.account_category_name === name && b.total_line) || balances.find(b => b.account_category_name === name && !b.account_item_name);
   const diff = row => (Number(row.closing_balance) || 0) - (Number(row.opening_balance) || 0);
   const revenueRow = REVENUE_NAMES.map(find).find(Boolean);
-  // 法人は「営業損益金額」。個人事業の決算書様式には無いので、売上 − 売上原価 − 経費 で同じ意味の数字を作る
-  const incomeRow = find('営業損益金額');
+  // 営業損益の行が無い様式では、売上 − 売上原価 − 経費 で同じ意味の数字を作る
+  const incomeRow = INCOME_NAMES.map(find).find(Boolean);
   const costRow = find('売上原価'), expenseRow = find('経費');
   if (!revenueRow || (!incomeRow && !expenseRow)) {
     const names = [...new Set(balances.filter(b => !b.account_item_name).map(b => b.account_category_name).filter(Boolean))].slice(0, 12);
