@@ -214,12 +214,14 @@
    "group": "LAYRで使っているシート・記事",
    "items": [
     {
-     "label": "採用ノート 年間記事企画・検索需要（Googleスプレッドシート）",
-     "url": "https://docs.google.com/spreadsheets/d/1LQdDfofB6CCsgezFxs_A5A17bnBgNLzSTufVVYvpcgM/edit"
+     "label": "採用ノート 年間記事企画・検索需要",
+     "url": "https://docs.google.com/spreadsheets/d/1LQdDfofB6CCsgezFxs_A5A17bnBgNLzSTufVVYvpcgM/edit",
+     "kind": "スプレッドシート"
     },
     {
-     "label": "1本目の記事：オンラインスクールのLINE集客は「個別相談」から逆算する",
-     "url": "https://layr.co.jp/media/online-school-line-marketing/"
+     "label": "公開済み記事：オンラインスクールのLINE集客は「個別相談」から逆算する",
+     "url": "https://layr.co.jp/media/online-school-line-marketing/",
+     "kind": "記事"
     }
    ]
   },
@@ -227,28 +229,34 @@
    "group": "レギュレーションの元資料（ADDICT ONE様ご提供・LAYRのDrive）",
    "items": [
     {
-     "label": "記事制作レギュレーション（xlsx）",
-     "url": "https://drive.google.com/file/d/1mf4Re66H_BGsi6Av7Yeg-qikGtnmRxYC/view"
+     "label": "記事制作レギュレーション",
+     "url": "https://drive.google.com/file/d/1mf4Re66H_BGsi6Av7Yeg-qikGtnmRxYC/view",
+     "kind": "Excel"
     },
     {
-     "label": "SEO記事作成マニュアル（docx）",
-     "url": "https://drive.google.com/file/d/1AQdifIBV-9TQaUWeN-9vOo6wHy7Bmf5H/view"
+     "label": "SEO記事作成マニュアル",
+     "url": "https://drive.google.com/file/d/1AQdifIBV-9TQaUWeN-9vOo6wHy7Bmf5H/view",
+     "kind": "Word"
     },
     {
-     "label": "構成案シート・コピー用原本（xlsx）",
-     "url": "https://drive.google.com/file/d/1xhyscgLVHQoLCr-8spE2haV7SJHq_y0_/view"
+     "label": "構成案シート・コピー用原本",
+     "url": "https://drive.google.com/file/d/1xhyscgLVHQoLCr-8spE2haV7SJHq_y0_/view",
+     "kind": "Excel"
     },
     {
-     "label": "執筆シート・コピー用原本（docx）",
-     "url": "https://drive.google.com/file/d/1gs5rSgK6FoMwhXuKClO1nngtkVscBlNN/view"
+     "label": "執筆シート・コピー用原本",
+     "url": "https://drive.google.com/file/d/1gs5rSgK6FoMwhXuKClO1nngtkVscBlNN/view",
+     "kind": "Word"
     },
     {
-     "label": "進捗管理 SEO対策（xlsx）",
-     "url": "https://drive.google.com/file/d/1wLkuPGRZ5MQ6bc2cTZOEthsitnh8SH-I/view"
+     "label": "進捗管理 SEO対策",
+     "url": "https://drive.google.com/file/d/1wLkuPGRZ5MQ6bc2cTZOEthsitnh8SH-I/view",
+     "kind": "Excel"
     },
     {
-     "label": "対策キーワード一覧（xlsx）",
-     "url": "https://drive.google.com/file/d/1P1JL42HAkBvsApO1pm0C74w1mAHIXOgi/view"
+     "label": "対策キーワード一覧",
+     "url": "https://drive.google.com/file/d/1P1JL42HAkBvsApO1pm0C74w1mAHIXOgi/view",
+     "kind": "Excel"
     }
    ]
   }
