@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <rect width="1200" height="500" rx="20" fill="#F6FAF9"/>
+  <text x="600" y="56" text-anchor="middle" font-size="24" font-weight="800" fill="#0E1A1C">オンラインスクールのLINE集客でつまずきやすい4つのポイント</text>
+  <rect x="60" y="110" width="520" height="150" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+  <circle cx="104" cy="154" r="18" fill="#EDF7F2"/>
+  <text x="104" y="160" text-anchor="middle" font-size="16" font-weight="800" fill="#0E4F44">1</text>
+  <text x="136" y="160" font-size="18" font-weight="800" fill="#0E1A1C">特典を豪華にしすぎる</text>
+  <text x="92" y="200" font-size="14" fill="#5A6B6D">起きること：関心の薄い登録が増え、予約率が下がる</text>
+  <text x="92" y="232" font-size="14" font-weight="700" fill="#0E4F44">直し方：講座と地続きの特典にする</text>
+  <rect x="620" y="110" width="520" height="150" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+  <circle cx="664" cy="154" r="18" fill="#EDF7F2"/>
+  <text x="664" y="160" text-anchor="middle" font-size="16" font-weight="800" fill="#0E4F44">2</text>
+  <text x="696" y="160" font-size="18" font-weight="800" fill="#0E1A1C">毎日、申込のお願いを送る</text>
+  <text x="652" y="200" font-size="14" fill="#5A6B6D">起きること：不安が残ったまま案内が続き、ブロックが増える</text>
+  <text x="652" y="232" font-size="14" font-weight="700" fill="#0E4F44">直し方：1通に不安1つ＋予約リンク</text>
+  <rect x="60" y="280" width="520" height="150" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+  <circle cx="104" cy="324" r="18" fill="#EDF7F2"/>
+  <text x="104" y="330" text-anchor="middle" font-size="16" font-weight="800" fill="#0E4F44">3</text>
+  <text x="136" y="330" font-size="18" font-weight="800" fill="#0E1A1C">予約を手作業で受けている</text>
+  <text x="92" y="370" font-size="14" fill="#5A6B6D">起きること：日程のやりとりの途中で離れる</text>
+  <text x="92" y="402" font-size="14" font-weight="700" fill="#0E4F44">直し方：候補日を選ぶだけで予約完了</text>
+  <rect x="620" y="280" width="520" height="150" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+  <circle cx="664" cy="324" r="18" fill="#EDF7F2"/>
+  <text x="664" y="330" text-anchor="middle" font-size="16" font-weight="800" fill="#0E4F44">4</text>
+  <text x="696" y="330" font-size="18" font-weight="800" fill="#0E1A1C">数字を見ないまま配信を増やす</text>
+  <text x="652" y="370" font-size="14" fill="#5A6B6D">起きること：どこが詰まっているかわからない</text>
+  <text x="652" y="402" font-size="14" font-weight="700" fill="#0E4F44">直し方：5つの数字のどこが低いかを先に確認</text>
+  <text x="600" y="472" text-anchor="middle" font-size="15" font-weight="700" fill="#0E4F44">配信本数を増やす前に、どこが詰まっているかを確かめる</text>
+</svg>

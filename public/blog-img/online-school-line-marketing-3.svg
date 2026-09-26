@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <rect width="1200" height="440" rx="20" fill="#F6FAF9"/>
+  <text x="600" y="56" text-anchor="middle" font-size="24" font-weight="800" fill="#0E1A1C">月10名の受講申込から、必要なLINE登録数を逆算する</text>
+  <text x="600" y="90" text-anchor="middle" font-size="15" fill="#5A6B6D">右から左へ、目標を率で割って戻していく</text>
+  <rect x="40" y="130" width="250" height="150" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+  <text x="165" y="172" text-anchor="middle" font-size="16" font-weight="700" fill="#5A6B6D">受講申込</text>
+  <text x="165" y="225" text-anchor="middle" font-size="36" font-weight="800" fill="#0E1A1C">10名</text>
+  <rect x="80" y="242" width="170" height="26" rx="13" fill="#EDF7F2"/>
+  <text x="165" y="260" text-anchor="middle" font-size="13" font-weight="700" fill="#0E4F44">目標</text>
+  <rect x="330" y="130" width="250" height="150" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+  <text x="455" y="172" text-anchor="middle" font-size="16" font-weight="700" fill="#5A6B6D">個別相談に参加</text>
+  <text x="455" y="225" text-anchor="middle" font-size="36" font-weight="800" fill="#0E1A1C">50名</text>
+  <text x="310" y="200" text-anchor="middle" font-size="28" font-weight="800" fill="#17A673">‹</text>
+  <rect x="370" y="242" width="170" height="26" rx="13" fill="#EDF7F2"/>
+  <text x="455" y="260" text-anchor="middle" font-size="13" font-weight="700" fill="#0E4F44">成約率20%</text>
+  <rect x="620" y="130" width="250" height="150" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+  <text x="745" y="172" text-anchor="middle" font-size="16" font-weight="700" fill="#5A6B6D">予約</text>
+  <text x="745" y="225" text-anchor="middle" font-size="36" font-weight="800" fill="#0E1A1C">72件</text>
+  <text x="600" y="200" text-anchor="middle" font-size="28" font-weight="800" fill="#17A673">‹</text>
+  <rect x="660" y="242" width="170" height="26" rx="13" fill="#EDF7F2"/>
+  <text x="745" y="260" text-anchor="middle" font-size="13" font-weight="700" fill="#0E4F44">参加率70%</text>
+  <rect x="910" y="130" width="250" height="150" rx="16" fill="#fff" stroke="#17A673" stroke-width="2.5"/>
+  <text x="1035" y="172" text-anchor="middle" font-size="16" font-weight="700" fill="#5A6B6D">LINE登録</text>
+  <text x="1035" y="225" text-anchor="middle" font-size="36" font-weight="800" fill="#0E4F44">720人</text>
+  <text x="890" y="200" text-anchor="middle" font-size="28" font-weight="800" fill="#17A673">‹</text>
+  <rect x="950" y="242" width="170" height="26" rx="13" fill="#EDF7F2"/>
+  <text x="1035" y="260" text-anchor="middle" font-size="13" font-weight="700" fill="#0E4F44">予約率10%</text>
+  <rect x="910" y="310" width="250" height="64" rx="12" fill="#EDF7F2"/>
+  <text x="1035" y="338" text-anchor="middle" font-size="14" font-weight="700" fill="#0E4F44">予約率15%なら</text>
+  <text x="1035" y="362" text-anchor="middle" font-size="14" font-weight="700" fill="#0E4F44">480人で届く</text>
+  <text x="40" y="345" font-size="13" fill="#5A6B6D">※数字はすべて説明用の仮の値</text>
+  <text x="600" y="412" text-anchor="middle" font-size="15" font-weight="700" fill="#0E4F44">LINEの中（予約率）を上げるほど、集める登録は少なくて済む</text>
+</svg>
