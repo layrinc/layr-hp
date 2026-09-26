@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <rect width="1200" height="500" rx="20" fill="#F6FAF9"/>
+  <text x="600" y="56" text-anchor="middle" font-size="24" font-weight="800" fill="#0E1A1C">登録から個別相談までのLINE配信は3段階で組む</text>
+  <rect x="40" y="96" width="340" height="340" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+  <text x="68" y="144" font-size="20" font-weight="800" fill="#0E4F44">① 登録直後</text>
+  <rect x="68" y="164" width="284" height="34" rx="17" fill="#EDF7F2"/>
+  <text x="210" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#0E4F44">目的：最初の印象をつくる</text>
+  <circle cx="76" cy="241" r="4" fill="#17A673"/>
+  <text x="90" y="246" font-size="15" fill="#0E1A1C">約束した特典をすぐ届ける</text>
+  <circle cx="76" cy="285" r="4" fill="#17A673"/>
+  <text x="90" y="290" font-size="15" fill="#0E1A1C">3択アンケートで登録理由を聞く</text>
+  <circle cx="76" cy="329" r="4" fill="#17A673"/>
+  <text x="90" y="334" font-size="15" fill="#0E1A1C">回答をタグで記録する</text>
+  <line x1="68" y1="374" x2="352" y2="374" stroke="#E3ECEA" stroke-width="1.5"/>
+  <text x="210" y="408" text-anchor="middle" font-size="15" font-weight="800" fill="#0E4F44">見る数字：登録数</text>
+  <text x="405" y="274" text-anchor="middle" font-size="28" font-weight="800" fill="#17A673">›</text>
+  <rect x="430" y="96" width="340" height="340" rx="16" fill="#fff" stroke="#17A673" stroke-width="2.5"/>
+  <text x="458" y="144" font-size="20" font-weight="800" fill="#0E4F44">② 1〜7日目</text>
+  <rect x="458" y="164" width="284" height="34" rx="17" fill="#EDF7F2"/>
+  <text x="600" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#0E4F44">目的：受講前の不安を解消する</text>
+  <circle cx="466" cy="241" r="4" fill="#17A673"/>
+  <text x="480" y="246" font-size="15" fill="#0E1A1C">1通で扱う不安は1つだけ</text>
+  <circle cx="466" cy="285" r="4" fill="#17A673"/>
+  <text x="480" y="290" font-size="15" fill="#0E1A1C">変化→中身→時間→料金→自分にも</text>
+  <circle cx="466" cy="329" r="4" fill="#17A673"/>
+  <text x="480" y="334" font-size="15" fill="#0E1A1C">毎回の最後に予約リンクを添える</text>
+  <line x1="458" y1="374" x2="742" y2="374" stroke="#E3ECEA" stroke-width="1.5"/>
+  <text x="600" y="408" text-anchor="middle" font-size="15" font-weight="800" fill="#0E4F44">見る数字：予約率</text>
+  <text x="795" y="274" text-anchor="middle" font-size="28" font-weight="800" fill="#17A673">›</text>
+  <rect x="820" y="96" width="340" height="340" rx="16" fill="#fff" stroke="#E3ECEA" stroke-width="2"/>
+  <text x="848" y="144" font-size="20" font-weight="800" fill="#0E4F44">③ 予約後</text>
+  <rect x="848" y="164" width="284" height="34" rx="17" fill="#EDF7F2"/>
+  <text x="990" y="187" text-anchor="middle" font-size="14" font-weight="700" fill="#0E4F44">目的：当日の参加率を上げる</text>
+  <circle cx="856" cy="241" r="4" fill="#17A673"/>
+  <text x="870" y="246" font-size="15" fill="#0E1A1C">前日と当日に案内を送る</text>
+  <circle cx="856" cy="285" r="4" fill="#17A673"/>
+  <text x="870" y="290" font-size="15" fill="#0E1A1C">URL・所要時間・準備するもの</text>
+  <circle cx="856" cy="329" r="4" fill="#17A673"/>
+  <text x="870" y="334" font-size="15" fill="#0E1A1C">日程の変更・キャンセル方法</text>
+  <line x1="848" y1="374" x2="1132" y2="374" stroke="#E3ECEA" stroke-width="1.5"/>
+  <text x="990" y="408" text-anchor="middle" font-size="15" font-weight="800" fill="#0E4F44">見る数字：参加率</text>
+  <text x="600" y="474" text-anchor="middle" font-size="15" font-weight="700" fill="#0E4F44">どの配信で予約が入ったかを記録し、次に直す1通を決める</text>
+</svg>
