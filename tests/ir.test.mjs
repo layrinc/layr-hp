@@ -73,6 +73,15 @@ test('万円への丸めは四捨五入で、赤字も対称に丸める', () =>
 test('試算表から売上高・営業利益を「期末−期首」で取り出す（法人・個人事業の両様式）', () => {
   assert.deepEqual(pickPl(corpPl(300000, -12000)), {revenue: 300000, operatingIncome: -12000});
   assert.deepEqual(pickPl(soloPl(500000, 50000, 120000)), {revenue: 500000, operatingIncome: 330000});
+  // 実際の個人事業（freee）の区分名
+  const real = {trial_pl: {balances: [
+    {account_category_name: '収入金額', total_line: true, opening_balance: 0, closing_balance: 800000},
+    {account_category_name: '売上原価', total_line: true, opening_balance: 0, closing_balance: 0},
+    {account_category_name: '売上総利益', total_line: true, opening_balance: 0, closing_balance: 800000},
+    {account_category_name: '経費', total_line: true, opening_balance: 0, closing_balance: 200000},
+    {account_category_name: '営業損益', total_line: true, opening_balance: 0, closing_balance: 600000},
+  ]}};
+  assert.deepEqual(pickPl(real), {revenue: 800000, operatingIncome: 600000});
   assert.deepEqual(pickPl({trial_pl: {balances: []}}), {revenue: 0, operatingIncome: 0});
   assert.throws(() => pickPl({}), /試算表/);
   // 区分が読めない時は 0 で黙らず、区分名を添えて失敗にする
