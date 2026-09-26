@@ -281,6 +281,7 @@ const serviceIcons = [
       </div>
       {p.note && <p class="service-note">{p.note}</p>}
       <p class="service-more reveal"><a href="/service/">サービス詳細と料金の目安を見る ›</a></p>
+      {p.sub_url && p.sub_label && <p class="service-more service-more-sub reveal"><a href={p.sub_url}>{p.sub_label} ›</a></p>}
     </div>
   </section>
 )}

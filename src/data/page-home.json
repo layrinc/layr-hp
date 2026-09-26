@@ -105,7 +105,9 @@
         ],
         "lead": "LINE公式アカウントの構築と運用支援を、ひとつの窓口で。単体でのご依頼も可能です。",
         "note": "",
-        "title_jp": "サービス"
+        "title_jp": "サービス",
+        "sub_label": "オンラインスクール向けのLINE支援を見る",
+        "sub_url": "/service/school/"
       },
       "type": "service"
     },
