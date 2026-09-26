@@ -259,3 +259,39 @@ test('dashboard exposes the photo job as attention with only whitelisted schedul
   await createStore(db).upsert('scheduler', 'photos', {status: 'completed', outcome: 'SELECT * FROM secrets'});
   assert.equal((await (await call(db, '/api/seo/dashboard')).json()).scheduler.photos.outcome, null);
 });
+
+test('backlink application state is shared, validated and never stores passwords', async t => {
+  const db = sqliteD1(t), path = '/api/seo/backlinks/state';
+  const initial = (await (await call(db, path)).json()).state;
+  assert.equal(initial.revision, 0);
+  assert.equal(initial.profile.companyName, '株式会社LAYR');
+  assert.equal(initial.goal.monthlyTarget, 5);
+  assert.deepEqual(initial.entries, {});
+  const entries = {s001: {status: 'applied', appliedAt: '2026-09-26', liveAt: '', liveUrl: '', account: 'info@layr.co.jp', nextAction: '審査結果を待つ', reason: '', notes: '', updatedAt: '2026-09-26T08:00:00.000Z'}};
+  const payload = {goal: {monthlyTarget: 5}, profile: initial.profile, entries, custom: []};
+  const first = await call(db, path, {state: payload, expectedRevision: 0}, {method: 'PUT'});
+  assert.equal(first.status, 200);
+  assert.equal((await first.json()).state.revision, 1);
+  assert.equal((await call(db, path, {state: payload, expectedRevision: 0}, {method: 'PUT'})).status, 409);
+  const saved = (await (await call(db, path)).json()).state;
+  assert.equal(saved.revision, 1);
+  assert.equal(saved.entries.s001.nextAction, '審査結果を待つ');
+  const bad = [
+    {...payload, entries: {s999999: entries.s001}},
+    {...payload, entries: {s001: {...entries.s001, status: 'done'}}},
+    {...payload, entries: {s001: {...entries.s001, notes: 'パスワード：abc123'}}},
+    {...payload, entries: {s001: {...entries.s001, status: 'live', liveAt: ''}}},
+    {...payload, entries: {s001: {...entries.s001, status: 'rejected', reason: ''}}},
+    {...payload, entries: {s001: {...entries.s001, liveUrl: 'javascript:alert(1)'}}},
+    {...payload, goal: {monthlyTarget: 0}},
+    {...payload, custom: [{id: 'cabcde', name: '', url: 'https://example.com/'}]},
+  ];
+  for (const state of bad) assert.equal((await call(db, path, {state, expectedRevision: 1}, {method: 'PUT'})).status, 400);
+  const custom = [{id: 'cabcde', name: '地域ポータル', url: 'https://portal.example.jp/', formUrl: '', cost: '無料', eligible: '', condition: '', method: '', follow: ''}];
+  const withCustom = {...payload, custom, entries: {...entries, cabcde: {...entries.s001, status: 'checking'}}};
+  assert.equal((await call(db, path, {state: withCustom, expectedRevision: 1}, {method: 'PUT'})).status, 200);
+  assert.equal((await (await call(db, path)).json()).state.custom[0].name, '地域ポータル');
+  assert.equal((await call(db, path, {state: payload, expectedRevision: 2}, {method: 'PUT', requestOrigin: 'https://evil.example'})).status, 403);
+  assert.equal((await handleManagerApi(request(path), {SEO_DB: db}, {email: 'other@example.test'}, path)).status, 403);
+  assert.deepEqual(await getPublished(db), []);
+});

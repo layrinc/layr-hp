@@ -10,6 +10,10 @@ import corporateCatalog from '../src/data/seo-corporate-catalog.json' with {type
 import {projectWorkspace, ltoriGrowthSnapshots} from './seo-workspace.mjs';
 import {canonicalWorkspacePath} from '../src/lib/seo-manager/workspace-projects.mjs';
 import {regionalPreparationSummary} from './seo-regional-preparation.mjs';
+import backlinkSites from '../src/data/seo-backlink-sites.json' with {type: 'json'};
+import company from '../src/data/company.json' with {type: 'json'};
+import siteSettings from '../src/data/settings.json' with {type: 'json'};
+import {validateBacklinkState, defaultProfile, emptyState} from '../src/lib/seo-manager/backlink-model.mjs';
 
 const json=(value,status=200)=>protectedResponse(JSON.stringify(value),status,{'Content-Type':'application/json; charset=utf-8'});
 const allowedEmail='biz.oneservice@gmail.com';
@@ -38,6 +42,16 @@ async function readCorporateState(db) {
   if(!row)return {revision:0,edits:{}};
   try {const saved=JSON.parse(row.value);return {revision:row.version,edits:corporateEdits(Object.fromEntries(Object.entries(saved.edits||{}).filter(([path])=>corporatePaths.has(path))))};}
   catch {throw new HttpError(503,'公式メディアの改善メモを読み出せませんでした。再読み込みしてください。');}
+}
+function backlinkState(input,requireRevision=true) {
+  try {return validateBacklinkState(input,backlinkSites,{requireRevision});}
+  catch(error) {throw new HttpError(400,error.message);}
+}
+async function readBacklinkState(db) {
+  const row=await db.prepare("SELECT value,version FROM seo_kv WHERE namespace='backlinks' AND key='state'").first();
+  if(!row)return emptyState(defaultProfile(company,siteSettings));
+  try {return {...validateBacklinkState(JSON.parse(row.value),backlinkSites,{requireRevision:false}),revision:row.version};}
+  catch {throw new HttpError(503,'被リンク申請の保存データを読み出せませんでした。再読み込みしてください。');}
 }
 export async function handleManagerApi(request,env,identity,path,services={}) {
   try {
@@ -68,6 +82,19 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
       if(!(await statement.run()).meta.changes)throw new HttpError(409,'別の端末で更新されました。再読み込みしてから保存してください。');
       return json({state:{revision:expectedRevision+1,edits}});
     }
+    if(path==='/api/seo/backlinks/state') {
+      if(request.method==='GET')return json({state:await readBacklinkState(db)});
+      if(request.method!=='PUT')throw new HttpError(405,'PUTで保存してください。');
+      const payload=await body(request,1024*1024);
+      if(!payload||typeof payload!=='object'||Array.isArray(payload))throw new HttpError(400,'保存内容を確認してください。');
+      const expectedRevision=version(payload.expectedRevision),next=backlinkState(payload.state,false);
+      const value=JSON.stringify({goal:next.goal,profile:next.profile,entries:next.entries,custom:next.custom}),updatedAt=now.toISOString();
+      const statement=expectedRevision===0
+        ?db.prepare("INSERT INTO seo_kv(namespace,key,value,version,updated_at) VALUES('backlinks','state',?,1,?) ON CONFLICT DO NOTHING").bind(value,updatedAt)
+        :db.prepare("UPDATE seo_kv SET value=?,version=version+1,updated_at=? WHERE namespace='backlinks' AND key='state' AND version=?").bind(value,updatedAt,expectedRevision);
+      if(!(await statement.run()).meta.changes)throw new HttpError(409,'別の端末で更新されました。再読み込みしてから保存してください。');
+      return json({state:{...next,revision:expectedRevision+1}});
+    }
     if(path==='/api/seo/media/analytics') {
       if(request.method!=='GET')throw new HttpError(405,'GETで取得してください。');
       // Read public article identities only, not drafts, lead records or full bodies.
@@ -91,8 +118,8 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
       return json({regionalPreparation:await regionalPreparationSummary(db),settings:publicationSettings(settings),scheduler:{publish:schedulerStatus(publishSchedule),maintenance:schedulerStatus(maintenanceSchedule),photos:schedulerStatus(photoSchedule)},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots:ltoriGrowthSnapshots(snapshots),integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
     }
     if(path==='/api/seo/publication'&&request.method==='GET') {
-      const [docs,live]=await Promise.all([getDocuments(db),getPublished(db)]);const liveIds=new Set(live.map(doc=>doc.id));
-      return json({pages:docs.map(doc=>({path:publicPath(doc),status:liveIds.has(doc.id)?'published':doc.status}))});
+      const [docs,live]=await Promise.all([getDocuments(db),getPublished(db)]);const liveById=new Map(live.map(doc=>[doc.id,doc]));
+      return json({pages:docs.map(doc=>{const published=liveById.get(doc.id);return published?{path:publicPath(doc),status:'published',title:typeof published.title==='string'?published.title:'',publishedAt:published.publishedAt||''}:{path:publicPath(doc),status:doc.status};})});
     }
     if(path==='/api/seo/documents'&&request.method==='POST') {
       const input=await body(request);

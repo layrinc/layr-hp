@@ -132,3 +132,5 @@
 #kw-analytics-view .kw-help-details ol,#kw-analytics-view .kw-help-details ul{padding-left:22px}
 #kw-analytics-view code{overflow-wrap:anywhere}
 #analytics-notes{padding-left:22px}
+.kw-data-grid.kw-pub-groups{grid-template-columns:minmax(0,1fr)}
+.kw-pub-actions{display:flex;flex-wrap:wrap;gap:12px}.kw-pub-groups .kw-table-wrap{max-height:none}
