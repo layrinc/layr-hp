@@ -5,7 +5,6 @@
  */
 import Base from '../layouts/Base.astro';
 import Block from '../components/Block.astro';
-import PriceSimulator from '../components/PriceSimulator.astro';
 import CustomerJourney from '../components/CustomerJourney.astro';
 import ClientMarquee from '../components/ClientMarquee.astro';
 import '../styles/home-isometric.css';
@@ -13,8 +12,6 @@ import settings from '../data/settings.json';
 import page from '../data/page-home.json';
 import { getCollection } from 'astro:content';
 
-// 料金シミュレーターは pricing ブロックの直後に差し込む（ブロックCMS外の固定要素）
-const pricingIdx = page.blocks.findIndex((b) => b.type === 'pricing');
 const simConsult = settings.line_url?.trim() || `mailto:${settings.email}?subject=${encodeURIComponent('【無料相談】LINE活用について')}`;
 
 // コラムブロック用に最新記事を取得（下書き除外・日付降順）
@@ -44,13 +41,13 @@ const serviceJsonLd = {
         '@type': 'Offer',
         name: 'LINE公式アカウント構築',
         description: 'アカウント設計・リッチメニュー・ステップ配信の初期構築（制作期間2〜4週間）',
-        priceSpecification: { '@type': 'PriceSpecification', minPrice: 100000, maxPrice: 400000, priceCurrency: 'JPY' },
+        priceSpecification: { '@type': 'PriceSpecification', minPrice: 150000, priceCurrency: 'JPY' },
       },
       {
         '@type': 'Offer',
         name: 'LINE運用支援',
         description: '月次の配信企画・セグメント配信・効果測定・改善提案',
-        priceSpecification: { '@type': 'UnitPriceSpecification', minPrice: 30000, maxPrice: 100000, priceCurrency: 'JPY', unitText: '月' },
+        priceSpecification: { '@type': 'UnitPriceSpecification', minPrice: 50000, priceCurrency: 'JPY', unitText: '月' },
       },
     ],
   },
@@ -84,27 +81,6 @@ if (faqBlock && Array.isArray(faqBlock.p?.items)) {
     const rendered = fs !== 1
       ? <div style={`--fs:${fs}`}><Block block={block} posts={posts} isometric /></div>
       : <Block block={block} posts={posts} isometric />;
-    // pricingブロックの直後に料金シミュレーターを固定挿入
-    if (i === pricingIdx) {
-      return (
-        <>
-          {rendered}
-          <section class="sim-sec" id="sim">
-            <div class="container">
-              <div class="sec-head">
-                <p class="sec-en">PRICE SIMULATOR</p>
-                <h2 class="sec-jp">30秒 料金シミュレーション</h2>
-                <p class="sec-lead">選択式4問で、貴社に合うプランと料金の目安がその場で分かります。</p>
-              </div>
-              <PriceSimulator docHref="/document/" consult={simConsult} />
-            </div>
-          </section>
-        </>
-      );
-    }
     return rendered;
   })}
-  <style>
-    .sim-sec{padding:clamp(56px,7vw,96px) 0;background:#fff}
-  </style>
 </Base>
