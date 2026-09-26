@@ -1,0 +1,112 @@
+---
+import SeoWorkspace from '../../../layouts/SeoWorkspace.astro';
+import sites from '../../../data/seo-backlink-sites.json';
+import {BACKLINK_STATUS, PROFILE_FIELDS} from '../../../lib/seo-manager/backlink-model.mjs';
+const serialized = JSON.stringify(sites).replace(/</g, '\\u003c');
+const recommended = sites.filter(site => site.recommend && !site.recommend.startsWith('調査')).length;
+const free = sites.filter(site => site.cost === '無料').length;
+---
+<SeoWorkspace title="被リンク申請の管理" active="backlinks">
+  <header class="kw-heading"><div class="workspace-intro"><p class="workspace-eyebrow">SEO / BACKLINKS</p><h1>被リンク申請の管理</h1><p>申請すれば掲載される媒体（申請系リンク）への申請と、掲載までの進み具合を管理します。</p></div><button class="kw-button" id="bl-refresh" type="button">最新の情報に更新</button></header>
+  <p id="bl-message" class="kw-notice" role="status" hidden></p>
+  <p id="bl-saved" class="kw-help" role="status">共有している申請状況を読み込み中です。</p>
+
+  <dl class="kw-stats">
+    <div><dt>今月の掲載確認</dt><dd id="bl-live-month">—</dd><small id="bl-target">目標 月5件</small></div>
+    <div><dt>進行中（確認・申請・やりとり）</dt><dd id="bl-active">—</dd><small id="bl-applied-month">今月の申請 —件</small></div>
+    <div><dt>掲載確認済み（累計）</dt><dd id="bl-live">—</dd><small id="bl-rejected">NG・保留 —件</small></div>
+    <div><dt>申請先リスト</dt><dd id="bl-total">{sites.length}</dd><small>推奨 {recommended}件 / 無料 {free}件</small></div>
+  </dl>
+
+  <section aria-labelledby="bl-list-title">
+    <div class="kw-section-head"><div><h2 id="bl-list-title">申請先と進み具合</h2><p>申請前に掲載条件・費用・対象を確認し、同じ媒体への重複申請を避けます。</p></div><div class="workspace-actions"><button class="kw-button" id="bl-add" type="button" disabled>申請先を追加</button><button class="kw-button" id="bl-export" type="button" disabled>一覧をCSVで保存</button></div></div>
+    <div class="workspace-filter">
+      <label>サイト名・メモを検索<input id="bl-search" type="search" placeholder="サイト名・URL・条件で検索" /></label>
+      <label>ステータス<select id="bl-status"><option value="">すべて</option><option value="active">進行中のみ</option>{Object.entries(BACKLINK_STATUS).map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+      <label>推奨<select id="bl-recommend"><option value="">すべて</option><option value="yes">登録推奨のみ</option></select></label>
+      <label>費用<select id="bl-cost"><option value="">すべて</option><option value="無料">無料</option><option value="有料">有料</option><option value="unknown">未確認・調査中</option></select></label>
+      <label>登録できる対象<select id="bl-eligible"><option value="">すべて</option><option value="company">企業・団体</option><option value="anyone">個人も可</option><option value="unknown">未記載</option></select></label>
+      <label>並び順<select id="bl-sort"><option value="priority">推奨・無料を優先</option><option value="status">ステータス順</option><option value="updated">更新の新しい順</option><option value="number">リストの番号順</option></select></label>
+    </div>
+    <div class="kw-table-wrap" role="region" aria-label="申請先一覧。横にスクロールできます" tabindex="0"><table class="kw-table workspace-table"><thead><tr><th scope="col">申請先</th><th scope="col">ステータス</th><th scope="col">費用・follow</th><th scope="col">対象・条件</th><th scope="col">登録方法</th><th scope="col">次のアクション</th><th scope="col">操作</th></tr></thead><tbody id="bl-rows"></tbody></table><p id="bl-empty" class="growth-empty" hidden>条件に合う申請先がありません。</p></div>
+    <div class="kw-pagination"><p class="kw-help" id="bl-count">一覧を準備しています。</p><div><button class="kw-button" id="bl-prev" type="button">前へ</button><span id="bl-page">1 / 1</span><button class="kw-button" id="bl-next" type="button">次へ</button></div></div>
+  </section>
+
+  <div class="workspace-columns">
+    <section class="kw-panel" aria-labelledby="bl-profile-title">
+      <div class="kw-section-head"><div><h2 id="bl-profile-title">申請に使う会社情報</h2><p>申請フォームへの入力に使います。項目ごとにコピーできます。</p></div><button class="kw-button" id="bl-profile-edit" type="button" disabled>会社情報を編集</button></div>
+      <div class="kw-table-wrap" role="region" aria-label="申請に使う会社情報" tabindex="0"><table class="kw-table"><thead><tr><th scope="col">項目</th><th scope="col">内容</th></tr></thead><tbody id="bl-profile"></tbody></table></div>
+    </section>
+    <section class="kw-panel" aria-labelledby="bl-rules-title">
+      <h2 id="bl-rules-title">申請の進め方</h2>
+      <ol class="workspace-notes">
+        <li><strong>条件を確認</strong>：法人格、登録料、対象地域、必要書類（郵送・FAXの場合あり）を確認します。</li>
+        <li><strong>申請する</strong>：フォームから申請し、申請日と使ったID・メールを記録します。</li>
+        <li><strong>やりとりする</strong>：掲載時期や追加情報の依頼は、次のアクションに残して抜け漏れを防ぎます。</li>
+        <li><strong>掲載を確認</strong>：実際にリンクが設置されたページのURLと確認日を記録します。</li>
+        <li><strong>NGのとき</strong>：理由（先方NG・条件に合わない など）を残し、次の申請先へ進みます。</li>
+      </ol>
+      <ul class="workspace-notes">
+        <li>一度に大量に取るより、<strong>月5件前後を続けて</strong>獲得するほうが効果的です。営業と並行して月に数本ずつ申請します。</li>
+        <li>ジャンルが遠い媒体も含まれます。事業との関係が薄い媒体は保留にします。</li>
+        <li><strong>パスワードは保存しません。</strong>パスワード管理ツールに保管し、ここには保管場所だけを書きます。</li>
+      </ul>
+      <p class="kw-help">出典：被リンク獲得営業マニュアル・申請系リンクリスト（{sites.length}件）。登録条件は変わることがあるため、申請前に各サイトで確認してください。</p>
+    </section>
+  </div>
+
+  <dialog id="bl-editor" class="workspace-dialog" aria-labelledby="bl-editor-title">
+    <header class="kw-section-head"><h2 id="bl-editor-title">申請状況を記録</h2><button class="kw-button" id="bl-close" type="button">閉じる</button></header>
+    <p id="bl-editor-site"></p>
+    <p id="bl-editor-links" class="kw-editor-links"></p>
+    <form id="bl-form">
+      <p id="bl-editor-message" class="kw-notice" role="alert" hidden></p>
+      <div class="kw-form-grid">
+        <label>ステータス<select id="bl-edit-status">{Object.entries(BACKLINK_STATUS).map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+        <label>申請日<input id="bl-edit-appliedAt" type="date" /></label>
+        <label>掲載確認日<input id="bl-edit-liveAt" type="date" /></label>
+        <label>掲載URL（リンクが設置されたページ）<input id="bl-edit-liveUrl" type="url" maxlength="600" placeholder="https://" /></label>
+      </div>
+      <label>登録ID・ログインに使ったメール<input id="bl-edit-account" maxlength="200" /><span class="kw-help">パスワードは入力しないでください。保管場所だけを書きます。</span></label>
+      <label>次のアクション<input id="bl-edit-nextAction" maxlength="300" placeholder="例：10/5までに追加書類を送る" /></label>
+      <label>NG・保留の理由<input id="bl-edit-reason" maxlength="500" placeholder="例：先方NG／対象地域外" /></label>
+      <label>やりとりのメモ<textarea id="bl-edit-notes" rows="5" maxlength="2000"></textarea></label>
+      <button class="kw-button kw-primary" id="bl-save" type="submit">申請状況を共有保存</button>
+    </form>
+  </dialog>
+
+  <dialog id="bl-profile-dialog" class="workspace-dialog" aria-labelledby="bl-profile-dialog-title">
+    <header class="kw-section-head"><h2 id="bl-profile-dialog-title">申請に使う会社情報</h2><button class="kw-button" id="bl-profile-close" type="button">閉じる</button></header>
+    <form id="bl-profile-form">
+      <p id="bl-profile-message" class="kw-notice" role="alert" hidden></p>
+      <label>月間の掲載獲得目標（件）<input id="bl-goal" type="number" min="1" max="50" step="1" /></label>
+      <div class="kw-form-grid">
+        {PROFILE_FIELDS.filter(field => !field.multiline).map(field => <label>{field.label}<input id={`bl-profile-${field.key}`} maxlength={field.max} type={field.key.endsWith('Url') ? 'url' : field.key === 'email' ? 'email' : 'text'} /></label>)}
+      </div>
+      {PROFILE_FIELDS.filter(field => field.multiline).map(field => <label>{field.label}<textarea id={`bl-profile-${field.key}`} rows="4" maxlength={field.max}></textarea></label>)}
+      <p class="kw-help">初期値は公式サイトの会社情報です。登記事項と違う項目があれば、登記事項に合わせて修正してください。</p>
+      <button class="kw-button kw-primary" id="bl-profile-save" type="submit">会社情報を共有保存</button>
+    </form>
+  </dialog>
+
+  <dialog id="bl-add-dialog" class="workspace-dialog" aria-labelledby="bl-add-title">
+    <header class="kw-section-head"><h2 id="bl-add-title">申請先を追加</h2><button class="kw-button" id="bl-add-close" type="button">閉じる</button></header>
+    <form id="bl-add-form">
+      <p id="bl-add-message" class="kw-notice" role="alert" hidden></p>
+      <label>サイト名<input id="bl-add-name" maxlength="120" required /></label>
+      <div class="kw-form-grid">
+        <label>サイトURL<input id="bl-add-url" type="url" maxlength="600" required placeholder="https://" /></label>
+        <label>登録フォームURL<input id="bl-add-formUrl" type="url" maxlength="600" placeholder="https://" /></label>
+        <label>費用<select id="bl-add-cost"><option value="">未確認</option><option value="無料">無料</option><option value="有料">有料</option></select></label>
+        <label>登録できる対象<input id="bl-add-eligible" maxlength="60" placeholder="例：企業/団体のみ可" /></label>
+        <label>登録方法<input id="bl-add-method" maxlength="60" placeholder="例：WEBフォーム送信" /></label>
+        <label>follow形態<select id="bl-add-follow"><option value="">未確認</option><option value="Dofollow">Dofollow</option><option value="Nofollow">Nofollow</option></select></label>
+      </div>
+      <label>その他の登録条件<input id="bl-add-condition" maxlength="200" /></label>
+      <button class="kw-button kw-primary" id="bl-add-save" type="submit">申請先を共有保存</button>
+    </form>
+  </dialog>
+
+  <script id="bl-sites" type="application/json" set:html={serialized}></script>
+  <script>import '../../../lib/seo-manager/backlink-app.mjs';</script>
+</SeoWorkspace>
