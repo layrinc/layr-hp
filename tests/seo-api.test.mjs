@@ -295,3 +295,18 @@ test('backlink application state is shared, validated and never stores passwords
   assert.equal((await handleManagerApi(request(path), {SEO_DB: db}, {email: 'other@example.test'}, path)).status, 403);
   assert.deepEqual(await getPublished(db), []);
 });
+
+test('backlink outreach state is shared, validated and starts from LAYR placeholders', async t => {
+  const db = sqliteD1(t), path = '/api/seo/outreach/state';
+  const initial = (await (await call(db, path)).json()).state;
+  assert.equal(initial.revision, 0); assert.equal(initial.goal.monthlySends, 20); assert.deepEqual(initial.entries, {});
+  assert.match(initial.template.body, /株式会社LAYR/);
+  const entries = {o001: {status: 'sent', sentAt: '2026-09-26', liveAt: '', liveUrl: '', targetUrl: 'https://layr.co.jp/media/', nextAction: '返信を待つ', reason: '', notes: '', updatedAt: '2026-09-26T08:00:00.000Z'}};
+  const payload = {goal: initial.goal, template: initial.template, entries, custom: []};
+  assert.equal((await call(db, path, {state: payload, expectedRevision: 0}, {method: 'PUT'})).status, 200);
+  assert.equal((await call(db, path, {state: payload, expectedRevision: 0}, {method: 'PUT'})).status, 409);
+  assert.equal((await (await call(db, path)).json()).state.entries.o001.nextAction, '返信を待つ');
+  assert.equal((await call(db, path, {state: {...payload, entries: {o001: {...entries.o001, notes: 'pw: 1234'}}}, expectedRevision: 1}, {method: 'PUT'})).status, 400);
+  assert.equal((await call(db, path, {state: payload, expectedRevision: 1}, {method: 'PUT', requestOrigin: 'https://evil.example'})).status, 403);
+  assert.equal((await handleManagerApi(request(path), {SEO_DB: db}, {email: 'other@example.test'}, path)).status, 403);
+});

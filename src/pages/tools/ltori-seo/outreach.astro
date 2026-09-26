@@ -1,0 +1,108 @@
+---
+import SeoWorkspace from '../../../layouts/SeoWorkspace.astro';
+import sites from '../../../data/seo-outreach-sites.json';
+import {OUTREACH_STATUS, CHANNELS} from '../../../lib/seo-manager/outreach-model.mjs';
+const serialized = JSON.stringify(sites).replace(/</g, '\\u003c');
+const sourceSent = sites.filter(site => site.sourceStatus === '送信済み').length;
+---
+<SeoWorkspace title="被リンク営業管理" active="outreach">
+  <header class="kw-heading"><div class="workspace-intro"><p class="workspace-eyebrow">SEO / OUTREACH</p><h1>被リンク営業管理</h1><p>メディア・サイトの運営者に、LAYRのページへのリンク掲載をお願いする営業（相互リンク・紹介依頼）を管理します。</p></div><button class="kw-button" id="or-refresh" type="button">最新の情報に更新</button></header>
+  <p id="or-message" class="kw-notice" role="status" hidden></p>
+  <p id="or-saved" class="kw-help" role="status">共有している営業状況を読み込み中です。</p>
+
+  <dl class="kw-stats">
+    <div><dt>今月の送信</dt><dd id="or-sent-month">—</dd><small id="or-target">目標 月—件</small></div>
+    <div><dt>返信待ち・調整中</dt><dd id="or-active">—</dd><small id="or-reply-rate">返信率 —</small></div>
+    <div><dt>掲載確認済み（累計）</dt><dd id="or-live">—</dd><small id="or-live-month">今月 —件</small></div>
+    <div><dt>営業先リスト</dt><dd id="or-total">{sites.length}</dd><small>提供元リスト {sites.length}件（提供元で送信済み {sourceSent}件）</small></div>
+  </dl>
+
+  <section aria-labelledby="or-list-title">
+    <div class="kw-section-head"><div><h2 id="or-list-title">営業先と進み具合</h2><p>「LAYRの状況」がLAYRからの営業です。「提供元での状況」は元リストの記録で、LAYRの送信ではありません。</p></div><div class="workspace-actions"><button class="kw-button" id="or-add" type="button" disabled>営業先を追加</button><button class="kw-button" id="or-export" type="button" disabled>一覧をCSVで保存</button></div></div>
+    <div class="workspace-filter">
+      <label>サイト名・メモを検索<input id="or-search" type="search" placeholder="サイト名・URL・ジャンルで検索" /></label>
+      <label>LAYRの状況<select id="or-status"><option value="">すべて</option><option value="active">返信待ち・調整中のみ</option>{Object.entries(OUTREACH_STATUS).map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+      <label>ジャンル・検索ワード<select id="or-genre"><option value="">すべて</option></select></label>
+      <label>連絡手段<select id="or-channel"><option value="">すべて</option>{Object.entries(CHANNELS).map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+      <label>並び順<select id="or-sort"><option value="number">リストの番号順</option><option value="status">状況順</option><option value="updated">更新の新しい順</option></select></label>
+    </div>
+    <div class="kw-table-wrap" role="region" aria-label="営業先一覧。横にスクロールできます" tabindex="0"><table class="kw-table workspace-table"><thead><tr><th scope="col">営業先</th><th scope="col">連絡手段</th><th scope="col">LAYRの状況</th><th scope="col">提供元での状況</th><th scope="col">次のアクション</th><th scope="col">操作</th></tr></thead><tbody id="or-rows"></tbody></table></div>
+    <p id="or-empty" class="kw-empty" hidden>条件に合う営業先はありません。</p>
+    <div class="kw-pagination"><p class="kw-help" id="or-count">一覧を準備しています。</p><div><button class="kw-button" id="or-prev" type="button">前へ</button><span id="or-page">1 / 1</span><button class="kw-button" id="or-next" type="button">次へ</button></div></div>
+  </section>
+
+  <div class="workspace-columns">
+    <section class="kw-panel" aria-labelledby="or-template-title">
+      <div class="kw-section-head"><div><h2 id="or-template-title">送信文のテンプレート</h2><p>会社名・サイトURLは入力済みです。{'{担当者名}'}などの記号は、送信前に実際の内容へ置き換えます。</p></div><button class="kw-button" id="or-template-edit" type="button" disabled>テンプレートを編集</button></div>
+      <label>件名<input id="or-template-subject" readonly /></label>
+      <label>本文<textarea id="or-template-body" rows="18" readonly></textarea></label>
+      <div class="workspace-actions"><button class="kw-button" id="or-copy-subject" type="button" disabled>件名をコピー</button><button class="kw-button" id="or-copy-body" type="button" disabled>本文をコピー</button></div>
+    </section>
+    <section class="kw-panel" aria-labelledby="or-rules-title">
+      <h2 id="or-rules-title">営業の進め方</h2>
+      <ol class="workspace-notes">
+        <li><strong>探す</strong>：LAYRの記事と読者が近いジャンルで検索し、リンクをもらえそうなメディアを営業先に追加します。</li>
+        <li><strong>確かめる</strong>：問い合わせフォームかメールの窓口を確認し、リンクしてほしいLAYRのページを決めます。</li>
+        <li><strong>送る</strong>：テンプレートの記号を置き換えて送信し、送信日を記録します。</li>
+        <li><strong>追う</strong>：返信があれば「返信あり・調整中」にして、次のアクションを残します。</li>
+        <li><strong>確認する</strong>：リンクが設置されたページのURLと確認日を記録します。</li>
+      </ol>
+      <ul class="workspace-notes">
+        <li>元リストはTikTok・SNS採用ジャンルの営業先です。LAYRの記事（LINEマーケティング・採用LINE）と関係が薄い先は保留にします。</li>
+        <li>先方の担当者の個人名・個人の連絡先は記録しません。会社の問い合わせ窓口だけを残します。</li>
+        <li><strong>パスワードは保存しません。</strong></li>
+      </ul>
+      <p class="kw-help">出典：被リンク営業管理リスト（ADDICT ONE様ご提供）。提供元の代表者・担当者の個人情報と送信日は取り込んでいません。</p>
+    </section>
+  </div>
+
+  <dialog id="or-editor" class="workspace-dialog" aria-labelledby="or-editor-title">
+    <header class="kw-section-head"><h2 id="or-editor-title">営業状況を記録</h2><button class="kw-button" id="or-close" type="button">閉じる</button></header>
+    <p id="or-editor-site"></p>
+    <p id="or-editor-links" class="kw-editor-links"></p>
+    <form id="or-form">
+      <p id="or-editor-message" class="kw-notice" role="alert" hidden></p>
+      <div class="kw-form-grid">
+        <label>LAYRの状況<select id="or-edit-status">{Object.entries(OUTREACH_STATUS).map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+        <label>送信日<input id="or-edit-sentAt" type="date" /></label>
+        <label>掲載確認日<input id="or-edit-liveAt" type="date" /></label>
+        <label>掲載URL（リンクが設置されたページ）<input id="or-edit-liveUrl" type="url" maxlength="600" placeholder="https://" /></label>
+      </div>
+      <label>リンクしてほしいLAYRのページ<input id="or-edit-targetUrl" type="url" maxlength="600" placeholder="https://layr.co.jp/media/" /></label>
+      <label>次のアクション<input id="or-edit-nextAction" maxlength="300" placeholder="例：10/10に返信がなければ終了" /></label>
+      <label>断り・保留の理由<input id="or-edit-reason" maxlength="500" placeholder="例：先方NG／ジャンルが遠い" /></label>
+      <label>やりとりのメモ<textarea id="or-edit-notes" rows="5" maxlength="2000"></textarea></label>
+      <button class="kw-button kw-primary" id="or-save" type="submit">営業状況を共有保存</button>
+    </form>
+  </dialog>
+
+  <dialog id="or-template-dialog" class="workspace-dialog" aria-labelledby="or-template-dialog-title">
+    <header class="kw-section-head"><h2 id="or-template-dialog-title">テンプレートと目標を編集</h2><button class="kw-button" id="or-template-close" type="button">閉じる</button></header>
+    <form id="or-template-form">
+      <p id="or-template-message" class="kw-notice" role="alert" hidden></p>
+      <label>月間の送信目標（件）<input id="or-goal" type="number" min="1" max="500" step="1" required /></label>
+      <label>件名<input id="or-template-edit-subject" maxlength="200" /></label>
+      <label>本文<textarea id="or-template-edit-body" rows="18" maxlength="4000" required></textarea></label>
+      <button class="kw-button kw-primary" id="or-template-save" type="submit">テンプレートを共有保存</button>
+    </form>
+  </dialog>
+
+  <dialog id="or-add-dialog" class="workspace-dialog" aria-labelledby="or-add-title">
+    <header class="kw-section-head"><h2 id="or-add-title">営業先を追加</h2><button class="kw-button" id="or-add-close" type="button">閉じる</button></header>
+    <form id="or-add-form">
+      <p id="or-add-message" class="kw-notice" role="alert" hidden></p>
+      <div class="kw-form-grid">
+        <label>サイト名<input id="or-add-name" maxlength="120" required /></label>
+        <label>サイトURL<input id="or-add-url" type="url" maxlength="600" placeholder="https://" required /></label>
+        <label>ジャンル・検索ワード<input id="or-add-genre" maxlength="60" placeholder="例：LINE 集客" /></label>
+        <label>連絡手段<select id="or-add-channel">{Object.entries(CHANNELS).map(([value, label]) => <option value={value}>{label}</option>)}</select></label>
+      </div>
+      <label>問い合わせフォームURL<input id="or-add-contactUrl" type="url" maxlength="600" placeholder="https://" /></label>
+      <p class="kw-help">同じドメインの営業先がすでにある場合は追加せず、そちらに記録します。</p>
+      <button class="kw-button kw-primary" id="or-add-save" type="submit">営業先を追加</button>
+    </form>
+  </dialog>
+
+  <script id="or-sites" type="application/json" set:html={serialized}></script>
+  <script>import '../../../lib/seo-manager/outreach-app.mjs';</script>
+</SeoWorkspace>

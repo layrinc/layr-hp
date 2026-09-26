@@ -170,7 +170,7 @@ test('media aliases redirect after authentication and public media remains publi
 
 
 test('workspace routes and HTML aliases preserve authentication and exact project mapping', async () => {
-  for (const [route, asset] of [['regional', '/tools/ltori-seo/'], ['articles', '/tools/ltori-seo/articles/'], ['strategy', '/tools/ltori-seo/strategy/'], ['growth', '/tools/ltori-seo/growth/'], ['backlinks', '/tools/ltori-seo/backlinks/'], ['regulation', '/tools/ltori-seo/regulation/']]) {
+  for (const [route, asset] of [['regional', '/tools/ltori-seo/'], ['articles', '/tools/ltori-seo/articles/'], ['strategy', '/tools/ltori-seo/strategy/'], ['growth', '/tools/ltori-seo/growth/'], ['backlinks', '/tools/ltori-seo/backlinks/'], ['regulation', '/tools/ltori-seo/regulation/'], ['outreach', '/tools/ltori-seo/outreach/']]) {
     for (const alias of [`/${route}/`, `/${route}`, `/${route}.html`, `/${route}/index.html`, `/tools/ltori-seo/${route}/`]) {
       const anonymous = assetEnvironment();
       assert.equal((await handleRequest(request(`https://seo.layr.co.jp${alias}`), anonymous, verify)).status, 401);

@@ -3,7 +3,7 @@ import '../../styles/seo-workspace-nav.css';
 import {WORKSPACE_PROJECTS} from '../../lib/seo-manager/workspace-projects.mjs';
 
 interface Props {
-  active?: 'overview' | 'regional' | 'media' | 'corporate' | 'strategy' | 'backlinks' | 'growth' | 'regulation';
+  active?: 'overview' | 'regional' | 'media' | 'corporate' | 'strategy' | 'backlinks' | 'outreach' | 'growth' | 'regulation';
   baseUrl?: string;
 }
 
@@ -13,6 +13,7 @@ const links = [
   ...WORKSPACE_PROJECTS.map(project => ({id: project.id, label: project.shortName, href: project.href})),
   {id: 'strategy', label: 'SEO・AIO戦略', href: '/strategy/'},
   {id: 'backlinks', label: '被リンク申請', href: '/backlinks/'},
+  {id: 'outreach', label: '被リンク営業管理', href: '/outreach/'},
   {id: 'growth', label: '共通の公開・運用', href: '/growth/'},
   {id: 'regulation', label: '記事制作レギュレーション', href: '/regulation/'},
 ];

@@ -14,6 +14,9 @@ import backlinkSites from '../src/data/seo-backlink-sites.json' with {type: 'jso
 import company from '../src/data/company.json' with {type: 'json'};
 import siteSettings from '../src/data/settings.json' with {type: 'json'};
 import {validateBacklinkState, defaultProfile, emptyState} from '../src/lib/seo-manager/backlink-model.mjs';
+import outreachSites from '../src/data/seo-outreach-sites.json' with {type: 'json'};
+import outreachTemplates from '../src/data/seo-outreach-templates.json' with {type: 'json'};
+import {validateOutreachState, emptyOutreachState} from '../src/lib/seo-manager/outreach-model.mjs';
 
 const json=(value,status=200)=>protectedResponse(JSON.stringify(value),status,{'Content-Type':'application/json; charset=utf-8'});
 const allowedEmail='biz.oneservice@gmail.com';
@@ -52,6 +55,12 @@ async function readBacklinkState(db) {
   if(!row)return emptyState(defaultProfile(company,siteSettings));
   try {return {...validateBacklinkState(JSON.parse(row.value),backlinkSites,{requireRevision:false}),revision:row.version};}
   catch {throw new HttpError(503,'被リンク申請の保存データを読み出せませんでした。再読み込みしてください。');}
+}
+async function readOutreachState(db) {
+  const row=await db.prepare("SELECT value,version FROM seo_kv WHERE namespace='outreach' AND key='state'").first();
+  if(!row)return emptyOutreachState(outreachTemplates);
+  try {return {...validateOutreachState(JSON.parse(row.value),outreachSites,{requireRevision:false}),revision:row.version};}
+  catch {throw new HttpError(503,'被リンク営業の保存データを読み出せませんでした。再読み込みしてください。');}
 }
 export async function handleManagerApi(request,env,identity,path,services={}) {
   try {
@@ -92,6 +101,22 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
       const statement=expectedRevision===0
         ?db.prepare("INSERT INTO seo_kv(namespace,key,value,version,updated_at) VALUES('backlinks','state',?,1,?) ON CONFLICT DO NOTHING").bind(value,updatedAt)
         :db.prepare("UPDATE seo_kv SET value=?,version=version+1,updated_at=? WHERE namespace='backlinks' AND key='state' AND version=?").bind(value,updatedAt,expectedRevision);
+      if(!(await statement.run()).meta.changes)throw new HttpError(409,'別の端末で更新されました。再読み込みしてから保存してください。');
+      return json({state:{...next,revision:expectedRevision+1}});
+    }
+    if(path==='/api/seo/outreach/state') {
+      if(request.method==='GET')return json({state:await readOutreachState(db)});
+      if(request.method!=='PUT')throw new HttpError(405,'PUTで保存してください。');
+      const payload=await body(request,1024*1024);
+      if(!payload||typeof payload!=='object'||Array.isArray(payload))throw new HttpError(400,'保存内容を確認してください。');
+      let next;
+      try {next=validateOutreachState(payload.state,outreachSites,{requireRevision:false});}
+      catch(error) {throw new HttpError(400,error.message);}
+      const expectedRevision=version(payload.expectedRevision);
+      const value=JSON.stringify({goal:next.goal,template:next.template,entries:next.entries,custom:next.custom}),updatedAt=now.toISOString();
+      const statement=expectedRevision===0
+        ?db.prepare("INSERT INTO seo_kv(namespace,key,value,version,updated_at) VALUES('outreach','state',?,1,?) ON CONFLICT DO NOTHING").bind(value,updatedAt)
+        :db.prepare("UPDATE seo_kv SET value=?,version=version+1,updated_at=? WHERE namespace='outreach' AND key='state' AND version=?").bind(value,updatedAt,expectedRevision);
       if(!(await statement.run()).meta.changes)throw new HttpError(409,'別の端末で更新されました。再読み込みしてから保存してください。');
       return json({state:{...next,revision:expectedRevision+1}});
     }
