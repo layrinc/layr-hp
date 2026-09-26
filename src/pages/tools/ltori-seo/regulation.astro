@@ -1,0 +1,68 @@
+---
+import SeoWorkspace from '../../../layouts/SeoWorkspace.astro';
+import regulation from '../../../data/seo-article-regulation.json';
+const checkCount = regulation.checklist.reduce((sum, category) => sum + category.items.length, 0);
+const reviews = regulation.flow.filter(row => row.owner === '河出さん').length;
+---
+<SeoWorkspace title="記事制作レギュレーション" active="regulation">
+  <header class="kw-heading"><div class="workspace-intro"><p class="workspace-eyebrow">SEO / REGULATION</p><h1>記事制作レギュレーション</h1><p>公式メディアと採用ノートの記事を、1本ずつ同じ構成・仕組み・手順で作るための決まりです。</p></div></header>
+  <p class="kw-help">正本：{regulation.source}（更新 {regulation.updated}）</p>
+
+  <dl class="kw-stats">
+    <div><dt>制作の工程</dt><dd>{regulation.flow.length}</dd><small>KW選定から公開後の答え合わせまで</small></div>
+    <div><dt>河出さんの確認</dt><dd>{reviews}回</dd><small>構成案と公開前</small></div>
+    <div><dt>チェック項目</dt><dd>{checkCount}</dd><small>{regulation.checklist.length}分類</small></div>
+    <div><dt>公開先</dt><dd>{regulation.destinations.length}</dd><small>公式メディア・採用ノート</small></div>
+  </dl>
+
+  <section aria-labelledby="rg-flow-title">
+    <div class="kw-section-head"><div><h2 id="rg-flow-title">1記事ができるまで</h2><p>上から順に進めます。担当が「河出さん」の工程で止まり、確認を受けてから次へ進みます。</p></div></div>
+    <div class="kw-table-wrap" role="region" aria-label="制作フロー。横にスクロールできます" tabindex="0"><table class="kw-table workspace-table"><thead><tr><th scope="col">No</th><th scope="col">工程</th><th scope="col">担当</th><th scope="col">成果物</th><th scope="col">置き場所</th></tr></thead><tbody>
+      {regulation.flow.map((row, index) => <tr><td>{index + 1}</td><th scope="row">{row.step}</th><td>{row.owner}</td><td>{row.output}</td><td>{row.where}</td></tr>)}
+    </tbody></table></div>
+  </section>
+
+  <section aria-labelledby="rg-structure-title">
+    <div class="kw-section-head"><div><h2 id="rg-structure-title">記事の構成</h2><p>公式メディア・採用ノートとも、この順番で組み立てます。</p></div></div>
+    <div class="kw-table-wrap" role="region" aria-label="記事の構成" tabindex="0"><table class="kw-table workspace-table"><thead><tr><th scope="col">部分</th><th scope="col">書くこと</th></tr></thead><tbody>
+      {regulation.structure.map(row => <tr><th scope="row">{row.part}</th><td>{row.content}</td></tr>)}
+    </tbody></table></div>
+  </section>
+
+  <section aria-labelledby="rg-system-title">
+    <div class="kw-section-head"><div><h2 id="rg-system-title">仕組み：公開先と管理画面</h2><p>どちらの公開先も、このレギュレーションで作ります。</p></div></div>
+    <div class="kw-table-wrap" role="region" aria-label="公開先" tabindex="0"><table class="kw-table workspace-table"><thead><tr><th scope="col">公開先</th><th scope="col">テーマ・公開ルール</th><th scope="col">管理</th></tr></thead><tbody>
+      {regulation.destinations.map(row => <tr><th scope="row"><a href={row.public} target="_blank" rel="noopener">{row.name}</a></th><td>{row.theme}</td><td><a class="kw-button" href={row.manage}>管理画面を開く</a></td></tr>)}
+    </tbody></table></div>
+  </section>
+
+  <div class="workspace-columns">
+    <section class="kw-panel" aria-labelledby="rg-outline-title">
+      <h2 id="rg-outline-title">構成案に書く項目</h2>
+      <p class="kw-help">書く前に、この項目を埋めた構成案を作ります。見出しごとの「内容」が、そのまま本文の骨組みになります。</p>
+      <ol class="kw-transfer-steps">{regulation.outline.map(item => <li>{item}</li>)}</ol>
+    </section>
+    <section class="kw-panel" aria-labelledby="rg-rules-title">
+      <h2 id="rg-rules-title">必ず守ること</h2>
+      <ul class="workspace-notes">{regulation.rules.map(item => <li>{item}</li>)}</ul>
+      <h3>食い違ったときの優先順位</h3>
+      <ol class="kw-transfer-steps">{regulation.priority.map(item => <li>{item}</li>)}</ol>
+    </section>
+  </div>
+
+  <div>
+  <section class="kw-panel" aria-labelledby="rg-check-title">
+    <h2 id="rg-check-title">公開前のチェックリスト</h2>
+    <p class="kw-help">提出前に上から当てます。分類を開くと項目が表示されます。</p>
+    {regulation.checklist.map(category => <details class="kw-help-details"><summary>{category.title}（{category.items.length}項目）</summary><ul>{category.items.map(item => <li>{item}</li>)}</ul></details>)}
+  </section>
+
+  <section class="kw-panel" aria-labelledby="rg-links-title">
+    <h2 id="rg-links-title">使っているシート・資料</h2>
+    <p class="kw-help">Googleドライブの資料は info@layr.co.jp のアカウントで開けます。元資料はTikTok運用代行会社向けのため、LAYRでの使い方は上の決まりを優先してください。</p>
+    <div class="workspace-strategy-grid">
+      {regulation.links.map(group => <div><h3>{group.group}</h3><ul class="workspace-notes">{group.items.map(link => <li><a href={link.url} target="_blank" rel="noopener">{link.label}</a></li>)}</ul></div>)}
+    </div>
+  </section>
+  </div>
+</SeoWorkspace>

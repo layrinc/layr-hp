@@ -3,7 +3,7 @@ import '../../styles/seo-workspace-nav.css';
 import {WORKSPACE_PROJECTS} from '../../lib/seo-manager/workspace-projects.mjs';
 
 interface Props {
-  active?: 'overview' | 'regional' | 'media' | 'corporate' | 'strategy' | 'backlinks' | 'growth';
+  active?: 'overview' | 'regional' | 'media' | 'corporate' | 'strategy' | 'backlinks' | 'growth' | 'regulation';
   baseUrl?: string;
 }
 
@@ -14,6 +14,7 @@ const links = [
   {id: 'strategy', label: 'SEO・AIO戦略', href: '/strategy/'},
   {id: 'backlinks', label: '被リンク申請', href: '/backlinks/'},
   {id: 'growth', label: '共通の公開・運用', href: '/growth/'},
+  {id: 'regulation', label: '記事制作レギュレーション', href: '/regulation/'},
 ];
 ---
 <nav class="seo-workspace-nav" aria-label="SEOワークスペースの施策切り替え">
