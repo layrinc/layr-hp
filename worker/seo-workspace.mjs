@@ -18,7 +18,7 @@ const coverage = snapshot => snapshot?.coverage?.version === 2 ? {version: 2, pr
 export function safeScheduler(value) {
   if (!value || typeof value !== 'object') return null;
   const identifier = input => /^\d{1,30}$/.test(String(input ?? '')) ? String(input) : null;
-  return {status: ['completed', 'running', 'error'].includes(value.status) ? value.status : null, lastAttemptAt: timestamp(value.lastAttemptAt), lastSuccessAt: timestamp(value.lastSuccessAt), runId: identifier(value.runId), runAttempt: identifier(value.runAttempt)};
+  return {status: ['completed', 'running', 'error', 'attention'].includes(value.status) ? value.status : null, outcome: /^[a-z_]{1,40}$/.test(String(value.outcome ?? '')) ? value.outcome : null, lastAttemptAt: timestamp(value.lastAttemptAt), lastSuccessAt: timestamp(value.lastSuccessAt), runId: identifier(value.runId), runAttempt: identifier(value.runAttempt)};
 }
 
 function matchesSource(snapshot, configuration) {

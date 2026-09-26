@@ -1,4 +1,5 @@
 import { pathToFileURL } from 'node:url';
+import { jobAttention, photoProviderFailure } from '../src/lib/seo-job-outcome.mjs';
 
 export const SCHEDULER_ENDPOINT = 'https://layr.co.jp/api/seo-scheduler/run';
 const WORKFLOW_REF = 'layrinc/layr-hp/.github/workflows/seo-growth-schedule.yml@refs/heads/main';
@@ -143,6 +144,7 @@ function completedSummary(body, kind) {
     if(jobKind==='photos') {
       if(typeof row.done!=='boolean'||!['no_targets','cached','ready','unavailable','provider_unavailable','state_changed'].includes(row.outcome)||!Number.isSafeInteger(row.photoCount)||row.photoCount<0||row.photoCount>4)throw new JobError('invalid_photo_result');
       Object.assign(result,{done:row.done,outcome:row.outcome,photoCount:row.photoCount});
+      const failure=photoProviderFailure(row.failure);if(failure)result.failure=failure;
     }
     if (!['publish','prepare','photos'].includes(jobKind)) {
       if (!OUTCOMES.has(row.outcome)) throw new JobError('job_not_completed');
@@ -206,7 +208,7 @@ export async function runRegionalPreparation(options={}) {
     const response=await runSeoGrowthJob('prepare',{...options,step});
     const result=response.results[0];
     if(result.done) {
-      if(['needs_review','provider_unavailable','provider_blocked','state_changed'].includes(result.outcome))throw new JobError('regional_preparation_requires_attention');
+      if(jobAttention('prepare',result))throw new JobError('regional_preparation_requires_attention');
       return response;
     }
   }
@@ -218,7 +220,7 @@ export async function runCityPhotoCollection(options={}) {
     const response=await runSeoGrowthJob('photos',{...options,step});
     const result=response.results[0];
     if(result.done) {
-      if(result.outcome==='provider_unavailable')throw new JobError('city_photo_provider_unavailable');
+      if(jobAttention('photos',result))throw new JobError('city_photo_provider_unavailable');
       return response;
     }
   }

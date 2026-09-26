@@ -1,5 +1,6 @@
 import {startAccessSession} from './session.mjs';
 import {growthNavigation} from './growth-navigation.mjs';
+import {photoJobDescription} from './growth-model.mjs';
 
 const $ = id => document.getElementById(id);
 const array = value => Array.isArray(value) ? value : [];
@@ -156,6 +157,7 @@ function render() {
   $('growth-monthly-count').textContent = `${number(media?.monthPublished)} / ${number(media?.monthlyLimit ?? data.settings.limits?.media?.monthly ?? 10)}本`;
   if (media) $('growth-publication-detail').textContent += ` 採用ノートの公開準備済み：${number(media.dueReady)}本。`;
   renderRegionalCampaign(regional, data.settings.paused, data.regionalPreparation);
+  $('growth-regional-photos').textContent = photoJobDescription(data.scheduler?.photos, date);
   $('growth-queue-count').textContent = `${number(stats.queued ?? queued)}本`;
   $('growth-pause').textContent = data.settings.paused ? '自動公開を再開' : '自動公開を一時停止';
   renderOverview(); renderDocuments(); renderLeads(); renderHealth();

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import vm from 'node:vm';
 import {cityAreas, prefectureAreas} from '../src/lib/ltori-seo.mjs';
+import {photoJobDescription} from '../src/lib/seo-manager/growth-model.mjs';
 
 const source = readFileSync(new URL('../src/lib/seo-manager/growth-app.mjs', import.meta.url), 'utf8');
 const markup = readFileSync(new URL('../src/pages/tools/ltori-seo/growth.astro', import.meta.url), 'utf8');
@@ -17,7 +18,7 @@ class Element {
 }
 function client() {
   const elements = new Map([...markup.matchAll(/\bid="([^"]+)"/g)].map(match => [match[1], new Element()]));
-  const context = vm.createContext({Intl, Date, URL, console, startAccessSession: async () => false,
+  const context = vm.createContext({Intl, Date, URL, console, startAccessSession: async () => false, photoJobDescription,
     document: {createElement: tag => new Element(tag), getElementById: id => {
       assert.ok(elements.has(id), `Missing markup for #${id}`); return elements.get(id);
     }},
@@ -25,8 +26,8 @@ function client() {
   vm.runInContext(source.replace(/^import .*;\n/gm, ''), context);
   return {
     get: id => elements.get(id),
-    render(campaign, {paused = false, todayPublished = 0, regionalPreparation} = {}) {
-      context.fixture = {settings: {paused}, documents: [], regionalPreparation, publicationStats: {byScope: {regional: {todayPublished, dailyLimit: null, mode: 'prefecture_campaign', campaign}, media: {monthPublished: 3, monthlyLimit: 10, dueReady: 1}}}};
+    render(campaign, {paused = false, todayPublished = 0, regionalPreparation, scheduler} = {}) {
+      context.fixture = {settings: {paused}, documents: [], regionalPreparation, scheduler, publicationStats: {byScope: {regional: {todayPublished, dailyLimit: null, mode: 'prefecture_campaign', campaign}, media: {monthPublished: 3, monthlyLimit: 10, dueReady: 1}}}};
       vm.runInContext('data = fixture; renderOverview = renderDocuments = renderLeads = renderHealth = () => {}; render();', context);
     },
     approve(doc) { context.doc = doc; return vm.runInContext('approvalMessage(doc)', context); },
@@ -149,4 +150,17 @@ test('template preparation explains reuse without AI charges and shows configura
  assert.doesNotMatch(ui.get('growth-regional-preparation').textContent,/費用上限/);
  campaign.day.status='completed';ui.render(campaign,{regionalPreparation});
  assert.match(ui.get('growth-regional-preparation').textContent,/日程終了/);
+});
+
+test('a photo provider outage is shown as needing attention, not as the last completed run', () => {
+  const ui = client();
+  ui.render(campaignFixture(), {scheduler: {photos: {status: 'attention', outcome: 'provider_unavailable', lastAttemptAt: '2026-09-24T23:30:22Z', lastSuccessAt: '2026-09-23T23:11:52Z'}}});
+  const text = ui.get('growth-regional-photos').textContent;
+  assert.match(text, /要確認/); assert.match(text, /この回は完了していません/); assert.match(text, /最終完了 2026\/09\/24 8:11/); assert.doesNotMatch(text, /：完了/);
+  ui.render(campaignFixture(), {scheduler: {photos: {status: 'completed', lastAttemptAt: '2026-09-25T23:35:00Z', lastSuccessAt: '2026-09-25T23:37:53Z'}}});
+  assert.match(ui.get('growth-regional-photos').textContent, /地域写真の取得：完了/);
+  ui.render(campaignFixture(), {scheduler: {photos: {status: 'running', lastAttemptAt: '2026-09-25T23:35:00Z', lastSuccessAt: null}}});
+  assert.match(ui.get('growth-regional-photos').textContent, /途中で止まっています.*最終完了 なし/);
+  ui.render(campaignFixture(), {});
+  assert.match(ui.get('growth-regional-photos').textContent, /実行記録はまだありません/);
 });
