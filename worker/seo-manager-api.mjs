@@ -91,8 +91,8 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
       return json({regionalPreparation:await regionalPreparationSummary(db),settings:publicationSettings(settings),scheduler:{publish:schedulerStatus(publishSchedule),maintenance:schedulerStatus(maintenanceSchedule)},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots:ltoriGrowthSnapshots(snapshots),integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
     }
     if(path==='/api/seo/publication'&&request.method==='GET') {
-      const [docs,live]=await Promise.all([getDocuments(db),getPublished(db)]);const liveIds=new Set(live.map(doc=>doc.id));
-      return json({pages:docs.map(doc=>({path:publicPath(doc),status:liveIds.has(doc.id)?'published':doc.status}))});
+      const [docs,live]=await Promise.all([getDocuments(db),getPublished(db)]);const liveById=new Map(live.map(doc=>[doc.id,doc]));
+      return json({pages:docs.map(doc=>{const published=liveById.get(doc.id);return published?{path:publicPath(doc),status:'published',title:typeof published.title==='string'?published.title:'',publishedAt:published.publishedAt||''}:{path:publicPath(doc),status:doc.status};})});
     }
     if(path==='/api/seo/documents'&&request.method==='POST') {
       const input=await body(request);

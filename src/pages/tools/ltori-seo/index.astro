@@ -37,7 +37,8 @@ const options=(record)=>Object.entries(record);
         <button type="button" data-view="keywords"><span>02</span>キーワード</button>
         <button type="button" data-view="tasks"><span>03</span>改善タスク</button>
         <button type="button" data-view="analytics"><span>04</span>アクセス・問い合わせ</button>
-        <button type="button" data-view="data"><span>05</span>実績・入出力</button>
+        <button type="button" data-view="published"><span>05</span>公開URL記事</button>
+        <button type="button" data-view="data"><span>06</span>実績・入出力</button>
       </nav>
       <div class="kw-sidebar-note"><p>共通データベースに保存</p><p>同じメールでログインすると、別の端末でも作業を続けられます。</p><button type="button" class="kw-button" id="kw-backup">バックアップを保存</button><p id="kw-backup-date">まだバックアップしていません</p></div>
       <a class="kw-outlink" href="/media/">エルトリ採用ノート管理 →</a>
@@ -70,6 +71,15 @@ const options=(record)=>Object.entries(record);
         <footer class="kw-pagination"><p id="kw-results" aria-live="polite">読み込み中</p><div><label>表示件数<select id="kw-size"><option value="25">25件</option><option value="50">50件</option><option value="100">100件</option></select></label><button id="kw-prev" class="kw-button" type="button">前へ</button><span id="kw-page"></span><button id="kw-next" class="kw-button" type="button">次へ</button></div></footer>
       </section>
       <AnalyticsPanel />
+      <section id="kw-published-view" aria-labelledby="kw-published-title" hidden>
+        <div class="kw-section-head"><div><h2 id="kw-published-title">公開URL記事</h2><p>公開中の地域LPを、北海道から沖縄まで都道府県ごとに一覧にします。</p></div><div class="kw-pub-actions"><button type="button" class="kw-button" id="kw-pub-copy">表示中のURLをコピー</button><button type="button" class="kw-button" id="kw-pub-export">表示中の一覧をCSV出力</button></div></div>
+        <dl class="kw-stats"><div><dt>公開中のURL</dt><dd id="kw-pub-count">—</dd><small>都道府県LP・市区町村LP</small></div><div><dt>公開済みの都道府県</dt><dd id="kw-pub-prefs">—</dd><small>47都道府県のうち</small></div><div><dt>最新の公開日</dt><dd id="kw-pub-latest">—</dd><small>公開台帳の記録</small></div><div><dt>公開方式</dt><dd>1日1県</dd><small>県内の全市を同日に公開</small></div></dl>
+        <div class="kw-filters"><label class="kw-search">地域・URLを検索<input id="kw-pub-search" type="search" placeholder="例：盛岡市、miyagi" /></label><label>都道府県<select id="kw-pub-pref"><option value="">全国</option>{prefectureAreas.map(p=><option value={p.slug}>{p.name}</option>)}</select></label></div>
+        <p id="kw-pub-results" class="kw-help" aria-live="polite">公開状況を読み込み中です。</p>
+        <p class="kw-empty" id="kw-pub-empty" hidden>公開中のURLはまだありません。条件を変更してください。</p>
+        <div id="kw-pub-groups" class="kw-data-grid kw-pub-groups"></div>
+        <p class="kw-help">公開日は公開台帳の記録です。以前からリポジトリで公開している一部の市は「—」になります。ここで表示を絞り込んでも、公開状態は変わりません。</p>
+      </section>
       <section id="kw-data-view" aria-labelledby="kw-data-title" hidden>
         <div class="kw-section-head"><div><h2 id="kw-data-title">検索実績・データの入出力</h2><p>CSVを確認してから保存します。期間の異なる数値は合算しません。</p></div><a class="kw-button" href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer">Search Consoleを開く ↗</a></div>
         <div class="kw-data-grid">
