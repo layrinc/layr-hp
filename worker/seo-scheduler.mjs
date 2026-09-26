@@ -2,6 +2,7 @@ import {createRemoteJWKSet, jwtVerify} from 'jose';
 import {createStore} from './seo-store.mjs';
 import {initializeGrowth} from './seo-bootstrap.mjs';
 import {runJob} from './seo-runtime.mjs';
+import {jobAttention,jobFinished,photoProviderFailure} from '../src/lib/seo-job-outcome.mjs';
 
 export const SCHEDULER_URL = 'https://layr.co.jp/api/seo-scheduler/run';
 const ISSUER = 'https://token.actions.githubusercontent.com';
@@ -43,7 +44,7 @@ function summarize(kind, job) {
   const result = job.result || {};
   if (kind === 'publish') return {kind, status:'completed', publishedCount:Array.isArray(result.published) ? result.published.length : 0, day:result.day};
   if(kind==='prepare')return {kind,status:'completed',done:result.done===true,outcome:result.outcome,blockedCount:result.blockedCount||0};
-  if(kind==='photos')return {kind,status:'completed',done:result.done===true,outcome:result.outcome,photoCount:result.photoCount||0};
+  if(kind==='photos'){const failure=photoProviderFailure(result.failure);return {kind,status:'completed',done:result.done===true,outcome:result.outcome,photoCount:result.photoCount||0,...(failure?{failure}:{})};}
   const states = kind === 'analytics' ? (result.statuses || []).map(row=>row.status) : [result.status];
   if (states.some(status=>status === 'error' || status === 'partial')) throw new Error('Integration failed');
   return {kind, status:'completed', outcome:states.length && states.every(status=>status === 'not_configured') ? 'not_configured' : 'completed'};
@@ -97,7 +98,14 @@ export async function handleSchedulerRequest(request, env, {verify=verifySchedul
     const results=outcomes.map(outcome=>outcome.value);
     const result={status:'completed',kind,runId,runAttempt,results};
     await store.upsert('scheduler_runs',key,{status:'completed',response:result});
-    await store.upsert('scheduler',kind,{status:'completed',lastAttemptAt:startedAt,lastSuccessAt:new Date().toISOString(),runId,runAttempt});
+    // The delivery is recorded as completed so a retried step replays it, but the
+    // job state only records success when the whole job finished without an
+    // outcome that needs attention (for example a photo provider outage).
+    const attention=results.map(row=>jobAttention(row.kind,row)).find(Boolean),finished=results.every(row=>jobFinished(row.kind,row));
+    const previousSuccess=state?.lastSuccessAt||null;
+    await store.upsert('scheduler',kind,attention?{status:'attention',outcome:attention,lastAttemptAt:startedAt,lastSuccessAt:previousSuccess,runId,runAttempt}
+      :finished?{status:'completed',lastAttemptAt:startedAt,lastSuccessAt:new Date().toISOString(),runId,runAttempt}
+      :{status:'running',lastAttemptAt:startedAt,lastSuccessAt:previousSuccess,runId,runAttempt});
     await db.prepare("DELETE FROM seo_kv WHERE namespace='scheduler_runs' AND updated_at<?").bind(new Date(Date.now()-30*86400000).toISOString()).run();
     return response(result);
   } catch {

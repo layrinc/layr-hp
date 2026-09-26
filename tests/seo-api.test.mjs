@@ -251,6 +251,15 @@ test('corporate editorial state is isolated, owner-only, catalog-allowlisted and
   assert.deepEqual(await getDocuments(db), []);
 });
 
+test('dashboard exposes the photo job as attention with only whitelisted scheduler fields', async t => {
+  const db = sqliteD1(t); await ensureDatabase(db);
+  await createStore(db).upsert('scheduler', 'photos', {status: 'attention', outcome: 'provider_unavailable', lastAttemptAt: '2026-09-24T23:30:22Z', lastSuccessAt: '2026-09-23T23:11:52Z', runId: '36073049632', runAttempt: '1', failure: {message: 'must-not-return'}});
+  const dashboard = await (await call(db, '/api/seo/dashboard')).json();
+  assert.deepEqual(dashboard.scheduler.photos, {status: 'attention', outcome: 'provider_unavailable', lastAttemptAt: '2026-09-24T23:30:22.000Z', lastSuccessAt: '2026-09-23T23:11:52.000Z', runId: '36073049632', runAttempt: '1'});
+  await createStore(db).upsert('scheduler', 'photos', {status: 'completed', outcome: 'SELECT * FROM secrets'});
+  assert.equal((await (await call(db, '/api/seo/dashboard')).json()).scheduler.photos.outcome, null);
+});
+
 test('backlink application state is shared, validated and never stores passwords', async t => {
   const db = sqliteD1(t), path = '/api/seo/backlinks/state';
   const initial = (await (await call(db, path)).json()).state;

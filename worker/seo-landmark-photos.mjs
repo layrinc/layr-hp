@@ -1,7 +1,12 @@
 import {normalizeCityPhoto,normalizeCityPhotos} from '../src/lib/ltori-city-photos.mjs';
+import {photoProviderFailure} from '../src/lib/seo-job-outcome.mjs';
 
 export const LANDMARK_SELECTION_VERSION='landmarks-v2';
 export const PHOTO_LIMITS=Object.freeze({candidatePages:48,candidateBatch:12,fallbackLandmarks:8,categoryFiles:20,detailCalls:8,apiCalls:16,responseBytes:1048576,requestMs:8000,totalMs:100000,originalWidth:1600,originalHeight:900,thumbnailWidth:1280});
+// Each provider failure is recorded as a fixed stage and kind so an outage can be
+// traced to its step without storing a response body, URL or message.
+const STAGES=Object.freeze({wikidataCalls:'wikidata_city',cityCalls:'wikipedia_city',candidateCalls:'wikipedia_landmarks',landmarkCalls:'wikidata_landmarks',categoryCalls:'commons_category',detailCalls:'commons_file'});
+class ProviderFailure extends Error{constructor(stage,kind,detail={}){super('provider_unavailable');this.failure=photoProviderFailure({stage,kind,...detail});}}
 const APIS=Object.freeze({wikidata:'https://www.wikidata.org/w/api.php',japanese:'https://ja.wikipedia.org/w/api.php',commons:'https://commons.wikimedia.org/w/api.php'});
 const positiveSection=/名所|観光|旧跡|文化財|景勝/;
 const negativeSection=/祭|イベント|催事|人物|出身|交通|スポーツ|名産|特産|食文化|芸能|^(?:歴史|沿革)$/;
@@ -137,15 +142,20 @@ function eligiblePrimaryImage(page) {
     &&Boolean(cleanCommonsUrl(image.source,['upload.wikimedia.org','thumb.wikimedia.org'],'/wikipedia/commons/'));
 }
 
-async function boundedJson(response) {
-  if(!response.ok||Number(response.headers.get('Content-Length')||0)>PHOTO_LIMITS.responseBytes){await response.body?.cancel();throw new Error('provider_unavailable');}
-  const reader=response.body?.getReader();if(!reader)throw new Error('provider_unavailable');
+async function boundedJson(response,stage) {
+  const fail=(kind,detail)=>new ProviderFailure(stage,kind,detail);
+  if(response.type==='opaqueredirect'||response.status>=300&&response.status<400){await response.body?.cancel();throw fail('redirect');}
+  if(!response.ok){await response.body?.cancel();throw fail('http',{status:response.status});}
+  if(Number(response.headers.get('Content-Length')||0)>PHOTO_LIMITS.responseBytes){await response.body?.cancel();throw fail('too_large');}
+  const reader=response.body?.getReader();if(!reader)throw fail('invalid_response');
   const parts=[];let size=0;
-  try{for(;;){const {value,done}=await reader.read();if(done)break;size+=value.byteLength;if(size>PHOTO_LIMITS.responseBytes){await reader.cancel();throw new Error('provider_unavailable');}parts.push(value);}}finally{reader.releaseLock();}
+  try{for(;;){const {value,done}=await reader.read();if(done)break;size+=value.byteLength;if(size>PHOTO_LIMITS.responseBytes){await reader.cancel();throw fail('too_large');}parts.push(value);}}finally{reader.releaseLock();}
   const bytes=new Uint8Array(size);let offset=0;for(const part of parts){bytes.set(part,offset);offset+=part.byteLength;}
-  const body=JSON.parse(new TextDecoder().decode(bytes));
-  // Normal API deprecation warnings are informational. API errors fail closed.
-  if(!body||typeof body!=='object'||Array.isArray(body)||body.error)throw new Error('provider_unavailable');return body;
+  let body;try{body=JSON.parse(new TextDecoder().decode(bytes));}catch{throw fail('invalid_json');}
+  // Normal API deprecation warnings are informational. API errors fail closed;
+  // only a short machine code such as maxlag is kept, never the error text.
+  if(body?.error)throw fail('api_error',{code:body.error.code});
+  if(!body||typeof body!=='object'||Array.isArray(body))throw fail('invalid_response');return body;
 }
 
 export async function collectLandmarkPhotos(city,source,{now=new Date(),fetchImpl=fetch}={}) {
@@ -153,12 +163,17 @@ export async function collectLandmarkPhotos(city,source,{now=new Date(),fetchImp
   let calls=0;
   const fileId=value=>typeof value==='string'?value.normalize('NFC').replaceAll('_',' ').trim():'';
   const excludedPhotoIds=new Set((Array.isArray(source.excludedPhotoIds)?source.excludedPhotoIds:[]).filter(value=>safeTitle(value,300)&&value.startsWith('File:')).map(fileId));
-  const unavailable=reason=>({selectionVersion:LANDMARK_SELECTION_VERSION,status:'unavailable',reason,photos:[],requests});
+  const unavailable=(reason,failure=null)=>({selectionVersion:LANDMARK_SELECTION_VERSION,status:'unavailable',reason,photos:[],requests,...(failure?{failure}:{})});
   async function query(api,parameters,kind) {
-    if(++calls>PHOTO_LIMITS.apiCalls||Date.now()>=deadline)throw new Error('provider_unavailable');requests[kind]++;
+    if(++calls>PHOTO_LIMITS.apiCalls||Date.now()>=deadline)throw new ProviderFailure(STAGES[kind],'budget');requests[kind]++;
     const url=new URL(APIS[api]);url.search=new URLSearchParams({action:'query',format:'json',formatversion:'2',maxlag:'5',...parameters}).toString();
     const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),Math.min(PHOTO_LIMITS.requestMs,deadline-Date.now()));
-    try{return await boundedJson(await fetchImpl(url,{method:'GET',redirect:'manual',signal:controller.signal,headers:{Accept:'application/json','User-Agent':'LAYR-CityPhotos/2.0 (https://layr.co.jp/)'}}));}finally{clearTimeout(timer);}
+    let response;
+    try{response=await fetchImpl(url,{method:'GET',redirect:'manual',signal:controller.signal,headers:{Accept:'application/json','User-Agent':'LAYR-CityPhotos/2.0 (https://layr.co.jp/)'}});}
+    catch{clearTimeout(timer);throw new ProviderFailure(STAGES[kind],controller.signal.aborted?'timeout':'network');}
+    try{return await boundedJson(response,STAGES[kind]);}
+    catch(error){throw error instanceof ProviderFailure?error:new ProviderFailure(STAGES[kind],controller.signal.aborted?'timeout':'invalid_response');}
+    finally{clearTimeout(timer);}
   }
   try {
     const entities=await query('wikidata',{action:'wbgetentities',ids:source.wikidataId,props:'sitelinks',sitefilter:'jawiki'},'wikidataCalls');
@@ -172,7 +187,7 @@ export async function collectLandmarkPhotos(city,source,{now=new Date(),fetchImp
     const pages=[],candidateMap=new Map(candidates.map(row=>[row.title,row]));
     for(let offset=0;offset<candidates.length;offset+=PHOTO_LIMITS.candidateBatch) {
       const batch=candidates.slice(offset,offset+PHOTO_LIMITS.candidateBatch),titles=batch.map(row=>row.title),response=await query('japanese',{titles:titles.join('|'),prop:'extracts|pageimages|pageprops|pageviews',pvipdays:'30',ppprop:'wikibase_item|disambiguation',exintro:'1',explaintext:'1',exlimit:String(PHOTO_LIMITS.candidateBatch),piprop:'name|original',pilimit:String(PHOTO_LIMITS.candidateBatch),redirects:'1'},'candidateCalls');
-      if(!Array.isArray(response.query?.pages))throw new Error('provider_unavailable');
+      if(!Array.isArray(response.query?.pages))throw new ProviderFailure('wikipedia_landmarks','invalid_response');
       const aliases=new Map(titles.map(name=>[name,candidateMap.get(name)]));
       for(const link of [...(response.query.normalized||[]),...(response.query.redirects||[])])if(aliases.has(link.from)&&safeTitle(link.to))aliases.set(link.to,aliases.get(link.from));
       for(const landmark of response.query.pages)if(aliases.has(landmark.title)&&eligibleLandmark(landmark,city))pages.push({...landmark,evidence:aliases.get(landmark.title),interest:recentInterest(landmark.pageviews)});
@@ -205,7 +220,7 @@ export async function collectLandmarkPhotos(city,source,{now=new Date(),fetchImp
       const fallback=(await categories()).get(landmark.pageprops?.wikibase_item);
       if(!fallback||calls+1>=PHOTO_LIMITS.apiCalls)return [];
       const result=await query('commons',{list:'categorymembers',cmtitle:`Category:${fallback.category}`,cmtype:'file',cmnamespace:'6',cmlimit:String(PHOTO_LIMITS.categoryFiles)},'categoryCalls');
-      if(!Array.isArray(result.query?.categorymembers))throw new Error('provider_unavailable');
+      if(!Array.isArray(result.query?.categorymembers))throw new ProviderFailure('commons_category','invalid_response');
       return result.query.categorymembers.slice(0,PHOTO_LIMITS.categoryFiles).filter(file=>file.ns===6&&Number.isSafeInteger(file.pageid)&&file.pageid>0&&safeTitle(file.title,300)&&/^File:.+\.(?:jpe?g|png|webp)$/i.test(file.title)&&!disallowedImage.test(file.title)&&matchesName(file.title,fallback.names)).slice(0,2).map(file=>({title:file.title,fallback:{...fallback,pageId:file.pageid}}));
     }
     async function fetchPhoto(landmark,fileTitle,fallback) {
@@ -243,5 +258,5 @@ export async function collectLandmarkPhotos(city,source,{now=new Date(),fetchImp
     }
     const record=normalizeCityPhotos(city.slug,{schemaVersion:1,selectionVersion:LANDMARK_SELECTION_VERSION,citySlug:city.slug,status:'ready',fetchedAt:now.toISOString(),photos});
     return record?{...record,selectionVersion:LANDMARK_SELECTION_VERSION,sourceEvidence,source:{wikidataId:source.wikidataId,cityArticleUrl:wikiUrl(page.title)},requests}:unavailable('insufficient_landmark_photos');
-  }catch{return unavailable('provider_unavailable');}
+  }catch(error){return unavailable('provider_unavailable',error instanceof ProviderFailure&&error.failure?error.failure:{stage:'processing',kind:'unexpected'});}
 }
