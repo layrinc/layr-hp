@@ -10,6 +10,7 @@ import {contactRelay} from './seo-leads.mjs';
 import {prepareRegionalStep} from './seo-regional-preparation.mjs';
 import {readCityPhotos,runCityPhotosStep} from './seo-city-photos.mjs';
 import {renderCityPhotos} from '../src/lib/ltori-city-photos.mjs';
+import {refreshDomainAuthority} from './seo-domain-authority.mjs';
 
 export const getStaticPages=(now=new Date())=>[
   ...getPublishedAreas(now).map(area=>({path:`/service/ltori/area/${area.slug}/`,title:`${area.fullName}の採用LINE構築・運用支援`,type:'city'})),
@@ -105,7 +106,9 @@ export async function runJob(env,kind,{now=new Date()}={}) {
     else if(kind==='prepare')result=await prepareRegionalStep(env,{now});
     else if(kind==='photos')result=await runCityPhotosStep(env,{now});
     else if(kind==='analytics')result=await runAnalyticsSync(env,{store,publishedPaths:paths,now});
-    else if(kind==='inspection'){result=await runInspections(env,{store,publishedPaths:paths,now});await runHealthChecks(env,{paths,now});}
+    else if(kind==='inspection'){result=await runInspections(env,{store,publishedPaths:paths,now});await runHealthChecks(env,{paths,now});
+      // Domain authority is informational: its outage must not fail the inspection job.
+      try{await refreshDomainAuthority(env,{now});}catch{/* recorded as a fixed code inside */}}
     else throw new HttpError(400,'処理の種類を確認してください。');
     await store.upsert('jobs',kind,{status:'completed',finishedAt:new Date().toISOString(),result});
     return {status:'completed',result};

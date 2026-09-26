@@ -10,6 +10,7 @@ import corporateCatalog from '../src/data/seo-corporate-catalog.json' with {type
 import {projectWorkspace, ltoriGrowthSnapshots} from './seo-workspace.mjs';
 import {canonicalWorkspacePath} from '../src/lib/seo-manager/workspace-projects.mjs';
 import {regionalPreparationSummary} from './seo-regional-preparation.mjs';
+import {readDomainAuthority,addMeasurement} from './seo-domain-authority.mjs';
 import backlinkSites from '../src/data/seo-backlink-sites.json' with {type: 'json'};
 import company from '../src/data/company.json' with {type: 'json'};
 import siteSettings from '../src/data/settings.json' with {type: 'json'};
@@ -69,6 +70,22 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
     if(!['GET','POST','PUT'].includes(request.method))throw new HttpError(405,'この操作には対応していません。');
     if(request.method!=='GET'&&request.headers.get('Origin')!==MANAGER_ORIGIN)throw new HttpError(403,'管理画面を開き直して操作してください。');
     await ensureDatabase(env.SEO_DB);const db=env.SEO_DB,store=createStore(db),url=new URL(request.url),now=new Date();
+    if(path==='/api/seo/domain-authority') {
+      if(request.method==='POST') {
+        const payload=await body(request,16*1024);
+        if(!payload||typeof payload!=='object'||Array.isArray(payload))throw new HttpError(400,'保存内容を確認してください。');
+        let saved;
+        try {saved=await addMeasurement(db,payload.measurement,version(payload.expectedRevision),now);}
+        catch(error) {if(error instanceof HttpError)throw error;throw new HttpError(400,error.message);}
+        if(!saved)throw new HttpError(409,'別の端末で更新されました。再読み込みしてから保存してください。');
+        return json({state:saved,configured:typeof env.OPEN_PAGERANK_API_KEY==='string'&&env.OPEN_PAGERANK_API_KEY.trim()!==''});
+      }
+      if(request.method!=='GET')throw new HttpError(405,'GETまたはPOSTで操作してください。');
+      // Backlinks gained are the leading indicator next to the authority score.
+      const liveCount=async namespace=>{const row=await db.prepare("SELECT value FROM seo_kv WHERE namespace=? AND key='state'").bind(namespace).first();try{return Object.values(JSON.parse(row?.value||'{}').entries||{}).filter(entry=>entry?.status==='live').length;}catch{return null;}};
+      const [state,applications,outreach]=await Promise.all([readDomainAuthority(db),liveCount('backlinks'),liveCount('outreach')]);
+      return json({state,configured:typeof env.OPEN_PAGERANK_API_KEY==='string'&&env.OPEN_PAGERANK_API_KEY.trim()!=='',backlinks:{applications,outreach}});
+    }
     if(path==='/api/seo/overview') {
       if(request.method!=='GET')throw new HttpError(405,'GETで取得してください。');
       const [published,pending,snapshots,integrations,publishSchedule,maintenanceSchedule]=await Promise.all([
