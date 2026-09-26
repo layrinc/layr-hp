@@ -17,7 +17,7 @@ const reviews = regulation.flow.filter(row => row.owner === '河出さん').leng
 
   <section aria-labelledby="rg-flow-title">
     <div class="kw-section-head"><div><h2 id="rg-flow-title">1記事ができるまで</h2><p>上から順に進めます。担当が「河出さん」の工程で止まり、確認を受けてから次へ進みます。</p></div></div>
-    <div class="kw-table-wrap" role="region" aria-label="制作フロー。横にスクロールできます" tabindex="0"><table class="kw-table workspace-table"><thead><tr><th scope="col">No</th><th scope="col">工程</th><th scope="col">担当</th><th scope="col">成果物</th><th scope="col">置き場所</th></tr></thead><tbody>
+    <div class="kw-table-wrap rg-full" role="region" aria-label="制作フロー。横にスクロールできます" tabindex="0"><table class="kw-table workspace-table rg-flow"><thead><tr><th scope="col">No</th><th scope="col">工程</th><th scope="col">担当</th><th scope="col">成果物</th><th scope="col">置き場所</th></tr></thead><tbody>
       {regulation.flow.map((row, index) => <tr><td>{index + 1}</td><th scope="row">{row.step}</th><td>{row.owner}</td><td>{row.output}</td><td>{row.where}</td></tr>)}
     </tbody></table></div>
   </section>
@@ -38,9 +38,11 @@ const reviews = regulation.flow.filter(row => row.owner === '河出さん').leng
 
   <div class="workspace-columns">
     <section class="kw-panel" aria-labelledby="rg-outline-title">
-      <h2 id="rg-outline-title">構成案に書く項目</h2>
-      <p class="kw-help">書く前に、この項目を埋めた構成案を作ります。見出しごとの「内容」が、そのまま本文の骨組みになります。</p>
+      <h2 id="rg-outline-title">構成案シートの項目</h2>
+      <p class="kw-help">元資料「【コピーして使用】構成案シート」と同じ項目・列です。見出しごとの「内容」が、そのまま本文の骨組みになります。</p>
       <ol class="kw-transfer-steps">{regulation.outline.map(item => <li>{item}</li>)}</ol>
+      <h3 class="rg-subhead">執筆シートの項目</h3>
+      <ol class="kw-transfer-steps">{regulation.writing.map(item => <li>{item}</li>)}</ol>
     </section>
     <section class="kw-panel" aria-labelledby="rg-rules-title">
       <h2 id="rg-rules-title">必ず守ること</h2>
@@ -53,11 +55,18 @@ const reviews = regulation.flow.filter(row => row.owner === '河出さん').leng
   <div>
   <section class="kw-panel" aria-labelledby="rg-check-title">
     <h2 id="rg-check-title">公開前のチェックリスト</h2>
-    <p class="kw-help">提出前に上から当て、満たした項目にチェックします。チェックはこの端末のブラウザだけに残り、共有はされません。</p>
+    <p class="kw-help">元資料「記事制作レギュレーション」の66項目（No・項目・補足は元資料のまま）と、LAYRの追加条件です。「機械」の項目は公開前チェックツール（{regulation.tool}）が判定します。チェックはこの端末のブラウザだけに残り、共有はされません。</p>
     <div class="rg-check-head"><p id="rg-progress" role="status">0 / {checkCount} 項目を確認済み</p><button class="kw-button" id="rg-reset" type="button">チェックをすべて外す</button></div>
     <div class="rg-checklist">
-      {regulation.checklist.map((category, group) => <details class="rg-group" open={group < 2}><summary>{category.title}<span data-rg-count>0 / {category.items.length}</span></summary><ul>{category.items.map((item, index) => <li><label><input type="checkbox" data-rg-item={`${group}-${index}`} /><span>{item}</span></label></li>)}</ul></details>)}
+      {regulation.checklist.map((category, group) => <details class="rg-group" open={group === 1 || group === 2}><summary>{category.title}<span data-rg-count>0 / {category.items.length}</span></summary><ul>{category.items.map(item => <li><label><input type="checkbox" data-rg-item={String(item.no)} /><span><strong class="rg-no">{item.no}</strong>{item.text}{item.note && <small>{item.note}</small>}<small class="rg-how">確認：{item.check}</small></span></label></li>)}</ul></details>)}
     </div>
+  </section>
+
+  <section class="kw-panel" aria-labelledby="rg-words-title">
+    <h2 id="rg-words-title">表記チェック・文章サポート</h2>
+    <p class="kw-help">元資料の「表記チェック」「文章サポート」タブの対応表です。本文にヒットした語は、文脈を見て必要に応じて直します（元資料と同じく、ヒット＝必ず修正ではありません）。公開前チェックツールが同じ表で照合します。</p>
+    <details class="rg-group"><summary>表記チェック<span>{regulation.hyoki.length}語</span></summary><div class="kw-table-wrap" role="region" aria-label="表記チェック" tabindex="0"><table class="kw-table"><thead><tr><th scope="col">注意表記</th><th scope="col">詳細（OK表記）</th><th scope="col">補足・備考</th></tr></thead><tbody>{regulation.hyoki.map(row => <tr><td>{row.ng}</td><td>{row.ok}</td><td>{row.note || '—'}</td></tr>)}</tbody></table></div></details>
+    <details class="rg-group"><summary>文章サポート<span>{regulation.bunsho.length}語</span></summary><div class="kw-table-wrap" role="region" aria-label="文章サポート" tabindex="0"><table class="kw-table"><thead><tr><th scope="col">分類</th><th scope="col">注意表記</th><th scope="col">言い換え</th><th scope="col">補足・備考</th></tr></thead><tbody>{regulation.bunsho.map(row => <tr><td>{row.category}</td><td>{row.ng}</td><td>{row.ok || '—'}</td><td>{row.note || '—'}</td></tr>)}</tbody></table></div></details>
   </section>
 
   <section class="kw-panel" aria-labelledby="rg-links-title">

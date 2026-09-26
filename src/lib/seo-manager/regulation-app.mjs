@@ -1,5 +1,5 @@
 // Pre-publication checklist: ticks stay in this browser only (not shared, not required).
-const KEY = 'layr-regulation-checks-v1';
+const KEY = 'layr-regulation-checks-v2';
 const boxes = [...document.querySelectorAll('[data-rg-item]')];
 const read = () => { try { return new Set(JSON.parse(localStorage.getItem(KEY) || '[]')); } catch { return new Set(); } };
 const write = checked => { try { localStorage.setItem(KEY, JSON.stringify([...checked])); } catch { /* private mode: keep ticks for this view only */ } };
