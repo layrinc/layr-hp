@@ -134,7 +134,7 @@ faq:
 
 ![個人依頼と運用代行会社の違いを比較する表](/blog-img/line-operation-agency-coconala-4.svg)
 
-参考として、弊社LAYRの場合はLINE構築費用が15〜50万円、運用月額が5〜15万円という料金体系で提供しています（出所：[LAYR公式サービスページ](https://layr.co.jp/service/line/)）。
+参考として、弊社LAYRの場合はLINE構築費用が15万円〜、運用月額が5万円〜で提供しています（出所：[LAYR公式サービスページ](https://layr.co.jp/service/line/)）。
 
 個人依頼の身軽さを取るか、会社組織の継続性と体制を取るか。答えは事業のフェーズで変わります。
 

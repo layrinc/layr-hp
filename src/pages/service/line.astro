@@ -8,7 +8,6 @@ import Base from '../../layouts/Base.astro';
 import settings from '../../data/settings.json';
 import lineService from '../../data/pages/service/line.json';
 import { ISO } from '../../lib/iso-illusts.mjs';
-import PriceSimulator from '../../components/PriceSimulator.astro';
 import LineSupportCards, { type SupportItem } from '../../components/LineSupportCards.astro';
 import CategoryFaq from '../../components/CategoryFaq.astro';
 import homePage from '../../data/page-home.json';
@@ -16,7 +15,7 @@ import homePage from '../../data/page-home.json';
 const { construction, operation } = lineService.pricing;
 
 const title = 'LINE公式アカウント構築・運用代行｜料金と事例｜株式会社LAYR';
-const description = 'LINEを活用し売上最大化をサポート。構築代行（ライト15万円〜）と運用代行（月5万円〜）を、設計から配信・改善までワンストップで。開封率・クリック率の高いLINEで、地方中小企業の集客・リピート・採用を仕組み化します。';
+const description = 'LINEを活用し売上最大化をサポート。構築代行（15万円〜）と運用代行（月5万円〜）を、設計から配信・改善までワンストップで。開封率・クリック率の高いLINEで、地方中小企業の集客・リピート・採用を仕組み化します。';
 const docHref = '/document/line-service/';
 const consult = settings.line_url?.trim()
   ? settings.line_url
@@ -44,12 +43,9 @@ const jsonLd = [
     hasOfferCatalog: {
       '@type': 'OfferCatalog', name: 'LINE構築・運用プラン',
       itemListElement: [
-        { '@type': 'Offer', name: '構築 ライト', priceSpecification: { '@type': 'PriceSpecification', price: construction.light, priceCurrency: 'JPY' } },
-        { '@type': 'Offer', name: '構築 スタンダード', priceSpecification: { '@type': 'PriceSpecification', price: construction.standard, priceCurrency: 'JPY' } },
-        { '@type': 'Offer', name: '構築 プレミアム', priceSpecification: { '@type': 'PriceSpecification', price: construction.premium, priceCurrency: 'JPY' } },
-        { '@type': 'Offer', name: '運用 サポート', priceSpecification: { '@type': 'UnitPriceSpecification', price: operation.support, priceCurrency: 'JPY', unitText: '月' } },
-        { '@type': 'Offer', name: '運用 スタンダード', priceSpecification: { '@type': 'UnitPriceSpecification', price: operation.standard, priceCurrency: 'JPY', unitText: '月' } },
-        { '@type': 'Offer', name: '運用 戦略', priceSpecification: { '@type': 'UnitPriceSpecification', price: operation.strategy, priceCurrency: 'JPY', unitText: '月' } },
+        // 公開する金額は最低額だけ（2026-09-26 河出さん指示：プラン別の金額は伏せる）
+        { '@type': 'Offer', name: 'LINE公式アカウント・Lステップ構築', priceSpecification: { '@type': 'PriceSpecification', minPrice: construction.light, priceCurrency: 'JPY' } },
+        { '@type': 'Offer', name: 'LINE運用支援', priceSpecification: { '@type': 'UnitPriceSpecification', minPrice: operation.support, priceCurrency: 'JPY', unitText: '月' } },
       ],
     },
   },
@@ -168,25 +164,23 @@ const jsonLd = [
   <section class="lp-sec" id="price">
     <div class="container">
       <div class="lp-head"><p class="lp-num">07</p><h2>構築プラン一覧</h2></div>
+      <p class="lp-from">構築 <strong>{construction.light / 10000}</strong>万円〜<small>（税抜）</small></p>
       <div class="lp-plans">
         <div class="lp-plan">
           <p class="lp-plan-en">LIGHT</p><p class="lp-plan-jp">ライト</p><p class="lp-plan-for">まずは形を整えたい方</p>
-          <p class="lp-plan-price">{construction.light / 10000}<small>万円</small></p>
           <ul><li>初期基本設定</li><li>拡張ツール連携</li><li>あいさつメッセージ</li><li>リッチメニュー（1枚）</li><li>キーワード応答設定</li></ul>
         </div>
         <div class="lp-plan is-rec">
           <span class="lp-rec">おすすめ</span>
           <p class="lp-plan-en">STANDARD</p><p class="lp-plan-jp">スタンダード</p><p class="lp-plan-for">集客・教育を始めたい向け</p>
-          <p class="lp-plan-price">{construction.standard / 10000}<small>万円</small></p>
           <ul><li>ライトプラン＋</li><li>導線作成</li><li>リッチメニューデザイン / 設置</li><li>フォーム制作</li><li>ステップ配信（5〜7日間）</li><li>タグ設置</li></ul>
         </div>
         <div class="lp-plan">
           <p class="lp-plan-en">PREMIUM</p><p class="lp-plan-jp">プレミアム</p><p class="lp-plan-for">売上最大化を目指す方向け</p>
-          <p class="lp-plan-price">{construction.premium / 10000}<small>万円</small></p>
           <ul><li>スタンダードプラン＋</li><li>戦略設計：3C分析・4P分析</li><li>顧客・ターゲット分析</li><li>タブ付きリッチメニュー</li><li>診断コンテンツ制作</li><li>流入経路分析設定</li></ul>
         </div>
       </div>
-      <p class="lp-note">※ 価格は税抜です。別途カスタマイズやオプション設定も対応可能です。</p>
+      <p class="lp-note">※ 金額は税抜の目安です。プランの内容・カスタマイズに合わせてお見積もりします。</p>
     </div>
   </section>
 
@@ -194,11 +188,11 @@ const jsonLd = [
   <section class="lp-sec lp-tint">
     <div class="container">
       <div class="lp-head"><p class="lp-num">08</p><h2>運用プラン一覧</h2></div>
+      <p class="lp-from">運用は月 <strong>{operation.support / 10000}</strong>万円〜<small>（税抜）</small></p>
       <div class="lp-optable">
         <table>
           <thead><tr><th></th><th>サポート</th><th class="mid">スタンダード</th><th>戦略</th></tr></thead>
           <tbody>
-            <tr><th>月額料金（税抜）</th><td><b>{operation.support / 10000}万円</b></td><td class="mid"><b>{operation.standard / 10000}万円</b></td><td><b>{operation.strategy / 10000}万円</b></td></tr>
             <tr><th>主な対象</th><td>知見を確保したい方</td><td class="mid">集客・リピートを伸ばしたい方</td><td>売上最大化したい方</td></tr>
             <tr><th>軽微修正・追加作業</th><td>—</td><td class="mid">○</td><td>○</td></tr>
             <tr><th>配信内容の作成</th><td>—</td><td class="mid">○</td><td>○</td></tr>
@@ -212,17 +206,9 @@ const jsonLd = [
     </div>
   </section>
 
-  <!-- 09 料金シミュレーション -->
-  <section class="lp-sec" id="sim">
-    <div class="container lp-narrow">
-      <div class="lp-head"><p class="lp-num">09</p><h2>30秒 料金シミュレーション</h2></div>
-      <p class="lp-sub">選択式4問で、貴社に合うプランと料金の目安がその場で分かります。</p>
-      <PriceSimulator docHref={docHref} consult={consult} />
-    </div>
-  </section>
 
   <!-- 10 FAQ -->
-  <CategoryFaq id="line-faq" eyebrow="10 / FAQ" title={faq.title_jp} lead={faq.lead} items={faqs} />
+  <CategoryFaq id="line-faq" eyebrow="09 / FAQ" title={faq.title_jp} lead={faq.lead} items={faqs} />
 
 
   <!-- CTA -->
@@ -311,8 +297,9 @@ const jsonLd = [
   .lp-plan-en{font-family:var(--font-en);font-weight:700;font-size:13px;letter-spacing:.1em;color:var(--green-dark)}
   .lp-plan-jp{font-size:22px;font-weight:700;color:var(--black);margin:2px 0 12px}
   .lp-plan-for{display:inline-block;background:#fff;border-radius:999px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:18px}
-  .lp-plan-price{font-family:var(--font-en);font-weight:700;font-size:46px;color:var(--black);line-height:1;margin-bottom:18px}
-  .lp-plan-price small{font-family:var(--font-jp);font-size:16px;font-weight:700;margin-left:2px}
+  .lp-from{text-align:center;font-weight:700;font-size:18px;color:var(--black);margin:-8px 0 28px}
+  .lp-from strong{font-family:var(--font-en);font-size:40px;line-height:1;margin:0 2px}
+  .lp-from small{font-size:13px;color:var(--muted);margin-left:4px}
   .lp-plan ul{list-style:none;margin:0;padding:0;text-align:left;display:inline-block}
   .lp-plan li{position:relative;padding:6px 0 6px 22px;font-size:13px;color:var(--black);line-height:1.7}
   .lp-plan li::before{content:"";position:absolute;left:2px;top:12px;width:7px;height:7px;border-radius:50%;background:var(--green)}

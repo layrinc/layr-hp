@@ -17,10 +17,10 @@ const generalMail = mailFor('AI導入・業務自動化');
 const consult = lineUrl || generalMail;
 const faqs = [
   { q: '複数の部署の業務を、まとめて管理できますか？', a: '経理・CS・受発注など、部署ごとに分かれている入力や進捗管理をつなぐ仕組みをご提案します。まず既存ツール・権限・データ形式を確認し、連携できる範囲と必要な画面を決めます。業務全体の一括自動化を一律料金で保証するものではなく、開発範囲と費用は事前にご案内します。' },
-  { q: 'どのプランを選べばいいですか？', a: 'まず方針を相談したい場合はAI導入コンサル（月' + yen(consulting.price) + '万円）、自社専用の仕組みをつくりたい場合は専用ツール・業務アプリ開発（1件' + yen(development.price) + '万円）、請求書管理から始めたい場合は請求書自動化（導入' + yen(invoice.price) + '万円）をご案内します。いずれも' + tax(invoice.taxIncluded) + 'です。迷っている段階でもご相談ください。' },
+  { q: 'どのプランを選べばいいですか？', a: 'まず方針を相談したい場合はAI導入コンサル（月' + yen(consulting.price) + '万円〜）、自社専用の仕組みをつくりたい場合は専用ツール・業務アプリ開発（' + yen(development.price) + '万円〜）、請求書管理から始めたい場合は請求書自動化（導入' + yen(invoice.price) + '万円〜）をご案内します。いずれも' + tax(invoice.taxIncluded) + 'です。迷っている段階でもご相談ください。' },
   { q: 'AI導入コンサルには、開発も含まれますか？', a: 'コンサルでは、現在の業務の整理、AIを活用する場所の検討、導入・運用方法の相談を行います。専用ツールの開発が必要な場合は、対象範囲と費用をご案内したうえで別途承ります。' },
-  { q: '1件30万円で、どこまで開発できますか？', a: '入力・管理・集計など、御社の業務に合わせた専用ツールを開発します。必要な機能、画面、連携先を伺い、1件' + yen(development.price) + '万円（' + tax(development.taxIncluded) + '）で対応する範囲を契約前に決めます。追加開発、外部サービスの利用料、継続保守が必要な場合は、別途費用を事前にご案内します。' },
-  { q: '請求書自動化の5万円は、月額料金ですか？', a: '月額ではなく導入費用です。毎月' + invoice.monthlyLimit + '社限定で、通常' + yen(invoice.regularPrice) + '万円のところ' + yen(invoice.price) + '万円（' + tax(invoice.taxIncluded) + '）でご提供します。読み取り対象・書式・連携先を確認し、自動化する範囲を決めます。外部ツール利用料や保守が必要な場合は、契約前にご案内します。' },
+  { q: '専用ツールの開発は、どこまで対応できますか？', a: '入力・管理・集計など、御社の業務に合わせた専用ツールを開発します。必要な機能、画面、連携先を伺い、' + yen(development.price) + '万円〜（' + tax(development.taxIncluded) + '）でお見積もりし、対応する範囲を契約前に決めます。追加開発、外部サービスの利用料、継続保守が必要な場合は、別途費用を事前にご案内します。' },
+  { q: '請求書自動化の費用は、月額料金ですか？', a: '月額ではなく導入費用です。' + yen(invoice.price) + '万円〜（' + tax(invoice.taxIncluded) + '）で、毎月' + invoice.monthlyLimit + '社限定でご提供します。読み取り対象・書式・連携先を確認し、自動化する範囲を決めます。外部ツール利用料や保守が必要な場合は、契約前にご案内します。' },
   { q: '今使っているExcelやツールのまま相談できますか？', a: 'はい。Excel・スプレッドシート・メール・会計ソフトなど、現在の環境と作業手順を伺います。連携の可否を確認し、今の運用を活かせる方法からご提案します。AIに詳しい社員がいなくてもご相談いただけます。' },
   { q: 'AIの間違いや、機密情報の取り扱いはどうなりますか？', a: 'AIの出力を担当者が確認・修正できる工程を組み込みます。利用するサービス、保存先、閲覧権限、データの取り扱いは導入前に確認します。振込や会計処理の確定など、重要な最終判断は人が確認する前提で設計します。' },
 ];
@@ -58,7 +58,7 @@ const jsonLd = [
     { '@type': 'ListItem', position: 3, name: brandName },
   ] },
   { '@context': 'https://schema.org', '@type': 'Service', '@id': 'https://layr.co.jp/#service-ai', name: brandName, serviceType: 'AI業務効率化・業務自動化', provider: { '@id': 'https://layr.co.jp/#organization' }, areaServed: 'JP', url: 'https://layr.co.jp/service/ai/', offers: service.plans.map(plan => ({
-    '@type': 'Offer', name: plan.name, price: plan.price, priceCurrency: 'JPY', description: plan.billing + '・' + yen(plan.price) + '万円（' + tax(plan.taxIncluded) + '）。' + plan.note, url: 'https://layr.co.jp/service/ai/#plan-' + plan.id, priceSpecification: { '@type': 'PriceSpecification', price: plan.price, priceCurrency: 'JPY', valueAddedTaxIncluded: plan.taxIncluded },
+    '@type': 'Offer', name: plan.name, priceCurrency: 'JPY', description: plan.billing + '・' + yen(plan.price) + '万円〜（' + tax(plan.taxIncluded) + '）。' + plan.note, url: 'https://layr.co.jp/service/ai/#plan-' + plan.id, priceSpecification: { '@type': 'PriceSpecification', minPrice: plan.price, priceCurrency: 'JPY', valueAddedTaxIncluded: plan.taxIncluded },
   })) },
   { '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map(f => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) },
 ];
@@ -150,8 +150,8 @@ const jsonLd = [
       <div class="ai-plans">{displayPlans.map((plan, i) => <article class={'ai-plan ai-plan-' + plan.id} id={'plan-' + plan.id}>
         <div class="ai-plan-top"><span>PLAN {String(i + 1).padStart(2,'0')}</span><p>{plan.label}</p></div>
         <h3>{plan.name}</h3>
-        <div class="ai-plan-price"><span>{plan.billing}</span><p><strong>{yen(plan.price)}</strong><b>万円</b><span> / {plan.unit}</span></p><small>（{tax(plan.taxIncluded)}）</small></div>
-        {plan.id === 'invoice' && <p class="ai-plan-limit">毎月{invoice.monthlyLimit}社限定 / 通常<s>{yen(invoice.regularPrice)}万円</s></p>}
+        <div class="ai-plan-price"><span>{plan.billing}</span><p><strong>{yen(plan.price)}</strong><b>万円〜</b><span> / {plan.unit}</span></p><small>（{tax(plan.taxIncluded)}）</small></div>
+        {plan.id === 'invoice' && <p class="ai-plan-limit">毎月{invoice.monthlyLimit}社限定</p>}
         <p class="ai-plan-description">{plan.description}</p>
         <ul>{plan.features.map(feature => <li>{feature}</li>)}</ul>
         <p class="ai-plan-note">{plan.note}</p>

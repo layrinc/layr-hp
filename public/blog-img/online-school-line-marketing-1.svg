@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" font-family="'Hiragino Sans','Noto Sans JP',sans-serif">
+  <rect width="1200" height="440" rx="20" fill="#F6FAF9"/>
+  <text x="600" y="56" text-anchor="middle" font-size="24" font-weight="800" fill="#0E1A1C">オンラインスクールの成約は「個別相談」の席で決まる</text>
+  <text x="600" y="92" text-anchor="middle" font-size="15" fill="#5A6B6D">受講料が高い講座ほど、LPを読んだその場では申し込まれない</text>
+  <rect x="354" y="136" width="656" height="176" rx="18" fill="#EDF7F2" stroke="#17A673" stroke-width="2"/>
+  <text x="682" y="166" text-anchor="middle" font-size="15" font-weight="800" fill="#0E4F44">LINEが担う範囲：登録した人を、相談の席まで運ぶ</text>
+  <rect x="38" y="190" width="140" height="100" rx="12" fill="#fff" stroke="#E3ECEA" stroke-width="1.5"/>
+  <text x="108" y="234" text-anchor="middle" font-size="16" font-weight="800" fill="#0E1A1C">広告・SNS</text>
+  <text x="108" y="262" text-anchor="middle" font-size="13" font-weight="400" fill="#5A6B6D">認知</text>
+  <text x="190" y="248" text-anchor="middle" font-size="24" font-weight="800" fill="#17A673">›</text>
+  <rect x="202" y="190" width="140" height="100" rx="12" fill="#fff" stroke="#E3ECEA" stroke-width="1.5"/>
+  <text x="272" y="234" text-anchor="middle" font-size="16" font-weight="800" fill="#0E1A1C">LP</text>
+  <text x="272" y="262" text-anchor="middle" font-size="13" font-weight="400" fill="#5A6B6D">講座を知る</text>
+  <text x="354" y="248" text-anchor="middle" font-size="24" font-weight="800" fill="#17A673">›</text>
+  <rect x="366" y="190" width="140" height="100" rx="12" fill="#fff" stroke="#17A673" stroke-width="2"/>
+  <text x="436" y="234" text-anchor="middle" font-size="16" font-weight="800" fill="#0E4F44">LINE登録</text>
+  <text x="436" y="262" text-anchor="middle" font-size="13" font-weight="400" fill="#5A6B6D">通路の入口</text>
+  <text x="518" y="248" text-anchor="middle" font-size="24" font-weight="800" fill="#17A673">›</text>
+  <rect x="530" y="190" width="140" height="100" rx="12" fill="#fff" stroke="#17A673" stroke-width="2"/>
+  <text x="600" y="234" text-anchor="middle" font-size="16" font-weight="800" fill="#0E4F44">配信</text>
+  <text x="600" y="262" text-anchor="middle" font-size="13" font-weight="400" fill="#5A6B6D">不安を解消</text>
+  <text x="682" y="248" text-anchor="middle" font-size="24" font-weight="800" fill="#17A673">›</text>
+  <rect x="694" y="190" width="140" height="100" rx="12" fill="#fff" stroke="#17A673" stroke-width="2"/>
+  <text x="764" y="234" text-anchor="middle" font-size="16" font-weight="800" fill="#0E4F44">相談を予約</text>
+  <text x="764" y="262" text-anchor="middle" font-size="13" font-weight="700" fill="#0E4F44">予約率</text>
+  <text x="846" y="248" text-anchor="middle" font-size="24" font-weight="800" fill="#17A673">›</text>
+  <rect x="858" y="190" width="140" height="100" rx="12" fill="#fff" stroke="#17A673" stroke-width="2"/>
+  <text x="928" y="234" text-anchor="middle" font-size="16" font-weight="800" fill="#0E4F44">当日参加</text>
+  <text x="928" y="262" text-anchor="middle" font-size="13" font-weight="700" fill="#0E4F44">参加率</text>
+  <text x="1010" y="248" text-anchor="middle" font-size="24" font-weight="800" fill="#17A673">›</text>
+  <rect x="1022" y="190" width="140" height="100" rx="12" fill="#fff" stroke="#E3ECEA" stroke-width="1.5"/>
+  <text x="1092" y="234" text-anchor="middle" font-size="16" font-weight="800" fill="#0E1A1C">受講申込</text>
+  <text x="1092" y="262" text-anchor="middle" font-size="13" font-weight="700" fill="#0E4F44">成約率</text>
+  <rect x="1022" y="190" width="140" height="100" rx="12" fill="none" stroke="#0E4F44" stroke-width="2.5"/>
+  <text x="600" y="368" text-anchor="middle" font-size="16" font-weight="700" fill="#0E4F44">登録数ではなく、予約率・参加率・成約率から逆算して設計する</text>
+  <text x="600" y="400" text-anchor="middle" font-size="13" fill="#5A6B6D">※説明会で成約するスクールは「個別相談」を「説明会」に置き換えて読んでください</text>
+</svg>

@@ -144,3 +144,25 @@ test('all regional LPs contain local hiring, industry examples, named coverage a
   assert.ok(nabari.includes('桔梗が丘１番町') && nabari.includes('蔵持町原出'));
   assert.ok(hashimoto.includes('東家') && hashimoto.includes('御幸辻'));
 });
+
+test('2026-09-26 LP UI: trimmed hero, no LINE experience section, document CTA in sticky bar and menu only', () => {
+  const docHref = `href="${service.source}"`;
+  for (const path of ['/service/ltori/', ...publishedAreas.map(areaPath)]) {
+    const html = readPage(path);
+    assert.ok(!html.includes('採用活動に伴走'), path + ' hero lead removed');
+    assert.ok(!html.includes('id="scenario"') && !html.includes('こんな体験を') && !html.includes('data-lt-tab'), path + ' LINE experience section removed');
+    assert.ok(!html.includes('サービス資料を見る'), path + ' hero and consult-banner document links removed');
+    const sticky = html.match(/<div class="lt-mobile-sticky">(.*?)<\/div>/s)[1];
+    assert.match(sticky, /data-lt-doc="sticky"[^>]*>資料請求する</, path + ' sticky document CTA wording');
+    assert.ok(sticky.includes(docHref), path + ' sticky document CTA keeps the service document URL');
+    const menu = html.match(/<div class="lt-menu-ctas">(.*?)<\/div>/s)[1];
+    assert.match(menu, /data-lt-cta="menu"[^>]*>無料相談はこちら</, path + ' menu consultation CTA');
+    assert.match(menu, /data-lt-doc="menu"[^>]*>資料請求する</, path + ' menu document CTA');
+    assert.ok(menu.includes(docHref), path + ' menu document CTA uses the service document URL');
+    // Document links are counted separately from consultation CTAs (data-lt-cta must always point at /contact/).
+    assert.equal((html.match(/data-lt-doc=/g) || []).length, 2, path + ' only sticky and menu document CTAs');
+  }
+  const base = readPage('/service/ltori/');
+  assert.ok(!base.includes('lt-hero-kicker') && !base.includes('いい出会いを'), 'national LP has no hero kicker');
+  for (const area of publishedAreas) assert.ok(readPage(areaPath(area)).includes(`<span>採用 × LINE</span> ${area.fullName}の企業さまへ`), areaPath(area) + ' keeps its local kicker');
+});

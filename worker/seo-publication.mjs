@@ -100,8 +100,8 @@ export async function renderDocument(baseResponse, document, options = {}) {
     } });
   if (city) rewriter = rewriter
     .on('[data-city-photos-slot]', {element(element) {element.setInnerContent(renderCityPhotos(city, Object.hasOwn(options, 'cityPhotos') ? options.cityPhotos : getSeedCityPhotos(city.slug)), {html: true});}})
-    .on('#lt-hero-title', { element(element) { element.setInnerContent(renderCityHeading(document), { html: true }); } })
-    .on('.lt-hero-kicker', { element(element) { element.setInnerContent(`<span>採用 × LINE</span> ${escapeHtml(city.fullName)}の企業さまへ`, {html: true}); } })
+    // The national LP has no hero kicker (removed 2026-09-26); city pages keep their local kicker above the heading.
+    .on('#lt-hero-title', { element(element) { element.before(`<p class="lt-hero-kicker"><span>採用 × LINE</span> ${escapeHtml(city.fullName)}の企業さまへ</p>`, {html: true}); element.setInnerContent(renderCityHeading(document), { html: true }); } })
     .on('.lt-hero-description', { element(element) { element.setInnerContent(`${escapeHtml(city.fullName)}の採用活動を、オンラインでサポート。<br>構築・配信・改善まで、採用LINEは${escapeHtml(service.name)}に。`, {html: true}); } })
     .on('.lt-hero-actions small', setText(`${city.locality}での採用のお悩みに`))
     .on('[data-seo-regional-industries-slot]', {element(element) {element.replace(renderRegionalIndustries(city), {html: true});}})
