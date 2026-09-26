@@ -3,9 +3,10 @@
   "path": "/service/school/",
   "prices": {
     "initialManYen": 25,
-    "operationManYen": "5〜10",
-    "expandedManYen": "20〜30",
-    "taxStatus": "unconfirmed"
+    "operationManYen": "5",
+    "expandedManYen": "20",
+    "taxStatus": "unconfirmed",
+    "display": "最低額のみ表示（2026-09-26 河出さん指示）。operation/expanded は「〜」を付けて出す"
   },
   "minimumMonths": 3,
   "source": "河出さんのサービス資料30問確定回答・2026-09-25〜26のLP公開依頼"
