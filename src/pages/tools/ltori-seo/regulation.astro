@@ -45,7 +45,7 @@ const reviews = regulation.flow.filter(row => row.owner === '河出さん').leng
     <section class="kw-panel" aria-labelledby="rg-rules-title">
       <h2 id="rg-rules-title">必ず守ること</h2>
       <ul class="workspace-notes">{regulation.rules.map(item => <li>{item}</li>)}</ul>
-      <h3>食い違ったときの優先順位</h3>
+      <h3 class="rg-subhead">食い違ったときの優先順位</h3>
       <ol class="kw-transfer-steps">{regulation.priority.map(item => <li>{item}</li>)}</ol>
     </section>
   </div>
@@ -53,16 +53,20 @@ const reviews = regulation.flow.filter(row => row.owner === '河出さん').leng
   <div>
   <section class="kw-panel" aria-labelledby="rg-check-title">
     <h2 id="rg-check-title">公開前のチェックリスト</h2>
-    <p class="kw-help">提出前に上から当てます。分類を開くと項目が表示されます。</p>
-    {regulation.checklist.map(category => <details class="kw-help-details"><summary>{category.title}（{category.items.length}項目）</summary><ul>{category.items.map(item => <li>{item}</li>)}</ul></details>)}
+    <p class="kw-help">提出前に上から当て、満たした項目にチェックします。チェックはこの端末のブラウザだけに残り、共有はされません。</p>
+    <div class="rg-check-head"><p id="rg-progress" role="status">0 / {checkCount} 項目を確認済み</p><button class="kw-button" id="rg-reset" type="button">チェックをすべて外す</button></div>
+    <div class="rg-checklist">
+      {regulation.checklist.map((category, group) => <details class="rg-group" open={group < 2}><summary>{category.title}<span data-rg-count>0 / {category.items.length}</span></summary><ul>{category.items.map((item, index) => <li><label><input type="checkbox" data-rg-item={`${group}-${index}`} /><span>{item}</span></label></li>)}</ul></details>)}
+    </div>
   </section>
 
   <section class="kw-panel" aria-labelledby="rg-links-title">
     <h2 id="rg-links-title">使っているシート・資料</h2>
     <p class="kw-help">Googleドライブの資料は info@layr.co.jp のアカウントで開けます。元資料はTikTok運用代行会社向けのため、LAYRでの使い方は上の決まりを優先してください。</p>
-    <div class="workspace-strategy-grid">
-      {regulation.links.map(group => <div><h3>{group.group}</h3><ul class="workspace-notes">{group.items.map(link => <li><a href={link.url} target="_blank" rel="noopener">{link.label}</a></li>)}</ul></div>)}
+    <div class="rg-links">
+      {regulation.links.map(group => <div><h3>{group.group}</h3><ul>{group.items.map(link => <li><a href={link.url} target="_blank" rel="noopener"><span class="kw-tag">{link.kind}</span><strong>{link.label}</strong></a></li>)}</ul></div>)}
     </div>
   </section>
   </div>
+  <script>import '../../../lib/seo-manager/regulation-app.mjs';</script>
 </SeoWorkspace>
