@@ -2555,6 +2555,7 @@ html.toc-open{overflow:hidden}
 .article-cta-sub a{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
 .service-more{margin-top:26px;text-align:center;font-size:calc(14px * var(--fs,1));font-weight:700}
 .service-more a{color:var(--green-dark);text-decoration:underline;text-underline-offset:4px}
+.service-more-sub{margin-top:10px}
 
 /* =====================================================
    v18 — ヒーローコピー「届ける価値を最大化する」を1行で大きく

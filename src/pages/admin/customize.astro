@@ -319,9 +319,10 @@ const initial = { page, theme, settings, subPages };
     service: { name: '事業内容', emoji: '🛠', cat: 'section', desc: 'サービスカード一覧',
       fields: [
         ['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'], ['lead', 'リード文', 'ta'], ['note', '注釈（※）', 't'],
+        ['sub_label', '下部の追加リンク：文言', 't'], ['sub_url', '下部の追加リンク：URL', 't'],
         ['items', 'サービス', 'arr', { itemLabel: 'サービス', itemFields: [['featured', '主力（横長で大きく表示）', 'flag'], ['badge', 'バッジ', 't'], ['number', '番号ラベル', 't'], ['title', '名称', 't'], ['desc', '説明', 'ta'], ['tags', 'タグ', 'strs', { itemLabel: 'タグ' }]], itemDefault: { featured: false, badge: '', number: 'SERVICE 00', title: '新サービス', desc: '説明', tags: [] } }],
       ],
-      defaults: { en: 'SERVICE', title_jp: '事業内容', lead: '', note: '', items: [] } },
+      defaults: { en: 'SERVICE', title_jp: '事業内容', lead: '', note: '', sub_label: '', sub_url: '', items: [] } },
     reason: { name: '選ばれる理由', emoji: '💡', cat: 'section', desc: '番号付き理由カード',
       fields: [['en', '英字ラベル', 't'], ['title_jp', '見出し', 't'], ['items', '理由', 'arr', { itemLabel: '理由', itemFields: [['title', '見出し', 't'], ['desc', '説明', 'ta']], itemDefault: { title: '理由', desc: '説明' } }]],
       defaults: { en: 'REASON', title_jp: '選ばれる理由', items: [] } },
