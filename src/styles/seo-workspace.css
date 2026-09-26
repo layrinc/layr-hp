@@ -37,3 +37,4 @@
 @media(max-width:900px){.workspace-columns{grid-template-columns:1fr}.workspace-filter{grid-template-columns:repeat(2,minmax(0,1fr))}.workspace-main{padding-inline:22px}}
 @media(max-width:600px){.workspace-main{padding:22px 16px 32px}.workspace-main .kw-heading{display:grid;gap:12px}.workspace-main .kw-heading>.kw-button{justify-self:start}.workspace-strategy-grid,.workspace-filter{grid-template-columns:1fr}.workspace-main .kw-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}.workspace-dialog{padding:16px}}
 @media(prefers-reduced-motion:reduce){.workspace-main *{scroll-behavior:auto}}
+.workspace-table td .kw-button{white-space:nowrap}
