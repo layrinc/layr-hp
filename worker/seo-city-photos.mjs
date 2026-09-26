@@ -45,9 +45,10 @@ export async function runCityPhotosStep(env,{now=new Date(),fetchImpl=fetch,sour
   // If an editor paused/removed a reservation while Commons was responding,
   // keep that unpublished city out of this collection run as well.
   if(!(await targets(db,now)).includes(slug))return {done:false,outcome:'state_changed',photoCount:0};
-  const record=result.status==='ready'?result:{schemaVersion:1,selectionVersion:LANDMARK_SELECTION_VERSION,citySlug:slug,status:'unavailable',fetchedAt:now.toISOString(),retryAt:new Date(now.getTime()+(result.reason==='provider_unavailable'?1:7)*DAY).toISOString(),reason:result.reason,photos:[]};
+  const record=result.status==='ready'?result:{schemaVersion:1,selectionVersion:LANDMARK_SELECTION_VERSION,citySlug:slug,status:'unavailable',fetchedAt:now.toISOString(),retryAt:new Date(now.getTime()+(result.reason==='provider_unavailable'?1:7)*DAY).toISOString(),reason:result.reason,...(result.failure?{failure:result.failure}:{}),photos:[]};
   const saved=await db.prepare("INSERT INTO seo_kv(namespace,key,value,updated_at) VALUES('city_photos',?,?,?) ON CONFLICT(namespace,key) DO UPDATE SET value=excluded.value,version=seo_kv.version+1,updated_at=excluded.updated_at WHERE seo_kv.version=?").bind(slug,JSON.stringify(record),now.toISOString(),cache.get(slug)?.version||0).run();
   if(!saved.meta.changes)return {done:false,outcome:'state_changed',photoCount:0};
   await activity(db,'city_photos',`${CITIES.get(slug).fullName}：${record.status==='ready'?`地域写真${record.photos.length}枚を保存しました。`:'地域写真を取得できず、日を空けて再確認します。'}`,now);
-  return {done:result.reason==='provider_unavailable',outcome:record.status==='ready'?'ready':result.reason==='provider_unavailable'?'provider_unavailable':'unavailable',photoCount:record.photos.length};
+  const outage=result.reason==='provider_unavailable';
+  return {done:outage,outcome:record.status==='ready'?'ready':outage?'provider_unavailable':'unavailable',photoCount:record.photos.length,...(outage&&result.failure?{failure:result.failure}:{})};
 }

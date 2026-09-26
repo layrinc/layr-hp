@@ -284,3 +284,34 @@ test('photos is a separate authenticated bounded job with idempotent steps and s
   await handleSchedulerRequest(req(0),env,services);assert.deepEqual(kinds,['photos']);
   await handleSchedulerRequest(req(1),env,services);await handleSchedulerRequest(request(),env,services);assert.deepEqual(kinds,['photos','photos','publish']);
 });
+
+test('a photo provider outage replays as delivered but never records a scheduler success',async t=>{
+  const env={SEO_DB:sqliteD1(t)},store=createStore(env.SEO_DB);await initialize(env);
+  await store.upsert('scheduler','photos',{status:'completed',lastAttemptAt:'2026-09-23T23:11:00.000Z',lastSuccessAt:'2026-09-23T23:11:52.000Z',runId:'35932341955',runAttempt:'1'});
+  const failure={stage:'wikidata_city',kind:'api_error',code:'maxlag',message:'PRIVATE upstream text'};
+  let calls=0;const services={verify:verified,initialize,execute:async()=>{calls++;return {status:'completed',result:{done:true,outcome:'provider_unavailable',photoCount:0,failure}};}};
+  const req=()=>request({body:{kind:'photos',step:0}});
+  const first=await handleSchedulerRequest(req(),env,services);assert.equal(first.status,200);
+  const text=await first.clone().text();assert.doesNotMatch(text,/PRIVATE/);
+  assert.deepEqual((await first.json()).results,[{kind:'photos',status:'completed',done:true,outcome:'provider_unavailable',photoCount:0,failure:{stage:'wikidata_city',kind:'api_error',code:'maxlag'}}]);
+  const state=await store.get('scheduler','photos');
+  assert.equal(state.status,'attention');assert.equal(state.outcome,'provider_unavailable');assert.equal(state.lastSuccessAt,'2026-09-23T23:11:52.000Z');
+  assert.equal((await store.get('scheduler_runs',`${identity.runId}:${identity.runAttempt}:photos:0`)).status,'completed');
+  await handleSchedulerRequest(req(),env,services);assert.equal(calls,1);assert.equal((await store.get('scheduler','photos')).status,'attention');
+});
+
+test('stepped jobs record success only on their final step and preparation holds are attention',async t=>{
+  const env={SEO_DB:sqliteD1(t)},store=createStore(env.SEO_DB);const rows=[];
+  const services={verify:verified,initialize,execute:async(_env,kind)=>({status:'completed',result:rows.shift()})};
+  const run=async(kind,step,result)=>{rows.push(result);assert.equal((await handleSchedulerRequest(request({body:{kind,step}}),env,services)).status,200);return store.get('scheduler',kind);};
+  let state=await run('photos',0,{done:false,outcome:'ready',photoCount:4});assert.equal(state.status,'running');assert.equal(state.lastSuccessAt,null);
+  state=await run('photos',1,{done:false,outcome:'unavailable',photoCount:0});assert.equal(state.status,'running');assert.equal(state.lastSuccessAt,null);
+  state=await run('photos',2,{done:true,outcome:'cached',photoCount:0});assert.equal(state.status,'completed');assert.ok(Date.parse(state.lastSuccessAt));
+  for(const outcome of ['needs_review','provider_unavailable','provider_blocked','state_changed']){
+    const env2={SEO_DB:sqliteD1(t)};rows.push({done:true,outcome,blockedCount:1});
+    assert.equal((await handleSchedulerRequest(request({body:{kind:'prepare',step:0}}),env2,services)).status,200);
+    const held=await createStore(env2.SEO_DB).get('scheduler','prepare');assert.equal(held.status,'attention');assert.equal(held.outcome,outcome);assert.equal(held.lastSuccessAt,null);
+  }
+  rows.push({done:true,outcome:'prepared',blockedCount:0});
+  const env3={SEO_DB:sqliteD1(t)};await handleSchedulerRequest(request({body:{kind:'prepare',step:0}}),env3,services);assert.equal((await createStore(env3.SEO_DB).get('scheduler','prepare')).status,'completed');
+});

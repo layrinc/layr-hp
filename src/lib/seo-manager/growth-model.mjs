@@ -136,3 +136,14 @@ export function buildGrowthReport({snapshots = [], integrations = [], inspection
     ])],
   };
 }
+
+// A photo outage finishes the request but is not a success; show it as needing
+// attention instead of reusing the last completed time as if it had just run.
+export function photoJobDescription(schedule, date) {
+  if (!schedule?.status) return '地域写真の取得：実行記録はまだありません。';
+  const times = `最終試行 ${date(schedule.lastAttemptAt)}、最終完了 ${schedule.lastSuccessAt ? date(schedule.lastSuccessAt) : 'なし'}`;
+  if (schedule.status === 'attention') return `地域写真の取得：要確認。写真の取得元から応答がなく、この回は完了していません（${times}）。地域LPの公開は続けており、翌日以降に自動で再取得します。`;
+  if (schedule.status === 'error') return `地域写真の取得：エラー（${times}）。GitHub Actionsの実行履歴を確認してください。`;
+  if (schedule.status === 'running') return `地域写真の取得：実行中、または途中で止まっています（${times}）。`;
+  return `地域写真の取得：完了（${times}）。`;
+}

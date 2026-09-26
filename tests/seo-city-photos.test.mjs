@@ -266,3 +266,28 @@ test('photo job locks remain independent and do not change publication/note poli
 test('photo providers contain no paid API, credentials or arbitrary endpoint dependency',async()=>{
  for(const name of ['seo-city-photos','seo-landmark-photos']){const source=await readFile(new URL('../worker/'+name+'.mjs',import.meta.url),'utf8');assert.doesNotMatch(source,/anthropic|openai|AI_GATEWAY|REGIONAL_EDITORIAL|Authorization|api[_-]key|kiji_/i);}
 });
+
+test('provider outages are classified by fixed stage and kind without response text',async()=>{
+ const cases=[
+  [async()=>new Response('SECRET',{status:302,headers:{Location:'https://attacker.test/'}}),{stage:'wikidata_city',kind:'redirect'}],
+  [async()=>new Response('SECRET',{status:503}),{stage:'wikidata_city',kind:'http',status:503}],
+  [async()=>new Response('x'.repeat(PHOTO_LIMITS.responseBytes+1)),{stage:'wikidata_city',kind:'too_large'}],
+  [async()=>new Response('<html>SECRET</html>'),{stage:'wikidata_city',kind:'invalid_json'}],
+  [async()=>Response.json({error:{code:'maxlag',info:'PRIVATE API'}}),{stage:'wikidata_city',kind:'api_error',code:'maxlag'}],
+  [async()=>Response.json({error:{code:'<script>',info:'PRIVATE API'}}),{stage:'wikidata_city',kind:'api_error'}],
+  [async()=>{throw Error('PRIVATE TOKEN');},{stage:'wikidata_city',kind:'network'}],
+ ];
+ for(const [fetchImpl,failure] of cases){const record=await collectCityPhotos(slug,{now,sourceRegistry,fetchImpl});assert.equal(record.reason,'provider_unavailable');assert.deepEqual(record.failure,failure);assert.doesNotMatch(JSON.stringify(record),/PRIVATE|SECRET|attacker|script/);}
+ const p=provider();let wiki=0;const later=await collectCityPhotos(slug,{now,sourceRegistry,fetchImpl:async(url,options)=>{if(new URL(url).hostname==='ja.wikipedia.org'&&++wiki===2)return new Response('busy',{status:429});return p.fetchImpl(url,options);}});
+ assert.deepEqual(later.failure,{stage:'wikipedia_landmarks',kind:'http',status:429});
+});
+
+test('a provider outage saves its classification and never hides already ready cities',async t=>{
+ const db=await setup(t),store=createStore(db),readySlug='mie/ise';await scheduled(db);await scheduled(db,readySlug);
+ const ready=await collectCityPhotos(slug,{now,sourceRegistry,...provider()});await store.upsert('city_photos',readySlug,{...ready,citySlug:readySlug,photos:ready.photos});
+ const before=await store.get('city_photos',readySlug);
+ const result=await runCityPhotosStep({SEO_DB:db},{now,sourceRegistry,fetchImpl:async()=>{throw Error('PRIVATE');}});
+ assert.deepEqual(result,{done:true,outcome:'provider_unavailable',photoCount:0,failure:{stage:'wikidata_city',kind:'network'}});
+ assert.deepEqual((await store.get('city_photos',slug)).failure,{stage:'wikidata_city',kind:'network'});
+ assert.deepEqual(await store.get('city_photos',readySlug),before);
+});

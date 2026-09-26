@@ -18,7 +18,7 @@ function schedulerStatus(value) {
   if(!value||typeof value!=='object')return null;
   const timestamp=input=>typeof input==='string'&&Number.isFinite(Date.parse(input))?new Date(input).toISOString():null;
   const identifier=input=>/^\d{1,30}$/.test(String(input??''))?String(input):null;
-  return {status:['completed','running','error'].includes(value.status)?value.status:null,lastAttemptAt:timestamp(value.lastAttemptAt),lastSuccessAt:timestamp(value.lastSuccessAt),runId:identifier(value.runId),runAttempt:identifier(value.runAttempt)};
+  return {status:['completed','running','error','attention'].includes(value.status)?value.status:null,outcome:/^[a-z_]{1,40}$/.test(String(value.outcome??''))?value.outcome:null,lastAttemptAt:timestamp(value.lastAttemptAt),lastSuccessAt:timestamp(value.lastSuccessAt),runId:identifier(value.runId),runAttempt:identifier(value.runAttempt)};
 }
 async function body(request, maxBytes=20*1024*1024){if(!request.headers.get('Content-Type')?.startsWith('application/json'))throw new HttpError(415,'JSON形式で送信してください。');const raw=await request.text();if(new TextEncoder().encode(raw).length>maxBytes)throw new HttpError(413,'データが大きすぎます。');try{return JSON.parse(raw);}catch{throw new HttpError(400,'JSON形式を確認してください。');}}
 const corporatePaths=new Set(corporateCatalog.map(row=>canonicalWorkspacePath(row.path)));
@@ -83,12 +83,12 @@ export async function handleManagerApi(request,env,identity,path,services={}) {
       return json({state:await saveWorkspace(db,payload.state,version(payload.expectedRevision),now)});
     }
     if(path==='/api/seo/dashboard'&&request.method==='GET') {
-      const [documents,published,leads,snapshots,integrations,inspections,health,statistics,settings,events,publishSchedule,maintenanceSchedule]=await Promise.all([
-        getDocuments(db),getPublished(db),store.list('leads'),store.list('analytics'),store.list('integrations'),store.list('inspections'),store.list('health'),publicationStats(db,now),store.get('settings','publication'),db.prepare('SELECT kind,message,created_at AS createdAt FROM seo_activity ORDER BY created_at DESC LIMIT 50').all(),store.get('scheduler','publish'),store.get('scheduler','maintenance'),
+      const [documents,published,leads,snapshots,integrations,inspections,health,statistics,settings,events,publishSchedule,maintenanceSchedule,photoSchedule]=await Promise.all([
+        getDocuments(db),getPublished(db),store.list('leads'),store.list('analytics'),store.list('integrations'),store.list('inspections'),store.list('health'),publicationStats(db,now),store.get('settings','publication'),db.prepare('SELECT kind,message,created_at AS createdAt FROM seo_activity ORDER BY created_at DESC LIMIT 50').all(),store.get('scheduler','publish'),store.get('scheduler','maintenance'),store.get('scheduler','photos'),
       ]);
       const flat=rows=>rows.map(row=>row.value);
       const pages=[...(services.staticPages||[]),...published.map(doc=>({path:publicPath(doc),title:doc.title,type:doc.type,publishedAt:doc.publishedAt}))];
-      return json({regionalPreparation:await regionalPreparationSummary(db),settings:publicationSettings(settings),scheduler:{publish:schedulerStatus(publishSchedule),maintenance:schedulerStatus(maintenanceSchedule)},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots:ltoriGrowthSnapshots(snapshots),integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
+      return json({regionalPreparation:await regionalPreparationSummary(db),settings:publicationSettings(settings),scheduler:{publish:schedulerStatus(publishSchedule),maintenance:schedulerStatus(maintenanceSchedule),photos:schedulerStatus(photoSchedule)},documents:documents.map(doc=>({...doc,path:publicPath(doc),issues:qualityIssues(doc)})),published,leads:flat(leads),snapshots:flat(snapshots),integrations:flat(integrations),inspections:flat(inspections),health:flat(health),activity:events.results,publicationStats:statistics,catalog:cityCatalog,configuration:getAnalyticsConfiguration(env),report:buildGrowthReport({snapshots:ltoriGrowthSnapshots(snapshots),integrations,inspections,leads,pages,now}),serverTime:now.toISOString()});
     }
     if(path==='/api/seo/publication'&&request.method==='GET') {
       const [docs,live]=await Promise.all([getDocuments(db),getPublished(db)]);const liveIds=new Set(live.map(doc=>doc.id));

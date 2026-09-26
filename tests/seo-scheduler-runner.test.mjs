@@ -266,3 +266,12 @@ test('photo runner rejects invalid step and provider result',async()=>{
     const next=harness([json({value:'oidc.payload.signature'}),json({status:'completed',kind:'photos',results:[{kind:'photos',status:'completed',done:false,outcome:'ready',photoCount:4,...change}]})]);await assert.rejects(runSeoGrowthJob('photos',next.options),/invalid_photo_result/);
   }
 });
+
+test('photo outage logs only the fixed failure stage and kind, and drops unknown values',async()=>{
+  const outage=failure=>json({status:'completed',kind:'photos',results:[{kind:'photos',status:'completed',done:true,outcome:'provider_unavailable',photoCount:0,failure}]});
+  const h=harness([json({value:'oidc.payload.signature'}),outage({stage:'commons_file',kind:'http',status:503,message:'PRIVATE body'})]);
+  await assert.rejects(runCityPhotoCollection(h.options),/city_photo_provider_unavailable/);
+  assert.match(h.logs.join('\n'),/"failure":\{"stage":"commons_file","kind":"http","status":503\}/);assert.doesNotMatch(h.logs.join('\n'),/PRIVATE/);
+  const odd=harness([json({value:'oidc.payload.signature'}),outage({stage:'https://attacker.test/',kind:'SECRET'})]);
+  await assert.rejects(runCityPhotoCollection(odd.options),/city_photo_provider_unavailable/);assert.doesNotMatch(odd.logs.join('\n'),/attacker|SECRET|failure/);
+});
