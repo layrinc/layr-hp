@@ -3,7 +3,7 @@ import {createRemoteJWKSet, jwtVerify} from 'jose';
 export const MANAGER_ORIGIN = 'https://seo.layr.co.jp';
 export const MANAGER_PATH = '/tools/ltori-seo/';
 export const MEDIA_MANAGER_PATH = `${MANAGER_PATH}media/`;
-const WORKSPACE_ASSETS = Object.freeze({'/': `${MANAGER_PATH}overview/`, '/regional/': MANAGER_PATH, '/media/': MEDIA_MANAGER_PATH, '/growth/': `${MANAGER_PATH}growth/`, '/articles/': `${MANAGER_PATH}articles/`, '/strategy/': `${MANAGER_PATH}strategy/`, '/backlinks/': `${MANAGER_PATH}backlinks/`});
+const WORKSPACE_ASSETS = Object.freeze({'/': `${MANAGER_PATH}overview/`, '/regional/': MANAGER_PATH, '/media/': MEDIA_MANAGER_PATH, '/growth/': `${MANAGER_PATH}growth/`, '/articles/': `${MANAGER_PATH}articles/`, '/strategy/': `${MANAGER_PATH}strategy/`, '/backlinks/': `${MANAGER_PATH}backlinks/`, '/regulation/': `${MANAGER_PATH}regulation/`});
 function managementDestination(path) {
   const base = path.replace(/(?:\/index)?\.html$/, '').replace(/\/+$/, '');
   if ([MANAGER_PATH.slice(0, -1), `${MANAGER_PATH}regional`].includes(base)) return '/regional/';
