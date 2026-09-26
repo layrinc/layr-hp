@@ -3,7 +3,6 @@ import Base from '../../layouts/Base.astro';
 import service from '../../data/service-ltori.json';
 import company from '../../data/company.json';
 import ConsultBanner from './ConsultBanner.astro';
-import RecruitmentPhone from './RecruitmentPhone.astro';
 import AreaLinks from './AreaLinks.astro';
 import RegionalContent from './RegionalContent.astro';
 import {regionalFaqsFor} from '../../lib/ltori-local-content.mjs';
@@ -24,12 +23,6 @@ const breadcrumbs = [
   {name:'ホーム', path:'/'}, {name:'サービス', path:'/service/'}, {name:service.name, path:service.path},
 ];
 const nav = [[`${service.name}とは`, '#about'], ['サービス内容', '#service'], ['料金プラン', '#plan'], ['導入の流れ', '#flow'], ['よくある質問', '#faq'], ['採用コラム', '/service/ltori/media/']];
-const scenarios = [
-  {label:'友だち登録', title:'「ちょっと気になる」を、\nつながるきっかけに。', body:'採用サイトやSNSからLINEへ。いきなり応募するのは不安な候補者にも、気軽に会社を知ってもらう入口をつくります。', point:'希望職種・経験・関心をアンケートで把握', message:'友だち追加ありがとうございます。みどり製作所の採用担当です！\nまずは、気になっているお仕事を教えてください。', choices:['製造スタッフ','営業・事務','まずは会社を知りたい'], tag:'登録直後'},
-  {label:'企業理解', title:'知りたい情報が届く。\n働くイメージが湧く。', body:'企業紹介、職場の様子、先輩インタビューを順番に配信。希望職種や関心に合わせて内容を分け、応募する前の疑問を解消します。', point:'5〜7日間のステップ配信で企業理解を促進', message:'今日は、製造チームの「ある一日」をご紹介します。\n入社後にどんな仕事をするのか、先輩の声と一緒に見てみませんか？', choices:['先輩インタビューを見る','働く環境・福利厚生'], tag:'登録から数日後'},
-  {label:'面談予約', title:'応募の気持ちを、\n面談につなげる。', body:'LINEから応募・面談予約へ。日程案内や事前のリマインドを整えて、候補者にも採用担当者にもスムーズな選考体験をつくります。', point:'日程案内・リマインドで連絡の負担を軽減', message:'私たちの仕事に少し興味が湧いたら、まずはカジュアルにお話ししませんか？\nご希望の日時を下のボタンからお選びいただけます。', choices:['カジュアル面談を予約','採用担当に質問する'], tag:'応募・面接の前'},
-  {label:'入社前フォロー', title:'内定のその先も、\n安心して迎えられる。', body:'入社までの準備やよくある質問をLINEで案内。聞きにくいことも相談しやすい接点を残し、入社前の不安に寄り添います。', point:'内定後も、継続したコミュニケーション', message:'入社の日が近づいてきましたね。\n当日の持ち物と集合場所をまとめました。気になることがあれば、このトークでいつでもご相談ください。', choices:['入社初日のご案内','よくある質問を見る'], tag:'内定から入社まで'}
-];
 const offerings = [
   ['01','採用戦略・導線設計','募集職種や採用課題を整理。広告・SNS・採用サイトから、LINE登録、応募までの導線を設計します。'],
   ['02','採用LINEの初期構築','アカウント設計、リッチメニュー、タグ・友だち情報欄を整え、採用に使える環境をつくります。'],
@@ -58,19 +51,17 @@ const jsonLd = [
       <a class="lt-logo" href={service.path} aria-label={`${service.name} トップ`}><span>{service.name}<span class="lt-logo-dot">.</span></span><small>採用特化LINE支援 <span>by LAYR</span></small></a>
       <nav class="lt-desktop-nav" aria-label="ページ内ナビゲーション">{nav.map(([label,href])=><a href={href}>{label}</a>)}</nav>
       <a class="lt-button lt-header-cta" href={consult} data-lt-cta="header">無料相談<span class="lt-button-arrow" aria-hidden="true">↗</span></a>
-      <details class="lt-mobile-menu"><summary aria-label="ナビゲーションメニュー"><span></span><span></span><span class="lt-menu-label">MENU</span></summary><nav aria-label="モバイルナビゲーション">{nav.map(([label,href])=><a href={href}>{label}<span aria-hidden="true">↗</span></a>)}<a href={consult} data-lt-cta="menu">無料相談はこちら</a></nav></details>
+      <details class="lt-mobile-menu"><summary aria-label="ナビゲーションメニュー"><span></span><span></span><span class="lt-menu-label">MENU</span></summary><nav aria-label="モバイルナビゲーション">{nav.map(([label,href])=><a href={href}>{label}<span aria-hidden="true">↗</span></a>)}<div class="lt-menu-ctas"><a class="lt-menu-cta" href={consult} data-lt-cta="menu">無料相談はこちら</a><a class="lt-menu-cta lt-menu-cta-doc" href={service.source} target="_blank" rel="noopener" data-lt-doc="menu">資料請求する</a></div></nav></details>
     </header>
     <div id="ltori-content">
       <section class="lt-hero" aria-labelledby="lt-hero-title">
         <div class="lt-hero-grid lt-wrap">
           <div class="lt-hero-copy">
-            <p class="lt-hero-kicker"><span>採用 × LINE</span> {area ? `${area.fullName}の企業さまへ` : '人と企業の、いい出会いを。'}</p>
+            {area && <p class="lt-hero-kicker"><span>採用 × LINE</span> {area.fullName}の企業さまへ</p>}
             <h1 id="lt-hero-title">{area ? <><span class="lt-area-name">{area.fullName}の</span><span class="lt-area-service"><span>採用LINE</span><br /><mark>構築・運用支援</mark></span></> : <><span>LINE</span>でつながる。<br /><mark>採用が、変わる。</mark></>}</h1>
-            <p class="lt-hero-lead">応募から入社まで、<br class="lt-mobile-break" />採用活動に伴走。</p>
             <p class="lt-hero-description">{area ? `${area.fullName}の採用活動を、オンラインでサポート。` : '候補者との出会いを、一度きりで終わらせない。'}<br />構築・配信・改善まで、採用LINEは{service.name}に。</p>
             <div class="lt-hero-actions">
               <a class="lt-button lt-button-large" href={consult} data-lt-cta="hero"><span><small>{area ? `${area.name}での採用のお悩みに` : '採用のお悩み、お聞かせください'}</small>無料相談をする</span><span class="lt-button-arrow" aria-hidden="true">↗</span></a>
-              <a class="lt-doc-link" href={service.source} target="_blank" rel="noopener" data-lt-doc>まずはサービス資料を見る <span aria-hidden="true">↗</span></a>
             </div>
           </div>
           <div class="lt-hero-visual">
@@ -159,20 +150,6 @@ const jsonLd = [
 
       <section class="lt-cta-section"><div class="lt-wrap"><ConsultBanner placement="middle" consultHref={consult} areaName={area?.fullName} /><p class="lt-operated">自社に合う使い方を知りたい方へ。<a class="lt-text-link" href={diagnosis} data-lt-diagnosis>5つの質問で採用LINEの活用プランを見る <span aria-hidden="true">↗</span></a></p></div></section>
 
-      <section class="lt-section lt-demo-section" id="scenario">
-        <div class="lt-wrap">
-          <div class="lt-section-heading lt-heading-center"><p class="lt-eyebrow">LINE Experience</p><h2>候補者には、<mark>こんな体験を。</mark></h2><p>登録から入社前まで、4つのシーンを見てみましょう。</p></div>
-          <div class="lt-demo-board">
-            <div class="lt-scenario-tabs" role="tablist" aria-label="採用LINEの活用シーン">{scenarios.map((s,i)=><button type="button" role="tab" id={`lt-tab-${i}`} aria-controls={`lt-panel-${i}`} aria-selected={i===0?'true':'false'} tabindex={i===0?0:-1} data-lt-tab={i}><span>0{i+1}</span>{s.label}<i aria-hidden="true">↗</i></button>)}</div>
-            {scenarios.map((s,i)=><div class="lt-scenario-panel" role="tabpanel" id={`lt-panel-${i}`} aria-labelledby={`lt-tab-${i}`} tabindex="0" hidden={i!==0}>
-              <div class="lt-scenario-copy"><p class="lt-eyebrow">SCENE 0{i+1}</p><h3>{s.title.split('\n').map((line,j)=><Fragment>{j>0&&<br/>}{line}</Fragment>)}</h3><p>{s.body}</p><div class="lt-scenario-point"><span aria-hidden="true">✓</span>{s.point}</div><a class="lt-text-link" href={consult} data-lt-cta={`scenario-${i}`}>自社での活用方法を相談する <span aria-hidden="true">↗</span></a></div>
-              <RecruitmentPhone scenario={s} index={i} />
-            </div>)}
-          </div>
-          <p class="lt-note">※配信への同意・本人の意向に配慮して運用します。配信や自動化の範囲は、利用するツールとプランによって異なります。</p>
-        </div>
-      </section>
-
       <section class="lt-section lt-service" id="service"><div class="lt-wrap">
         <div class="lt-section-heading"><p class="lt-eyebrow">Service</p><h2>{area ? `${area.fullName}の採用活動に。` : '構築も、配信も、改善も。'}<br /><mark>採用LINEを、まるごと支援。</mark></h2></div>
         <div class="lt-offering-grid">{offerings.map(([n,h,p])=><article><span class="lt-offering-number">{n}</span><h3>{h}</h3><p>{p}</p></article>)}</div>
@@ -193,19 +170,11 @@ const jsonLd = [
       {area ? <RegionalContent area={area} section="provider" /> : <template data-seo-regional-provider-slot></template>}
       <section class="lt-final" id="contact"><div class="lt-wrap"><ConsultBanner placement="bottom" consultHref={consult} areaName={area?.fullName} /><p class="lt-operated">{service.name}は、{company.name}が運営する{service.descriptor}サービスです。</p><a class="lt-text-link" href="/service/">LAYRのサービス一覧へ <span aria-hidden="true">↗</span></a></div></section>
     </div>
-    <div class="lt-mobile-sticky"><a href={service.source} target="_blank" rel="noopener" data-lt-doc>サービス資料</a><a href={consult} data-lt-cta="sticky">無料相談をする <span aria-hidden="true">↗</span></a></div>
+    <div class="lt-mobile-sticky"><a class="lt-sticky-doc" href={service.source} target="_blank" rel="noopener" data-lt-doc="sticky">資料請求する</a><a href={consult} data-lt-cta="sticky">無料相談をする <span aria-hidden="true">↗</span></a></div>
   </div>
   <script>
     import {initCityPhotoStrips} from '../../lib/ltori-city-photos-client.mjs';
     initCityPhotoStrips();
-    const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-lt-tab]'));
-    function activateTab(index: number) {
-      tabs.forEach((tab,i)=>{tab.setAttribute('aria-selected',String(i===index));tab.tabIndex=i===index?0:-1;const panel=document.getElementById(`lt-panel-${i}`);if(panel)panel.hidden=i!==index;});
-    }
-    tabs.forEach((tab,i)=>{
-      tab.addEventListener('click',()=>activateTab(i));
-      tab.addEventListener('keydown',e=>{let index=i;if(e.key==='ArrowRight')index=(i+1)%tabs.length;else if(e.key==='ArrowLeft')index=(i+tabs.length-1)%tabs.length;else if(e.key==='Home')index=0;else if(e.key==='End')index=tabs.length-1;else return;e.preventDefault();activateTab(index);tabs[index].focus();});
-    });
     const menu=document.querySelector<HTMLDetailsElement>('.lt-mobile-menu');
     menu?.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>menu.open=false));
     document.addEventListener('keydown',e=>{if(e.key==='Escape'&&menu?.open){menu.open=false;menu.querySelector('summary')?.focus();}});
@@ -214,7 +183,7 @@ const jsonLd = [
     const pageSource = document.querySelector<HTMLElement>('[data-lt-source]')?.dataset.ltSource;
     const sourceParams = pageSource ? {page_source:pageSource} : {};
     document.querySelectorAll<HTMLAnchorElement>('[data-lt-cta]').forEach(a=>a.addEventListener('click',()=>track('select_content',{content_type:'consultation_cta',content_id:'ltori',placement:a.dataset.ltCta||'',...sourceParams})));
-    document.querySelectorAll<HTMLAnchorElement>('[data-lt-doc]').forEach(a=>a.addEventListener('click',()=>track('select_content',{content_type:'service_document',content_id:'ltori',...sourceParams})));
+    document.querySelectorAll<HTMLAnchorElement>('[data-lt-doc]').forEach(a=>a.addEventListener('click',()=>track('select_content',{content_type:'service_document',content_id:'ltori',placement:a.dataset.ltDoc||'',...sourceParams})));
     document.querySelectorAll<HTMLVideoElement>('[data-lt-movie]').forEach(v=>{
       v.addEventListener('play',()=>track('select_content',{content_type:'service_video',content_id:'ltori',placement:'lp_movie',...sourceParams}),{once:true});
       v.addEventListener('ended',()=>track('video_complete',{content_type:'service_video',content_id:'ltori',...sourceParams}),{once:true});
