@@ -33,13 +33,15 @@ for (let i = 0; i < blocks.length; i++) {
   }
 }
 
-// 表示用メタ（EN・イラスト・チップ＝本文に書かれている範囲のみ）
-const META = [
-  { en: 'LINE MARKETING', iso: ISO.phone, chips: ['アカウント設計・構築', 'リッチメニュー', 'ステップ配信', '毎月の配信運用・改善'], price: '構築15万円〜／運用 月5万円〜' },
-  { en: 'AD OPERATION', iso: ISO.chart, chips: ['Meta広告', 'Google広告', 'LINEヤフー広告', '日々の運用・月次レポート'], price: '初期5.5万円＋月5.5万円〜（税込）' },
-  { en: 'BUSINESS AUTOMATION', iso: ISO.build, illustration: '/service/ai/ai-office.webp', chips: ['AI導入コンサル', '専用ツール・業務アプリ開発', '請求書管理の自動化'], price: `コンサル 月${aiConsulting.price / 10000}万円／開発 1件${aiDevelopment.price / 10000}万円／請求書自動化 ${aiInvoice.price / 10000}万円（税別）` },
-  { en: 'LINE RECRUITING', iso: ISO.phone, illustration: '/service/ltori/isometric-hero.webp', chips: ['採用導線設計', '企業理解を促す配信', '応募・面接のフォロー', '分析・運用改善'], price: `初期構築${ltoriService.initialPrice / 10000}万円／運用 月${ltoriService.plans[0].price / 10000}万円〜（税別）` },
-];
+// 表示用メタ（URLで対応づけ。並び順は service.json のブロック順に従う）
+type Meta = { en: string; iso: string; illustration?: string; illustrationClass?: string; illustrationSize?: [number, number]; chips: string[]; price: string };
+const META: Record<string, Meta> = {
+  '/service/school/': { en: 'LINE MARKETING', iso: ISO.phone, chips: ['アカウント設計・構築', 'リッチメニュー', 'ステップ配信', '毎月の配信運用・改善'], price: '構築15万円〜／運用 月5万円〜' },
+  [ltoriService.path]: { en: 'LINE RECRUITING', iso: ISO.phone, illustration: '/service/ltori/isometric-hero.webp', illustrationClass: 'sv-ltori-illustration', chips: ['採用導線設計', '企業理解を促す配信', '応募・面接のフォロー', '分析・運用改善'], price: `初期構築${ltoriService.initialPrice / 10000}万円／運用 月${ltoriService.plans[0].price / 10000}万円〜（税別）` },
+  // アッシュクAI：LPのFVと同じISOME LAB公式イラスト（担当者とAI）
+  '/service/ai/': { en: 'BUSINESS AUTOMATION', iso: ISO.build, illustration: '/service/ai/isome/ai-partner.svg', illustrationClass: 'sv-isome-illustration', illustrationSize: [637, 1122], chips: ['AI導入コンサル', '専用ツール・業務アプリ開発', '請求書管理の自動化'], price: `コンサル 月${aiConsulting.price / 10000}万円／開発 1件${aiDevelopment.price / 10000}万円／請求書自動化 ${aiInvoice.price / 10000}万円（税別）` },
+};
+const metaFor = (s: Svc): Meta => META[s.url] ?? { en: 'SERVICE', iso: ISO.phone, chips: [], price: '' };
 
 const jsonLd = [
   {
@@ -92,22 +94,20 @@ const jsonLd = [
         <div class="container sv-item-in">
           <div class="sv-fig" aria-hidden="true">
             <span class="sv-fig-num">{String(i + 1).padStart(2, '0')}</span>
-            {(META[i] as any).illustration ? (
-              <img class:list={['sv-ai-illustration', {'sv-ltori-illustration':s.url === ltoriService.path}]} src={(META[i] as any).illustration} alt="" width="1536" height="1024" loading="lazy" decoding="async" />
-            ) : (META[i] as any).shot ? (
-              <span class="sv-shot"><i><b></b><b></b><b></b></i><img src={(META[i] as any).shot} alt="" width="1200" height="750" loading="lazy" /></span>
+            {metaFor(s).illustration ? (
+              <img class:list={['sv-ai-illustration', metaFor(s).illustrationClass]} src={metaFor(s).illustration} alt="" width={metaFor(s).illustrationSize?.[0] ?? 1536} height={metaFor(s).illustrationSize?.[1] ?? 1024} loading="lazy" decoding="async" />
             ) : (
-              <span class="sv-fig-iso" set:html={META[i].iso} />
+              <span class="sv-fig-iso" set:html={metaFor(s).iso} />
             )}
           </div>
           <div class="sv-txt">
-            <p class="sv-item-en"><i></i>{META[i].en}</p>
+            <p class="sv-item-en"><i></i>{metaFor(s).en}</p>
             <h2>{s.title}</h2>
             <p class="sv-body">{s.body}</p>
             <div class="sv-chips">
-              {META[i].chips.map((c) => <span>{c}</span>)}
+              {metaFor(s).chips.map((c) => <span>{c}</span>)}
             </div>
-            <p class="sv-price"><b>料金</b>{META[i].price}</p>
+            {metaFor(s).price && <p class="sv-price"><b>料金</b>{metaFor(s).price}</p>}
             {s.url === ltoriService.path && ltVideo?.youtubeId ? (
               <>
                 <div class="sv-cta-row">
@@ -173,6 +173,8 @@ const jsonLd = [
 
 <style>
   /* エルトリの写真は生成時の自然な色味で表示 */
+  /* アッシュクAI：縦長のISOME LABイラストを枠内に収める（色はLPと同じ公式配色のまま） */
+  .sv-ai-illustration.sv-isome-illustration{filter:none;position:absolute;inset:0;margin:auto;width:auto;height:86%;max-width:80%;object-fit:contain}
   .sv-ai-illustration.sv-ltori-illustration{filter:none;object-fit:contain;height:100%;background:var(--paper);border-radius:var(--r-lg)}
   /* hero */
   .sv-hero{position:relative;background:linear-gradient(160deg,#F4FAF8 0%,#fff 55%,#EDF7F2 100%);padding:clamp(40px,5.5vw,72px) 0 clamp(44px,5.5vw,72px);overflow:hidden;border-bottom:1px solid var(--line)}
