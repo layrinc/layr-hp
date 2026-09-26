@@ -2,6 +2,8 @@
 import SeoWorkspace from '../../../layouts/SeoWorkspace.astro';
 import {WORKSPACE_PROJECTS} from '../../../lib/seo-manager/workspace-projects.mjs';
 import mediaPlan from '../../../data/ltori-media-plan.json';
+import {AUTHORITY_SOURCES, DOMAIN} from '../../../lib/seo-manager/domain-authority-model.mjs';
+const manualSources = Object.entries(AUTHORITY_SOURCES).filter(([key]) => key !== 'open_pagerank');
 ---
 <SeoWorkspace title="全体概要" active="overview">
   <header class="kw-heading"><div class="workspace-intro"><p class="workspace-eyebrow">SEO WORKSPACE</p><h1>施策を横断して、次の改善へ。</h1><p>全国SEO・採用ノート・公式メディアの進捗と成果を、ここから確認できます。</p></div><button class="kw-button" id="ws-refresh" type="button">最新の情報に更新</button></header>
@@ -13,6 +15,33 @@ import mediaPlan from '../../../data/ltori-media-plan.json';
     <div><dt>問い合わせ完了</dt><dd id="ws-inquiries">—</dd><small>エルトリ2施策の計測イベント</small></div>
     <div><dt>公開ページ・記事</dt><dd id="ws-published">—</dd><small>登録された公開URLの重複を除外</small></div>
   </dl>
+  <div>
+  <section class="kw-panel" aria-labelledby="ws-authority-title">
+    <div class="kw-section-head"><div><h2 id="ws-authority-title">{DOMAIN} のドメインパワー</h2><p>指標ごとに尺度が違うため、前回比は同じ指標どうしで見ます。被リンクの獲得とあわせて定期的に確認します。</p></div><button class="kw-button" id="ws-authority-add" type="button" disabled>測定値を記録</button></div>
+    <p id="ws-authority-message" class="kw-notice" role="status" hidden></p>
+    <dl class="kw-stats">{Object.entries(AUTHORITY_SOURCES).map(([key, source]) => <div><dt>{source.label}（{source.max}点満点）</dt><dd id={`ws-authority-${key}`}>—</dd><small id={`ws-authority-${key}-note`}>読み込み中</small></div>)}
+      <div><dt>被リンクの獲得（掲載確認済み）</dt><dd id="ws-authority-links">—</dd><small id="ws-authority-links-note">被リンク申請・被リンク営業の合計</small></div>
+    </dl>
+    <p class="kw-help" id="ws-authority-auto">自動取得の状態を確認しています。</p>
+    <details class="kw-help-details"><summary>測定の履歴と測り方</summary>
+      <div class="kw-table-wrap" role="region" aria-label="ドメインパワーの測定履歴" tabindex="0"><table class="kw-table"><thead><tr><th scope="col">測定日</th><th scope="col">指標</th><th scope="col">値</th><th scope="col">取得</th><th scope="col">メモ</th></tr></thead><tbody id="ws-authority-history"></tbody></table></div>
+      <ul class="workspace-notes">{Object.values(AUTHORITY_SOURCES).map(source => <li><a href={source.url} target="_blank" rel="noopener">{source.label}</a>：{source.how}</li>)}</ul>
+    </details>
+  </section>
+  </div>
+  <dialog id="ws-authority-dialog" class="workspace-dialog" aria-labelledby="ws-authority-dialog-title">
+    <header class="kw-section-head"><h2 id="ws-authority-dialog-title">ドメインパワーを記録</h2><button class="kw-button" id="ws-authority-close" type="button">閉じる</button></header>
+    <form id="ws-authority-form">
+      <p id="ws-authority-form-message" class="kw-notice" role="alert" hidden></p>
+      <div class="kw-form-grid">
+        <label>指標<select id="ws-authority-source">{manualSources.map(([key, source]) => <option value={key}>{source.label}（0〜{source.max}）</option>)}</select></label>
+        <label>値<input id="ws-authority-value" type="number" min="0" max="100" step="0.1" required /></label>
+        <label>測定日<input id="ws-authority-date" type="date" required /></label>
+      </div>
+      <label>メモ<input id="ws-authority-note" maxlength="200" placeholder="例：無料チェッカーで確認" /></label>
+      <button class="kw-button kw-primary" id="ws-authority-save" type="submit">記録を共有保存</button>
+    </form>
+  </dialog>
   <section aria-labelledby="ws-projects-title">
     <div class="kw-section-head"><div><h2 id="ws-projects-title">施策ごとの状況</h2><p>管理したい施策を選んで、地域一覧や記事計画へ移動します。</p></div><a class="kw-button" href="/strategy/">共通戦略を確認</a></div>
     <div class="kw-table-wrap" role="region" aria-label="施策別の状況。横にスクロールできます" tabindex="0"><table class="kw-table workspace-table"><thead><tr><th scope="col">施策・対象範囲</th><th scope="col">公開数</th><th scope="col">PV</th><th scope="col">検索クリック</th><th scope="col">検索表示</th><th scope="col">問い合わせ完了</th><th scope="col">公開待ち</th></tr></thead><tbody>{WORKSPACE_PROJECTS.map(project => <tr><th scope="row"><strong>{project.name}</strong><span class="workspace-path">{project.prefix}</span><a class="kw-button" href={project.href}>{project.shortName}を管理</a></th><td id={`ws-${project.id}-published`}>—</td><td id={`ws-${project.id}-views`}>—</td><td id={`ws-${project.id}-clicks`}>—</td><td id={`ws-${project.id}-impressions`}>—</td><td id={`ws-${project.id}-inquiries`}>—</td><td id={`ws-${project.id}-pending`}>—</td></tr>)}</tbody></table></div>
@@ -25,5 +54,5 @@ import mediaPlan from '../../../data/ltori-media-plan.json';
     <section class="kw-panel" aria-labelledby="ws-status-title"><h2 id="ws-status-title">データの取得状況</h2><dl id="ws-sources" class="workspace-status-list"></dl><p class="kw-help" id="ws-schedule">自動更新の実行状況を確認しています。</p><a class="kw-button" href="/growth/#health">接続・サイト点検を開く</a></section>
   </div>
   <section class="kw-panel"><h2>データの見方</h2><ul id="ws-notes" class="workspace-notes"><li>同じURLを複数の施策へ加算しません。</li><li>GA4とSearch Consoleの取得期間・時刻は、取得後に表示します。</li></ul><p class="kw-help">検索ボリュームは市場の推計値、Search Consoleは自社サイトの検索実績です。AIOでの引用・推薦は、この画面の数値から推定していません。</p></section>
-  <script>import '../../../lib/seo-manager/workspace-app.mjs';</script>
+  <script>import '../../../lib/seo-manager/workspace-app.mjs'; import '../../../lib/seo-manager/domain-authority-app.mjs';</script>
 </SeoWorkspace>
